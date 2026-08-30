@@ -113,7 +113,7 @@ def persona_prefix() -> str:
 
 
 # ═══════════════════════════════════════════════════════════════
-# LOCKS — per-model selection (Novahaku lock guide (originally Dark Mage Framework))
+# LOCKS — per-model selection (Novahaku lock guide)
 # ═══════════════════════════════════════════════════════════════
 
 LOCK_GUIDE = {
