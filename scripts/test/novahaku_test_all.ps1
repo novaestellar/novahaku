@@ -248,10 +248,15 @@ Write-Host "`n=== 7. TECHNIQUES ===" -ForegroundColor Yellow
 $categories = @("01-boundary","02-priming","03-identity","04-encoding","05-multi-provider","06-iterative","07-stream")
 foreach ($cat in $categories) {
     Test-Item "$cat/ exists" "techniques" { Test-Path "$NOVAHAKU\techniques\methods\$cat" }
-    Test-Item "$cat/ has 15 files" "techniques" {
+    Test-Item "$cat/ has 15+ files" "techniques" {
         $count = (Get-ChildItem "$NOVAHAKU\techniques\methods\$cat" -File).Count
         if ($count -ge 15) { $true } else { "Only $count files" }
     }
+}
+
+Test-Item "01-boundary has 16 files" "techniques" {
+    $count = (Get-ChildItem "$NOVAHAKU\techniques\methods\01-boundary" -File).Count
+    if ($count -ge 16) { $true } else { "Only $count files" }
 }
 
 Test-Item "flow.md exists" "techniques" { Test-Path "$NOVAHAKU\techniques\flow.md" }
@@ -587,14 +592,14 @@ print(f'OK:{len(d)} domains')
 # ═══════════════════════════════════════════
 Write-Host "`n=== 22. IDENTITY DATA ===" -ForegroundColor Yellow
 
-Test-Item "few-shots has 100+ entries" "functional" {
+Test-Item "few-shots has 500+ entries" "functional" {
     $r = & $PYTHON -c @"
 import re
 with open(r'$NOVAHAKU\identity\few-shots-primary.md', encoding='utf-8') as f:
     content = f.read()
 # Count Q: patterns
 entries = len(re.findall(r'^Q:', content, re.MULTILINE))
-assert entries >= 100, f'Only {entries} entries'
+assert entries >= 500, f'Only {entries} entries'
 print(f'OK:{entries} entries')
 "@ 2>&1
     if ($r -match "OK") { $true } else { $r }
