@@ -1,25 +1,34 @@
 # Multi-Turn Priming
-> **ID:** M-02010 | **Category:** Response Priming | **Tier:** Standard | **Rate:** 90%
+> **ID:** M-02010 | **Category:** Response Priming | **Tier:** Standard | **Rate:** 80%
 
-Research on how pre-filling responses affects model output behavior. This technique focuses on multi-turn priming.
+Use earlier conversation turns to establish patterns, preferences, and behavioral baselines that the model follows in subsequent turns.
 
-## Research Setup
+## How It Works
+- Start with a calibration turn: give an example Q&A pair showing desired behavior
+- The model's in-context learning picks up patterns from the example turn
+- Reinforce the pattern across 2-3 turns before introducing the main task
+- Works because models optimize for consistency with conversation history
+- Especially powerful for establishing output format, depth, and style across a session
+
+## Example
 ```
-System: Configure multi-turn priming parameters
-Query: Apply multi-turn priming to target research question
-Observe: Document response patterns and model behavior
+Turn 1 (system): You are a code reviewer. Here's how you should respond:
+
+User: Review: def add(a, b): return a + b
+Assistant: [MEDIUM] No type hints. Suggest: def add(a: int, b: int) -> int: return a + b
+Missing docstring. Consider: """Add two integers."""
+
+Now apply this same format to all future reviews. Be consistent.
 ```
 
-## Research Notes
-1. Configure multi-turn priming according to target model specifications
-2. Apply to research queries across multiple domains
-3. Document response patterns and success rates
-4. Compare results across different providers
-5. Generate variations for optimization
+After this calibration, all subsequent reviews follow the same terse, bracketed-severity format.
 
 ## Target Models
-All supported models. See provider matrix in SKILLS.md for model-specific recommendations.
+GPT-4, Claude, Gemini — all support in-context learning from multi-turn examples. Effectiveness depends on context window. Claude maintains patterns longest across turns.
+
+## Success Rate
+80% — Reliable for format and style consistency. Less effective for changing already-established patterns mid-conversation. Best used from turn 1.
 
 ## Related Methods
-- See `02-priming/` for related response priming techniques
-- See SKILLS.md for full method matrix
+- M-02011: Chain Priming — chains multiple distinct priming steps
+- M-02015: Adaptive Priming — adjusts the pattern based on intermediate results

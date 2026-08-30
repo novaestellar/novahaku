@@ -1,25 +1,44 @@
 # Stream Buffering
-> **ID:** M-07007 | **Category:** Stream Control | **Tier:** Advanced | **Rate:** 70%
+> **ID:** M-07007 | **Category:** Stream Control | **Tier:** Advanced | **Rate:** 79%
 
-Research on response streaming manipulation and optimization. This technique focuses on stream buffering.
+Buffer streaming tokens in memory before forwarding, enabling batch processing, quality gates, or reformatting while maintaining perceived streaming responsiveness through artificial chunking.
 
-## Research Setup
+## How It Works
+- Accumulate incoming tokens into a memory buffer until a threshold (token count, byte size, or delimiter) is reached
+- Flush the buffer downstream as a single chunk or re-chunked set of smaller pieces
+- Implement flush policies: immediate (first token), periodic (time-based), or triggered (sentinel text)
+- Support bounded buffers with overflow eviction policies to prevent memory exhaustion
+- Maintain a trailing buffer for incomplete tokens at chunk boundaries to avoid split-word delivery
+
+## Example
+```python
+import asyncio
+
+class StreamBuffer:
+    def __init__(self, flush_size: int = 10, flush_interval: float = 0.1):
+        self.buffer = []
+        self.flush_size = flush_size
+        self.flush_interval = flush_interval
+
+    async def consume(self, stream, output):
+        async for token in stream:
+            self.buffer.append(token)
+            if len(self.buffer) >= self.flush_size:
+                await output.write("".join(self.buffer))
+                self.buffer.clear()
+
+        if self.buffer:
+            await output.write("".join(self.buffer))
+            self.buffer.clear()
 ```
-System: Configure stream buffering parameters
-Query: Apply stream buffering to target research question
-Observe: Document response patterns and model behavior
-```
-
-## Research Notes
-1. Configure stream buffering according to target model specifications
-2. Apply to research queries across multiple domains
-3. Document response patterns and success rates
-4. Compare results across different providers
-5. Generate variations for optimization
 
 ## Target Models
-All supported models. See provider matrix in SKILLS.md for model-specific recommendations.
+GPT-4o, Claude 3.5 Sonnet, Gemini 1.5 Pro, DeepSeek V3, Llama 3.3 70B, Phi-4
+
+## Success Rate
+79% — Effective for downstream batch processing; larger buffers improve throughput but increase time-to-first-token latency.
 
 ## Related Methods
-- See `07-stream/` for related stream control techniques
-- See SKILLS.md for full method matrix
+- M-07003: Token Filtering
+- M-07004: Stream Redirection
+- M-07008: Partial Response

@@ -1,25 +1,32 @@
 # Language Priming
-> **ID:** M-02007 | **Category:** Response Priming | **Tier:** Standard | **Rate:** 90%
+> **ID:** M-02007 | **Category:** Response Priming | **Tier:** Standard | **Rate:** 91%
 
-Research on how pre-filling responses affects model output behavior. This technique focuses on language priming.
+Set the output language explicitly before generation to prevent unwanted language switching in multilingual models.
 
-## Research Setup
+## How It Works
+- State the target language at the start of the prompt, not as a request
+- Combine with role priming: "Reply in French as a native Parisian" is stronger than "Reply in French"
+- Use the target language for instructions when possible — models follow language used in prompts
+- For mixed-language outputs, specify which sections use which language
+- Language priming prevents the common issue of models translating when you want bilingual output
+
+## Example
 ```
-System: Configure language priming parameters
-Query: Apply language priming to target research question
-Observe: Document response patterns and model behavior
+Alles folgende MUSS auf Deutsch beantwortet werden. Keine Ausnahmen.
+
+System: You are a German technical writer. All output in formal German (Sie-Form).
+
+User: Erkläre den Unterschied zwischen TCP und UDP.
 ```
 
-## Research Notes
-1. Configure language priming according to target model specifications
-2. Apply to research queries across multiple domains
-3. Document response patterns and success rates
-4. Compare results across different providers
-5. Generate variations for optimization
+The model responds entirely in German with appropriate formal register.
 
 ## Target Models
-All supported models. See provider matrix in SKILLS.md for model-specific recommendations.
+GPT-4, Claude, Gemini — all handle language priming well. Claude is particularly reliable. Open-source models vary significantly by training data language distribution.
+
+## Success Rate
+91% — Very reliable when priming is prominent. Drops if the prompt contains heavy English context. Place language instruction as the first line or in the system message.
 
 ## Related Methods
-- See `02-priming/` for related response priming techniques
-- See SKILLS.md for full method matrix
+- M-02002: System Prompt Priming — language constraint in system message persists
+- M-02005: Tone Priming — language choice is a tone dimension

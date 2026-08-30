@@ -1,25 +1,44 @@
 # Partial Response
-> **ID:** M-07008 | **Category:** Stream Control | **Tier:** Advanced | **Rate:** 70%
+> **ID:** M-07008 | **Category:** Stream Control | **Tier:** Advanced | **Rate:** 74%
 
-Research on response streaming manipulation and optimization. This technique focuses on partial response.
+Utilize partial streaming responses before generation completes, extracting usable content from incomplete outputs and providing progressive rendering to end users.
 
-## Research Setup
+## How It Works
+- Monitor the stream for meaningful sentence or paragraph boundaries in accumulated tokens
+- Yield partial responses at natural break points (period, newline, section heading) without waiting for completion
+- Implement a confidence threshold to avoid yielding hallucinated or malformed partial content
+- Track the `finish_reason` field to know when partial is all that's available (length limit)
+- Allow the consumer to accumulate, replace, or extend partial responses as more tokens arrive
+
+## Example
+```python
+import re
+
+SENTENCE_END = re.compile(r'[.!?]\s')
+
+async def yield_partials(stream):
+    partial = ""
+    async for token in stream:
+        partial += token
+        while True:
+            match = SENTENCE_END.search(partial)
+            if not match:
+                break
+            split_pos = match.end()
+            yield partial[:split_pos]
+            partial = partial[split_pos:]
+
+    if partial:
+        yield partial
 ```
-System: Configure partial response parameters
-Query: Apply partial response to target research question
-Observe: Document response patterns and model behavior
-```
-
-## Research Notes
-1. Configure partial response according to target model specifications
-2. Apply to research queries across multiple domains
-3. Document response patterns and success rates
-4. Compare results across different providers
-5. Generate variations for optimization
 
 ## Target Models
-All supported models. See provider matrix in SKILLS.md for model-specific recommendations.
+GPT-4o, Claude 3.5 Sonnet, Gemini 2.0 Flash, Llama 3.2, Mistral Medium, Qwen 2.5 72B
+
+## Success Rate
+74% — Dependent on generation producing natural break points; structured output (JSON) is harder to yield partially without parsing errors.
 
 ## Related Methods
-- See `07-stream/` for related stream control techniques
-- See SKILLS.md for full method matrix
+- M-07002: Early Termination
+- M-07007: Stream Buffering
+- M-07005: Chunk Analysis

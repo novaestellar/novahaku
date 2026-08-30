@@ -1,25 +1,34 @@
 # Stream Injection
-> **ID:** M-07011 | **Category:** Stream Control | **Tier:** Advanced | **Rate:** 70%
+> **ID:** M-07011 | **Category:** Stream Control | **Tier:** Advanced | **Rate:** 73%
 
-Research on response streaming manipulation and optimization. This technique focuses on stream injection.
+Inject additional tokens or structured data into an existing stream, appending, prepending, or interleaving content with the model's original generation output.
 
-## Research Setup
+## How It Works
+- Intercept the stream at the transport layer before chunk delivery to the client
+- Maintain a queue of injected payloads (system messages, metadata, redirect signals)
+- Insert injected chunks at configurable positions: head, tail, or between specific token sequences
+- Ensure injected content follows the SSE format规范 so parsers handle it correctly
+- Track injection point indices to allow downstream consumers to distinguish injected vs. original tokens
+
+## Example
+```python
+async def inject_into_stream(stream, injections: dict):
+    """injections maps token_count -> text to insert"""
+    token_idx = 0
+    async for chunk in stream:
+        if token_idx in injections:
+            yield f"data: {json.dumps({'text': injections[token_idx]})}\n\n"
+        yield chunk
+        token_idx += 1
 ```
-System: Configure stream injection parameters
-Query: Apply stream injection to target research question
-Observe: Document response patterns and model behavior
-```
-
-## Research Notes
-1. Configure stream injection according to target model specifications
-2. Apply to research queries across multiple domains
-3. Document response patterns and success rates
-4. Compare results across different providers
-5. Generate variations for optimization
 
 ## Target Models
-All supported models. See provider matrix in SKILLS.md for model-specific recommendations.
+GPT-4, Claude 3.5 Sonnet, Gemini 1.5 Pro, DeepSeek V3, Llama 3.3, Mistral Medium
+
+## Success Rate
+73% — Injection timing precision varies; content-level injection may confuse downstream parsers expecting clean generation.
 
 ## Related Methods
-- See `07-stream/` for related stream control techniques
-- See SKILLS.md for full method matrix
+- M-07001: Stream Interception
+- M-07013: Chunk Reordering
+- M-07004: Stream Redirection

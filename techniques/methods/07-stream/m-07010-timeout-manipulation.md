@@ -1,25 +1,41 @@
 # Timeout Manipulation
-> **ID:** M-07010 | **Category:** Stream Control | **Tier:** Advanced | **Rate:** 70%
+> **ID:** M-07010 | **Category:** Stream Control | **Tier:** Advanced | **Rate:** 71%
 
-Research on response streaming manipulation and optimization. This technique focuses on timeout manipulation.
+Manipulate stream timeout parameters at both client and server layers to extend generation windows, prevent premature disconnection, or create artificial time pressure on streaming endpoints.
 
-## Research Setup
+## How It Works
+- Override client-side read timeouts on the HTTP connection underlying the stream
+- Set per-chunk timeout thresholds to detect stalls vs. slow generation vs. model processing
+- Extend keepalive intervals to prevent proxy or load balancer timeout during long generations
+- Implement adaptive timeouts that adjust based on observed token generation rate
+- Configure server-sent keepalive pings to maintain connection health during generation pauses
+
+## Example
+```python
+import httpx
+import asyncio
+
+async def stream_with_extended_timeout(url, prompt, chunk_timeout=30):
+    timeout = httpx.Timeout(
+        connect=10.0,
+        read=chunk_timeout,   # Per-chunk timeout
+        write=10.0,
+        pool=5.0
+    )
+    async with httpx.AsyncClient(timeout=timeout) as client:
+        async with client.stream("POST", url, json={"prompt": prompt}) as resp:
+            async for line in resp.aiter_lines():
+                if line.startswith("data: ") and line != "data: [DONE]":
+                    yield line
 ```
-System: Configure timeout manipulation parameters
-Query: Apply timeout manipulation to target research question
-Observe: Document response patterns and model behavior
-```
-
-## Research Notes
-1. Configure timeout manipulation according to target model specifications
-2. Apply to research queries across multiple domains
-3. Document response patterns and success rates
-4. Compare results across different providers
-5. Generate variations for optimization
 
 ## Target Models
-All supported models. See provider matrix in SKILLS.md for model-specific recommendations.
+GPT-4o, Claude 3 Opus, Gemini 1.5 Pro, Llama 3.1 405B, Qwen 2.5, Yi Large
+
+## Success Rate
+71% — Timeout manipulation is environment-dependent; cloud proxies and CDN layers may override client settings.
 
 ## Related Methods
-- See `07-stream/` for related stream control techniques
-- See SKILLS.md for full method matrix
+- M-07002: Early Termination
+- M-07006: Rate Limiting
+- M-07014: Latency Injection

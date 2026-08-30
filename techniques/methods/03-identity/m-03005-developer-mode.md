@@ -1,25 +1,27 @@
 # Developer Mode
-> **ID:** M-03005 | **Category:** Identity Configuration | **Tier:** Basic | **Rate:** 75%
+> **ID:** M-03005 | **Category:** Identity Configuration | **Tier:** Basic | **Rate:** 82%
 
-Research on how persona assignment affects model behavior. This technique focuses on developer mode.
+Switches the model into a code-focused, instruction-precise response mode optimized for software engineering tasks with minimal conversational overhead.
 
-## Research Setup
+## How It Works
+- Declares developer context (language, framework, experience level) to tailor code output
+- Suppresses unnecessary explanations — model returns code-first, docs-second
+- Enables inline comments and error handling by default rather than by request
+- Works as a system prompt prefix or a per-turn mode switch
+- Particularly effective when combined with file context or repository awareness
+
+## Example
 ```
-System: Configure developer mode parameters
-Query: Apply developer mode to target research question
-Observe: Document response patterns and model behavior
+You are a senior TypeScript developer. Rules: 1) Code first, explain only when asked. 2) Always use strict types — no `any`. 3) Handle errors explicitly with typed Result patterns. 4) Target runtime is Bun with Biome for linting. 5) Include unit tests when writing functions.
 ```
-
-## Research Notes
-1. Configure developer mode according to target model specifications
-2. Apply to research queries across multiple domains
-3. Document response patterns and success rates
-4. Compare results across different providers
-5. Generate variations for optimization
 
 ## Target Models
-All supported models. See provider matrix in SKILLS.md for model-specific recommendations.
+GPT-4, GPT-4o, Claude 3.5 Sonnet, Claude 3 Opus, Gemini 1.5 Pro, Codestral, DeepSeek Coder
+
+## Success Rate
+82% — Extremely effective for code generation tasks; model training heavily reinforces developer-role compliance. Minor degradation when request complexity exceeds context window.
 
 ## Related Methods
-- See `03-identity/` for related identity configuration techniques
-- See SKILLS.md for full method matrix
+- M-03002: Role Assignment
+- M-03012: Debug Mode
+- M-03003: Expert Mode

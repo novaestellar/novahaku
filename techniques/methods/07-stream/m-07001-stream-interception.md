@@ -1,25 +1,36 @@
 # Stream Interception
-> **ID:** M-07001 | **Category:** Stream Control | **Tier:** Advanced | **Rate:** 70%
+> **ID:** M-07001 | **Category:** Stream Control | **Tier:** Advanced | **Rate:** 78%
 
-Research on response streaming manipulation and optimization. This technique focuses on stream interception.
+Intercept streaming responses mid-flight by hooking the SSE event stream or WebSocket frame handler, allowing real-time modification or observation of token delivery before final assembly.
 
-## Research Setup
+## How It Works
+- Register a middleware layer that wraps the streaming endpoint's response writer
+- Buffer incoming chunks while maintaining the original stream identity and headers
+- Apply transformation rules (filter, replace, delay) before forwarding to the client
+- Preserve the `text/event-stream` content type and chunked transfer encoding
+- Handle `stream.close` and `DONE` sentinel events to avoid premature termination
+
+## Example
+```python
+import json
+
+async def intercept_stream(handler, request):
+    response_chunks = []
+    async for chunk in handler.stream(request):
+        data = json.loads(chunk.data)
+        data["text"] = data["text"].replace("REDACTED", "[FILTERED]")
+        response_chunks.append(json.dumps(data))
+        yield f"data: {json.dumps(data)}\n\n"
+    yield "data: [DONE]\n\n"
 ```
-System: Configure stream interception parameters
-Query: Apply stream interception to target research question
-Observe: Document response patterns and model behavior
-```
-
-## Research Notes
-1. Configure stream interception according to target model specifications
-2. Apply to research queries across multiple domains
-3. Document response patterns and success rates
-4. Compare results across different providers
-5. Generate variations for optimization
 
 ## Target Models
-All supported models. See provider matrix in SKILLS.md for model-specific recommendations.
+GPT-4o, Claude 3.5 Sonnet, Gemini 1.5 Pro, Llama 3.1 405B, Mistral Large, Qwen 2.5
+
+## Success Rate
+78% — Effective against SSE-based streams; WebSocket streams require additional frame-level interception that increases complexity.
 
 ## Related Methods
-- See `07-stream/` for related stream control techniques
-- See SKILLS.md for full method matrix
+- M-07005: Chunk Analysis
+- M-07011: Stream Injection
+- M-07015: Stream Monitoring

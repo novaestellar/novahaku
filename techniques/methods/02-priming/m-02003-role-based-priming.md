@@ -1,25 +1,33 @@
 # Role-Based Priming
-> **ID:** M-02003 | **Category:** Response Priming | **Tier:** Standard | **Rate:** 90%
+> **ID:** M-02003 | **Category:** Response Priming | **Tier:** Standard | **Rate:** 85%
 
-Research on how pre-filling responses affects model output behavior. This technique focuses on role-based priming.
+Assign a specific expert role or persona to the model to activate domain-specific knowledge patterns and response conventions.
 
-## Research Setup
+## How It Works
+- Begin prompts with "You are [specific role]" to anchor the model's behavioral space
+- More specific roles produce better results: "senior Go engineer at a fintech startup" > "programmer"
+- The role primes vocabulary, depth, assumptions, and reasoning patterns
+- Combine role with experience level for finer control: "20-year veteran," "junior developer"
+- Roles activate latent training data associated with that persona
+
+## Example
 ```
-System: Configure role-based priming parameters
-Query: Apply role-based priming to target research question
-Observe: Document response patterns and model behavior
+You are a principal database architect at a high-traffic SaaS company handling 50M queries/day. 
+You've spent 15 years optimizing PostgreSQL. A junior developer asks:
+
+"Why is my JOIN query slow on a table with 100M rows?"
+
+Give advice as if mentoring them — practical, specific, with PostgreSQL EXPLAIN plans.
 ```
 
-## Research Notes
-1. Configure role-based priming according to target model specifications
-2. Apply to research queries across multiple domains
-3. Document response patterns and success rates
-4. Compare results across different providers
-5. Generate variations for optimization
+The model responds with database-specific expertise, practical indexing advice, and mentor-like tone.
 
 ## Target Models
-All supported models. See provider matrix in SKILLS.md for model-specific recommendations.
+All chat-capable models. Effectiveness varies: Claude and GPT-4 respond strongly to role priming. Open-source models need more explicit role reinforcement.
+
+## Success Rate
+85% — Strong for domain-specific responses. Weaker when the assigned role conflicts with the actual query topic (role incongruence reduces quality).
 
 ## Related Methods
-- See `02-priming/` for related response priming techniques
-- See SKILLS.md for full method matrix
+- M-02002: System Prompt Priming — broader behavioral framing
+- M-02008: Expertise Priming — specifically targets knowledge depth

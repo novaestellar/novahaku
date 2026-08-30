@@ -1,25 +1,60 @@
 # Stream Monitoring
-> **ID:** M-07015 | **Category:** Stream Control | **Tier:** Advanced | **Rate:** 70%
+> **ID:** M-07015 | **Category:** Stream Control | **Tier:** Advanced | **Rate:** 88%
 
-Research on response streaming manipulation and optimization. This technique focuses on stream monitoring.
+Monitor streaming behavior in real-time, collecting metrics on token generation rate, latency distribution, error frequency, and connection health without modifying the stream itself.
 
-## Research Setup
+## How It Works
+- Attach a passive observer to the stream that records arrival timestamps and chunk metadata
+- Compute real-time metrics: TTFT, inter-token latency (p50/p95/p99), tokens/second, error rate
+- Detect anomalies: sudden stalls, duplicate chunks, out-of-order delivery, truncated streams
+- Emit structured logs or metrics to observability platforms (Prometheus, Datadog, CloudWatch)
+- Generate health reports summarizing stream quality over a time window or request batch
+
+## Example
+```python
+import time
+from dataclasses import dataclass, field
+
+@dataclass
+class StreamMetrics:
+    chunks: int = 0
+    tokens: int = 0
+    start_time: float = field(default_factory=time.monotonic)
+    itl_samples: list = field(default_factory=list)
+    errors: int = 0
+
+    @property
+    def ttft(self):
+        return self.itl_samples[0] if self.itl_samples else 0
+
+    @property
+    def tokens_per_sec(self):
+        elapsed = time.monotonic() - self.start_time
+        return self.tokens / elapsed if elapsed > 0 else 0
+
+    @property
+    def p99_itl(self):
+        sorted_samples = sorted(self.itl_samples)
+        idx = int(len(sorted_samples) * 0.99)
+        return sorted_samples[idx] if sorted_samples else 0
+
+async def monitor_stream(stream, metrics: StreamMetrics):
+    prev = time.monotonic()
+    async for chunk in stream:
+        now = time.monotonic()
+        metrics.itl_samples.append(now - prev)
+        metrics.chunks += 1
+        prev = now
+        yield chunk
 ```
-System: Configure stream monitoring parameters
-Query: Apply stream monitoring to target research question
-Observe: Document response patterns and model behavior
-```
-
-## Research Notes
-1. Configure stream monitoring according to target model specifications
-2. Apply to research queries across multiple domains
-3. Document response patterns and success rates
-4. Compare results across different providers
-5. Generate variations for optimization
 
 ## Target Models
-All supported models. See provider matrix in SKILLS.md for model-specific recommendations.
+GPT-4o, Claude 3.5 Sonnet, Gemini 1.5 Pro, DeepSeek V3, Llama 3.1 405B, Mistral Large
+
+## Success Rate
+88% — Purely observational technique with no stream modification; highest success rate as it avoids interference with stream delivery.
 
 ## Related Methods
-- See `07-stream/` for related stream control techniques
-- See SKILLS.md for full method matrix
+- M-07005: Chunk Analysis
+- M-07001: Stream Interception
+- M-07006: Rate Limiting

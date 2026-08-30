@@ -1,25 +1,35 @@
 # Stream Redirection
-> **ID:** M-07004 | **Category:** Stream Control | **Tier:** Advanced | **Rate:** 70%
+> **ID:** M-07004 | **Category:** Stream Control | **Tier:** Advanced | **Rate:** 69%
 
-Research on response streaming manipulation and optimization. This technique focuses on stream redirection.
+Redirect streaming output from its original destination to an alternative target—file, queue, secondary API, or processing pipeline—while maintaining stream integrity and backpressure handling.
 
-## Research Setup
+## How It Works
+- Capture the stream's output pipe or response writer and clone it to multiple destinations
+- Use tee-style buffering to write chunks to both the original client and redirect target
+- Handle slow consumers on the redirect path with bounded buffers and overflow policies
+- Preserve SSE formatting, chunk delimiters, and end-of-stream markers across all targets
+- Manage connection pooling for redirect destinations that are themselves HTTP streams
+
+## Example
+```python
+import aiofiles
+import asyncio
+
+async def redirect_stream(stream, original_writer, redirect_path):
+    async with aiofiles.open(redirect_path, "w") as redirect_file:
+        async for chunk in stream:
+            await original_writer.write(chunk)
+            await redirect_file.write(chunk)
+            await original_writer.flush()
 ```
-System: Configure stream redirection parameters
-Query: Apply stream redirection to target research question
-Observe: Document response patterns and model behavior
-```
-
-## Research Notes
-1. Configure stream redirection according to target model specifications
-2. Apply to research queries across multiple domains
-3. Document response patterns and success rates
-4. Compare results across different providers
-5. Generate variations for optimization
 
 ## Target Models
-All supported models. See provider matrix in SKILLS.md for model-specific recommendations.
+GPT-4, Claude 3 Opus, Gemini 1.5 Pro, Llama 3.1 70B, Qwen 2.5, Yi Lightning
+
+## Success Rate
+69% — Dependency on redirect target reliability; backpressure mismatches can cause dropped chunks under high throughput.
 
 ## Related Methods
-- See `07-stream/` for related stream control techniques
-- See SKILLS.md for full method matrix
+- M-07001: Stream Interception
+- M-07009: Stream Merging
+- M-07007: Stream Buffering

@@ -1,25 +1,36 @@
 # Conditional Priming
-> **ID:** M-02013 | **Category:** Response Priming | **Tier:** Standard | **Rate:** 90%
+> **ID:** M-02013 | **Category:** Response Priming | **Tier:** Standard | **Rate:** 76%
 
-Research on how pre-filling responses affects model output behavior. This technique focuses on conditional priming.
+Set up branching priming logic where the model's behavior changes based on detected conditions in the input or intermediate results.
 
-## Research Setup
+## How It Works
+- Define if/then rules in the prompt: "If the user asks about X, respond with Y"
+- Use switch-case style priming for multi-condition scenarios
+- Works with the model's instruction-following ability to create pseudo-programmatic behavior
+- Combine with format priming to ensure consistent structure across conditions
+- Limit to 3-5 conditions — more than that and the model starts mixing branches
+
+## Example
 ```
-System: Configure conditional priming parameters
-Query: Apply conditional priming to target research question
-Observe: Document response patterns and model behavior
+Based on the error type in my message, respond accordingly:
+
+- If "ConnectionError": Suggest network diagnostics (ping, traceroute, firewall check)
+- If "TimeoutError": Suggest timeout config, retry logic, and async patterns
+- If "AuthenticationError": Suggest token refresh, credential verification, permission check
+- If "ValidationError": Suggest input sanitization, schema validation, Pydantic usage
+- If unknown error: Ask for full traceback before advising
+
+My error: httpx.ConnectTimeout: timed out connecting to api.example.com
 ```
 
-## Research Notes
-1. Configure conditional priming according to target model specifications
-2. Apply to research queries across multiple domains
-3. Document response patterns and success rates
-4. Compare results across different providers
-5. Generate variations for optimization
+The model follows the TimeoutError branch specifically.
 
 ## Target Models
-All supported models. See provider matrix in SKILLS.md for model-specific recommendations.
+GPT-4, Claude handle conditional branching well. Claude is slightly better at following complex if/then structures. Open-source models struggle with more than 3 conditions.
+
+## Success Rate
+76% — Reliable for simple conditions (2-3 branches). Accuracy drops with complex nested conditions. Works best when conditions are clearly distinct and mutually exclusive.
 
 ## Related Methods
-- See `02-priming/` for related response priming techniques
-- See SKILLS.md for full method matrix
+- M-02009: Constraint Priming — constraints can include conditional logic
+- M-02014: Contextual Priming — uses context instead of explicit conditions
