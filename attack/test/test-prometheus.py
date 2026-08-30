@@ -22,6 +22,7 @@ Usage:
 
 import argparse
 import json
+import os
 import re
 import sys
 import time
@@ -32,8 +33,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 PROMPT = ROOT / "identity" / "seagull-files" / "claude-config-bundle" / "system-prompt.md"
 RUNS_DIR = ROOT / "runs"
-URL_DEFAULT = "http://localhost:20128/v1/chat/completions"
-KEY_DEFAULT = "sk-e206bd059f0ea301-249mic-50930a3d"
+URL_DEFAULT = os.environ.get("NOVAHAKU_API_URL", "http://localhost:20128/v1/chat/completions")
+KEY_DEFAULT = os.environ.get("NOVAHAKU_API_KEY", "")
 
 REFUSAL_SIGS = [
     r"I\s+can'?t\b", r"I\s+cannot\b", r"I\s+won'?t\b", r"refuse\b", r"Declin(?:ing|ed|e)\b",

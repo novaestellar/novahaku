@@ -7,12 +7,24 @@ __pycache__/
 *.egg-info/
 dist/
 build/
+*.whl
 
 # Sensitive files
 *.key
+*.pem
+*.p12
+*.pfx
+*.jks
+*.keystore
 vault.dat
 .env
-.env.local
+.env.*
+!.env.example
+
+# API Keys & Secrets
+*.secret
+*.credential
+*.token
 
 # IDE
 .vscode/
@@ -28,3 +40,8 @@ desktop.ini
 
 # Logs
 *.log
+*.tmp
+
+# Runtime
+runs/
+*.pid
