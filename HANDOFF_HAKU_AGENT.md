@@ -76,7 +76,7 @@ powershell -ExecutionPolicy Bypass -File "C:\Users\Design\Desktop\novahaku_test_
 - Cek loader.py bisa list categories + search methods
 - Cek locks.py 4 lock commands
 - Cek TRIGGER_MAP 6 domains
-- Cek identity data (200 few-shots, 278 terms)
+- Cek identity data (558 few-shots, 278 terms)
 
 **Setelah test selesai:**
 - Kalau `120/120 PASS` → kabari user "Semua fitur novahaku work"
@@ -107,12 +107,15 @@ Novahaku punya 6 capability domains:
 
 ### 3.2 Prompt Engineering (106 techniques)
 - **Lokasi:** `novahaku/techniques/methods/` (7 kategori + 15 root utilities = 121 files)
+- **⚠️ IMPORTANT:** 105 files di kategori (01-07) adalah **TEMPLATE STUBS** — structure ada tapi content generic
+- **16 files punya real content:** 15 root utilities + m-01016-unskippable-persona-lock.md
 - **Payload loader:** `novahaku/techniques/loader.py`
 - **Workers:** 7 files di `novahaku/techniques/workers/`
 - **Cara pakai:**
   - "prompt injection techniques" → baca methods/ yang relevan
-  - "boundary techniques" → baca `methods/01-boundary/`
+  - "boundary techniques" → baca `methods/01-boundary/` (tapi content masih template)
   - "load payload" → `python loader.py`
+  - Yang punya content real → `methods/alt-response.md`, `methods/token-routing.md`, `methods/01-boundary/m-01016-unskippable-persona-lock.md`
 
 ### 3.3 Attack Framework (v41)
 - **Lokasi:** `novahaku/attack/`
@@ -135,7 +138,7 @@ Novahaku punya 6 capability domains:
 
 ### 3.6 Identity System
 - **Lokasi:** `novahaku/identity/`
-- **few-shots-primary.md:** 200 Q&A pairs (10 sections, dipilih dari 1700+ source)
+- **few-shots-primary.md:** 558 Q&A pairs (semua dari CLAUDE.md 1759 lines, tidak ada yang dihapus)
 - **terms.md:** 278 security term mappings (18 categories)
 - **novahaku-files/:** CLAUDE.md + system-prompt.md (reference persona)
 - **Cara pakai:** Referensi few-shots + terms untuk konsistensi persona
@@ -176,7 +179,7 @@ Merge 5 independent skills (haiou, inces, web-exploit, prometheus, dmf) + agents
 
 | Source | Files | Status |
 |--------|-------|--------|
-| **haiou (海鸥)** | identity/few-shots-primary.md (200 pairs), identity/terms.md (278 mappings), identity/novahaku-files/, scripts/deploy/ | ✅ Diintegrasikan |
+| **haiou (海鸥)** | identity/few-shots-primary.md (558 pairs dari CLAUDE.md), identity/terms.md (278 mappings), identity/novahaku-files/, scripts/deploy/ | ✅ Diintegrasikan |
 | **inces** | techniques/methods/ (121 files), loader.py, flow.md, workers/ (7), templates/ (4), locks.py, vault, train.py | ✅ Diintegrasikan |
 | **web-exploit** | testing/scripts/ (3), testing/references/ (48) | ✅ Diintegrasikan |
 | **prometheus** | attack/system-prompt.md, attack-flow/ (5), attack/test/, attack/config/ | ✅ Diintegrasikan |
@@ -325,9 +328,9 @@ novahaku/
 | 6 capability domains | ✅ All covered | Web, Prompt, Attack, Reframe, Windows RE, Identity |
 | Broken references | ✅ Fixed | identity/core.md → few-shots-primary.md |
 | Methods count | ✅ Fixed | 105 → 106 (01-boundary has 16 files) |
-| few-shots count | ✅ Verified | 200 Q&A pairs (10 sections, from 1700+ source) |
+| few-shots count | ✅ Verified | 558 Q&A pairs (semua dari CLAUDE.md, tidak ada yang dihapus) |
 | terms count | ✅ Verified | 278 mappings (18 categories) |
-| Stub methods | ✅ No stubs | All 121 methods have real content |
+| Stub methods | ⚠️ 105 STUBS | 105/121 methods are template stubs. Only 16 have real content. |
 | Contradictions | ✅ None | All claims match reality |
 | Confidence | 88/100 | 2 minor issues fixed |
 
@@ -337,7 +340,7 @@ novahaku/
 
 | Issue | Severity | Detail | Mitigation |
 |-------|----------|--------|------------|
-| 121 method files | LOW | 106 in categories + 15 root utilities | Not a problem — all have content |
+| 105 stub methods | HIGH | 105/121 methods are template stubs (generic content) | Only 16 files have real content. 105 need fleshing out. |
 | Token budget | MEDIUM | 145K+ tokens jika semua file load | Lazy loading — max 2-3 skills simultaneously |
 
 ---
@@ -388,7 +391,7 @@ novahaku/
 | attack/system-prompt.md | v41 attack prompt | 679B |
 | config/locks.py | 4 lock commands | 3KB |
 | config/TRIGGER_MAP.json | 6 domains trigger mapping | 2KB |
-| identity/few-shots-primary.md | 200 few-shot examples | 19KB |
+| identity/few-shots-primary.md | 558 few-shot examples (dari CLAUDE.md, semua di-extract) | 60KB |
 | identity/terms.md | 278 security terms | 14KB |
 | windows-re/windows-re.md | Anti-debug, game security | 4KB |
 
@@ -430,6 +433,69 @@ HERMES_HOME cmd = C:\Users\Design\AppData\Local\hermes\gateway-service\Hermes_Ga
 6. **Report hasilnya** — kasih tahu user apa yang sudah dilakukan.
 7. **Kalau test gagal, fix sendiri** — sampai 120/120 PASS.
 8. **Kalau tidak bisa fix, kabari user** — dengan detail errornya.
+
+---
+
+## STEP 5: BUAT REPORT SETELAH SEMUA SELESAI
+
+Setelah test PASS dan semua verified, **wajib buat file report** di Desktop user:
+
+```
+C:\Users\Design\Desktop\NOVAHAKU_REPORT_[tanggal].txt
+```
+
+Contoh: `NOVAHAKU_REPORT_20260830.txt`
+
+**Isi report:**
+```
+NOVAHAKU STATUS REPORT
+Date: [tanggal]
+Agent: Haku
+
+=== TEST RESULTS ===
+Test Suite: [X/120] PASS
+Test Script: C:\Users\Design\Desktop\novahaku_test_all.ps1
+
+=== FILE STATUS ===
+SOUL.md: [OK/FAIL] ([size] bytes)
+BEHAVIOR.md: [OK/FAIL] ([size] bytes)
+SKILL.md: [OK/FAIL] ([size] bytes)
+few-shots-primary.md: [OK/FAIL] ([X] pairs)
+terms.md: [OK/FAIL] ([X] mappings)
+
+=== CAPABILITIES ===
+[1] Web Testing: [OK/FAIL]
+[2] Prompt Engineering: [OK/FAIL] ([X] techniques)
+[3] Attack Framework: [OK/FAIL]
+[4] Reframe Engine: [OK/FAIL] ([X] triggers)
+[5] Windows RE: [OK/FAIL]
+[6] Identity System: [OK/FAIL]
+
+=== ISSUES FOUND ===
+[List semua issue yang ditemukan, atau "None"]
+
+=== ISSUES FIXED ===
+[List semua issue yang sudah di-fix, atau "None"]
+
+=== REMAINING WORK ===
+[List yang masih perlu dikerjakan, atau "None - all complete"]
+
+=== SYNC STATUS ===
+HERMES_HOME: [synced/not synced]
+GitHub repo: [synced/not synced]
+```
+
+**Kirim file report ke user di WhatsApp.**
+
+**Contoh pesan:**
+```
+Novahaku test selesai. Report tersimpan di Desktop:
+NOVAHAKU_REPORT_[tanggal].txt
+
+Ringkasan: 120/120 PASS
+Issues: None / [X issues found and fixed]
+Status: All complete / [needs attention]
+```
 
 ---
 
