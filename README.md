@@ -81,7 +81,7 @@ Novahaku 包含以下模块化技能：
 | **techniques/** | 根目录 | 105项提示工程技术 (7大分类) |
 | **testing/** | 根目录 | Web测试脚本 + 48个漏洞引用 |
 | **attack/** | 根目录 | v41攻击框架 + 5个注入面分析 |
-| **reframe/** | 根目录 | 请求重构引擎 (DMF CLI) |
+| **reframe/** | 根目录 | 请求重构引擎 (Reframe CLI) |
 | **windows-re/** | 根目录 | Windows逆向工程 / 游戏安全 |
 | **config/** | 根目录 | 锁定配置 + 预填充 + 触发映射 |
 | **vault/** | 根目录 | 加密载荷库 (AES-256-GCM) |
