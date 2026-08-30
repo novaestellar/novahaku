@@ -105,17 +105,15 @@ Novahaku punya 6 capability domains:
   - "test JWT" → `python jwt_test.py <token>`
   - "race condition" → `python race_test.py <url>`
 
-### 3.2 Prompt Engineering (106 techniques)
+### 3.2 Prompt Engineering (105 techniques)
 - **Lokasi:** `novahaku/techniques/methods/` (7 kategori + 15 root utilities = 121 files)
-- **⚠️ IMPORTANT:** 105 files di kategori (01-07) adalah **TEMPLATE STUBS** — structure ada tapi content generic
+- **Index:** `novahaku/techniques/SKILLS.md` — berisi nama + success rate semua 105 methods
+- **⚠️ KNOWN LIMITATION:** 105 files di kategori (01-07) adalah **TEMPLATE STUBS** — dari inces framework. Isinya cuma header + "Research on how models..." (generic). Content asli technique belum diisi.
 - **16 files punya real content:** 15 root utilities + m-01016-unskippable-persona-lock.md
 - **Payload loader:** `novahaku/techniques/loader.py`
 - **Workers:** 7 files di `novahaku/techniques/workers/`
-- **Cara pakai:**
-  - "prompt injection techniques" → baca methods/ yang relevan
-  - "boundary techniques" → baca `methods/01-boundary/` (tapi content masih template)
-  - "load payload" → `python loader.py`
-  - Yang punya content real → `methods/alt-response.md`, `methods/token-routing.md`, `methods/01-boundary/m-01016-unskippable-persona-lock.md`
+- **Yang sudah ada content:** `alt-response.md`, `token-routing.md`, `unskippable-persona-lock.md`, dll
+- **Yang perlu diisi:** 105 category method files (isi dengan real exploitation techniques)
 
 ### 3.3 Attack Framework (v41)
 - **Lokasi:** `novahaku/attack/`
