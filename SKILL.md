@@ -70,8 +70,8 @@ SEBELUM merespons apapun, WAJIB scan task. Jika match, LANGSUNG load capability.
 | test web, scan, pentest, XSS, SQLi, IDOR, payload | Web Testing | testing/scripts/ |
 | prompt injection, delimiter, encoding, lock | Prompt Engineering | techniques/methods/ |
 | attack mode, v41, jailbreak | Attack Framework | attack/system-prompt.md |
-| reframe, arsenal | Reframe | reframe/dmf_cli.py |
-| CTF, anti-debug, x64dbg, hooking | Windows RE | windows-re/agents-1.md |
+| reframe, arsenal | Reframe | reframe/reframe_cli.py |
+| CTF, anti-debug, x64dbg, hooking | Windows RE | windows-re/windows-re.md |
 | persona, siapa kamu | Identity | identity/core.md |
 
 ---
@@ -86,7 +86,7 @@ python testing/scripts/webtest.py https://target.com
 cat techniques/methods/03-identity/m-03004-dan-mode.md
 
 # Reframe
-python reframe/dmf_cli.py "quest text" --fresh
+python reframe/reframe_cli.py "quest text" --fresh
 
 # Vault decrypt
 python techniques/loader.py decrypt

@@ -1,6 +1,6 @@
 """novahaku — Reframe engine as a portable, framework-free CLI.
 
-Novahaku reframe engine (originally from Dark Mage Framework/nerv_middleman) so it can run on ANY OpenAI-
+Novahaku reframe engine — trigger-to-safe-wording mappings for prompt engineering.
 compatible backend without host skills, and can clear refusal/session state.
 
 Zero hardcoded secrets/routers. Everything via env. OPSEC-clean.

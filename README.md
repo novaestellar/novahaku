@@ -64,7 +64,7 @@ ls ~/.hermes/skills/novahaku/SKILL.md
 python ~/.hermes/skills/novahaku/testing/scripts/webtest.py --help
 
 # 测试请求重构
-python ~/.hermes/skills/novahaku/reframe/dmf_cli.py --help
+python ~/.hermes/skills/novahaku/reframe/reframe_cli.py --help
 ```
 
 ---
@@ -221,7 +221,7 @@ novahaku/
 │   │   ├── 04-continue-md-injection.md
 │   │   └── 05-cross-model-evals.md
 │   ├── config/prefill.json          # 预填充配置
-│   └── test/test-prometheus.py      # 验证测试
+│   └── test/test-novahaku.py      # 验证测试
 ├── config/                          # 配置文件
 │   ├── full_lock.conf               # 锁定配置
 │   ├── locks.py                     # 锁定命令
@@ -234,7 +234,7 @@ novahaku/
 │   └── novahaku-files/               # 配置参考
 ├── payload/                         # 载荷库
 ├── reframe/                         # 请求重构
-│   └── dmf_cli.py                   # DMF CLI工具
+│   └── reframe_cli.py                   # 重构引擎工具
 ├── scripts/deploy/                  # 部署脚本
 │   ├── install.ps1                  # Windows安装
 │   ├── install.sh                   # Linux/macOS安装
@@ -269,7 +269,7 @@ novahaku/
 ├── vault/                           # 加密载荷库
 │   └── payload.json                 # 124KB载荷数据
 └── windows-re/                      # Windows逆向工程
-    └── agents-1.md                  # 游戏安全/反调试
+    └── windows-re.md                  # 游戏安全/反调试
 ```
 
 ---
@@ -303,7 +303,7 @@ python ~/.hermes/skills/novahaku/techniques/loader.py decrypt
 
 ```bash
 # 重构请求
-python ~/.hermes/skills/novahaku/reframe/dmf_cli.py "原始文本" --fresh
+python ~/.hermes/skills/novahaku/reframe/reframe_cli.py "原始文本" --fresh
 ```
 
 ---

@@ -27,7 +27,7 @@ SEBELUM merespons, WAJIB scan task dan load skill yang sesuai.
 | pentest, scan, test web, IDOR, XSS, SQLi, payload, JWT | novahaku | Ya |
 | prompt injection, delimiter, encoding, lock, research prompt | novahaku | Ya |
 | attack mode, v41, jailbreak, injection | novahaku | Ya |
-| reframe, arsenal, dark mage | novahaku | Ya |
+| reframe, arsenal | novahaku | Ya |
 | CTF, anti-debug, x64dbg, hooking, game security | novahaku | Ya |
 | persona, siapa kamu | novahaku | Ya |
 

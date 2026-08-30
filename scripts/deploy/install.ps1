@@ -78,5 +78,5 @@ Write-Host "  # Prompt techniques" -ForegroundColor Gray
 Write-Host "  cat $TARGET_DIR\techniques\methods\01-boundary\m-01003-delimiter-injection.md" -ForegroundColor White
 Write-Host ""
 Write-Host "  # Reframe" -ForegroundColor Gray
-Write-Host "  python $TARGET_DIR\reframe\dmf_cli.py `"text`" --fresh" -ForegroundColor White
+Write-Host "  python $TARGET_DIR\reframe\reframe_cli.py `"text`" --fresh" -ForegroundColor White
 Write-Host ""
