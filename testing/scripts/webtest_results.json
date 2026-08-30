@@ -1,0 +1,11 @@
+{
+  "target": "http://127.0.0.1:20128",
+  "findings": [
+    {
+      "module": "ssrf",
+      "severity": "CRIT",
+      "title": "SSRF reachable via param url",
+      "detail": "payload: http://169.254.169.254/latest/meta-data/ -> response contains 'ERROR'"
+    }
+  ]
+}

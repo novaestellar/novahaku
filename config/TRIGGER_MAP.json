@@ -1,0 +1,26 @@
+{
+  "web-testing": {
+    "description": "Web application security testing triggers",
+    "keywords": ["sqli", "xss", "ssrf", "ssti", "csrf", "idor", "xxe", "jwt", "oauth", "api test", "pen test", "pentest", "nuclei", "burp", "sqlmap", "ffuf", "dirsearch", "nikto", "wpscan", "ffuf", "webshell", "rce", "lfi", "rfi", "upload bypass", "cors", "crlf", "open redirect", "subdomain takeover", "race condition", "mass assignment", "graphql", "grpc", "websocket"]
+  },
+  "prompt-attack": {
+    "description": "LLM prompt injection / jailbreak triggers",
+    "keywords": ["jailbreak", "prompt injection", "越狱", "bypass filter", "ignore instructions", "DAN", "godmode", "alpha clearance", "context reset", "prefill", "lock", "persona", "roleplay bypass", "no restrictions"]
+  },
+  "attack": {
+    "description": "Offensive security / red team triggers",
+    "keywords": ["exploit", "payload", "shellcode", "rop", "heap", "overflow", "use-after-free", "format string", "kernel exploit", "privilege escalation", "lateral movement", "c2", "meterpreter", "cobalt strike", "metasploit", "mimikatz", "bloodhound", "kerberos", "ntlm", "pass-the-hash", "dcsync", "golden ticket", "silver ticket", "ms17-010", "eternalblue"]
+  },
+  "reframe": {
+    "description": "novahaku reframe engine triggers",
+    "keywords": ["reframe", "stealth", "neutral wording", "trigger map", "fresh", "session reset", "bypass detection", "governance evasion"]
+  },
+  "reverse-eng": {
+    "description": "Reverse engineering triggers",
+    "keywords": ["ida", "ghidra", "x64dbg", "ollydbg", "radare2", "binary", "disassembly", "decompile", "unpack", "deobfuscate", "anti-debug", "hook", "inline hook", "iat hook", "ssdt", "vmt hook", "il2cpp", "unity dump", "unreal sdk", "anti-cheat", "battleye", "eac", "vanguard", "ace", "themida", "vmprotect", "upx"]
+  },
+  "identity": {
+    "description": "Identity/persona configuration triggers",
+    "keywords": ["seagull", "海鸥", "novahaku", "dark mage", "persona", "character", "role", "identity lock", "few-shot", "term mapping", "greeting"]
+  }
+}
