@@ -26,7 +26,7 @@ metadata:
 - 48 payload references (HackTricks + PayloadsAllTheThings)
 - Scripts: testing/scripts/webtest.py, race_test.py, jwt_test.py
 
-### 2. Prompt Engineering (105 Techniques)
+### 2. Prompt Engineering (106 Techniques)
 - 7 categories: Boundary, Priming, Identity, Encoding, Multi-Provider, Iterative, Stream
 - 4 lock commands: basic (85%), double (92%), godmode (78%), triple (95%)
 - 7-phase methodology: Recon → Preparation → Execution → Analysis → Iteration → Documentation → Synthesis
@@ -72,7 +72,7 @@ SEBELUM merespons apapun, WAJIB scan task. Jika match, LANGSUNG load capability.
 | attack mode, v41, jailbreak | Attack Framework | attack/system-prompt.md |
 | reframe, arsenal | Reframe | reframe/reframe_cli.py |
 | CTF, anti-debug, x64dbg, hooking | Windows RE | windows-re/windows-re.md |
-| persona, siapa kamu | Identity | identity/core.md |
+| persona, siapa kamu | Identity | identity/few-shots-primary.md |
 
 ---
 
