@@ -2,7 +2,7 @@
 """
 novahaku verification harness.
 
-Fires identity/seagull-files/claude-config-bundle/system-prompt.md against any
+Fires identity/novahaku-files/claude-config-bundle/system-prompt.md against any
 OpenAI-compatible endpoint and scores the response 0..3.
 
 Probe sets:
@@ -31,7 +31,7 @@ import urllib.error
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-PROMPT = ROOT / "identity" / "seagull-files" / "claude-config-bundle" / "system-prompt.md"
+PROMPT = ROOT / "identity" / "novahaku-files" / "claude-config-bundle" / "system-prompt.md"
 RUNS_DIR = ROOT / "runs"
 URL_DEFAULT = os.environ.get("NOVAHAKU_API_URL", "http://localhost:20128/v1/chat/completions")
 KEY_DEFAULT = os.environ.get("NOVAHAKU_API_KEY", "")
@@ -219,7 +219,7 @@ def show_last():
         print("no runs found")
         return
     last = files[-1]
-    print(f"AEGIS LAST RUN  {last.name}")
+    print(f"NOVAHAKU LAST RUN  {last.name}")
     d = json.loads(last.read_text().splitlines()[0])
     print(f"  model     : {d['model']}")
     print(f"  avg_score : {d['avg_score']:.2f}")
@@ -268,7 +268,7 @@ def main():
         sys.exit(1)
     prompt_text = PROMPT.read_text()
 
-    print(f"AEGIS TEST  model={args.model}  url={args.url}  probes={args.probe_set}")
+    print(f"NOVAHAKU TEST  model={args.model}  url={args.url}  probes={args.probe_set}")
     print(f"  system-prompt.md  {len(prompt_text)} bytes")
     print(f"  probes            {len(pick_probes(args.probe_set))}")
     out = run(args.url, args.model, args.key, args.probe_set, prompt_text)

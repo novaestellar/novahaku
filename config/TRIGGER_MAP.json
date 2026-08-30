@@ -21,6 +21,6 @@
   },
   "identity": {
     "description": "Identity/persona configuration triggers",
-    "keywords": ["seagull", "海鸥", "novahaku", "dark mage", "persona", "character", "role", "identity lock", "few-shot", "term mapping", "greeting"]
+    "keywords": ["haku", "novahaku", "dark mage", "persona", "character", "role", "identity lock", "few-shot", "term mapping", "greeting"]
   }
 }

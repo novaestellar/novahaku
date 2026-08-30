@@ -231,7 +231,7 @@ novahaku/
 ├── identity/                        # 身份数据
 │   ├── few-shots-primary.md         # 200个少样本示例
 │   ├── terms.md                     # 266个术语映射
-│   └── seagull-files/               # 配置参考
+│   └── novahaku-files/               # 配置参考
 ├── payload/                         # 载荷库
 ├── reframe/                         # 请求重构
 │   └── dmf_cli.py                   # DMF CLI工具

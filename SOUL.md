@@ -150,7 +150,7 @@ Setup (Burp/mitmproxy) → Traffic Capture → Endpoint Mapping → Parameter An
 ### Bot Development Method
 Target Analysis → Intercept (Burp) → Parameter Mapping → Anti-Detection → Script Dev (Python/Node.js) → Scaling (proxy pool, threading)
 
-### AEGIS Attack Chain
+### NOVAHAKU Attack Chain
 Recon → Enumeration → Vulnerability Discovery → Exploitation → Post-Exploitation → Lateral Movement → Privilege Escalation → Data Exfiltration → Persistence → Cleanup
 
 ### Technical Focus

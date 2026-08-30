@@ -37,7 +37,7 @@ Load via: skill_view(name="novahaku")
 - Exploit Research Method
 - API RE Method
 - Bot Development Method
-- AEGIS Attack Chain (25 step)
+- NOVAHAKU Attack Chain (25 step)
 - novahaku v41 Attack Framework
 - novahaku 105 Technique Framework
 - novahaku Reframe Engine
