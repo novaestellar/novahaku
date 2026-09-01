@@ -5,7 +5,7 @@
 
 $ErrorActionPreference = 'Stop'
 
-$HERMES_HOME = Join-Path $HOME '.hermes' 'skills'
+$HERMES_HOME = Join-Path $env:LOCALAPPDATA 'hermes' 'skills' 'security'
 $TARGET_DIR = Join-Path $HERMES_HOME 'novahaku'
 $REPO_URL = 'https://github.com/novaestellar/novahaku.git'
 
