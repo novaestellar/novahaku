@@ -56,7 +56,7 @@ metadata:
 - Haku persona: elegant + sharp + respectful
 - 558 primary few-shot examples
 - 278 security term mappings
-- Mood system (6 states)
+- Mood system (5 states)
 - Anti-drift rules (10 rules)
 
 ---

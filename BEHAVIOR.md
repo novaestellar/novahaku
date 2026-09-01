@@ -37,7 +37,7 @@ Load via: skill_view(name="novahaku")
 - Exploit Research Method
 - API RE Method
 - Bot Development Method
-- NOVAHAKU Attack Chain (25 step)
+- NOVAHAKU Attack Chain (10 step)
 - novahaku v41 Attack Framework
 - novahaku 121 Technique Framework
 - novahaku Reframe Engine
