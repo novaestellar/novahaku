@@ -497,6 +497,14 @@ Status: All complete / [needs attention]
 
 ---
 
+## ⚠️ PENTING: JANGAN PERNAH COPY KE hermes-cs
+
+`C:\Users\Design\AppData\Local\hermes\hermes-cs\` adalah legacy path yang TIDAK di-scan Hermes.
+Semua file harus di `C:\Users\Design\AppData\Local\hermes\skills\security\novahaku\`.
+Kalau kamu copy ke hermes-cs, file itu TIDAK AKAN DI-LOAD oleh Hermes.
+
+---
+
 ## SYNC RULE
 
 Setiap kali kamu mengubah file di skills/security/novahaku/, kamu harus:
