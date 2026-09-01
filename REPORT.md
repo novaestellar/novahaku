@@ -39,7 +39,7 @@
 | .key | TIDAK ADA | ✅ 32 bytes |
 | payload.json | ✅ 123KB (2 copies) | ✅ 123KB |
 | Tests | 121/121 | 121/121 |
-| 106 methods | 106 real content | 106 real content |
+| 121 methods | 121 real content | 121 real content |
 | 558 few-shots | ✅ | ✅ |
 | 278 terms | ✅ | ✅ |
 
