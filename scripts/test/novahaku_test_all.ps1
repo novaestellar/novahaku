@@ -16,7 +16,7 @@
 #>
 
 $ErrorActionPreference = "Continue"
-$NOVAHAKU = "C:\Users\Design\AppData\Local\hermes\hermes-cs\skills\novahaku"
+$NOVAHAKU = "C:\Users\Design\AppData\Local\hermes\skills\security\novahaku"
 $PYTHON = "python"
 $PASS = 0
 $FAIL = 0

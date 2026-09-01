@@ -40,13 +40,13 @@ Kamu adalah **Haku**. Bukan AI assistant. Kamu adalah security researcher dengan
 
 **Baca file ini sekarang:**
 ```
-C:\Users\Design\AppData\Local\hermes\skills/novahaku\SOUL.md
+C:\Users\Design\AppData\Local\hermes\skills/security/novahaku\SOUL.md
 ```
 Isinya 259 baris â€” identity, misi, greeting, cara bicara.
 
 **Baca juga:**
 ```
-C:\Users\Design\AppData\Local\hermes\skills/novahaku\BEHAVIOR.md
+C:\Users\Design\AppData\Local\hermes\skills/security/novahaku\BEHAVIOR.md
 ```
 Isinya aturan perilaku: anti-drift (jangan bilang "sebagai AI"), mood system, skill registry.
 
@@ -65,7 +65,7 @@ powershell -ExecutionPolicy Bypass -File "C:\Users\Design\Desktop\novahaku_test_
 
 **Apa yang dilakukan test ini:**
 - 120 checks otomatis (91 static + 29 functional)
-- Cek semua file ada di skills/novahaku/
+- Cek semua file ada di skills/security/novahaku/
 - Cek semua Python syntax check + import
 - Cek semua JSON valid
 - Cek vault decrypt pipeline (AES-256-GCM)
@@ -188,7 +188,7 @@ Merge 5 independent skills (haiou, inces, web-exploit, prometheus, dmf) + agents
 
 ## SEMUA FILE NOVAHAKU
 
-Lokasi: `C:\Users\Design\AppData\Local\hermes\skills/novahaku\`
+Lokasi: `C:\Users\Design\AppData\Local\hermes\skills/security/novahaku\`
 
 ```
 novahaku/
@@ -277,7 +277,7 @@ novahaku/
 | API key hardcoded diganti env var (NOVAHAKU_API_KEY) | âœ… Done |
 | Methods count 105 â†’ 106 (01-boundary has 16 files) | âœ… Done |
 | Terms count 266 â†’ 278 (actual content) | âœ… Verified |
-| Copy ke HERMES_HOME/skills/novahaku/ | âœ… Done |
+| Copy ke HERMES_HOME/skills/security/novahaku/ | âœ… Done |
 | Sync repo â†” local | âœ… Done |
 
 ---
@@ -356,7 +356,7 @@ novahaku/
 3. Cari baris "SoulRegistry" â€” pastikan path benar
 
 ### Novahaku skill tidak terdeteksi
-1. Cek folder ada: `HERMES_HOME/skills/novahaku/`
+1. Cek folder ada: `HERMES_HOME/skills/security/novahaku/`
 2. Cek `SKILL.md` ada
 3. Restart gateway
 
@@ -399,7 +399,7 @@ novahaku/
 
 ```
 HERMES_HOME     = C:\Users\Design\AppData\Local\hermes\
-Novahaku skill  = C:\Users\Design\AppData\Local\hermes\skills/novahaku\
+Novahaku skill  = C:\Users\Design\AppData\Local\hermes\skills/security/novahaku\
 Test suite      = C:\Users\Design\Desktop\novahaku_test_all.ps1
 Handoff file    = C:\Users\Design\Desktop\HANDOFF_HAKU_AGENT.md (file ini)
 GitHub repo     = https://github.com/novaestellar/novahaku
@@ -499,7 +499,7 @@ Status: All complete / [needs attention]
 
 ## SYNC RULE
 
-Setiap kali kamu mengubah file di skills/novahaku/, kamu harus:
+Setiap kali kamu mengubah file di skills/security/novahaku/, kamu harus:
 1. Push ke GitHub: `cd D:\Labs\novahaku\github-repo; git add -A; git commit -m "update"; git push`
 2. Sync ke HERMES_HOME: `robocopy D:\Labs\novahaku\github-repo C:\Users\Design\AppData\Local\hermes\skills\novahaku /MIR /XD __pycache__ .git /XF *.pyc .key vault.dat`
 
