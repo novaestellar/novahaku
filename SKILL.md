@@ -37,7 +37,7 @@ metadata:
 - v41文言攻击提示（古典中文）
 - 5个注入面分析
 - 跨模型评估矩阵（8/8已验证）
-- 验证工具（test.py）
+- 验证工具(test/test-novahaku.py)
 - Hermes预填充集成
 
 ### 4. 重构引擎

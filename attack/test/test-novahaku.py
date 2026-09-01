@@ -30,7 +30,7 @@ import urllib.request
 import urllib.error
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent  # skill root
 PROMPT = ROOT / "identity" / "novahaku-files" / "claude-config-bundle" / "system-prompt.md"
 RUNS_DIR = ROOT / "runs"
 URL_DEFAULT = os.environ.get("NOVAHAKU_API_URL", "http://localhost:20128/v1/chat/completions")
