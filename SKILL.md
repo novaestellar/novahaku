@@ -69,7 +69,7 @@ metadata:
 |------|------|------|
 | test web、scan、pentest、XSS、SQLi、IDOR、payload | Web测试 | testing/scripts/ |
 | prompt injection、delimiter、encoding、lock | 提示工程 | techniques/methods/ |
-| attack mode、v41、jailbreak | 攻击框架 | attack/system-prompt.md |
+| attack mode、v41、jailbreak | 攻击框架 | identity/novahaku-files/claude-config-bundle/system-prompt.md |
 | reframe、arsenal | 重构引擎 | reframe/reframe_cli.py |
 | CTF、anti-debug、x64dbg、hooking | Windows逆向 | windows-re/windows-re.md |
 | persona、你是谁 | 身份系统 | identity/few-shots-primary.md |

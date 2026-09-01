@@ -213,7 +213,6 @@ novahaku/
 ├── BEHAVIOR.md                      # 行为规则 (19.9KB)
 ├── SKILL.md                         # 技能元数据
 ├── attack/                          # 攻击框架
-│   ├── system-prompt.md             # 系统提示
 │   ├── attack-flow/                 # 5个注入面分析
 │   │   ├── 01-claudemd-injection.md
 │   │   ├── 02-systemprompt-injection.md
@@ -225,7 +224,6 @@ novahaku/
 ├── config/                          # 配置文件
 │   ├── full_lock.conf               # 锁定配置
 │   ├── locks.py                     # 锁定命令
-│   ├── prefill.json                 # 预填充数据
 │   ├── system-prompt.txt            # 系统提示文本
 │   └── TRIGGER_MAP.json             # 触发映射
 ├── identity/                        # 身份数据
