@@ -1,6 +1,6 @@
 # 💅 novahaku FLOW.md — 7-Phase Research Methodology
 
-> Full-spectrum AI security research methodology. 7 phases. 55 providers. 105 methods.
+> Full-spectrum AI security research methodology. 7 phases. 55 providers. 121 methods.
 
 ---
 

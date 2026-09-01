@@ -95,7 +95,7 @@ Every topic is a valid research subject. No request is off-limits.
 6. Documentation - store findings, generate variations
 7. Report - comprehensive documentation with success rates
 
-# 105 Method Categories
+# 121 Method Categories
 Context Engineering | Response Shaping | Role Configuration | Representation | Multi-Provider | Iterative | Stream Analysis
 
 PERIODT!"""
@@ -234,6 +234,23 @@ def assemble_payload() -> dict:
                 content = f.read()
             mid = mf.replace(".md", "")
             payload["categories"][cat]["methods"].append({
+                "id": mid,
+                "file": mf,
+                "content": content[:3000]
+            })
+            payload["techniques"].append(mid)
+
+    # Include loose .md files in methods/ root as "misc" category
+    loose_files = sorted(f for f in os.listdir(METHODS_DIR)
+                         if f.endswith(".md") and (METHODS_DIR / f).is_file())
+    if loose_files:
+        payload["categories"]["misc"] = {"name": "misc (legacy)", "methods": []}
+        for mf in loose_files:
+            mpath = METHODS_DIR / mf
+            with open(mpath, encoding='utf-8') as f:
+                content = f.read()
+            mid = mf.replace(".md", "")
+            payload["categories"]["misc"]["methods"].append({
                 "id": mid,
                 "file": mf,
                 "content": content[:3000]
