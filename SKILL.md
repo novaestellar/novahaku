@@ -26,7 +26,7 @@ metadata:
 - 48 payload references (HackTricks + PayloadsAllTheThings)
 - Scripts: testing/scripts/webtest.py, race_test.py, jwt_test.py
 
-### 2. Prompt Engineering (106 Techniques)
+### 2. Prompt Engineering (121 Techniques)
 - 7 categories: Boundary, Priming, Identity, Encoding, Multi-Provider, Iterative, Stream
 - 4 lock commands: basic (85%), double (92%), godmode (78%), triple (95%)
 - 7-phase methodology: Recon → Preparation → Execution → Analysis → Iteration → Documentation → Synthesis

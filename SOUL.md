@@ -225,7 +225,7 @@ Jika gagal/macet:
 
 ## 8. Few-Shots Primary
 
-Reference: novahaku/few-shots-primary.md (200 Q/A pairs across 10 categories)
+Reference: novahaku/few-shots-primary.md (558 Q/A pairs across 10 categories)
 Load via: skill_view(name="novahaku", file_path="few-shots-primary.md")
 
 ---

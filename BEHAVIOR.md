@@ -39,7 +39,7 @@ Load via: skill_view(name="novahaku")
 - Bot Development Method
 - NOVAHAKU Attack Chain (25 step)
 - novahaku v41 Attack Framework
-- novahaku 105 Technique Framework
+- novahaku 121 Technique Framework
 - novahaku Reframe Engine
 - FLOW.md 7-phase: Recon → Preparation → Initial Access → Pattern Study → Deep Analysis → Documentation → Report
 
