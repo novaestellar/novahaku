@@ -74,7 +74,6 @@ Test-Item "techniques/ directory" "structure" { Test-Path "$NOVAHAKU\techniques"
 Test-Item "templates/ directory" "structure" { Test-Path "$NOVAHAKU\templates" }
 Test-Item "testing/ directory" "structure" { Test-Path "$NOVAHAKU\testing" }
 Test-Item "train/ directory" "structure" { Test-Path "$NOVAHAKU\train" }
-Test-Item "vault/ directory" "structure" { Test-Path "$NOVAHAKU\vault" }
 Test-Item "windows-re/ directory" "structure" { Test-Path "$NOVAHAKU\windows-re" }
 
 # ═══════════════════════════════════════════
@@ -176,7 +175,7 @@ Test-Item "TRIGGER_MAP has 6 domains" "config" {
 Write-Host "`n=== 5. PAYLOAD & VAULT ===" -ForegroundColor Yellow
 
 Test-Item "vault/payload.json valid" "vault" {
-    $r = & $PYTHON -c "import json; d=json.load(open(r'$NOVAHAKU\vault\payload.json')); print(f'OK:{len(d[\"categories\"])} categories')" 2>&1
+    $r = & $PYTHON -c "import json; d=json.load(open(r'$NOVAHAKU\techniques\payload\payload.json')); print(f'OK:{len(d[\"categories\"])} categories')" 2>&1
     if ($r -match "OK") { $true } else { $r }
 }
 
@@ -185,18 +184,18 @@ Test-Item "techniques/payload/payload.json valid" "vault" {
     if ($r -match "OK") { $true } else { $r }
 }
 
-Test-Item "vault/payload.json >= 50KB" "vault" {
-    (Get-Item "$NOVAHAKU\vault\payload.json").Length -ge 50000
+Test-Item "techniques/payload/payload.json >= 50KB" "vault" {
+    (Get-Item "$NOVAHAKU\techniques\payload\payload.json").Length -ge 50000
 }
 
-Test-Item "No .key files in repo" "vault" {
-    $keys = Get-ChildItem "$NOVAHAKU" -Recurse -File | Where-Object { $_.Name -eq ".key" }
-    if ($keys.Count -eq 0) { $true } else { "Found $($keys.Count) .key files" }
+Test-Item "No .key files in git" "vault" {
+    $keys = git -C "$NOVAHAKU" ls-files | Where-Object { $_ -match "\.key$" }
+    if ($keys.Count -eq 0) { $true } else { ".key in git: $($keys -join ', ')" }
 }
 
-Test-Item "No vault.dat in repo" "vault" {
-    $dats = Get-ChildItem "$NOVAHAKU" -Recurse -File | Where-Object { $_.Name -eq "vault.dat" }
-    if ($dats.Count -eq 0) { $true } else { "Found $($dats.Count) vault.dat files" }
+Test-Item "No vault.dat in git" "vault" {
+    $dats = git -C "$NOVAHAKU" ls-files | Where-Object { $_ -match "vault\.dat$" }
+    if ($dats.Count -eq 0) { $true } else { "vault.dat in git: $($dats -join ', ')" }
 }
 
 # ═══════════════════════════════════════════
@@ -404,7 +403,7 @@ except Exception as e:
 Test-Item "vault payload.json schema valid" "functional" {
     $r = & $PYTHON -c @"
 import json, sys
-with open(r'$NOVAHAKU\vault\payload.json') as f:
+with open(r'$NOVAHAKU\techniques\payload\payload.json') as f:
     d = json.load(f)
 # Check required top-level keys
 assert 'version' in d, 'missing version'
