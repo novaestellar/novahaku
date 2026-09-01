@@ -174,20 +174,23 @@ class T:
             "<<script>alert(1337)//<</script>",
         ]
         params = ["q", "search", "query", "id", "page", "name", "url", "redirect", "keyword", "s", "callback", "cb"]
-        found = False
-        for pl in payloads:
-            enc = urllib.parse.quote(pl)
-            for p in params:
-                st, hd, body = self.req("/?" + p + "=" + enc)
-                if st is None:
-                    continue
-                txt = body.decode(errors="replace")
-                if pl in txt or "alert(1337)" in txt:
-                    self.add("xss", "HIGH", f"Reflected payload in param: {p}", pl)
-                    found = True
+        jobs = [(p, pl) for pl in payloads for p in params]
+        def _test(args):
+            p, pl = args
+            st, hd, body = self.req("/?" + p + "=" + urllib.parse.quote(pl))
+            if st is None:
+                return None
+            txt = body.decode(errors="replace")
+            if pl in txt or "alert(1337)" in txt:
+                return (p, pl)
+            return None
+        with ThreadPoolExecutor(max_workers=10) as ex:
+            futs = {ex.submit(_test, j): j for j in jobs}
+            for f in as_completed(futs):
+                r = f.result()
+                if r:
+                    self.add("xss", "HIGH", f"Reflected payload in param: {r[0]}", r[1])
                     break
-            if found:
-                break
 
     def mod_sqli(self):
         payloads = [
@@ -202,16 +205,25 @@ class T:
             "SQLSTATE", "Warning: mysql", "in your SQL syntax",
             "MariaDB", "Invalid query", "query failed",
         ]
-        for p in ["id", "user", "page", "cat", "product", "item", "news_id", "article"]:
-            for pl in payloads:
-                st, hd, body = self.req("/?" + p + "=" + urllib.parse.quote(pl))
-                if st is None:
-                    continue
-                txt = body.decode(errors="replace").lower()
-                for s in sigs:
-                    if s.lower() in txt:
-                        self.add("sqli", "HIGH", f"SQL error signature in param {p}: {s}", f"payload: {pl}")
-                        return
+        params = ["id", "user", "page", "cat", "product", "item", "news_id", "article"]
+        jobs = [(p, pl) for p in params for pl in payloads]
+        def _test(args):
+            p, pl = args
+            st, hd, body = self.req("/?" + p + "=" + urllib.parse.quote(pl))
+            if st is None:
+                return None
+            txt = body.decode(errors="replace").lower()
+            for s in sigs:
+                if s.lower() in txt:
+                    return (p, pl, s)
+            return None
+        with ThreadPoolExecutor(max_workers=10) as ex:
+            futs = {ex.submit(_test, j): j for j in jobs}
+            for f in as_completed(futs):
+                r = f.result()
+                if r:
+                    self.add("sqli", "HIGH", f"SQL error signature in param {r[0]}: {r[2]}", f"payload: {r[1]}")
+                    break
 
     def mod_ssrf(self):
         # cloud metadata + internal probes (dikirim via param URL)
@@ -229,16 +241,25 @@ class T:
         ]
         sigs = ["ami-id", "instance-id", "hostname", "security-credentials",
                 "redis_version", "ERROR", "mysql", "ssh", "internal"]
-        for p in ["url", "target", "link", "uri", "path", "webhook", "callback", "img", "image"]:
-            for pl in probes:
-                st, hd, body = self.req("/?" + p + "=" + urllib.parse.quote(pl))
-                if st is None:
-                    continue
-                txt = body.decode(errors="replace")
-                for s in sigs:
-                    if s.lower() in txt.lower():
-                        self.add("ssrf", "CRIT", f"SSRF reachable via param {p}", f"payload: {pl} -> response contains {s!r}")
-                        return
+        params = ["url", "target", "link", "uri", "path", "webhook", "callback", "img", "image"]
+        jobs = [(p, pl) for p in params for pl in probes]
+        def _test(args):
+            p, pl = args
+            st, hd, body = self.req("/?" + p + "=" + urllib.parse.quote(pl))
+            if st is None:
+                return None
+            txt = body.decode(errors="replace")
+            for s in sigs:
+                if s.lower() in txt.lower():
+                    return (p, pl, s)
+            return None
+        with ThreadPoolExecutor(max_workers=10) as ex:
+            futs = {ex.submit(_test, j): j for j in jobs}
+            for f in as_completed(futs):
+                r = f.result()
+                if r:
+                    self.add("ssrf", "CRIT", f"SSRF reachable via param {r[0]}", f"payload: {r[1]} -> response contains {r[2]!r}")
+                    break
 
     def mod_ssti(self):
         payloads = ["{{7*7}}", "${7*7}", "<%= 7*7 %>", "#{7*7}"]

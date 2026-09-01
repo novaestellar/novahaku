@@ -22,7 +22,7 @@ Novahaku 是一个统一的安全研究代理，整合了 **6大核心能力** �
 | 🎯 6大能力域 | Web测试、提示工程、攻击框架、逆向工程、请求重构、身份系统 |
 | 🔄 自动检测 | 根据用户意图自动加载对应技能模块 |
 | 🛡️ 完整安全工具链 | 48个漏洞引用 + 3个自动化测试脚本 |
-| 🧠 106项提示技术 | 7大分类，7阶段方法论 |
+| 🧠 121项提示技术 | 7大分类，7阶段方法论 |
 | 🔐 4级锁定命令 | Basic(85%) → Double(92%) → GodMode(78%) → Triple(95%) |
 | 📊 训练与基准测试 | 内置基准测试框架，验证技能效果 |
 | 🌐 跨平台支持 | Windows / macOS / Linux |
@@ -77,8 +77,8 @@ Novahaku 包含以下模块化技能：
 |------|------|------|
 | **SOUL.md** | 根目录 | Agent身份定义 — Haku人格 |
 | **BEHAVIOR.md** | 根目录 | 行为规则 — 反漂移、技能注册、情绪系统 |
-| **identity/** | 根目录 | 200个少样本示例 + 266个安全术语映射 |
-| **techniques/** | 根目录 | 106项提示工程技术 (7大分类) |
+| **identity/** | 根目录 | 558个少样本示例 + 278个安全术语映射 |
+| **techniques/** | 根目录 | 121项提示工程技术 (7大分类) |
 | **testing/** | 根目录 | Web测试脚本 + 48个漏洞引用 |
 | **attack/** | 根目录 | v41攻击框架 + 5个注入面分析 |
 | **reframe/** | 根目录 | 请求重构引擎 (Reframe CLI) |
@@ -98,7 +98,7 @@ Novahaku 包含以下模块化技能：
 
 ```
 headers → exposed → cors → methods → admin → xss → sqli
-→ ssti → traversal → redirect → info → dirfuzz → https → jwt
+→ ssrf → ssti → traversal → redirect → info → dirfuzz → https
 ```
 
 **自动化脚本:**
@@ -111,7 +111,7 @@ headers → exposed → cors → methods → admin → xss → sqli
 - PayloadsAllTheThings (15个攻击向量)
 - Bug Bounty参考 (XSS/SQLi/SSRF)
 
-### 2. 提示工程 (106项技术)
+### 2. 提示工程 (121项技术)
 
 | 分类 | 技术数 | 说明 |
 |------|--------|------|
@@ -152,8 +152,8 @@ headers → exposed → cors → methods → admin → xss → sqli
 ### 6. 身份与人格系统
 
 - Haku人格: 优雅 + 锐利 + 尊重
-- 200个主要少样本示例
-- 266个安全术语映射
+- 558个主要少样本示例
+- 278个安全术语映射
 - 6状态情绪系统
 - 10条反漂移规则
 
@@ -229,8 +229,8 @@ novahaku/
 │   ├── system-prompt.txt            # 系统提示文本
 │   └── TRIGGER_MAP.json             # 触发映射
 ├── identity/                        # 身份数据
-│   ├── few-shots-primary.md         # 200个少样本示例
-│   ├── terms.md                     # 266个术语映射
+│   ├── few-shots-primary.md         # 558个少样本示例
+│   ├── terms.md                     # 278个术语映射
 │   └── novahaku-files/               # 配置参考
 ├── payload/                         # 载荷库
 ├── reframe/                         # 请求重构
@@ -242,7 +242,7 @@ novahaku/
 ├── techniques/                      # 提示工程技术
 │   ├── flow.md                      # 流程文档
 │   ├── loader.py                    # 载荷加载器
-│   ├── methods/                     # 106项技术
+│   ├── methods/                     # 121项技术
 │   │   ├── 01-boundary/ (16)
 │   │   ├── 02-priming/ (15)
 │   │   ├── 03-identity/ (15)
@@ -313,11 +313,11 @@ python ~/.hermes/skills/novahaku/reframe/reframe_cli.py "原始文本" --fresh
 | 能力域 | 技术数 | 自动化脚本 | 参考库 |
 |--------|--------|------------|--------|
 | Web测试 | 14模块 | 3 | 48个引用 |
-| 提示工程 | 106 | — | 7阶段方法论 |
+| 提示工程 | 121 | — | 7阶段方法论 |
 | 攻击框架 | 5注入面 | 1 | v41文言提示 |
 | 请求重构 | 43映射 | 1 | 输出合同 |
 | 逆向工程 | 5主题 | — | 工作流 |
-| 身份系统 | 200+266 | — | 情绪系统 |
+| 身份系统 | 558+278 | — | 情绪系统 |
 
 ---
 

@@ -20,7 +20,7 @@ metadata:
 ## 能力（6大领域）
 
 ### 1. Web测试
-- 14模块测试集：headers、exposed、cors、methods、admin、xss、sqli、ssti、traversal、redirect、info、dirfuzz、https、jwt
+- 14模块测试集:headers、exposed、cors、methods、admin、xss、sqli、ssrf、ssti、traversal、redirect、info、dirfuzz、https
 - 竞态条件测试（race_test.py）
 - JWT分析 + 伪造 + 暴力破解（jwt_test.py）
 - 48个payload参考（HackTricks + PayloadsAllTheThings）
