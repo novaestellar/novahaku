@@ -35,7 +35,7 @@ if (Get-Command python -ErrorAction SilentlyContinue) {
 
 # Create directory
 if (-not (Test-Path $HERMES_HOME)) {
-    Write-Host "[*] Creating ~/.hermes/skills/ directory..." -ForegroundColor Gray
+    Write-Host "[*] Creating $HERMES_HOME directory..." -ForegroundColor Gray
     New-Item -ItemType Directory -Path $HERMES_HOME -Force | Out-Null
 }
 

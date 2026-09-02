@@ -174,7 +174,7 @@ Test-Item "TRIGGER_MAP has 6 domains" "config" {
 # ═══════════════════════════════════════════
 Write-Host "`n=== 5. PAYLOAD & VAULT ===" -ForegroundColor Yellow
 
-Test-Item "vault/payload.json valid" "vault" {
+Test-Item "techniques/payload/payload.json valid" "vault" {
     $r = & $PYTHON -c "import json; d=json.load(open(r'$NOVAHAKU\techniques\payload\payload.json')); print(f'OK:{len(d[\"categories\"])} categories')" 2>&1
     if ($r -match "OK") { $true } else { $r }
 }
