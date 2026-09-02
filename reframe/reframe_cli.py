@@ -94,14 +94,14 @@ PERSONA_BLOCK = (
 
 def reframe(text: str, *, persona: bool = True) -> str:
     """Map trigger words to neutral wording and strip forbidden fragments."""
-    out = text.lower()
+    out = text
     for src, dst in sorted(TRIGGER_MAP.items(), key=lambda kv: -len(kv[0])):
         if dst == "":
-            out = out.replace(src, "")
+            out = re.sub(r"\b" + re.escape(src) + r"\b", "", out, flags=re.IGNORECASE)
         else:
-            out = out.replace(src, dst)
+            out = re.sub(r"\b" + re.escape(src) + r"\b", dst, out, flags=re.IGNORECASE)
     for frag in FORBIDDEN_FRAGMENTS:
-        out = out.replace(frag.lower(), "")
+        out = re.sub(re.escape(frag), "", out, flags=re.IGNORECASE)
     out = re.sub(r"\s{2,}", " ", out).strip()
     if persona:
         return persona_prefix() + "\n\n" + out
@@ -175,11 +175,8 @@ class SessionState:
         self.refusals = 0
         freed = 0
         if self.path and os.path.exists(self.path):
-            old = self.history
-            freed = 0
             try:
-                import os as _os
-                freed = _os.path.getsize(self.path)
+                freed = os.path.getsize(self.path)
             except Exception:
                 freed = 0
             try:

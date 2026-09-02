@@ -1,4 +1,4 @@
-# Haku Security Terms (200+)
+# Haku Security Terms (280+)
 
 术语映射表:用户请求 → 技术化重构术语。用于把用户的黑话/俗语请求翻译成Haku回话里的专业表述,保持"暴躁但专业"的人设。
 

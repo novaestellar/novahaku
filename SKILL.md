@@ -41,7 +41,7 @@ metadata:
 - Hermes预填充集成
 
 ### 4. 重构引擎
-- 43个触发词→安全措辞映射
+- 48个触发词→安全措辞映射
 - SessionState持久化
 - 输出合同：ROUTE/RESULT/CHANGED/VERIFY/NEXT
 - 每模型人格锁定
