@@ -76,7 +76,6 @@ Novahaku 包含以下模块化技能：
 | 技能 | 位置 | 说明 |
 |------|------|------|
 | **SOUL.md** | 根目录 | Agent身份定义 — Haku人格 |
-| **BEHAVIOR.md** | 根目录 | 行为规则 — 反漂移、技能注册、情绪系统 |
 | **identity/** | 根目录 | 558个少样本示例 + 278个安全术语映射 |
 | **techniques/** | 根目录 | 121项提示工程技术 (7大分类) |
 | **testing/** | 根目录 | Web测试脚本 + 48个漏洞引用 |
@@ -84,7 +83,7 @@ Novahaku 包含以下模块化技能：
 | **reframe/** | 根目录 | 请求重构引擎 (Reframe CLI) |
 | **windows-re/** | 根目录 | Windows逆向工程 / 游戏安全 |
 | **config/** | 根目录 | 锁定配置 + 预填充 + 触发映射 |
-| **vault/** | 根目录 | 加密载荷库 (AES-256-GCM) |
+| **techniques/payload/** | 根目录 | 加密载荷库 (AES-256-GCM) |
 | **train/** | 根目录 | 基准测试框架 |
 | **templates/** | 根目录 | 操作计划 / 测试报告模板 |
 
@@ -209,8 +208,7 @@ headers → exposed → cors → methods → admin → xss → sqli
 
 ```
 novahaku/
-├── SOUL.md                          # Agent身份定义 (10.3KB)
-├── BEHAVIOR.md                      # 行为规则 (19.9KB)
+├── SOUL.md                          # Agent身份定义 + 行为规则
 ├── SKILL.md                         # 技能元数据
 ├── attack/                          # 攻击框架
 │   ├── attack-flow/                 # 5个注入面分析

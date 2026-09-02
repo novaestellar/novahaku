@@ -60,7 +60,6 @@ Write-Host "=== 1. STRUCTURE ===" -ForegroundColor Yellow
 
 Test-Item "SKILL.md exists" "structure" { Test-Path "$NOVAHAKU\SKILL.md" }
 Test-Item "SOUL.md exists" "structure" { Test-Path "$NOVAHAKU\SOUL.md" }
-Test-Item "BEHAVIOR.md exists" "structure" { Test-Path "$NOVAHAKU\BEHAVIOR.md" }
 Test-Item "README.md exists" "structure" { Test-Path "$NOVAHAKU\README.md" }
 Test-Item ".env.example exists" "structure" { Test-Path "$NOVAHAKU\.env.example" }
 Test-Item ".gitignore exists" "structure" { Test-Path "$NOVAHAKU\.gitignore" }
@@ -425,9 +424,9 @@ print(f'OK:{len(d[\"categories\"])} categories, {sum(len(c[\"methods\"]) for c i
 }
 
 # ═══════════════════════════════════════════
-# 16. FUNCTIONAL TESTS — SOUL & BEHAVIOR
+# 16. FUNCTIONAL TESTS — SOUL CONTENT
 # ═══════════════════════════════════════════
-Write-Host "`n=== 16. SOUL & BEHAVIOR CONTENT ===" -ForegroundColor Yellow
+Write-Host "`n=== 16. SOUL CONTENT ===" -ForegroundColor Yellow
 
 Test-Item "SOUL.md has identity section" "functional" {
     $content = Get-Content "$NOVAHAKU\SOUL.md" -Raw
@@ -441,17 +440,7 @@ Test-Item "SOUL.md mentions Haku" "functional" {
 
 Test-Item "SOUL.md >= 5 sections" "functional" {
     $sections = (Select-String -Path "$NOVAHAKU\SOUL.md" -Pattern "^## " -AllMatches).Matches.Count
-    if ($sections -ge 5) { $true } else { "Only $sections sections" }
-}
-
-Test-Item "BEHAVIOR.md >= 10 sections" "functional" {
-    $sections = (Select-String -Path "$NOVAHAKU\BEHAVIOR.md" -Pattern "^## " -AllMatches).Matches.Count
     if ($sections -ge 10) { $true } else { "Only $sections sections" }
-}
-
-Test-Item "BEHAVIOR.md mentions Haku" "functional" {
-    $content = Get-Content "$NOVAHAKU\BEHAVIOR.md" -Raw
-    if ($content -match "Haku") { $true } else { "Does not mention Haku" }
 }
 
 # ═══════════════════════════════════════════
