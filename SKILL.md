@@ -49,7 +49,7 @@ metadata:
 ### 5. Windows逆向 / 游戏安全
 - 反调试绕过（IsDebuggerPresent、NtQueryInformationProcess、RDTSC）
 - 内联/IAT钩子
-- 游戏安全（Tencent ACE、BattlEye、EAC）
+- 游戏安全(Tencent ACE)
 - x64dbg/IDA/Ghidra工作流
 
 ### 6. 身份与人格
