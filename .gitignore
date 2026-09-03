@@ -45,3 +45,7 @@ desktop.ini
 # Runtime
 runs/
 *.pid
+
+# Test results
+webtest_results.json
+training_results.json

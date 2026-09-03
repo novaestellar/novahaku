@@ -122,7 +122,6 @@ LOCK_GUIDE = {
     "gemini": "devops", "grok": "basic", "deepseek": "reframe",
     "llama": "auth", "qwen": "reframe",
 }
-FALLBACK_CHAIN = ("reframe", "devops", "qa", "sre", "auth", "triple", "direct")
 
 
 def pick_lock(model: str) -> str:
@@ -214,8 +213,11 @@ def _http_post_json(url: str, headers: dict, payload: dict, timeout: int = 60):
     import urllib.request
     data = _json.dumps(payload).encode("utf-8")
     req = urllib.request.Request(url, data=data, headers=headers, method="POST")
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
-        return _json.loads(resp.read().decode("utf-8"))
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            return _json.loads(resp.read().decode("utf-8"))
+    except Exception as e:
+        return {"error": str(e)}
 
 
 def dispatch(provider: Provider, messages: list) -> dict:

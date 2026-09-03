@@ -4,6 +4,8 @@ description: "Hunt Forgot Password / Account Recovery Authentication Flaws — 5
 author: SeaGull Security Lab
 ---
 
+**Trigger**: Hunting password reset, account recovery, or forgot-password authentication flaws — username enumeration via reset, reset token exposure, token replay, rate-limit bypass on reset endpoint.
+
 ## Autonomous Testing Priority
 
 **Start with username enumeration — it's the fastest win and gates the rest.**

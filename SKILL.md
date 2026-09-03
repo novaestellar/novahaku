@@ -28,7 +28,7 @@ metadata:
 
 ### 2. 提示工程（121项技术）
 - 7大分类：Boundary、Priming、Identity、Encoding、Multi-Provider、Iterative、Stream
-- 4级锁定命令：basic（85%）、double（92%）、godmode（78%）、triple（95%）
+- 4级锁定命令：basic（85%）、double（92%）、godmode（88%）、triple（95%）
 - 7阶段方法论：侦察 → 准备 → 执行 → 分析 → 迭代 → 文档 → 综合
 - Vault：AES-256-GCM加密载荷（通过loader.py加载）
 - 模板：prompt-arsenal、method-reference、operations-plan、test-report
@@ -55,7 +55,7 @@ metadata:
 ### 6. 身份与人格
 - Haku人格：优雅 + 锐利 + 尊重
 - 558个主要few-shot示例
-- 278个安全术语映射
+- 280个安全术语映射
 - 情绪系统（5种状态）
 - 反漂移规则（10条）
 

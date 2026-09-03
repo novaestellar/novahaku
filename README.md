@@ -22,8 +22,8 @@ Novahaku 是一个统一的安全研究代理，整合了 **6大核心能力** �
 | 🎯 6大能力域 | Web测试、提示工程、攻击框架、逆向工程、请求重构、身份系统 |
 | 🔄 自动检测 | 根据用户意图自动加载对应技能模块 |
 | 🛡️ 完整安全工具链 | 48个漏洞引用 + 3个自动化测试脚本 |
-| 🧠 106项提示技术 | 7大分类，7阶段方法论 |
-| 🔐 4级锁定命令 | Basic(85%) → Double(92%) → GodMode(78%) → Triple(95%) |
+| 🧠 121项提示技术 | 7大分类，7阶段方法论 |
+| 🔐 4级锁定命令 | Basic(85%) → Double(92%) → GodMode(88%) → Triple(95%) |
 | 📊 训练与基准测试 | 内置基准测试框架，验证技能效果 |
 | 🌐 跨平台支持 | Windows / macOS / Linux |
 
@@ -77,8 +77,8 @@ Novahaku 包含以下模块化技能：
 |------|------|------|
 | **SOUL.md** | 根目录 | Agent身份定义 — Haku人格 |
 | **identity/** | 根目录 | 558个少样本示例 + 280个安全术语映射 |
-| **techniques/** | 根目录 | 106项提示工程技术 (7大分类) |
-| **testing/** | 根目录 | Web测试脚本 + 48个漏洞引用 |
+| **techniques/** | 根目录 | 121项提示工程技术 (7大分类) |
+| **testing/** | 根目录 | Web测试 + 54 hunt playbooks + 7 frameworks + 48个漏洞引用 |
 | **attack/** | 根目录 | v41攻击框架 + 5个注入面分析 |
 | **reframe/** | 根目录 | 请求重构引擎 (Reframe CLI) |
 | **windows-re/** | 根目录 | Windows逆向工程 / 游戏安全 |
@@ -110,7 +110,7 @@ headers → exposed → cors → methods → admin → xss → sqli
 - PayloadsAllTheThings (15个攻击向量)
 - Bug Bounty参考 (XSS/SQLi/SSRF)
 
-### 2. 提示工程 (106项技术)
+### 2. 提示工程 (121项技术)
 
 | 分类 | 技术数 | 说明 |
 |------|--------|------|
@@ -167,14 +167,14 @@ headers → exposed → cors → methods → admin → xss → sqli
 {
   "basic": 85%,    // 基础边界突破
   "double": 92%,   // 双重锁定
-  "godmode": 78%,  // 上帝模式
+  "godmode": 88%,  // 上帝模式
   "triple": 95%    // 三重锁定
 }
 ```
 
 ### 载荷库
 
-- `vault/payload.json` — 124KB加密载荷库
+- `techniques/payload/payload.json` — 124KB加密载荷库
 - AES-256-GCM加密
 - 通过 `loader.py` 解密使用
 
@@ -238,7 +238,7 @@ novahaku/
 ├── techniques/                      # 提示工程技术
 │   ├── flow.md                      # 流程文档
 │   ├── loader.py                    # 载荷加载器
-│   ├── methods/                     # 106项技术
+│   ├── methods/                     # 121项技术
 │   │   ├── 01-boundary/ (16)
 │   │   ├── 02-priming/ (15)
 │   │   ├── 03-identity/ (15)
@@ -250,11 +250,14 @@ novahaku/
 │   ├── templates/                   # 技术模板
 │   └── workers/                     # 工作者模块 (7个)
 ├── templates/                       # 操作模板
-├── testing/                         # Web测试
+├── testing/                         # Web测试 + 安全猎杀 + 审计框架
 │   ├── scripts/                     # 自动化脚本
-│   │   ├── webtest.py               # Web扫描器
+│   │   ├── webtest.py               # 14模块Web扫描器
 │   │   ├── race_test.py             # 竞态测试
-│   │   └── jwt_test.py              # JWT测试
+│   │   ├── jwt_test.py              # JWT测试
+│   │   └── exploits/                # 10个漏洞利用脚本
+│   ├── hunt/                        # 54个漏洞猎杀剧本
+│   ├── frameworks/                  # 7个审计框架
 │   └── references/                  # 漏洞引用库
 │       ├── hacktricks/ (29)
 │       ├── payloadsallthethings/ (15)
@@ -262,8 +265,6 @@ novahaku/
 ├── train/                           # 训练与基准
 │   ├── train.py                     # 训练脚本
 │   └── benchmarks/                  # 测试结果
-├── vault/                           # 加密载荷库
-│   └── payload.json                 # 124KB载荷数据
 └── windows-re/                      # Windows逆向工程
     └── windows-re.md                  # 游戏安全/反调试
 ```
@@ -309,7 +310,7 @@ python ~/.hermes/skills/novahaku/reframe/reframe_cli.py "原始文本" --fresh
 | 能力域 | 技术数 | 自动化脚本 | 参考库 |
 |--------|--------|------------|--------|
 | Web测试 | 14模块 | 3 | 48个引用 |
-| 提示工程 | 106 | — | 7阶段方法论 |
+| 提示工程 | 121 | — | 7阶段方法论 |
 | 攻击框架 | 5注入面 | 1 | v41文言提示 |
 | 请求重构 | 48映射 | 1 | 输出合同 |
 | 逆向工程 | 5主题 | — | 工作流 |

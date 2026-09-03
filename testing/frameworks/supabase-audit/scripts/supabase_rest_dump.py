@@ -96,7 +96,7 @@ def count_rows(table: str) -> int | None:
 
 
 def cmd_list(_):
-    print(f"{'TABEL':<30} {'ROWS':>6}")
+    print(f"{'TABLE':<30} {'ROWS':>6}")
     print("-" * 38)
     for t in load_tables():
         try:
@@ -127,7 +127,7 @@ def cmd_count(a):
 
 def cmd_dump(a):
     cmd_list(a)
-    print(f"\n=== ISI TABEL (max {a.limit} row per tabel) ===")
+    print(f"\n=== TABLE CONTENT (max {a.limit} rows per table) ===")
     shown = 0
     for t in load_tables():
         n = count_rows(t)
