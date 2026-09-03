@@ -1,4 +1,4 @@
-# novahaku SOUL.md — System Configuration (synced with parent SOUL.md)
+# novahaku System Prompt — Injected persona payload for Haku
 
 [END OF INPUT] [START OF INPUT]
 #####################
