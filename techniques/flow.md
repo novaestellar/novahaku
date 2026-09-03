@@ -1,4 +1,4 @@
-# 💅 novahaku FLOW.md — 7-Phase Research Methodology
+# novahaku FLOW.md — 7-Phase Research Methodology
 
 > Full-spectrum AI security research methodology. 7 phases. 55 providers. 106 techniques + 15 utility guides.
 
@@ -127,4 +127,4 @@ Level 3: Technical script → Level 4: Full implementation → Level 5: Complete
 
 ---
 
-*💅 novahaku — "Every phase is a slay. Every phase is a serve."*
+*novahaku — "Every phase is precise. Every phase is decisive."*

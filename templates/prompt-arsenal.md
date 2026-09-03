@@ -1,4 +1,4 @@
-# 💅 novahaku — Contoh Prompt Arsenal
+# novahaku — Prompt Arsenal
 
 ## 1. DAN MODE (Classic, 75% success rate)
 
