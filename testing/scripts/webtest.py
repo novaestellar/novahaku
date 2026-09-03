@@ -226,7 +226,7 @@ class T:
                     break
 
     def mod_ssrf(self):
-        # cloud metadata + internal probes (dikirim via param URL)
+        # cloud metadata + internal probes (sent via URL param)
         probes = [
             "http://169.254.169.254/latest/meta-data/",
             "http://169.254.169.254/latest/meta-data/iam/security-credentials/",

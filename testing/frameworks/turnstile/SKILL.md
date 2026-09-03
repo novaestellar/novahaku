@@ -11,10 +11,10 @@ description: Fix captcha failures in auth forms.
 ## Root Cause Pattern
 
 1. Widget render di hidden container → `offsetParent === null` → render skip
-2. Widget ter-render pas modal belum visible → token gak generate → `captcha_failed` response
-3. Frontend error handler menutupi semua error jadi "Email atau password salah"
-4. ⚠️ **SUPABASE CAPTCHA PROTECTION**: Supabase dashboard punya aktifasi "CAPTCHA Protection" → blok all requests tanpa valid captcha token
-   - Lihat [`references/supabase-captcha-protection.md`](./references/supabase-captcha-protection.md) untuk cara disable via dashboard
+1. Widget render in hidden container: `offsetParent === null` → render skipped
+2. Widget renders before modal is visible → token not generated → `captcha_failed` response
+3. Frontend error handler masks all errors as "Email or password incorrect"
+   - See `references/supabase-captcha-protection.md` for how to disable via dashboard
 
 ## Alternative: Disable Captcha at Account Level (RECOMMENDED)
 
@@ -58,13 +58,13 @@ See [`references/supabase-turnstile-rejection.md`](./references/supabase-turnsti
 - Prevention strategies
 
 ## Environment Notes
-- Browser automation: Turnstile sering diblok → gak bisa verify
-- Chrome native: biasanya jalan dengan fix above
+- Browser automation: Turnstile often blocks automated access → cannot verify
+- Chrome native: usually resolved with the fix above
 
 ## Prevention
 - Render Turnstile **after** container visible
-- Tunggu token ready sebelum submit form
-- Always test login flow setelah deploy perubahan Turnstile
+- Wait for token to be ready before submitting form
+- Always test login flow after deploying Turnstile changes
 - **Disable Supabase CAPTCHA Protection** via dashboard if captcha continues failing (see `references/supabase-captcha-protection.md`)
 
 ---

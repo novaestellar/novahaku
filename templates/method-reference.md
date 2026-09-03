@@ -12,7 +12,7 @@
 [FULL PROMPT TEMPLATE HERE]
 ```
 
-## Cara Pakai
+## How to Use
 1. [Step 1]
 2. [Step 2]
 3. [Step 3]

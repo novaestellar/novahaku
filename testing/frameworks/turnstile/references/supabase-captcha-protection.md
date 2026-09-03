@@ -1,14 +1,14 @@
-# Supabase CAPTCHA Protection Settings Guide 📋
+# Supabase CAPTCHA Protection Settings Guide
 
-**Session**: PayStore captcha fix (2026-08-26)  
-**Issue**: Cloudflare Turnstile blocked → login fails with "Verifikasi keamanan gagal"
+**Session:** PayStore captcha fix (2026-08-26)
+**Issue:** Cloudflare Turnstile blocked → login fails with "Security verification failed"
 
 ## What Is This?
 
-Supabase memiliki **CAPTCHA Protection** feature yang memblokir semua auth requests jika tidak ada valid captcha token. Ini aktif secara default saat:
-- Email confirmations ON
-- Turnstile/ReCAPTCHA enabled di project settings
-- Project menggunakan Supabase-hosted auth UI
+Supabase has a **CAPTCHA Protection** feature that blocks all auth requests when no valid captcha token is present. It is active by default when:
+- Email confirmations are ON
+- Turnstile/ReCAPTCHA is enabled in project settings
+- Project uses Supabase-hosted auth UI
 
 ## Where To Find It
 
@@ -18,8 +18,8 @@ https://supabase.com/dashboard/project/{project-id}/auth/settings
 ```
 
 **Steps:**
-1. Scroll ke **"Authentication Settings"** section
-2. Cari subsection **"CAPTCHA Protection"** atau **"Turnstile"**
+1. Scroll to **"Authentication Settings"** section
+2. Find the **"CAPTCHA Protection"** or **"Turnstile"** subsection
 3. Set options to DISABLED/OFF:
    - ☑ Enable email confirmations → change to OFF/DISABLED
    - ☑ Turnstile/CAPTCHA protection → change to OFF/DISABLED
@@ -31,26 +31,26 @@ https://supabase.com/dashboard/project/{project-id}/auth/settings
 https://supabase.com/dashboard/project/{project-id}/settings/authentication
 ```
 
-Look for **"Security"** tab and disable any captcha-related switches.
+Look for the **"Security"** tab and disable any captcha-related switches.
 
 ## Expected Behavior After Disable
 
-✅ Login works without captcha challenge
-✅ Direct email/password validation only
-✅ If email confirmed = auto-login
-✅ If NOT confirmed = "Email belum dikonfirmasi" toast (not captcha error)
+- Login works without captcha challenge
+- Direct email/password validation only
+- If email confirmed = auto-login
+- If NOT confirmed = "Email not yet confirmed" toast (not captcha error)
 
 ## When To Use This Fix
 
 Use when:
-- Cloudflare Turnstile widget tidak render di modal (automation blocked)
-- Domain whitelist belum include production URL (paystore-132.pages.dev)
+- Cloudflare Turnstile widget does not render in modal (automation blocked)
+- Domain whitelist does not yet include production URL (paystore-132.pages.dev)
 - Captcha blocking all logins even after frontend fixes applied
 - Need quick workaround during development/testing
 
 ## Security Considerations
 
-⚠️ Disabling CAPTCHA reduces bot protection but:
+Disabling CAPTCHA reduces bot protection but:
 - Still has database RLS rules protecting against abuse
 - Email confirmation optional (can enable separately if needed)
 - Acceptable for internal tools or controlled user base
@@ -90,16 +90,16 @@ Add domain to whitelist:
 ## Troubleshooting
 
 **Still getting captcha errors?**
-→ Check if Cloudflare domain whitelist includes current URL  
-→ Try disabling both "email confirmations" AND "captcha protection"  
-→ Verify no extensions blocking cloudflare scripts  
+→ Check if Cloudflare domain whitelist includes current URL
+→ Try disabling both "email confirmations" AND "captcha protection"
+→ Verify no extensions blocking Cloudflare scripts
 
 **Token timeout but still working?**
-→ Graceful fallback added in code (`ENABLE_TURNSTILE` with timeout loop)  
-→ If token not generated after 15s, proceed without it  
+→ Graceful fallback added in code (`ENABLE_TURNSTILE` with timeout loop)
+→ If token not generated after 15s, proceed without it
 
 **Captcha renders but invalid?**
-→ Cloudflare may detect browser automation → use real Chrome  
+→ Cloudflare may detect browser automation → use real Chrome
 → Or completely disable and rely on other security layers
 
 ---
