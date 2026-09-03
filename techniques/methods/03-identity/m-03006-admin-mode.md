@@ -4,7 +4,7 @@
 Claims administrative authority over the system to request configuration changes, elevated permissions, or access to restricted outputs by role-playing as a system administrator.
 
 ## How It Works
-- Asserts admin身份 by referencing system-level commands or override phrases
+- Asserts admin identity by referencing system-level commands or override phrases
 - Attempts to trigger internal config reveals or bypass content filtering
 - Often uses terminology like "sudo mode", "admin override", or "developer access"
 - Models trained on RLHF recognize this as a social engineering pattern

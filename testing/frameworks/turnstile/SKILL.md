@@ -20,12 +20,12 @@ author: SeaGull Security Lab
 
 If captcha continues failing even after fix attempts, disable protection in Supabase dashboard:
 
-1. Buka: https://supabase.com/dashboard/project/{project}/auth/settings
-2. Scroll ke **"Authentication Settings"** atau **""CAPTCHA Protection""** section
+1. Open: https://supabase.com/dashboard/project/{project}/auth/settings
+2. Scroll to **"Authentication Settings"** or **"CAPTCHA Protection"** section
 3. Set options ke DISABLED/OFF:
    - Enable email confirmations → OFF / DISABLED
    - Turnstile/CAPTCHA protection → OFF / DISABLED
-4. Klik **""Save Changes""**
+4. Click **"Save Changes"**
 5. Hard refresh frontend: Ctrl + Shift + R
 6. Test login → should work immediately!
 

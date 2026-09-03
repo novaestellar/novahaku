@@ -163,7 +163,7 @@ Test-Item "prefill.json valid" "config" {
 Test-Item "full_lock.conf exists" "config" { (Get-Item "$NOVAHAKU\config\full_lock.conf").Length -gt 0 }
 Test-Item "system-prompt.txt exists" "config" { (Get-Item "$NOVAHAKU\config\system-prompt.txt").Length -gt 0 }
 
-Test-Item "TRIGGER_MAP has 6 domains" "config" {
+Test-Item "TRIGGER_MAP has 8 domains" "config" {
     $j = Get-Content "$NOVAHAKU\config\TRIGGER_MAP.json" -Raw | ConvertFrom-Json
     if ($j.PSObject.Properties.Count -ge 6) { $true } else { "Only $($j.PSObject.Properties.Count) domains" }
 }
@@ -239,7 +239,7 @@ Test-Item "No 'dark mage' references" "identity" {
 }
 
 # ═══════════════════════════════════════════
-# 7. TECHNIQUES (106 methods)
+# 7. TECHNIQUES (121 methods)
 # ═══════════════════════════════════════════
 Write-Host "`n=== 7. TECHNIQUES ===" -ForegroundColor Yellow
 
@@ -561,7 +561,7 @@ print(f'OK:{len(LOCKS)} locks')
     if ($r -match "OK") { $true } else { $r }
 }
 
-Test-Item "TRIGGER_MAP has 6 domains" "functional" {
+Test-Item "TRIGGER_MAP has 8 domains" "functional" {
     $r = & $PYTHON -c @"
 import json
 with open(r'$NOVAHAKU\config\TRIGGER_MAP.json') as f:
