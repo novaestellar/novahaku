@@ -166,8 +166,8 @@ def main():
         print(f"\n[i] alg {alg} — not HMAC, try RS→HS confusion: re-sign with public key as HMAC secret (needs target public key/cert)")
 
     # --- forge admin hint ---
-    print("\n[*] kalau secret ketemu, forge admin token:")
-    print("    python -c \"lihat cara di skill novahaku SKILL.md bagian JWT Forge\"")
+    print("\n[*] If secret found, forge admin token:")
+    print("    python -c \"see novahaku SKILL.md JWT Forge section\"")
 
 if __name__ == "__main__":
     main()
