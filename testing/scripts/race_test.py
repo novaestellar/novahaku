@@ -95,7 +95,7 @@ def main():
                 print(f"  status={st} sig={sig} body={prev!r}")
     else:
         print("\n[-] all responses identical — no obvious race at response level")
-        print("[i] catatan: race bisa terjadi tanpa beda response (e.g. DB double-write).")
+        print("[i] note: race conditions can occur without response difference (e.g. DB double-write).")
         print("    Verifikasi efeknya langsung di DB/state (saldo? stok? duplikat row?).")
 
 if __name__ == "__main__":

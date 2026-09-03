@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-webtest.py — Ikona Exploit Battery (stdlib-only)
+webtest.py — NovaHaku Exploit Battery (stdlib-only)
 Usage:
   python webtest.py <url> [--modules a,b,c] [--cookie "k=v"] [--jwt TOKEN]
                    [--proxy http://127.0.0.1:8080] [--timeout 10]
@@ -378,7 +378,7 @@ def main():
         json.dump({"target": url, "findings": t.findings}, f, indent=2)
     print(f"\n[*] done — {len(t.findings)} findings -> {OUT}")
     if t.findings:
-        print("[*] verifikasi tiap [!!] secara manual — 200 OK bukan bukti exploit")
+        print("[*] verify each [!!] manually — 200 OK is not proof of exploit")
 
 if __name__ == "__main__":
     main()

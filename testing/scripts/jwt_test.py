@@ -159,7 +159,7 @@ def main():
         if not found:
             print("[-] not in common/wordlist secrets")
     else:
-        print(f"\n[i] alg {alg} — bukan HMAC, coba RS→HS confusion: re-sign pakai public key sebagai HMAC secret (butuh public key/cert target)")
+        print(f"\n[i] alg {alg} — not HMAC, try RS→HS confusion: re-sign with public key as HMAC secret (needs target public key/cert)")
 
     # --- forge admin hint ---
     print("\n[*] kalau secret ketemu, forge admin token:")
