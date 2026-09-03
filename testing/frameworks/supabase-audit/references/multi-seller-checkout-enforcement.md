@@ -12,7 +12,7 @@ On add, compare the cart's current seller vs the new product's seller. Different
 ```js
 const cartSellerId = this.getCartSellerId(); // seller of first valid cart item
 if (cartSellerId && cartSellerId !== product.sellerId) {
-  this.askConfirm(`Keranjang sudah berisi produk dari ${oldSeller.name}. Checkout hanya bisa 1 toko per pesanan. Kosongkan keranjang dan mulai dengan produk dari ${newSeller.name}?`, true)
+  this.askConfirm(`Cart already contains products from ${oldSeller.name}. Checkout can only have 1 store per order. Empty cart and start with products from ${newSeller.name}?`, true)
     .then(ok => { if (!ok) return; this.cart = [{ productId, quantity: cappedQty }]; this.saveState(); this.updateCartBadge(); });
   return;
 }
@@ -29,7 +29,7 @@ Inside `create_order` (SECURITY DEFINER), in the item loop with `for update` row
 
 ```sql
 if v_prod.seller_id <> p_seller_id then
-  raise exception 'Produk bukan milik toko ini';
+  raise exception 'Product does not belong to this store';
 end if;
 ```
 

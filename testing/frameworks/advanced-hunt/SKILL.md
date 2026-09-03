@@ -15,9 +15,9 @@ prerequisites:
 
 # Advanced Bug Hunting Techniques
 
-**Level up dari automated scanner → manual penetration tester**
+**Level up from automated scanner → manual penetration tester**
 
-Automation (skill: bug-hunting) cuma deteksi LOW/MEDIUM bugs ($50-1k). Untuk HIGH/CRITICAL ($10k-30k), butuh **manual exploitation skills**.
+Automation (skill: bug-hunting) only detects LOW/MEDIUM bugs ($50-1k). For HIGH/CRITICAL ($10k-30k), you need **manual exploitation skills**.
 
 ## When to Use
 

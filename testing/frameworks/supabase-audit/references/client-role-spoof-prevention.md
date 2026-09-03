@@ -45,14 +45,14 @@ AS $$ SELECT role FROM public.profiles WHERE id = auth.uid(); $$;
 ```js
 async enterAdminRoute() {
   if (!this.currentUser) {
-    this.showToast('Login dulu sebagai ADMIN untuk membuka panel ini.', 'warning');
+    this.showToast('Login as ADMIN first to access this panel.', 'warning');
     this.openAuthModal('login');
     return;
   }
   const serverRole = await this.verifyServerRole();
   if (serverRole !== 'ADMIN') {
     this.adminVerified = false;
-    this.showToast('Akses ditolak: akun kamu bukan ADMIN.', 'warning');
+    this.showToast('Access denied: your account is not ADMIN.', 'warning');
     history.replaceState(null, '', window.location.pathname + window.location.search);
     this.switchView('catalog');
     return;
@@ -95,7 +95,7 @@ Prevents flash before JS runs. JS reveals it only for verified admins.
 
 ## What the attacker CANNOT do (backend defense holds)
 
-- **Suspend users**: `admin_set_user_suspended` → `is_admin()` gate → raises "Hanya ADMIN yang bisa melakukan ini"
+- **Suspend users**: `admin_set_user_suspended` → `is_admin()` gate → raises "Only ADMIN can perform this action"
 - **Delete users**: `admin_delete_user` → same gate
 - **See other users' data**: RLS `profiles read own or admin` → `is_admin()` returns false for the real JWT → only own row returned
 - **Escalate own role**: `protect_admin_role` trigger blocks any role change to ADMIN
@@ -104,7 +104,7 @@ The attack is purely a **UI data exposure** — the attacker sees the dashboard 
 
 ## Verification after fix
 
-1. Login as BUYER → `#kasus` should redirect to catalog + toast "Akses ditolak"
+1. Login as BUYER → `#kasus` should redirect to catalog + toast "Access denied"
 2. Install fetch interceptor in console, set `role=ADMIN`, navigate to `#kasus` → still redirects (RPC returns BUYER)
 3. Login as ADMIN → `#kasus` opens dashboard normally
 4. Check `navAdminBtn` visibility: BUYER/SELLER = hidden, ADMIN = visible

@@ -1,6 +1,7 @@
 ---
 name: hunt-xss
 description: Hunting skill for xss vulnerabilities. Built from 174 public bug bounty reports. Use when hunting xss on any target. For markup injection that reflects raw HTML but does NOT execute JavaScript (no `<script>`/event-handler execution), see hunt-html-injection — escalate here once script execution is possible.
+author: SeaGull Security Lab
 sources: github, hackerone_public
 report_count: 174
 ---

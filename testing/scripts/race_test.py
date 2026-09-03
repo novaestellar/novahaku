@@ -70,6 +70,8 @@ def main():
         else:
             i += 1
 
+    if method == "POST" and data is None:
+        print('[warn] POST with no --data body; race condition may not trigger')
     print(f"[*] race: {method} {url}  x{n}  workers={workers}")
     opener = build_opener()
     results = []
@@ -89,10 +91,10 @@ def main():
     if len(sig_c) > 1:
         print("\n[!!] RESPONSES DIFFER — race condition candidate. Examples:")
         seen = set()
-        for st, sig, prev in results:
+        for st, sig, body_preview in results:
             if sig not in seen:
                 seen.add(sig)
-                print(f"  status={st} sig={sig} body={prev!r}")
+                print(f"  status={st} sig={sig} body={body_preview!r}")
     else:
         print("\n[-] all responses identical — no obvious race at response level")
         print("[i] note: race conditions can occur without response difference (e.g. DB double-write).")

@@ -32,15 +32,18 @@ def b64u(s):
 def b64u_encode(b):
     return base64.urlsafe_b64encode(b).rstrip(b"=").decode()
 
+_HASH_MAP = {
+    "HS256": hashlib.sha256,
+    "HS384": hashlib.sha384,
+    "HS512": hashlib.sha512,
+}
+
 def sign(header, payload, secret, alg):
+    digest = _HASH_MAP.get(alg)
+    if not digest:
+        return None
     data = (b64u_encode(header) + "." + b64u_encode(payload)).encode()
-    if alg == "HS256":
-        return b64u_encode(hmac.new(secret.encode(), data, hashlib.sha256).digest())
-    if alg == "HS384":
-        return b64u_encode(hmac.new(secret.encode(), data, hashlib.sha384).digest())
-    if alg == "HS512":
-        return b64u_encode(hmac.new(secret.encode(), data, hashlib.sha512).digest())
-    return None
+    return b64u_encode(hmac.new(secret.encode(), data, digest).digest())
 
 def request(url, token, cookie):
     ctx = ssl.create_default_context()
@@ -135,10 +138,11 @@ def main():
     # --- weak secret brute ---
     if alg.startswith("HS"):
         print(f"\n[*] trying {len(WEAK)} common secrets against {alg}...")
-        data = (parts[0] + "." + parts[1]).encode()
+        hdr_b = json.loads(b64u(parts[0]))
+        pay_b = json.loads(b64u(parts[1]))
         found = False
         for s in WEAK:
-            sig = b64u_encode(hmac.new(s.encode(), data, hashlib.sha256).digest()) if alg == "HS256" else None
+            sig = sign(hdr_b, pay_b, s, alg)
             if sig and sig == parts[2]:
                 print(f"[!!] WEAK SECRET FOUND: {s!r} — anyone can forge tokens")
                 found = True
@@ -151,7 +155,7 @@ def main():
                     s = line.strip()
                     if not s:
                         continue
-                    sig = b64u_encode(hmac.new(s.encode(), data, hashlib.sha256).digest()) if alg == "HS256" else None
+                    sig = sign(hdr_b, pay_b, s, alg)
                     if sig and sig == parts[2]:
                         print(f"[!!] SECRET FOUND in wordlist: {s!r}")
                         found = True

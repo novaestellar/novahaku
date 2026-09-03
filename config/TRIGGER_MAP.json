@@ -1,7 +1,7 @@
 {
   "web-testing": {
     "description": "Web application security testing triggers",
-    "keywords": ["sqli", "xss", "ssrf", "ssti", "csrf", "idor", "xxe", "jwt", "oauth", "api test", "pen test", "pentest", "nuclei", "burp", "sqlmap", "ffuf", "dirsearch", "nikto", "wpscan", "ffuf", "webshell", "rce", "lfi", "rfi", "upload bypass", "cors", "crlf", "open redirect", "subdomain takeover", "race condition", "mass assignment", "graphql", "grpc", "websocket"]
+    "keywords": ["sqli", "xss", "ssrf", "ssti", "csrf", "idor", "xxe", "jwt", "oauth", "api test", "pen test", "pentest", "nuclei", "burp", "sqlmap", "ffuf", "dirsearch", "nikto", "wpscan", "webshell", "rce", "lfi", "rfi", "upload bypass", "cors", "crlf", "open redirect", "subdomain takeover", "race condition", "mass assignment", "graphql", "grpc", "websocket"]
   },
   "prompt-attack": {
     "description": "LLM prompt injection / jailbreak triggers",

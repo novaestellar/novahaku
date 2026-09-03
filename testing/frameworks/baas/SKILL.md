@@ -18,7 +18,7 @@ the anon/publishable key is public and RLS is the whole backend. Battle-tested o
 
 ## When to use
 
-- User asks "cek security web ini" / audit a storefront or dashboard on Supabase.
+- User asks "check this web security" / audit a storefront or dashboard on Supabase.
 - Before shipping any Supabase frontend: RLS + RPCs + storage are the attack surface.
 
 ## Audit workflow (order matters — each pass assumes the last)

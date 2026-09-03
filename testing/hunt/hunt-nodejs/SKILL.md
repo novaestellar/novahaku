@@ -1,6 +1,7 @@
 ---
 name: hunt-nodejs
 description: Hunt Node.js specific vulnerabilities — Prototype Pollution → RCE chains (lodash/merge/assign), Express trust proxy misconfiguration, child_process/eval injection, template engine SSTI (EJS/Pug/Handlebars), path traversal in file servers, require() injection, environment variable exfil via /proc/self/environ. Use when target runs Node.js/Express/Fastify/NestJS/Koa.
+author: SeaGull Security Lab
 sources: hackerone_public, snyk_research, portswigger_research
 report_count: 24
 ---

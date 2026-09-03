@@ -1,6 +1,7 @@
 ---
 name: hunt-oauth
 description: Hunting skill for oauth vulnerabilities. Built from 19 public bug bounty reports. Use when hunting oauth on any target.
+author: SeaGull Security Lab
 sources: github, hackerone_public, salt_labs, descope, detectify_labs, harel_research
 report_count: 19
 ---

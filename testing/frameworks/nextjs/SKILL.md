@@ -110,7 +110,7 @@ Gambling/white-label Next.js apps often use a **multi-tenant API gateway** where
 - **Tokens get masked in terminal output** (`eyJhbG...xxxx`) — ALWAYS `curl -o resp.txt` and process via Python; never read tokens from stdout.
 - 200 + generic RSC body without `1:{...}` JSON = action rendered page / auth failed. Check for `Unauthorized` in JSON.
 - `{"code":400,"errors":"Validation failed"}` is generic — recover the schema from JS first (step 3), don't blind-guess.
-- 500 `Terjadi kesalahan yang tidak diketahui` on empty/invalid input = server error, not necessarily a vuln.
+- 500 `An unknown error occurred` on empty/invalid input = server error, not necessarily a vuln.
 - Registration may be restricted to specific email domains (zod `refine` on gmail/yahoo) — use a Gmail alias (`user+tag@gmail.com`) for test accounts.
 - Rate limits: keep probes polite; parallel bursts on money endpoints (redeem/withdraw) = race-condition candidates worth a separate test.
 

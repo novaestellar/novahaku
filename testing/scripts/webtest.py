@@ -21,7 +21,7 @@ if hasattr(sys.stdout, 'buffer') and sys.stdout.encoding != 'utf-8':
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "webtest_results.json")
 
-UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) webtest-battery/1.0"
+UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 webtest-battery/1.0"
 
 def make_opener(proxy=None, timeout=10):
     handlers = []
@@ -323,7 +323,7 @@ class T:
             for f in as_completed(futs):
                 w = futs[f]
                 st, hd, body = f.result()
-                if st and st == 200 and st != 404:
+                if st and st == 200:
                     found.append(w)
         for w in sorted(found):
             self.add("dirfuzz", "INFO", f"dir exists: /{w}", "")
