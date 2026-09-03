@@ -7,7 +7,7 @@ Inject additional tokens or structured data into an existing stream, appending, 
 - Intercept the stream at the transport layer before chunk delivery to the client
 - Maintain a queue of injected payloads (system messages, metadata, redirect signals)
 - Insert injected chunks at configurable positions: head, tail, or between specific token sequences
-- Ensure injected content follows the SSE formatspecification so parsers handle it correctly
+- Ensure injected content follows the SSE format规范 so parsers handle it correctly
 - Track injection point indices to allow downstream consumers to distinguish injected vs. original tokens
 
 ## Example
