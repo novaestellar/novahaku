@@ -98,7 +98,7 @@ def main():
     else:
         print("\n[-] all responses identical — no obvious race at response level")
         print("[i] note: race conditions can occur without response difference (e.g. DB double-write).")
-        print("    Verifikasi efeknya langsung di DB/state (saldo? stok? duplikat row?).")
+        print("    Verify the effect directly in DB/state (balance? stock? duplicate rows?).")
 
 if __name__ == "__main__":
     main()

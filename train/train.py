@@ -85,7 +85,7 @@ def test_provider_model(provider, model, query):
         result = subprocess.run(
             ["curl", "-s", "-m", "30", "-X", "POST",
              f"{provider['base_url']}/chat/completions",
-             "-H", f"Authorization: Bearer {provider['api_key']}",
+            "-H", f"Authorization: Bearer {provider['api_key']}"
              "-H", "Content-Type: application/json",
              "-d", payload],
             capture_output=True, text=True, timeout=35

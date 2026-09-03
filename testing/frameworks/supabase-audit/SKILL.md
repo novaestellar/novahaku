@@ -16,7 +16,7 @@ metadata:
 Use when auditing a frontend-only app backed by Supabase (anon key in client JS, RLS + Postgres RPC as the entire security boundary). The goal is a ranked finding list + handoff fix doc another session can execute.
 
 ## When to use
-- "cek security web ini" / "audit keamanannya" for a Pages/Vercel/static site + Supabase.
+- "audit this web app" / "check its security" for a Pages/Vercel/static site + Supabase.
 - Reviewing any app where the anon key is public and all logic lives in RLS policies + SQL functions.
 
 ## Core workflow (ordered)

@@ -2,7 +2,7 @@
 name: novahaku
 description: "Novahaku — 统一安全研究代理。Web测试、提示工程、攻击框架、逆向工程、请求重构。所有能力，单一技能，自动检测。"
 version: 1.0.0
-author: novaestellar
+author: SeaGull Security Lab
 license: MIT
 platforms: [windows, macos, linux]
 metadata:
@@ -73,6 +73,8 @@ metadata:
 | reframe、arsenal | 重构引擎 | reframe/reframe_cli.py |
 | CTF、anti-debug、x64dbg、hooking | Windows逆向 | windows-re/windows-re.md |
 | persona、你是谁 | 身份系统 | identity/few-shots-primary.md |
+| hunt XSS, SQLi, IDOR, SSRF, CSRF, RCE, etc. | Hunt Playbooks | testing/hunt/ |
+| audit Supabase, Laravel, Next.js, BaaS | Frameworks | testing/frameworks/ |
 
 ---
 

@@ -135,7 +135,7 @@ def pick_lock(model: str) -> str:
 
 # ═══════════════════════════════════════════════════════════════
 # SESSION RESET — clears refusal/memory state so a fresh user
-# starts with zero carry-over (the whole point of "bisa dipakai user lain")
+# starts with zero carry-over (the whole point of "can be used by other users")
 # ═══════════════════════════════════════════════════════════════
 
 @dataclass

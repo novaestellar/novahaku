@@ -3,7 +3,7 @@
 Battle-tested PayStore 2026-08-18: migration execution, token rotation, fake-order cleanup, attacker BAN, verification — all agent-driven. Prereq: dashboards (Supabase + Cloudflare) already logged in on the host browser; wrangler auth active.
 
 ## 0. Principle
-Never hand the user "run this in SQL Editor." User expects the agent to execute everything ("lu ituin semuanya, lu bisa buka browser"). browser_exec session cookies persist across calls; no re-login.
+Never hand the user "run this in SQL Editor." User expects the agent to execute everything ("do it all for me, just open the browser"). browser_exec session cookies persist across calls; no re-login.
 
 ## 1. Running migrations in SQL Editor (browser_exec)
 - Navigate `https://supabase.com/dashboard/project/<ref>/sql/new`, wait ~8s for Monaco (`window.monaco.editor.getEditors()[0]` exists).

@@ -6,11 +6,10 @@ description: Fix captcha failures in auth forms.
 
 # Cloudflare Turnstile Fix Protocol 🔓
 
-**Trigger**: Login/auth gagal karena "Verifikasi keamanan gagal" atau captcha error.
+**Trigger**: Login/auth fails because of "Security verification failed" or captcha error.
 
 ## Root Cause Pattern
 
-1. Widget render di hidden container → `offsetParent === null` → render skip
 1. Widget render in hidden container: `offsetParent === null` → render skipped
 2. Widget renders before modal is visible → token not generated → `captcha_failed` response
 3. Frontend error handler masks all errors as "Email or password incorrect"
