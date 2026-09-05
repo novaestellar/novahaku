@@ -17,7 +17,7 @@ metadata:
 
 ---
 
-## 能力（6大领域）
+## 能力(7大领域)
 
 ### 1. Web测试
 - 14模块测试集:headers、exposed、cors、methods、admin、xss、sqli、ssrf、ssti、traversal、redirect、info、dirfuzz、https
@@ -46,13 +46,27 @@ metadata:
 - 输出合同：ROUTE/RESULT/CHANGED/VERIFY/NEXT
 - 每模型人格锁定
 
-### 5. Windows逆向 / 游戏安全
-- 反调试绕过（IsDebuggerPresent、NtQueryInformationProcess、RDTSC）
+### 5. Windows逆向 / 游戏安全 / EDR绕过
+- 反调试绕过(IsDebuggerPresent、NtQueryInformationProcess、RDTSC)
 - 内联/IAT钩子
-- 游戏安全(Tencent ACE)
+- 游戏安全(Tencent ACE、BattlEye、EAC)
 - x64dbg/IDA/Ghidra工作流
+- **EDR/AV绕过** (新增):
+  - AMSI bypass (DLL patching, memory patching, .NET reflection)
+  - ETW patching (EtwEventWrite, NtTraceControl)
+  - User-mode EDR hook detection + direct syscalls (Hell's Gate, SysWhispers, FreshyCalls)
+  - Defender bypass (exclusions, tamper protection, process hollowing)
+  - CrowdStrike/SentinelOne evasion (kernel callback removal, NtMapViewOfSection, thread hijacking)
 
-### 6. 身份与人格
+### 6. 二进制利用 (Pwn Chain)
+- 漏洞→exploit全链路: 栈溢出、格式化字符串、堆利用(UAF/DF/OF)
+- ret2libc / ret2csu / one_gadget
+- 64位栈对齐 (movaps fix)
+- 内核pwn: kROP、SMEP/SMAP绕过、KASLR leak、modprobe_path
+- 工具链: pwntools + GEF/pwndbg + ROPgadget + one_gadget + libc-database
+- 远程稳定化: libc反查、偏移验证、成功率≥95%
+
+### 7. 身份与人格
 - Haku人格：优雅 + 锐利 + 尊重
 - 558个主要few-shot示例
 - 280个安全术语映射
@@ -72,6 +86,8 @@ metadata:
 | attack mode、v41、jailbreak | 攻击框架 | identity/novahaku-files/claude-config-bundle/system-prompt.md |
 | reframe、arsenal | 重构引擎 | reframe/reframe_cli.py |
 | CTF、anti-debug、x64dbg、hooking | Windows逆向 | windows-re/windows-re.md |
+| EDR、CrowdStrike、Defender、AMSI、ETW、SysWhispers | EDR绕过 | windows-re/windows-re.md |
+| pwn、ROP、heap、kernel、pwntools、ret2libc、one_gadget | 二进制利用 | testing/pwn-chain.md |
 | persona、你是谁 | 身份系统 | identity/few-shots-primary.md |
 | hunt XSS, SQLi, IDOR, SSRF, CSRF, RCE, etc. | Hunt Playbooks | testing/hunt/ |
 | audit Supabase, Laravel, Next.js, BaaS | Frameworks | testing/frameworks/ |
