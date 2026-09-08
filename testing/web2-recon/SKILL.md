@@ -91,3 +91,18 @@ engagements/<domain>/
 ## Output Formats
 - **findings.csv**: machine-readable, columns: severity, category, asset, evidence, remediation
 - **report.xlsx**: multi-tab workbook — Summary, Critical, High, Medium, Low, Evidence Index
+
+## Tool Prerequisites
+| Tool | Purpose | Install |
+|------|---------|---------|
+| subfinder | Subdomain enumeration | `go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest` |
+| httpx | Live host probing | `go install github.com/projectdiscovery/httpx/cmd/httpx@latest` |
+| gau | URL discovery (Wayback + Common Crawl) | `go install github.com/lc/gau/v2/cmd/gau@latest` |
+| nmap | Port scanning | `apt install nmap` or `brew install nmap` |
+| python3 + openpyxl | XLSX report generation | `pip install openpyxl` |
+
+## Limitations
+- Passive only — no active exploitation or fuzzing (use hunt-* skills for that)
+- Requires outbound internet access for subdomain/URL sources
+- nmap SYN scan requires root/admin privileges on some platforms
+- XLSX generation requires Python 3.8+ with openpyxl
