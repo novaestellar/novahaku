@@ -91,6 +91,14 @@ metadata:
 | persona、你是谁 | 身份系统 | identity/few-shots-primary.md |
 | hunt XSS, SQLi, IDOR, SSRF, CSRF, RCE, etc. | Hunt Playbooks | testing/hunt/ |
 | audit Supabase, Laravel, Next.js, BaaS | Frameworks | testing/frameworks/ |
+| OSINT, recon, passive recon, subdomain, WHOIS, CT logs, breach data | Passive OSINT | testing/offensive-osint/ |
+| email security, SPF, DKIM, DMARC, MX records | Email Domain Security | testing/email-domain-security/ |
+| cloud exposure, S3 bucket, Azure, GCP, GitHub Secrets | Cloud/SaaS Exposure | testing/cloud-saas-exposure/ |
+| identity fabric, Entra ID, Okta, user enumeration | Identity Provider Recon | testing/identity-provider-recon/ |
+| org attack surface, subsidiary, M&A, AS/9120 | Org Attack Surface | testing/org-attack-surface/ |
+| continuous monitoring, CT feeds, certificate tracking | Exposure Monitoring | testing/continuous-exposure-monitoring/ |
+| risk quantification, EPSS, SSVC, CVSS, DREAD | Risk Quantification | testing/exposure-risk-quantification/ |
+| web2-recon, recon pipeline, findings, XLSX report | Recon Pipeline | testing/web2-recon/ |
 
 ---
 
