@@ -78,7 +78,7 @@ metadata:
 - 公开数据源:GitHub/Pastebin/Shodan/Censys/Greynoise
 - CT日志分析、WHOIS/DNS查询
 - Credential泄露检查(HaveIBeenPwned、IntelX)
-- 与novaxinwei(v3)协同: novaxinwei主动抓取+WAF绕过 → novahaku被动侦察+漏洞利用
+- 与novaxinwei(v1.1.0)协同: novaxinwei主动抓取+WAF绕过 → novahaku被动侦察+漏洞利用
 
 ---
 
@@ -98,7 +98,7 @@ metadata:
 | persona、你是谁 | 身份系统 | identity/few-shots-primary.md |
 | hunt XSS, SQLi, IDOR, SSRF, CSRF, RCE, etc. | Hunt Playbooks | testing/hunt/ |
 | audit Supabase, Laravel, Next.js, BaaS | Frameworks | testing/frameworks/ |
-|| OSINT, recon, passive recon, subdomain, WHOIS, CT logs, breach data | Passive OSINT | testing/offensive-osint/ |
+| OSINT, recon, passive recon, subdomain, WHOIS, CT logs, breach data | Passive OSINT | testing/offensive-osint/ |
 | OSINT methodology, OSINT workflow, recon methodology | OSINT Methodology | testing/osint-methodology/ |
 | email security, SPF, DKIM, DMARC, MX records | Email Domain Security | testing/email-domain-security/ |
 | cloud exposure, S3 bucket, Azure, GCP, GitHub Secrets | Cloud/SaaS Exposure | testing/cloud-saas-exposure/ |
