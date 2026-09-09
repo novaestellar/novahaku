@@ -17,7 +17,7 @@ metadata:
 
 ---
 
-## 能力(7大领域)
+## 能力(8大领域)
 
 ### 1. Web测试
 - 14模块测试集:headers、exposed、cors、methods、admin、xss、sqli、ssrf、ssti、traversal、redirect、info、dirfuzz、https
@@ -37,7 +37,7 @@ metadata:
 - v41文言攻击提示（古典中文）
 - 5个注入面分析
 - 跨模型评估矩阵（8/8已验证）
-- 验证工具(test/test-novahaku.py)
+- 验证工具(attack/test/test-novahaku.py)
 - Hermes预填充集成
 
 ### 4. 重构引擎
@@ -162,7 +162,7 @@ cat testing/osint-methodology/SKILL.md
 
 | 约定 | 说明 |
 |------|------|
-| 数据传递 | JSON格式,文件在 `engagement/` 目录 |
+| 数据传递 | JSON格式,文件在 `engagements/` 目录 |
 | 目标命名 | 统一使用目标域名作根目录名 |
 | 上下文传递 | 通过Hermes skill chaining,用户意图自动路由 |
 | 互不侵入 | novaxinwei不写exploit代码,novahaku不写爬虫代码 |
