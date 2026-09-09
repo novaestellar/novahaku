@@ -49,3 +49,6 @@ runs/
 # Test results
 webtest_results.json
 training_results.json
+
+# Test output
+testing/**/engagements/
