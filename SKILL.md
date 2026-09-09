@@ -162,7 +162,7 @@ cat testing/osint-methodology/SKILL.md
 
 | 约定 | 说明 |
 |------|------|
-| 数据传递 | JSON格式,文件在 `engagements/` 目录 |
+| 数据传递 | novaxinwei输出stdout(JSON) → Hermes session context → novahaku接收 |
 | 目标命名 | 统一使用目标域名作根目录名 |
 | 上下文传递 | 通过Hermes skill chaining,用户意图自动路由 |
 | 互不侵入 | novaxinwei不写exploit代码,novahaku不写爬虫代码 |
