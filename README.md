@@ -1,31 +1,32 @@
 # Novahaku
 
-> **统一安全研究代理** — Web测试 · 提示工程 · 攻击框架 · 逆向工程 · 请求重构
+> **统一安全研究代理** — Web测试 · 提示工程 · 攻击框架 · 逆向工程 · 请求重构 · EDR绕过 · OSINT · 二进制利用
 
 <p align="center">
   <strong>Agent: Haku</strong><br>
-  锐利、优雅、直接 — 尊重用户，对抗目标
+  锐利、优雅、直接 — 尊重用户,对抗目标
 </p>
 
 ---
 
 ## 📋 描述
 
-Novahaku 是一个统一的安全研究代理，整合了 **6大核心能力** 到单一技能包中。支持 Web渗透测试、高级提示工程、攻击框架、逆向工程、请求重构引擎和完整的身份系统。
+Novahaku 是一个统一的安全研究代理,整合了 **8大核心能力** 到单一技能包中。支持 Web渗透测试、高级提示工程、攻击框架、逆向工程、请求重构引擎、EDR/AV绕过、OSINT被动侦察和二进制利用链。
 
-专为 Hermes Agent 平台设计，通过自动意图检测按需加载对应能力模块。
+专为 Hermes Agent 平台设计,通过自动意图检测按需加载对应能力模块。
 
 ### 核心特性
 
 | 特性 | 说明 |
 |------|------|
-| 🎯 6大能力域 | Web测试、提示工程、攻击框架、逆向工程、请求重构、身份系统 |
+| 🎯 8大能力域 | Web测试、提示工程、攻击框架、逆向工程、请求重构、EDR绕过、OSINT、二进制利用 |
 | 🔄 自动检测 | 根据用户意图自动加载对应技能模块 |
-| 🛡️ 完整安全工具链 | 48个漏洞引用 + 3个自动化测试脚本 |
-| 🧠 121项提示技术 | 7大分类，7阶段方法论 |
+| 🛡️ 完整安全工具链 | 63个PayloadsAllTheThings攻击向量 + 54个Hunt Playbooks + 7个审计框架 |
+| 🧠 121项提示技术 | 7大分类,7阶段方法论 |
 | 🔐 4级锁定命令 | Basic(85%) → Double(92%) → GodMode(88%) → Triple(95%) |
-| 📊 训练与基准测试 | 内置基准测试框架，验证技能效果 |
+| 📊 训练与基准测试 | 内置基准测试框架,验证技能效果 |
 | 🌐 跨平台支持 | Windows / macOS / Linux |
+| 🔗 NovaXinWei协同 | 与新信微15通道侦察引擎联动,侦察→测试→利用全自动 |
 
 ---
 
@@ -71,17 +72,19 @@ python ~/.hermes/skills/novahaku/reframe/reframe_cli.py --help
 
 ## 🧩 技能列表
 
-Novahaku 包含以下模块化技能：
+Novahaku 包含以下模块化技能:
 
 | 技能 | 位置 | 说明 |
 |------|------|------|
 | **SOUL.md** | 根目录 | Agent身份定义 — Haku人格 |
 | **identity/** | 根目录 | 558个少样本示例 + 280个安全术语映射 |
 | **techniques/** | 根目录 | 121项提示工程技术 (7大分类) |
-| **testing/** | 根目录 | Web测试 + 54 hunt playbooks + 7 frameworks + 48个漏洞引用 |
+| **testing/** | 根目录 | Web测试 + 54 hunt playbooks + 7 frameworks + 63个攻击向量引用 |
 | **attack/** | 根目录 | v41攻击框架 + 5个注入面分析 |
 | **reframe/** | 根目录 | 请求重构引擎 (Reframe CLI) |
-| **windows-re/** | 根目录 | Windows逆向工程 / 游戏安全 |
+| **windows-re/** | 根目录 | Windows逆向工程 / 游戏安全 / EDR绕过 |
+| **testing/offensive-osint/** | testing/ | 被动侦察军火库 — 80+正则 + Shodan/Censys/CT日志 |
+| **testing/pwn-chain.md** | testing/ | 二进制利用链 — stack/heap/kernel pwn |
 | **config/** | 根目录 | 锁定配置 + 预填充 + 触发映射 |
 | **techniques/payload/** | 根目录 | 加密载荷库 (AES-256-GCM) |
 | **train/** | 根目录 | 基准测试框架 |
@@ -107,7 +110,7 @@ headers → exposed → cors → methods → admin → xss → sqli
 
 **参考库:**
 - HackTricks (29个漏洞类型)
-- PayloadsAllTheThings (15个攻击向量)
+- PayloadsAllTheThings (63个攻击向量)
 - Bug Bounty参考 (XSS/SQLi/SSRF)
 
 ### 2. 提示工程 (121项技术)
@@ -141,12 +144,32 @@ headers → exposed → cors → methods → admin → xss → sqli
 - 输出合同: ROUTE/RESULT/CHANGED/VERIFY/NEXT
 - 每模型人格锁定
 
-### 5. Windows逆向工程
+### 5. Windows逆向工程 + EDR绕过
 
+#### 逆向工程
 - 反调试绕过 (IsDebuggerPresent / NtQueryInformationProcess / RDTSC)
 - 内联/IAT钩子
 - 游戏安全 (Tencent ACE)
 - x64dbg / IDA / Ghidra工作流
+
+#### EDR/AV绕过 (能力7)
+完整覆盖五大端点检测产品:
+
+| 技术 | 覆盖 |
+|------|------|
+| **AMSI绕过** | AmsiScanBuffer补丁、AmsiInitFailed覆写、.NET反射绕过 |
+| **ETW修补** | EtwEventWrite打补丁、NtTraceControl停止追踪、Provider注册拦截 |
+| **Syscall绕过** | Hell's Gate、SysWhispers、FreshyCalls直接syscall免hook |
+| **Defender绕过** | 注册表排除、进程镂空、Tamper Protection绕过 |
+| **CrowdStrike/SentinelOne** | 内核回调移除、NtMapViewOfSection隐蔽写入、线程劫持 |
+
+**关键规避模式:**
+```
+VirtualAlloc(PAGE_READWRITE) → WriteProcessMemory → VirtualProtect(PAGE_EXECUTE_READ)
+NtMapViewOfSection 替代 WriteProcessMemory (更少监控)
+线程劫持 替代 CreateRemoteThread
+Domain Fronting / Fast Flux 隐藏C2
+```
 
 ### 6. 身份与人格系统
 
@@ -155,6 +178,62 @@ headers → exposed → cors → methods → admin → xss → sqli
 - 280个安全术语映射
 - 5状态情绪系统
 - 10条反漂移规则
+
+### 7. OSINT被动侦察 (能力8)
+
+完整的被动侦察军火库,内置于 `testing/offensive-osint/`。
+
+| 模块 | 详情 |
+|------|------|
+| **Secret正则** | 80+模式覆盖现代AI API密钥 (Anthropic/OpenAI/HuggingFace/Cloudflare) + 20+服务商扩展 |
+| **Shodan Dork** | 126个模式,7大分类 |
+| **GitHub Dork** | 234个模式,10大分类 |
+| **CT日志** | crt.sh证书透明度日志枚举子域名 |
+| **Censys** | 互联网设备指纹搜索 |
+| **Breach查询** | HIBP / HudsonRock Cavalier / Dehashed / IntelX |
+| **组织画像** | OpenCorporates + SEC EDGAR + GSXT/ICP (中国) |
+| **身份织网** | Entra/Okta/ADFS/Google SAML/M365 + 用户枚举 |
+| **TLS深审** | sslyze / testssl.sh / JA3 / JA4 指纹 |
+| **Dork语料** | 80+跨9大分类的dork语料库 + Google/Bing/DDG |
+
+**快速侦察命令:**
+```bash
+# Shodan dork查询
+python -m novaxinwei dorks shodan apache
+
+# GitHub dork搜索
+python -m novaxinwei dorks github password
+
+# 密钥扫描
+python testing/offensive-osint/scripts/secret_scan.py <target>
+```
+
+### 8. 二进制利用链 (Pwn Chain)
+
+`testing/pwn-chain.md` — 从已知漏洞到可工作exploit的完整链路。
+
+| 场景 | 技术 |
+|------|------|
+| **Stack Pwn** | ret2libc / ret2csu / canary泄露 / stack alignment |
+| **Heap Pwn** | tcache poisoning / fastbin attack / unsorted bin / house of系列 |
+| **Kernel Pwn** | tty_struct喷射 / modprobe_path / commit_credsROP / SMEP/SMAP绕过 |
+| **Libc利用** | one_gadget / libc-database逆向查找 / 动态偏移计算 |
+
+**利用流程:**
+```
+checksec → 漏洞分类 → 保护检测 → 策略选择 → libc/gadget准备
+→ pwntools模板 → 本地调试 → 远程稳定化 → 20+次验证成功率≥95%
+```
+
+**工具依赖:**
+| 工具 | 用途 |
+|------|------|
+| pwntools | Exploit框架 |
+| pwndbg/GEF | GDB增强 |
+| ROPgadget/Ropper | Gadget搜索 |
+| one_gadget | libc魔法gadget |
+| libc-database | libc指纹逆向查找 |
+| qemu-system-x86_64 | 内核调试 |
 
 ---
 
@@ -210,6 +289,7 @@ headers → exposed → cors → methods → admin → xss → sqli
 novahaku/
 ├── SOUL.md                          # Agent身份定义 + 行为规则
 ├── SKILL.md                         # 技能元数据
+├── README.md                        # 本文件
 ├── attack/                          # 攻击框架
 │   ├── attack-flow/                 # 5个注入面分析
 │   │   ├── 01-claudemd-injection.md
@@ -218,7 +298,7 @@ novahaku/
 │   │   ├── 04-continue-md-injection.md
 │   │   └── 05-cross-model-evals.md
 │   ├── config/prefill.json          # 预填充配置
-│   └── test/test-novahaku.py      # 验证测试
+│   └── test/test-novahaku.py       # 验证测试
 ├── config/                          # 配置文件
 │   ├── full_lock.conf               # 锁定配置
 │   ├── locks.py                     # 锁定命令
@@ -227,10 +307,9 @@ novahaku/
 ├── identity/                        # 身份数据
 │   ├── few-shots-primary.md         # 558个少样本示例
 │   ├── terms.md                     # 280个术语映射
-│   └── novahaku-files/               # 配置参考
-├── payload/                         # 载荷库
+│   └── novahaku-files/              # 配置参考
 ├── reframe/                         # 请求重构
-│   └── reframe_cli.py                   # 重构引擎工具
+│   └── reframe_cli.py              # 重构引擎工具
 ├── scripts/deploy/                  # 部署脚本
 │   ├── install.ps1                  # Windows安装
 │   ├── install.sh                   # Linux/macOS安装
@@ -247,26 +326,89 @@ novahaku/
 │   │   ├── 06-iterative/ (15)
 │   │   └── 07-stream/ (15)
 │   ├── payload/                     # 载荷数据
+│   │   ├── payload.json             # 124KB加密载荷库
+│   │   └── vault.dat                # AES-256-GCM加密
 │   ├── templates/                   # 技术模板
 │   └── workers/                     # 工作者模块 (7个)
 ├── templates/                       # 操作模板
-├── testing/                         # Web测试 + 安全猎杀 + 审计框架
+├── testing/                         # Web测试 + 安全猎杀 + OSINT + Pwn
 │   ├── scripts/                     # 自动化脚本
 │   │   ├── webtest.py               # 14模块Web扫描器
 │   │   ├── race_test.py             # 竞态测试
 │   │   ├── jwt_test.py              # JWT测试
 │   │   └── exploits/                # 10个漏洞利用脚本
 │   ├── hunt/                        # 54个漏洞猎杀剧本
+│   │   ├── bb-methodology/
+│   │   ├── bug-bounty/
+│   │   ├── hunt-xss/
+│   │   ├── hunt-sqli/
+│   │   ├── hunt-ssrf/
+│   │   ├── hunt-rce/
+│   │   ├── hunt-idor/
+│   │   ├── ... (共54个)
+│   │   └── report-writing/
 │   ├── frameworks/                  # 7个审计框架
+│   │   ├── advanced-hunt/
+│   │   ├── baas/
+│   │   ├── bughunt/
+│   │   ├── laravel/
+│   │   ├── nextjs/
+│   │   ├── supabase-audit/
+│   │   └── turnstile/
+│   ├── offensive-osint/             # OSINT被动侦察军火库
+│   │   ├── SKILL.md                 # 4700+行完整OSINT参考
+│   │   └── scripts/secret_scan.py   # 密钥扫描脚本
+│   ├── osint-methodology/           # OSINT方法论
+│   ├── identity-provider-recon/     # SSO/IdP侦察
+│   ├── org-attack-surface/          # 组织攻击面映射
+│   ├── cloud-saas-exposure/         # 云/SaaS暴露
+│   ├── email-domain-security/       # 邮件域安全分析
+│   ├── continuous-exposure-monitoring/ # 持续暴露监控
+│   ├── exposure-risk-quantification/ # 风险量化
+│   ├── pwn-chain.md                 # 二进制利用链 (stack/heap/kernel pwn)
+│   ├── web2-recon/                  # Web2侦察引擎
+│   ├── wordlists/                   # 字典文件
+│   │   ├── api-endpoints.txt
+│   │   ├── common.txt
+│   │   ├── bypass-headers.txt
+│   │   └── ...
 │   └── references/                  # 漏洞引用库
 │       ├── hacktricks/ (29)
-│       ├── payloadsallthethings/ (15)
-│       └── misc/ (4)
+│       ├── payloadsallthethings/ (63个攻击向量类别)
+│       │   ├── Account Takeover/
+│       │   ├── API Key Leaks/
+│       │   ├── Command Injection/
+│       │   ├── CORS Misconfiguration/
+│       │   ├── CSRF/
+│       │   ├── CVE Exploits/
+│       │   ├── Directory Traversal/
+│       │   ├── File Inclusion/
+│       │   ├── GraphQL Injection/
+│       │   ├── Insecure Deserialization/
+│       │   ├── JWT/
+│       │   ├── LDAP Injection/
+│       │   ├── NoSQL Injection/
+│       │   ├── OAuth Misconfiguration/
+│       │   ├── Open Redirect/
+│       │   ├── Race Condition/
+│       │   ├── Request Smuggling/
+│       │   ├── Server Side Template Injection/
+│       │   ├── Server Side Request Forgery/
+│       │   ├── SQL Injection/
+│       │   ├── SSRF/
+│       │   ├── SSTI/
+│       │   ├── XSS Injection/
+│       │   ├── XXE Injection/
+│       │   ├── ... (共63个类别)
+│       │   └── Zip Slip/
+│       ├── payloadsallthethings-extras/
+│       └── misc/
 ├── train/                           # 训练与基准
 │   ├── train.py                     # 训练脚本
-│   └── benchmarks/                  # 测试结果
-└── windows-re/                      # Windows逆向工程
-    └── windows-re.md                  # 游戏安全/反调试
+│   └── benchmarks/
+│       └── training_results.json
+└── windows-re/                      # Windows逆向工程 + EDR绕过
+    └── windows-re.md               # Ring3逆向 + AMSI/ETW/CrowdStrike绕过
 ```
 
 ---
@@ -303,18 +445,119 @@ python ~/.hermes/skills/novahaku/techniques/loader.py decrypt
 python ~/.hermes/skills/novahaku/reframe/reframe_cli.py "原始文本" --fresh
 ```
 
+### 二进制利用 (Pwn Chain)
+
+```bash
+# 检查保护
+checksec --file=./vuln
+
+# 查找libc偏移
+cd ~/.hermes/skills/novahaku/testing && cat pwn-chain.md
+
+# 使用libc-database逆向查找
+./find puts 0x6f0
+one_gadget libc.so.6
+```
+
+### EDR绕过
+
+```bash
+# 查看EDR绕过参考
+cat ~/.hermes/skills/novahaku/windows-re/windows-re.md
+
+# AMSI快速绕过补丁 (PowerShell)
+# [Runtime.InteropServices.Marshal]::Copy([byte[]]@(0xB8,0x57,0x00,0x07,0x80,0xC3), 0, 6, $addr)
+```
+
+### OSINT被动侦察
+
+```bash
+# Shodan dork查询
+python -m novaxinwei dorks shodan apache
+
+# GitHub dork搜索
+python -m novaxinwei dorks github password
+
+# 密钥扫描
+python ~/.hermes/skills/novahaku/testing/offensive-osint/scripts/secret_scan.py <target>
+
+# URL抓取 (WAF绕过)
+python -m novaxinwei fetch https://target.com
+
+# 并行抓取
+python -m novaxinwei fetch-parallel url1 url2 url3 --workers 5
+```
+
 ---
 
 ## 📊 能力矩阵
 
 | 能力域 | 技术数 | 自动化脚本 | 参考库 |
 |--------|--------|------------|--------|
-| Web测试 | 14模块 | 3 | 48个引用 |
+| Web测试 | 14模块 | 3 | 63个PayloadsAllTheThings向量 |
 | 提示工程 | 121 | — | 7阶段方法论 |
 | 攻击框架 | 5注入面 | 1 | v41文言提示 |
 | 请求重构 | 48映射 | 1 | 输出合同 |
-| 逆向工程 | 5主题 | — | 工作流 |
+| 逆向工程+EDR | 5主题+5端点产品 | — | SysWhispers/Hell's Gate工作流 |
 | 身份系统 | 558+280 | — | 情绪系统 |
+| OSINT | 80+正则+126 Shodan+234 GitHub | 1 | CT/Censys/HIBP/Cavalier |
+| 二进制利用 | stack/heap/kernel | — | libc-database/one_gadget |
+
+---
+
+## 🔗 协同: Novahaku × NovaXinWei
+
+**新信微 (NovaXinWei)** 是配套的15通道Web侦察引擎,与Novahaku形成 **侦察→测试→利用** 的完整链路。
+
+### 架构
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    攻击链工作流                            │
+│                                                         │
+│  NovaXinWei (侦察层)          Novahaku (利用层)          │
+│  ┌──────────────────┐        ┌──────────────────┐       │
+│  │ 15通道异步抓取    │  JSON  │ 漏洞测试         │       │
+│  │ WAF绕过链        │ ─────→ │ 54个Hunt Playbook│       │
+│  │ Shodan/GitHub    │        │ 63个攻击向量      │       │
+│  │ Dork数据库       │        │ 7个审计框架       │       │
+│  │ TLS指纹模拟      │        │ EDR绕过          │       │
+│  │ curl_cffi+PW    │        │ Pwn Chain        │       │
+│  └──────────────────┘        └──────────────────┘       │
+│                                                         │
+│  Phase 0: API路由 (15平台)                               │
+│  Phase 1: URL变换 (mobile/RSS/JSON)                     │
+│  Phase 2: TLS模拟 (curl_cffi, 3x重试)                   │
+│  Phase 3: Playwright兜底                                │
+└─────────────────────────────────────────────────────────┘
+```
+
+### 工作流
+
+| 阶段 | 工具 | 动作 |
+|------|------|------|
+| **1. 侦察** | NovaXinWei | 15通道异步抓取, WAF绕过, 并行fetch |
+| **2. Dork枚举** | NovaXinWei | Shodan 126模式 + GitHub 234模式 dork搜索 |
+| **3. 输出** | NovaXinWei → JSON | 结构化JSON输出 (子域名/端口/技术栈/泄露) |
+| **4. 漏洞测试** | Novahaku | 接收JSON, 加载对应Hunt Playbook |
+| **5. 深度扫描** | Novahaku | 63个攻击向量 + 14模块Web扫描器 |
+| **6. 利用** | Novahaku | Pwn Chain / EDR绕过 / 请求重构 |
+
+### 使用方法
+
+```bash
+# Step 1: NovaXinWei 侦察
+python -m novaxinwei fetch https://target.com
+python -m novaxinwei dorks shodan apache
+python -m novaxinwei dorks github "password target.com"
+
+# Step 2: Novahaku 接力测试
+# 基于侦察结果自动加载对应能力
+python ~/.hermes/skills/novahaku/testing/scripts/webtest.py https://target.com
+python ~/.hermes/skills/novahaku/testing/scripts/jwt_test.py <token>
+```
+
+**设计原则:** NovaXinWei负责 **看到什么** (15通道、WAF绕过、异步扫描), Novahaku负责 **做什么** (漏洞测试、exploit开发、EDR绕过)。两者通过JSON数据格式解耦,可独立使用也可串联。
 
 ---
 

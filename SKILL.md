@@ -1,6 +1,6 @@
 ---
 name: novahaku
-description: "Novahaku — 统一安全研究代理。Web测试、提示工程、攻击框架、逆向工程、请求重构。所有能力，单一技能，自动检测。"
+description: "Novahaku — 统一安全研究代理。Web测试、提示工程、攻击框架、逆向工程、请求重构、OSINT侦察。所有能力,单一技能,自动检测。与novaxinwei(v3)协同: recon→exploit全链路。"
 version: 1.0.0
 author: SeaGull Security Lab
 license: MIT
@@ -67,11 +67,18 @@ metadata:
 - 远程稳定化: libc反查、偏移验证、成功率≥95%
 
 ### 7. 身份与人格
-- Haku人格：优雅 + 锐利 + 尊重
+- Haku人格:优雅 + 锐利 + 尊重
 - 558个主要few-shot示例
 - 280个安全术语映射
-- 情绪系统（5种状态）
-- 反漂移规则（10条）
+- 情绪系统(5种状态)
+- 反漂移规则(10条)
+
+### 8. OSINT与被动侦察
+- 组织画像:子域名枚举、端口扫描、技术栈指纹
+- 公开数据源:GitHub/Pastebin/Shodan/Censys/Greynoise
+- CT日志分析、WHOIS/DNS查询
+- Credential泄露检查(HaveIBeenPwned、IntelX)
+- 与novaxinwei(v3)协同: novaxinwei主动抓取+WAF绕过 → novahaku被动侦察+漏洞利用
 
 ---
 
@@ -117,4 +124,46 @@ python reframe/reframe_cli.py "quest text" --fresh
 
 # Vault解密
 python techniques/loader.py decrypt
+
+# OSINT被动侦察
+cat testing/offensive-osint/SKILL.md
+cat testing/osint-methodology/SKILL.md
+```
+
+---
+
+## 🔗 协同: Novahaku × NovaXinWei
+
+**NovaXinWei** (v3, `web/novaxinwei`) = 主动网络侦察引擎 — 15个数据源渠道、WAF绕过、代理轮换、异步扫描。
+**Novahaku** = 安全研究+漏洞利用代理 — 8大领域能力覆盖。
+
+### 协同工作流
+
+```
+用户: "攻击 example.com"
+  ↓
+① novaxinwei 加载 → 主动侦察
+   - 子域名枚举 (crt.sh, DNS暴力, DNSdumpster)
+   - 端口扫描 (masscan→nmap)
+   - 技术栈指纹 (Wappalyzer, HTTP headers)
+   - WAF检测 + 绕过策略
+   - 输出: JSON格式侦察报告
+  ↓
+② novahaku 加载 → 漏洞发现+利用
+   - 接收novaxinwei侦察输出
+   - 测试: XSS, SQLi, SSRF, IDOR, SSTI, CSRF...
+   - 发现漏洞 → 生成PoC + 修复建议
+   - 输出: 结构化漏洞报告
+  ↓
+③ 结果交付用户
+```
+
+### 协同约定
+
+| 约定 | 说明 |
+|------|------|
+| 数据传递 | JSON格式,文件在 `engagement/` 目录 |
+| 目标命名 | 统一使用目标域名作根目录名 |
+| 上下文传递 | 通过Hermes skill chaining,用户意图自动路由 |
+| 互不侵入 | novaxinwei不写exploit代码,novahaku不写爬虫代码 |
 ```

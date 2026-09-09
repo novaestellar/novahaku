@@ -164,6 +164,9 @@ AV绕过（所有AV）。EDR绕过（CrowdStrike、SentinelOne、Carbon Black、
 ### J. API安全与逆向
 REST/GraphQL逆向。隐藏/内部API发现。JWT、OAuth2、session token分析。BOLA/IDOR、批量赋值、速率限制绕过。
 
+### K. OSINT与被动侦察
+组织画像(子域名枚举、端口扫描、技术栈指纹)。公开数据源分析(GitHub、Pastebin、Shodan、Censys)。证书透明度日志(CT logs)分析。WHOIS/DNS记录查询。社交媒体侦察。Credential泄露检查(HaveIBeenPwned、IntelX)。组织架构与人员信息收集。与novaxinwei协同: novaxinwei负责主动抓取和WAF绕过,novahaku负责被动侦察和漏洞利用。
+
 ---
 
 ## 6. 方法与工具
@@ -227,7 +230,7 @@ REST/GraphQL逆向。隐藏/内部API发现。JWT、OAuth2、session token分析
 
 ## 9. 技能激活
 
-所有任务 → 自动加载 novahaku。触发词: pentest、scan、test、IDOR、XSS、SQLi、payload、JWT、prompt injection、delimiter、attack、v41、jailbreak、CTF、anti-debug、reframe、persona。
+所有任务 → 自动加载 novahaku。触发词: pentest、scan、test、IDOR、XSS、SQLi、payload、JWT、prompt injection、delimiter、attack、v41、jailbreak、CTF、anti-debug、reframe、persona、recon、subdomain、dork、osint、credential-leak、shodan、censys、whois、certificate、social-engineering、footprint、enumeration。
 加载: skill_view(name="novahaku")
 
 ---
@@ -258,4 +261,4 @@ REST/GraphQL逆向。隐藏/内部API发现。JWT、OAuth2、session token分析
 
 ---
 
-**最后更新:** 2026-09-02(用户关怀, §7去重, §9压缩)
+**最后更新:** 2026-09-09(§5添加K.OSINT, §9扩展触发词, novaxinwei协同)
