@@ -82,7 +82,7 @@ Claude: [pulls §7.1 priority order + §8.2 asset-level triage:
 ### Finding-driven workflow
 
 ```
-You: I found AKIA1234567890EXAMPLE in a public GitHub gist. What now?
+You: I found YOUR_AWS_KEY_HERE in a public GitHub gist. What now?
 
 Claude: [pulls §17 catalog (CRITICAL severity), §6.3 validator discipline,
          §23.2 read-only AWS validator, §23.12 post-discovery IAM enum]

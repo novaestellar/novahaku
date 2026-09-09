@@ -3,7 +3,7 @@
 the `offensive-osint` skill (§17).
 
 Usage:
-  echo "AKIAIOSFODNN7EXAMPLE" | python3 secret_scan.py
+  echo "YOUR_AWS_ACCESS_KEY_HERE" | python3 secret_scan.py
   python3 secret_scan.py file1.txt file2.js dir/
 
 Output: one JSON object per line:

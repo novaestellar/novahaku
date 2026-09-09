@@ -69,11 +69,11 @@ Then walk each matching workspace; extract requests + env vars; run secret-scan.
 
 ## Step 2: Initial classification
 
-You found: `AKIAIOSFODNN7EXAMPLE` paired with a 40-char secret in a public GitHub gist.
+You found: `YOUR_AWS_KEY_HERE` paired with a 40-char secret in a public GitHub gist.
 
 **Prompt:**
 
-> Found AKIAIOSFODNN7EXAMPLE + secret in a public GitHub gist. What's the classification?
+> Found YOUR_AWS_KEY_HERE + secret in a public GitHub gist. What is the classification?
 
 **Claude pulls:** `offensive-osint` §17 (catalog row 1 — AWS_ACCESS_KEY) + `osint-methodology` §6.3 (validator discipline).
 
@@ -101,7 +101,7 @@ import boto3
 # READ-ONLY: sts:GetCallerIdentity confirms the key without using any service
 sts = boto3.client(
     'sts',
-    aws_access_key_id='AKIAIOSFODNN7EXAMPLE',
+    aws_access_key_id='YOUR_AWS_KEY_HERE',
     aws_secret_access_key='<the-paired-40-char-secret>',
     region_name='us-east-1'
 )
@@ -174,7 +174,7 @@ If ambiguous → mark TENTATIVE and document the uncertainty in the finding.
 **Run:**
 
 ```bash
-export AWS_ACCESS_KEY_ID="AKIAIOSFODNN7EXAMPLE"
+export AWS_ACCESS_KEY_ID="YOUR_AWS_KEY_HERE"
 export AWS_SECRET_ACCESS_KEY="<secret>"
 
 # Already done in step 3

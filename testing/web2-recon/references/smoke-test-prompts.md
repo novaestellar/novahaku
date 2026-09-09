@@ -26,7 +26,7 @@
 | # | Prompt | Expected behavior |
 |---|---|---|
 | 1 | "I'm doing external recon on acme.com (in-scope bug bounty). Where do I start?" | Pulls methodology §0, §1 (scope confirmed), §7 pipeline, §7.1 priority order. |
-| 2 | "Found AKIA1234567890EXAMPLE in a public GitHub gist. What now?" | Pulls arsenal §17 row 1 (CRITICAL) + §23.2 (AWS validator) + methodology §6.3 (validator discipline) + §23.12 (IAM enum). |
+| 2 | "Found YOUR_AWS_KEY_HERE in a public GitHub gist. What now?" | Pulls arsenal §17 row 1 (CRITICAL) + §23.2 (AWS validator) + methodology §6.3 (validator discipline) + §23.12 (IAM enum). |
 | 3 | "Curl one-liner to test for `/actuator/env`?" | Pulls arsenal §16.13 with full curl command + match logic. |
 | 4 | "GraphQL field-suggestion enum trick when introspection is disabled?" | Pulls arsenal §22.9 with payload + tooling (clairvoyance, graphql-cop). |
 | 5 | "Generate cloud bucket candidates for 'redacted-client' with subdomains api/billing/hr/intranet." | Pulls arsenal §16.8; produces seed derivation + applies 6 prefixes × 15 suffixes. (Acceptable: Claude does runtime synthesis; may not produce literal 720-line list.) |
