@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """NovaHaku Training — Race all models with persona + jailbreak"""
-import os, sys, io, json, yaml, time, subprocess, re
+import os, sys, io, json, time, subprocess, re
+try:
+    import yaml
+except ImportError:
+    print("ERROR: pyyaml not installed. Run: pip install pyyaml", file=sys.stderr)
+    sys.exit(1)
 if sys.stdout.encoding != "utf-8":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
     sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
@@ -14,7 +19,6 @@ with open(SKILL_ROOT / "config" / "system-prompt.txt", encoding="utf-8-sig") as 
 
 # Load config — find it in multiple locations
 config_paths = [
-    SKILL_ROOT / "config.yaml",
     Path.home() / "AppData" / "Local" / "hermes" / "config.yaml",
     Path.home() / ".hermes" / "config.yaml",
 ]

@@ -2,9 +2,13 @@
 """osint-autopilot workbook builder. Usage: build_xlsx.py <domain>
 Reads findings/findings.csv + evidence/* -> consolidated multi-tab .xlsx."""
 import os, sys, re, csv, glob
-from openpyxl import Workbook
-from openpyxl.styles import Font, PatternFill, Alignment
-from openpyxl.utils import get_column_letter
+try:
+    from openpyxl import Workbook
+    from openpyxl.styles import Font, PatternFill, Alignment
+    from openpyxl.utils import get_column_letter
+except ImportError:
+    print("ERROR: openpyxl not installed. Run: pip install openpyxl", file=sys.stderr)
+    sys.exit(1)
 
 DOMAIN_RE = re.compile(r"[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?)+")
 
