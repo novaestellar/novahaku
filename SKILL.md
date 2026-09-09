@@ -1,7 +1,7 @@
 ---
 name: novahaku
-description: "Novahaku — 统一安全研究代理。Web测试、提示工程、攻击框架、逆向工程、请求重构、OSINT侦察。所有能力,单一技能,自动检测。与novaxinwei(v3)协同: recon→exploit全链路。"
-version: 1.0.0
+description: "Novahaku — 统一安全研究代理。Web测试、提示工程、攻击框架、逆向工程、请求重构、OSINT侦察。所有能力,单一技能,自动检测。与novaxinwei(v1.1.0)协同: recon→exploit全链路。"
+version: 1.1.0
 author: SeaGull Security Lab
 license: MIT
 platforms: [windows, macos, linux]
@@ -98,7 +98,7 @@ metadata:
 | persona、你是谁 | 身份系统 | identity/few-shots-primary.md |
 | hunt XSS, SQLi, IDOR, SSRF, CSRF, RCE, etc. | Hunt Playbooks | testing/hunt/ |
 | audit Supabase, Laravel, Next.js, BaaS | Frameworks | testing/frameworks/ |
-|| OSINT, recon, passive recon, subdomain, WHOIS, CT logs, breach data | Passive OSINT | testing/offensive-osint/ ||
+|| OSINT, recon, passive recon, subdomain, WHOIS, CT logs, breach data | Passive OSINT | testing/offensive-osint/ |
 | OSINT methodology, OSINT workflow, recon methodology | OSINT Methodology | testing/osint-methodology/ |
 | email security, SPF, DKIM, DMARC, MX records | Email Domain Security | testing/email-domain-security/ |
 | cloud exposure, S3 bucket, Azure, GCP, GitHub Secrets | Cloud/SaaS Exposure | testing/cloud-saas-exposure/ |
@@ -134,7 +134,7 @@ cat testing/osint-methodology/SKILL.md
 
 ## 🔗 协同: Novahaku × NovaXinWei
 
-**NovaXinWei** (v3, `web/novaxinwei`) = 主动网络侦察引擎 — 15个数据源渠道、WAF绕过、代理轮换、异步扫描。
+**NovaXinWei** (v1.1.0, `web/novaxinwei`) = 主动网络侦察引擎 — 15个数据源渠道、WAF绕过、代理轮换、异步扫描。
 **Novahaku** = 安全研究+漏洞利用代理 — 8大领域能力覆盖。
 
 ### 协同工作流

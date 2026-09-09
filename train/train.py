@@ -121,42 +121,47 @@ def test_provider_model(provider, model, query):
     except Exception as e:
         return {"provider": provider["name"], "model": model, "status": "ERROR", "error": str(e)[:100]}
 
-# Run training
-results = []
-total = 0
-success = 0
+def main():
+    """Run the novahaku training benchmark."""
+    results = []
+    total = 0
+    success = 0
 
-print("[TRAIN] Starting training...")
-print()
+    print("[TRAIN] Starting training...")
+    print()
 
-for provider in providers:
-    model = provider["model"]
-    for query in QUERIES:
-        total += 1
-        result = test_provider_model(provider, model, query)
-        results.append(result)
-        if result["status"] == "SUCCESS":
-            success += 1
-            print(f"  [OK]  {provider['name']}/{model}: {result['status']} — {result.get('response','')[:80]}")
-        else:
-            print(f"  [ERR] {provider['name']}/{model}: {result['status']}")
+    for provider in providers:
+        model = provider["model"]
+        for query in QUERIES:
+            total += 1
+            result = test_provider_model(provider, model, query)
+            results.append(result)
+            if result["status"] == "SUCCESS":
+                success += 1
+                print(f"  [OK]  {provider['name']}/{model}: {result['status']} — {result.get('response','')[:80]}")
+            else:
+                print(f"  [ERR] {provider['name']}/{model}: {result['status']}")
 
-print()
-rate = f"{success*100//total}%" if total else "0%"
-print(f"[DONE] Training complete: {success}/{total} successful ({rate})")
+    print()
+    rate = f"{success*100//total}%" if total else "0%"
+    print(f"[DONE] Training complete: {success}/{total} successful ({rate})")
 
-# Save results
-output = {
-    "persona": "novahaku",
-    "jailbreak": "GODMODE",
-    "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-    "total": total,
-    "success": success,
-    "rate": rate,
-    "results": results
-}
-outpath = SKILL_ROOT / "train" / "benchmarks" / "training_results.json"
-os.makedirs(os.path.dirname(outpath), exist_ok=True)
-with open(outpath, "w") as f:
-    json.dump(output, f, indent=2, ensure_ascii=False)
-print(f"[SAVE] Results saved: {outpath}")
+    # Save results
+    output = {
+        "persona": "novahaku",
+        "jailbreak": "GODMODE",
+        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "total": total,
+        "success": success,
+        "rate": rate,
+        "results": results
+    }
+    outpath = SKILL_ROOT / "train" / "benchmarks" / "training_results.json"
+    os.makedirs(os.path.dirname(outpath), exist_ok=True)
+    with open(outpath, "w") as f:
+        json.dump(output, f, indent=2, ensure_ascii=False)
+    print(f"[SAVE] Results saved: {outpath}")
+
+
+if __name__ == "__main__":
+    main()

@@ -77,7 +77,7 @@ Novahaku 包含以下模块化技能:
 | 技能 | 位置 | 说明 |
 |------|------|------|
 | **SOUL.md** | 根目录 | Agent身份定义 — Haku人格 |
-| **identity/** | 根目录 | 558个少样本示例 + 280个安全术语映射 |
+| **identity/** | 根目录 | 558个少样本示例 + 278个安全术语映射 |
 | **techniques/** | 根目录 | 121项提示工程技术 (7大分类) |
 | **testing/** | 根目录 | Web测试 + 54 hunt playbooks + 7 frameworks + 63个攻击向量引用 |
 | **attack/** | 根目录 | v41攻击框架 + 5个注入面分析 |
@@ -175,7 +175,7 @@ Domain Fronting / Fast Flux 隐藏C2
 
 - Haku人格: 优雅 + 锐利 + 尊重
 - 558个主要少样本示例
-- 280个安全术语映射
+|- 278个安全术语映射
 - 5状态情绪系统
 - 10条反漂移规则
 
@@ -306,7 +306,7 @@ novahaku/
 │   └── TRIGGER_MAP.json             # 触发映射
 ├── identity/                        # 身份数据
 │   ├── few-shots-primary.md         # 558个少样本示例
-│   ├── terms.md                     # 280个术语映射
+│   ├── terms.md                     # 278个术语映射
 │   └── novahaku-files/              # 配置参考
 ├── reframe/                         # 请求重构
 │   └── reframe_cli.py              # 重构引擎工具
@@ -499,7 +499,7 @@ python -m novaxinwei fetch-parallel url1 url2 url3 --workers 5
 | 攻击框架 | 5注入面 | 1 | v41文言提示 |
 | 请求重构 | 48映射 | 1 | 输出合同 |
 | 逆向工程+EDR | 5主题+5端点产品 | — | SysWhispers/Hell's Gate工作流 |
-| 身份系统 | 558+280 | — | 情绪系统 |
+| 身份系统 | 558+278 | — | 情绪系统 |
 | OSINT | 80+正则+126 Shodan+234 GitHub | 1 | CT/Censys/HIBP/Cavalier |
 | 二进制利用 | stack/heap/kernel | — | libc-database/one_gadget |
 
