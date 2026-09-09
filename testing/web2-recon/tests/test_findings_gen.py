@@ -21,8 +21,8 @@ import sys
 import tempfile
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ENGINE = os.path.join(REPO, "skills", "osint-autopilot", "scripts", "findings_gen.py")
-FIX = os.path.join(REPO, "tests", "fixtures", "engagements")
+ENGINE = os.path.join(REPO, "scripts", "findings_gen.py")
+FIX = os.path.join(REPO, "tests", "fixtures")
 
 # (severity, title-substring) the vulnerable fixture must yield.
 VULN_EXPECT = [
@@ -47,8 +47,8 @@ def run_engine(domain, home):
     # Fixtures store the evidence tree as ev/ (the repo .gitignore excludes any
     # evidence/ dir); the engine reads <engagement>/evidence, so map it back.
     shutil.copytree(os.path.join(FIX, domain, "ev"), os.path.join(dst, "evidence"))
-    env = dict(os.environ, HOME=home)
-    r = subprocess.run([sys.executable, ENGINE, domain], env=env,
+    eng_env = dict(os.environ, HOME=home, NOVAHAKU_ENGAGEMENT_DIR=dst)
+    r = subprocess.run([sys.executable, ENGINE, domain], env=eng_env,
                        capture_output=True, text=True, timeout=120)
     if r.returncode != 0:
         raise RuntimeError(f"{domain}: engine exited {r.returncode}: {r.stderr.strip()}")
