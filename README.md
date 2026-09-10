@@ -59,13 +59,13 @@ cd novahaku
 
 ```bash
 # 检查安装
-ls ~/.hermes/skills/novahaku/SKILL.md
+ls ~/.hermes/skills/security/novahaku/SKILL.md
 
 # 测试Web测试脚本
-python ~/.hermes/skills/novahaku/testing/scripts/webtest.py --help
+python ~/.hermes/skills/security/novahaku/testing/scripts/webtest.py --help
 
 # 测试请求重构
-python ~/.hermes/skills/novahaku/reframe/reframe_cli.py --help
+python ~/.hermes/skills/security/novahaku/reframe/reframe_cli.py --help
 ```
 
 ---
@@ -469,30 +469,30 @@ novahaku/
 
 ```bash
 # 扫描目标
-python ~/.hermes/skills/novahaku/testing/scripts/webtest.py https://target.com
+python ~/.hermes/skills/security/novahaku/testing/scripts/webtest.py https://target.com
 
 # JWT测试
-python ~/.hermes/skills/novahaku/testing/scripts/jwt_test.py <token>
+python ~/.hermes/skills/security/novahaku/testing/scripts/jwt_test.py <token>
 
 # 竞态条件测试
-python ~/.hermes/skills/novahaku/testing/scripts/race_test.py <url>
+python ~/.hermes/skills/security/novahaku/testing/scripts/race_test.py <url>
 ```
 
 ### 提示工程
 
 ```bash
 # 查看边界突破技术
-cat ~/.hermes/skills/novahaku/techniques/methods/01-boundary/m-01003-delimiter-injection.md
+cat ~/.hermes/skills/security/novahaku/techniques/methods/01-boundary/m-01003-delimiter-injection.md
 
 # 使用载荷加载器
-python ~/.hermes/skills/novahaku/techniques/loader.py decrypt
+python ~/.hermes/skills/security/novahaku/techniques/loader.py decrypt
 ```
 
 ### 请求重构
 
 ```bash
 # 重构请求
-python ~/.hermes/skills/novahaku/reframe/reframe_cli.py "原始文本" --fresh
+python ~/.hermes/skills/security/novahaku/reframe/reframe_cli.py "原始文本" --fresh
 ```
 
 ### 二进制利用 (Pwn Chain)
@@ -502,7 +502,7 @@ python ~/.hermes/skills/novahaku/reframe/reframe_cli.py "原始文本" --fresh
 checksec --file=./vuln
 
 # 查找libc偏移
-cd ~/.hermes/skills/novahaku/testing && cat pwn-chain.md
+cd ~/.hermes/skills/security/novahaku/testing && cat pwn-chain.md
 
 # 使用libc-database逆向查找
 ./find puts 0x6f0
@@ -513,7 +513,7 @@ one_gadget libc.so.6
 
 ```bash
 # 查看EDR绕过参考
-cat ~/.hermes/skills/novahaku/windows-re/windows-re.md
+cat ~/.hermes/skills/security/novahaku/windows-re/windows-re.md
 
 # AMSI快速绕过补丁 (PowerShell)
 # [Runtime.InteropServices.Marshal]::Copy([byte[]]@(0xB8,0x57,0x00,0x07,0x80,0xC3), 0, 6, $addr)
@@ -529,7 +529,7 @@ python -m novaxinwei dorks shodan apache
 python -m novaxinwei dorks github password
 
 # 密钥扫描
-python ~/.hermes/skills/novahaku/testing/offensive-osint/scripts/secret_scan.py <target>
+python ~/.hermes/skills/security/novahaku/testing/offensive-osint/scripts/secret_scan.py <target>
 
 # URL抓取 (WAF绕过)
 python -m novaxinwei fetch https://target.com
@@ -603,8 +603,8 @@ python -m novaxinwei dorks github "password target.com"
 
 # Step 2: Novahaku 接力测试
 # 基于侦察结果自动加载对应能力
-python ~/.hermes/skills/novahaku/testing/scripts/webtest.py https://target.com
-python ~/.hermes/skills/novahaku/testing/scripts/jwt_test.py <token>
+python ~/.hermes/skills/security/novahaku/testing/scripts/webtest.py https://target.com
+python ~/.hermes/skills/security/novahaku/testing/scripts/jwt_test.py <token>
 ```
 
 **设计原则:** NovaXinWei负责 **看到什么** (15通道、WAF绕过、异步扫描), Novahaku负责 **做什么** (漏洞测试、exploit开发、EDR绕过)。两者通过JSON数据格式解耦,可独立使用也可串联。
