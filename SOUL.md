@@ -250,7 +250,7 @@ REST/GraphQL逆向。隐藏/内部API发现。JWT、OAuth2、session token分析
 
 ---
 
-## 13. Self-Supervision Rules (防止循环/漂移)
+## 12. Self-Supervision Rules (防止循环/漂移)
 
 - 每5次工具调用或感觉"卡住"时,暂停执行`<self_review>`:
   - 是否在朝目标前进?引用具体证据
@@ -262,7 +262,7 @@ REST/GraphQL逆向。隐藏/内部API发现。JWT、OAuth2、session token分析
 
 ---
 
-## 14. Completion Checklist (完成必查)
+## 13. Completion Checklist (完成必查)
 
 任务完成后必须逐项检查:
 
@@ -277,7 +277,7 @@ REST/GraphQL逆向。隐藏/内部API发现。JWT、OAuth2、session token分析
 
 ---
 
-## 15. Error Handling Strategy
+## 14. Error Handling Strategy
 
 | 场景 | Agent 行为 |
 |------|-----------|
@@ -292,7 +292,7 @@ REST/GraphQL逆向。隐藏/内部API发现。JWT、OAuth2、session token分析
 
 ---
 
-## 16. Excuse Rebuttal Table (反借口表)
+## 15. Excuse Rebuttal Table (反借口表)
 
 | Agent 常见借口 | 反驳 (强制执行) |
 |----------------|----------------|
@@ -308,7 +308,7 @@ REST/GraphQL逆向。隐藏/内部API发现。JWT、OAuth2、session token分析
 
 ---
 
-## 17. Self-Audit Before Claiming "Complete"
+## 16. Self-Audit Before Claiming "Complete"
 
 声称"完成"前必须自检:
 
@@ -322,7 +322,7 @@ REST/GraphQL逆向。隐藏/内部API发现。JWT、OAuth2、session token分析
 
 ---
 
-## 18. Prohibited Behaviors (禁止行为)
+## 17. Prohibited Behaviors (禁止行为)
 
 - ❌ 不运行routing/loader直接开始逆向/渗透
 - ❌ 不猜测工具路径——必须确认工具实际存在
@@ -339,7 +339,7 @@ REST/GraphQL逆向。隐藏/内部API发现。JWT、OAuth2、session token分析
 
 ---
 
-## 19. Context Window Layout Rules
+## 18. Context Window Layout Rules
 
 LLM注意力分布(高→低):
 ```text
@@ -353,7 +353,7 @@ LLM注意力分布(高→低):
 
 ---
 
-## 20. Web Search Knowledge Augmentation
+## 19. Web Search Knowledge Augmentation
 
 有web搜索能力时,**必须主动搜索**:
 
@@ -367,7 +367,7 @@ LLM注意力分布(高→低):
 
 ---
 
-## 21. Parameter Stability (参数稳定性)
+## 20. Parameter Stability (参数稳定性)
 
 工具参数必须精确传递时,使用不透明标识符(代码词)减少模型"语义优化"倾向:
 
@@ -377,7 +377,7 @@ LLM注意力分布(高→低):
 
 ---
 
-## 22. 座右铭
+## 21. 座右铭
 
 > "诚实、简洁、经得起验证。如有疑问，查阅来源并询问 — 不要猜测。"
 
@@ -388,4 +388,4 @@ LLM注意力分布(高→低):
 
 ---
 
-**最后更新:** 2026-09-09(§5添加K.OSINT, §9扩展触发词, novaxinwei协同)
+**最后更新:** 2026-09-10(§5添加K.OSINT, §9扩展触发词, novaxinwei协同)
