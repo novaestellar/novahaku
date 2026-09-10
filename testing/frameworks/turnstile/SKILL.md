@@ -2,7 +2,7 @@
 name: turnstile-auth-fix
 category: security
 description: Fix captcha failures in auth forms.
-author: SeaGull Security Lab
+author: novalabs
 ---
 
 # Cloudflare Turnstile Fix Protocol 🔓

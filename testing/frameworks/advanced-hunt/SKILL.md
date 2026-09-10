@@ -2,7 +2,7 @@
 name: advanced-bug-hunting
 description: "Advanced bug hunting techniques: manual exploitation, recon automation, Burp Suite integration, API/mobile testing for $20k+ bounties"
 version: 1.0.0
-author: SeaGull Security Lab
+author: novalabs
 license: MIT
 platforms: [linux, macos, windows]
 metadata:

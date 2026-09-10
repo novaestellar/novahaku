@@ -2,7 +2,7 @@
 name: nextjs-app-audit
 description: 'Audit Next.js apps: extract + invoke server actions.'
 version: 1.0.0
-author: SeaGull Security Lab
+author: novalabs
 license: MIT
 metadata:
   hermes:

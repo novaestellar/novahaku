@@ -323,5 +323,77 @@
       "minifilter",
       "wfp bypass"
     ]
+  },
+  "src-hunter": {
+    "description": "Source code hunting and hardcoded secret discovery",
+    "keywords": [
+      "src-hunter",
+      "source code hunt",
+      "hardcoded secret",
+      "api key leak",
+      "password in code",
+      "credential scan",
+      "source fingerprint",
+      "default credential"
+    ]
+  },
+  "ctf": {
+    "description": "CTF competition challenges and sandbox",
+    "keywords": [
+      "ctf",
+      "capture the flag",
+      "competition",
+      "sandbox",
+      "pwn challenge",
+      "crypto challenge",
+      "forensic challenge",
+      "steganography",
+      "reverse challenge"
+    ]
+  },
+  "firmware-iot": {
+    "description": "Firmware analysis and IoT security",
+    "keywords": [
+      "firmware",
+      "iot",
+      "binwalk",
+      "uart",
+      "jtag",
+      "embedded",
+      "squashfs",
+      "emba",
+      "firmadyne",
+      "iot security"
+    ]
+  },
+  "mobile-re": {
+    "description": "Mobile application reverse engineering",
+    "keywords": [
+      "apk reverse",
+      "android reverse",
+      "ios reverse",
+      "frida",
+      "jadx",
+      "apktool",
+      "mobile hook",
+      "smali",
+      "dex2jar",
+      "objection"
+    ]
+  },
+  "malware-analysis": {
+    "description": "Malware analysis and threat intelligence",
+    "keywords": [
+      "malware",
+      "yara",
+      "sigma",
+      "ioc",
+      "sandbox analysis",
+      "dynamic analysis",
+      "static analysis",
+      "pe analysis",
+      "elf analysis",
+      "ransomware"
+    ]
   }
 }
