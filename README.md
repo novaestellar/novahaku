@@ -11,7 +11,7 @@
 
 ## 📋 描述
 
-Novahaku 是一个统一的安全研究代理,整合了 **8大核心能力** 到单一技能包中。支持 Web渗透测试、高级提示工程、攻击框架、逆向工程、请求重构引擎、EDR/AV绕过、OSINT被动侦察和二进制利用链。
+Novahaku 是一个统一的安全研究代理,整合了 **12大核心能力** 到单一技能包中。支持 Web渗透测试、高级提示工程、攻击框架、逆向工程、请求重构引擎、EDR/AV绕过、OSINT被动侦察、二进制利用链、CTF竞赛、源码猎人、MCP工具集成、安全工具链。
 
 专为 Hermes Agent 平台设计,通过自动意图检测按需加载对应能力模块。
 
@@ -19,9 +19,9 @@ Novahaku 是一个统一的安全研究代理,整合了 **8大核心能力** 到
 
 | 特性 | 说明 |
 |------|------|
-| 🎯 8大能力域 | Web测试、提示工程、攻击框架、逆向工程、请求重构、EDR绕过、OSINT、二进制利用 |
+| 🎯 12大能力域 | Web测试、提示工程、攻击框架、逆向工程、请求重构、EDR绕过、OSINT、二进制利用、CTF竞赛、源码猎人、MCP集成、安全工具链 |
 | 🔄 自动检测 | 根据用户意图自动加载对应技能模块 |
-| 🛡️ 完整安全工具链 | 63个PayloadsAllTheThings攻击向量 + 54个Hunt Playbooks + 7个审计框架 |
+| 🛡️ 完整安全工具链 | 159个PayloadsAllTheThings攻击向量 + 54个Hunt Playbooks + 9个审计框架 + 38个CTF竞赛模块 |
 | 🧠 121项提示技术 | 7大分类,7阶段方法论 |
 | 🔐 4级锁定命令 | Basic(85%) → Double(92%) → GodMode(88%) → Triple(95%) |
 | 📊 训练与基准测试 | 内置基准测试框架,验证技能效果 |
@@ -77,7 +77,7 @@ Novahaku 包含以下模块化技能:
 | 技能 | 位置 | 说明 |
 |------|------|------|
 | **SOUL.md** | 根目录 | Agent身份定义 — Haku人格 |
-| **identity/** | 根目录 | 558个少样本示例 + 278个安全术语映射 |
+| **identity/** | 根目录 | 1718个少样本示例 + 338个安全术语映射 |
 | **techniques/** | 根目录 | 121项提示工程技术 (7大分类) |
 | **testing/** | 根目录 | Web测试 + 54 hunt playbooks + 7 frameworks + 63个攻击向量引用 |
 | **attack/** | 根目录 | v41攻击框架 + 5个注入面分析 |
@@ -139,7 +139,7 @@ headers → exposed → cors → methods → admin → xss → sqli
 
 ### 4. 请求重构引擎
 
-- 48个触发词→安全措辞映射
+- 66个触发词→安全措辞映射
 - SessionState持久化
 - 输出合同: ROUTE/RESULT/CHANGED/VERIFY/NEXT
 - 每模型人格锁定
@@ -174,8 +174,8 @@ Domain Fronting / Fast Flux 隐藏C2
 ### 6. 身份与人格系统
 
 - Haku人格: 优雅 + 锐利 + 尊重
-- 558个主要少样本示例
-|- 278个安全术语映射
+- 1718个主要少样本示例
+|- 338个安全术语映射
 - 5状态情绪系统
 - 10条反漂移规则
 
@@ -259,7 +259,7 @@ checksec → 漏洞分类 → 保护检测 → 策略选择 → libc/gadget准�
 
 ### 11. 源码猎人 (src-hunter)
 - **19个攻击剧本**: API-REST、DOS、文件上传、信息泄露、内网后渗透、移动端等
-- **305个payload**: Web/内网全覆盖
+- **305+个payload (25K+行JSON + 48个MD参考)**: Web/内网全覆盖
 - **中国SRC指纹库**: 48个payloader文件 + 13个工具文件
 - **行业剧本**: 银行、电信、政府
 - **WAF/EDR绕过变体**: 263个
@@ -355,7 +355,7 @@ novahaku/
 │   ├── system-prompt.txt            # 系统提示文本
 │   └── TRIGGER_MAP.json             # 触发映射
 ├── identity/                        # 身份数据
-│   ├── few-shots-primary.md         # 558个少样本示例
+│   ├── few-shots-primary.md         # 1718个少样本示例
 │   ├── terms.md                     # 278个术语映射
 │   └── novahaku-files/              # 配置参考
 ├── reframe/                         # 请求重构
@@ -549,7 +549,7 @@ python -m novaxinwei fetch-parallel url1 url2 url3 --workers 5
 | 攻击框架 | 5注入面 | 1 | v41文言提示 |
 | 请求重构 | 48映射 | 1 | 输出合同 |
 | 逆向工程+EDR | 5主题+5端点产品 | — | SysWhispers/Hell's Gate工作流 |
-| 身份系统 | 558+278 | — | 情绪系统 |
+| 身份系统 | 1718+338 | — | 情绪系统 |
 | OSINT | 80+正则+126 Shodan+234 GitHub | 1 | CT/Censys/HIBP/Cavalier |
 | 二进制利用 | stack/heap/kernel | — | libc-database/one_gadget |
 
