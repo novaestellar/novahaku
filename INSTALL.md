@@ -13,28 +13,28 @@ Novahaku is a Hermes skill. Install via:
 ### Ghidra
 ```
 Download: https://github.com/NationalSecurityAgency/ghidra/releases
-Install to: C:\Users\Design\Tools\ghidra_12.1.2_PUBLIC\
+Install to: /opt/ghidra/ (Linux/macOS) or C:\tools\ghidra\ (Windows)
 Set GHIDRA_HOME in .env
 ```
 
 ### radare2
 ```
 Download: https://github.com/radareorg/radare2/releases
-Install to: C:\Users\Design\Tools\radare2\
+Install to: /usr/local/bin/r2 (Linux/macOS) or C:\tools\radare2\bin\ (Windows)
 Set RADARE2_HOME in .env
 ```
 
 ### jadx (Android Decompiler)
 ```
 Download: https://github.com/skylot/jadx/releases
-Install to: C:\Users\Design\Tools\jadx\
+Install to: /opt/jadx/bin/ (Linux/macOS) or C:\tools\jadx\bin\ (Windows)
 Set JADX_HOME in .env
 ```
 
 ### apktool
 ```
 Download: https://github.com/iBotPeaches/Apktool/releases
-Install to: C:\Users\Design\Tools\apktool\
+Install to: /opt/apktool/ (Linux/macOS) or C:\tools\apktool\ (Windows)
 Set APKTOOL_HOME in .env
 ```
 
@@ -47,8 +47,34 @@ Set FRIDA_HOME in .env
 ### YARA
 ```
 Download: https://github.com/VirusTotal/yara/releases
-Install to: C:\Users\Design\Tools\yara\
+Install to: /usr/local/bin/yara (Linux/macOS) or C:\tools\yara\ (Windows)
 Set YARA_HOME in .env
+```
+
+### Hashcat
+```
+pip install hashcat (or install from https://hashcat.net/hashcat/)
+```
+
+### SecLists
+```
+git clone https://github.com/danielmiessler/SecLists.git /opt/SecLists
+Set SECLISTS_HOME in .env
+```
+
+### ProxyCat
+```
+pip install proxycat
+```
+
+### pwntools
+```
+pip install pwntools
+```
+
+### binwalk
+```
+pip install binwalk
 ```
 
 ## MCP Server Setup
@@ -66,8 +92,10 @@ Set YARA_HOME in .env
 
 ```bash
 # Check all tools
-ls $GHIDRA_HOME/support/analyzeHeadless.bat
+ls $GHIDRA_HOME/support/analyzeHeadless.bat  # or analyzeHeadless on Linux
 ls $R2
 ls $JADX
 python -c "import frida; print(frida.__version__)"
+yara --version
+hashcat --version
 ```
