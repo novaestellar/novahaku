@@ -313,7 +313,7 @@ checksec → 漏洞分类 → 保护检测 → 策略选择 → libc/gadget准�
 
 ### 载荷库
 
-- `techniques/payload/payload.json` — 124KB加密载荷库
+- `techniques/payload/payload.json` — 225KB加密载荷库
 - AES-256-GCM加密
 - 通过 `loader.py` 解密使用
 
@@ -386,10 +386,10 @@ novahaku/
 │   │   ├── 06-iterative/ (15)
 │   │   └── 07-stream/ (15)
 │   ├── payload/                     # 载荷数据
-│   │   ├── payload.json             # 124KB加密载荷库
+│   │   ├── payload.json             # 225KB加密载荷库
 │   │   └── vault.dat                # AES-256-GCM加密
 │   ├── templates/                   # 技术模板
-│   └── workers/                     # 工作者模块 (7个)
+│   └── workers/                     # 工作者模块 (7个, techniques/workers/)
 ├── templates/                       # 操作模板
 ├── testing/                         # Web测试 + 安全猎杀 + OSINT + Pwn
 │   ├── scripts/                     # 自动化脚本
