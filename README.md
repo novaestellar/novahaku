@@ -407,14 +407,16 @@ novahaku/
 │   │   ├── hunt-idor/
 │   │   ├── ... (共54个)
 │   │   └── report-writing/
-│   ├── frameworks/                  # 7个审计框架
+│   ├── frameworks/                  # 9个审计框架
 │   │   ├── advanced-hunt/
 │   │   ├── baas/
 │   │   ├── bughunt/
 │   │   ├── laravel/
 │   │   ├── nextjs/
 │   │   ├── supabase-audit/
-│   │   └── turnstile/
+│   │   ├── burpsuite-mcp/
+│   ├── anything-analyzer-mcp/
+│   └── turnstile/
 │   ├── offensive-osint/             # OSINT被动侦察军火库
 │   │   ├── SKILL.md                 # 4700+行完整OSINT参考
 │   │   └── scripts/secret_scan.py   # 密钥扫描脚本
@@ -434,7 +436,7 @@ novahaku/
 │   │   └── ...
 │   └── references/                  # 漏洞引用库
 │       ├── hacktricks/ (29)
-│       ├── payloadsallthethings/ (63个攻击向量类别)
+│       ├── payloadsallthethings/ (78个攻击向量类别)
 │       │   ├── Account Takeover/
 │       │   ├── API Key Leaks/
 │       │   ├── Command Injection/
@@ -461,7 +463,7 @@ novahaku/
 │       │   ├── XXE Injection/
 │       │   ├── ... (共63个类别)
 │       │   └── Zip Slip/
-│       ├── payloadsallthethings-extras/
+│       ├── payloadsallthethings-extras/ (51个额外参考)
 │       └── misc/
 ├── train/                           # 训练与基准
 │   ├── train.py                     # 训练脚本
@@ -580,7 +582,7 @@ python -m novaxinwei fetch-parallel url1 url2 url3 --workers 5
 │  │ 15通道异步抓取    │  JSON  │ 漏洞测试         │       │
 │  │ WAF绕过链        │ ─────→ │ 54个Hunt Playbook│       │
 │  │ Shodan/GitHub    │        │ 63个攻击向量      │       │
-│  │ Dork数据库       │        │ 7个审计框架       │       │
+│  │ Dork数据库       │        │ 9个审计框架       │       │
 │  │ TLS指纹模拟      │        │ EDR绕过          │       │
 │  │ curl_cffi+PW    │        │ Pwn Chain        │       │
 │  └──────────────────┘        └──────────────────┘       │
