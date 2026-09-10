@@ -478,7 +478,7 @@ $routingText = Get-Content -LiteralPath (Join-Path $PackageRoot "skills/routing.
 if ($routingText -like "*genuine decision boundary*" -and $routingText -notlike "*Always provide a next-step menu*") { Ok "routing ambiguity path no longer forces unconditional menu" } else { Bad "routing still forces unconditional next-step menu" }
 $contribText = Get-Content -LiteralPath (Join-Path $PackageRoot "skills/CONTRIBUTING.md") -Raw -Encoding UTF8
 if ($contribText -like "*genuine decision boundary*" -and $contribText -notlike "*每个阶段结束时提供 3-6 个编号*") { Ok "new-skill contract uses genuine decision boundaries" } else { Bad "new-skill contract still requires per-stage menus" }
-$reWorkflowText = Get-Content -LiteralPath (Join-Path $PackageRoot "skills/reverse-engineering/references/re-agent-workflow.md") -Raw -Encoding UTF8
+$reWorkflowText = Get-Content -LiteralPath (Join-Path $PackageRoot "testing/reverse-engineering/references/re-agent-workflow.md") -Raw -Encoding UTF8
 if ($reWorkflowText -like "*decision_delta*" -and $reWorkflowText -like "*carry_forward_refs*" -and $reWorkflowText -like "*consumer 必须先继承 refs*") { Ok "representative RE workflow consumes delta by reference" } else { Bad "representative RE workflow missing delta consumer contract" }
 
 # Issue #77 — analysis decision framework anchors (MUST run before fail gate)
@@ -503,7 +503,7 @@ if (Test-Path -LiteralPath $efp77) {
     if ($efpText -like "*analysis-decision-framework*") { Ok "evidence-finding-path hooks ADF" } else { Bad "evidence-finding-path missing ADF hook" }
     if ($efpText -like "*E-insufficient-evidence*") { Ok "evidence-finding-path R4* id" } else { Bad "evidence-finding-path missing E-insufficient-evidence" }
 } else { Bad "evidence-finding-path.md missing" }
-$wf77 = Join-Path $PackageRoot "skills/reverse-engineering/references/re-agent-workflow.md"
+$wf77 = Join-Path $PackageRoot "testing/reverse-engineering/references/re-agent-workflow.md"
 if (Test-Path -LiteralPath $wf77) {
     $wfText = Get-Content -LiteralPath $wf77 -Raw -Encoding UTF8
     if ($wfText -like "*analysis-decision-framework*") { Ok "re-agent-workflow hooks ADF" } else { Bad "re-agent-workflow missing ADF hook" }

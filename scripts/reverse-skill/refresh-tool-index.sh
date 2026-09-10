@@ -3,8 +3,8 @@
 #
 # This script is intentionally detection-only. It does not install tools.
 # Output defaults:
-#   skills/tool-index.md
-#   skills/tool-index.json
+#   testing/tool-index.md
+#   testing/tool-index.json
 
 set -euo pipefail
 
