@@ -23,6 +23,7 @@ class ReviewCaseTests(unittest.TestCase):
         artifact.write_bytes(b"reverse-skill case review fixture")
         digest = hashlib.sha256(artifact.read_bytes()).hexdigest()
 
+        (root / "scope.md").write_text(
             """# Case Scope
 
 ## auth

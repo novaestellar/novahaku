@@ -159,20 +159,29 @@ def parse_scope(root, issues, strict):
         ]
 
     if not result["auth_status"]:
+        pass
     elif result["auth_status"] not in {"pending", "granted", "denied", "unknown"}:
+        pass
 
     if not result["network_mode"]:
+        pass
     elif result["network_mode"] not in NETWORK_MODES:
+        pass
 
     if not result["ready_for_act"]:
+        pass
     elif result["ready_for_act"] not in {"true", "false"}:
+        pass
 
     if result["network_mode"] != "offline" and not result["assets"]:
+        pass
 
     if result["auth_status"] != "granted" or result["ready_for_act"] != "true":
         message = "scope is not ready for target ACT"
         if strict and result["network_mode"] != "offline":
+            pass
         else:
+            pass
     return result
 
 
