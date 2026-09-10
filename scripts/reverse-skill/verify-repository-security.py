@@ -14,7 +14,7 @@ import sys
 from pathlib import PurePosixPath
 
 
-PAYLOAD_PATH = "skills/pentest-tools/src-hunter/references/payloader/waf-bypass.md"
+PAYLOAD_PATH = "testing/references/hacktricks/waf-bypass.md"
 PAYLOAD_SHA256 = "0273517455962bb9908264f82e4708b31d541c91c2ec715e8032d6c1376728b5"
 ALLOWED_BINARY_HASHES = {
     "burp-mcp-full/gradle/wrapper/gradle-wrapper.jar":
