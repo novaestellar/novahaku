@@ -120,7 +120,7 @@ headers → exposed → cors → methods → admin → xss → sqli
 
 **参考库:**
 - HackTricks (29个漏洞类型)
-- PayloadsAllTheThings (63个攻击向量)
+- PayloadsAllTheThings (159个攻击向量)
 - Bug Bounty参考 (XSS/SQLi/SSRF)
 
 ### 2. 提示工程 (121项技术)
