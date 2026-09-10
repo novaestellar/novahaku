@@ -2,7 +2,7 @@
 name: bug-hunting
 description: "Automated bug bounty hunting pipeline: scrape programs, scan vulnerabilities, generate PoC, send reports via email"
 version: 1.0.0
-author: SeaGull Security Lab
+author: novalabs
 license: MIT
 platforms: [linux, macos, windows]
 metadata:

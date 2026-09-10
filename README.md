@@ -1,6 +1,6 @@
 # Novahaku
 
-> **统一安全研究代理** — Web测试 · 提示工程 · 攻击框架 · 逆向工程 · 请求重构 · EDR绕过 · OSINT · 二进制利用
+> **统一安全研究代理 — Web测试 · 提示工程 · 攻击框架 · 逆向工程 · 请求重构 · EDR绕过 · OSINT · 二进制利用 · CTF竞赛 · 源码猎人 · MCP工具集成
 
 <p align="center">
   <strong>Agent: Haku</strong><br>
@@ -236,6 +236,56 @@ checksec → 漏洞分类 → 保护检测 → 策略选择 → libc/gadget准�
 | qemu-system-x86_64 | 内核调试 |
 
 ---
+
+
+### 9. 逆向工程模块 (from reverse-skill)
+- **reverse-engineering**: 14KB SKILL.md + 32KB反分析参考 + 14个ref文件
+- **ghidra-reverse**: Ghidra专用工作流 + 自动脚本
+- **radare2**: radare2脚本 + 快捷手册
+- **apk-reverse**: Android APK逆向 + Frida动态分析
+- **mobile-reverse**: iOS/Android深度逆向 (Frida/Objection)
+- **firmware-pentest**: 固件提取、模拟、模糊测试
+- **js-reverse**: JS反混淆 + 12个ref文件
+- **dotnet-reverse**: .NET逆向 (dnSpy/ILSpy)
+- **go-rust-reverse**: Go/Rust逆向笔记
+- **protocol-reverse**: 协议逆向工作流
+- 位置: testing/ 下各子目录
+
+### 10. CTF竞赛模块 (38个竞赛场景)
+- **CTF-Sandbox-Orchestrator**: 38个competition-*子模块
+- 覆盖: PWN、Reverse、Web、Crypto、Misc、Forensics
+- 含完整challenge解题思路 + payload
+- 位置: testing/ctf/competition-*/
+
+### 11. 源码猎人 (src-hunter)
+- **19个攻击剧本**: API-REST、DOS、文件上传、信息泄露、内网后渗透、移动端等
+- **305个payload**: Web/内网全覆盖
+- **中国SRC指纹库**: 48个payloader文件 + 13个工具文件
+- **行业剧本**: 银行、电信、政府
+- **WAF/EDR绕过变体**: 263个
+- 位置: testing/pentest-tools/src-hunter/
+
+### 12. MCP工具集成
+- **BurpSuite MCP**: 83个工具 (scan、repeater、intruder、decoder等)
+- **Anything Analyzer MCP**: 浏览器 + HTTP分析
+- 位置: testing/frameworks/
+
+
+### 13. RE工具链 (已安装)
+| 工具 | 路径 |
+|------|------|
+| Ghidra 12.1.2 | C:/Users/Design/Tools/ghidra_12.1.2_PUBLIC/ |
+| radare2 6.1.8 | C:/Users/Design/Tools/radare2/bin/ |
+| jadx | C:/Users/Design/Tools/jadx/bin/ |
+| apktool | C:/Users/Design/Tools/apktool/ |
+| Frida | Python313/Scripts/ |
+| YARA | C:/Users/Design/Tools/yara/ |
+| Hashcat | pip installed |
+| SecLists | C:/Users/Design/Tools/SecLists/ |
+| ProxyCat | pip installed |
+| pwntools | pip installed |
+| binwalk | pip installed |
+
 
 ## 🔧 附加组件 (Addons)
 

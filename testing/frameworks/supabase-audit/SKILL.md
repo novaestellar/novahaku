@@ -2,7 +2,7 @@
 name: supabase-app-security-audit
 description: "Audit Supabase BaaS apps: RLS write paths, RPC nulls."
 version: 1.0.0
-author: SeaGull Security Lab
+author: novalabs
 license: MIT
 tags: [security, supabase, rls, audit, postgres, storage]
 metadata:

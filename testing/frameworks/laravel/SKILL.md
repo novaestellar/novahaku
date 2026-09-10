@@ -1,7 +1,7 @@
 ---
 name: laravel-security-audit
 description: Systematic vulnerability assessment of Laravel applications
-author: SeaGull Security Lab
+author: novalabs
 ---
 
 # Laravel Security Audit Skill

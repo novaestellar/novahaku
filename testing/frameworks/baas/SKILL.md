@@ -2,7 +2,7 @@
 name: baas-security-audit
 description: "Use when auditing Supabase/BaaS web apps."
 version: 1.0.0
-author: SeaGull Security Lab
+author: novalabs
 license: MIT
 metadata:
   hermes:
