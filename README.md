@@ -79,15 +79,25 @@ Novahaku 包含以下模块化技能:
 | **SOUL.md** | 根目录 | Agent身份定义 — Haku人格 |
 | **identity/** | 根目录 | 1718个少样本示例 + 338个安全术语映射 |
 | **techniques/** | 根目录 | 121项提示工程技术 (7大分类) |
-| **testing/** | 根目录 | Web测试 + 54 hunt playbooks + 7 frameworks + 63个攻击向量引用 |
+| **testing/** | 根目录 | Web测试 + 54个Hunt剧本 + 9个审计框架 + 159个PAT攻击向量 + 38个CTF模块 + src-hunter源码猎人 |
 | **attack/** | 根目录 | v41攻击框架 + 5个注入面分析 |
 | **reframe/** | 根目录 | 请求重构引擎 (Reframe CLI) |
 | **windows-re/** | 根目录 | Windows逆向工程 / 游戏安全 / EDR绕过 |
 | **testing/offensive-osint/** | testing/ | 被动侦察军火库 — 80+正则 + Shodan/Censys/CT日志 |
-| **testing/pwn-chain.md** | testing/ | 二进制利用链 — stack/heap/kernel pwn |
+| **testing/pwn-chain/** | testing/ | 二进制利用链 — stack/heap/kernel pwn |
 | **config/** | 根目录 | 锁定配置 + 预填充 + 触发映射 |
 | **techniques/payload/** | 根目录 | 加密载荷库 (AES-256-GCM) |
 | **train/** | 根目录 | 基准测试框架 |
+| **testing/ctf/** | testing/ | 38个CTF竞赛场景模块 |
+| **testing/pentest-tools/** | testing/ | 渗透测试工具集 + src-hunter源码猎人 + 模板 |
+| **testing/frameworks/burpsuite-mcp/** | testing/frameworks/ | BurpSuite MCP 83工具封装 |
+| **testing/frameworks/anything-analyzer-mcp/** | testing/frameworks/ | Anything Analyzer MCP封装 |
+| **testing/field-journal/** | testing/ | 45+实战案例日志 + 匿名化模板 |
+| **docs/** | root directory | 操作合约 + 路由文档 + 报告模板 |
+| **scripts/** | root directory | 反渗透脚本(参考) + 部署脚本 |
+| **tests/** | root directory | 路由基准测试 |
+| **INSTALL.md** | root directory | 安装指南 + RE工具路径 + MCP设置 |
+| **.env.example** | root directory | 环境变量配置模板 |
 | **templates/** | 根目录 | 操作计划 / 测试报告模板 |
 
 ---
@@ -210,7 +220,7 @@ python testing/offensive-osint/scripts/secret_scan.py <target>
 
 ### 8. 二进制利用链 (Pwn Chain)
 
-`testing/pwn-chain.md` — 从已知漏洞到可工作exploit的完整链路。
+`testing/pwn-chain/` — 从已知漏洞到可工作exploit的完整链路。
 
 | 场景 | 技术 |
 |------|------|
