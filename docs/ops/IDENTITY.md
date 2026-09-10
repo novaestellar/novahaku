@@ -1,10 +1,10 @@
-# reverse-skill 身份宣言（相对 Z3r0）
+# novahaku 身份宣言（相对 Z3r0）
 
 > 本文件固定 **我们是谁**。吸收 Z3r0 的证据/范围/分工/时间线思想，但 **不** 做成 Z3r0 平台。
 
 ## 我们是
 
-| 维度 | reverse-skill |
+| 维度 | novahaku |
 |------|----------------|
 | 形态 | **Skill 路由包** — 给任意 AI 客户端（Claude/Cursor/Codex…）用的方法论 + 工具自举 |
 | 入口 | `RULES.md` → `MASTER-ROUTING` / `master-route.ps1` → 子 skill |
@@ -15,7 +15,7 @@
 
 ## 我们不是
 
-| Z3r0 有 | reverse-skill **故意不做** |
+| Z3r0 有 | novahaku **故意不做** |
 |---------|---------------------------|
 | React 作战台 | ❌ |
 | FastAPI 控制面 + WebSocket 会话 | ❌ |
@@ -26,7 +26,7 @@
 
 ## 我们从 Z3r0 学什么（缩水落地）
 
-| 思想 | reverse-skill 形态 |
+| 思想 | novahaku 形态 |
 |------|-------------------|
 | 授权与项目边界 | `ops/scope-contract.md` → 每案 `scope.md` |
 | Evidence→Finding→Path | `ops/evidence-finding-path.md` + 报告模板 |
@@ -48,7 +48,7 @@
 
 ```text
 Z3r0 = 红队操作系统 / 团队协作平台
-reverse-skill = Agent 的安全作业路由器 + 说明书
+novahaku = Agent 的安全作业路由器 + 说明书
 
 可选未来：把本包 skill 内容挂进 Z3r0 sandbox-local skills
 当前：零依赖 Z3r0 安装即可完整工作

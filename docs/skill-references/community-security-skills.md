@@ -1,7 +1,7 @@
 # 社区安全 Skill 生态对照（2026-07）
 
 > 来源检索日期：**2026-07-17**  
-> 目的：让 reverse-skill **知道外面有什么**，按需借鉴，**不**把外部巨型库整仓并入本包。  
+> 目的：让 novahaku **知道外面有什么**，按需借鉴，**不**把外部巨型库整仓并入本包。  
 > 本包身份：路由 + 工具自举 + 证据/scope 契约 + field-journal（见 `ops/IDENTITY.md`）。
 
 ## 1. 外部高价值仓库（可学习，勿盲装）
@@ -26,7 +26,7 @@
 |-------------|------|----------|
 | [trailofbits/skills](https://github.com/trailofbits/skills) 插件：`audit-context-building` `differential-review` `semgrep-rule-creator` `sharp-edges` `dwarf-expert` `burpsuite-project-parser` | 审计上下文、差分安全审查、危险 API、DWARF、Burp 工程解析 | 对照 `ida-reverse`/`docs-generator`/审计工作流；**不**整库并入 |
 | [HexRaysSA/ida-claude-code-plugins](https://github.com/HexRaysSA/ida-claude-code-plugins) | 官方 IDA Claude 插件（含 domain 自动化，标注 unsafe） | `ida-reverse` MCP 路径对照；unsafe 插件默认不启用 |
-| [P4nda0s/reverse-skills](https://github.com/P4nda0s/reverse-skills) | IDA-NO-MCP：导出反编译后再分析；rev-frida/dex-dump/u3d | 与「MCP 不可用时的离线导出」互补 |
+| [P4nda0s/novahakus](https://github.com/P4nda0s/novahakus) | IDA-NO-MCP：导出反编译后再分析；rev-frida/dex-dump/u3d | 与「MCP 不可用时的离线导出」互补 |
 | [2389-research/binary-re](https://github.com/2389-research/binary-re) | triage→static(r2/Ghidra)→dynamic(QEMU/GDB/Frida)→synthesis | `reverse-engineering` 阶段门闩见 `re-agent-workflow.md` |
 | [incogbyte/android-reverse-engineering-claude-skill](https://github.com/incogbyte/android-reverse-engineering-claude-skill) | APK 解包、端点提取、自适应 Frida 绕过 | 对照 `apk-reverse`；动态脚本需 scope |
 | [OwenPawl/cerberus-re-skill](https://github.com/OwenPawl/cerberus-re-skill) | Apple 向 Ghidra+LLDB+Frida 三循环 | 可参考 macOS/iOS 动态环 |
@@ -47,7 +47,7 @@
 
 ## 3. 本包已有 vs 外部「广」覆盖
 
-| 领域 | reverse-skill | 外部常有、我们不整库并入的原因 |
+| 领域 | novahaku | 外部常有、我们不整库并入的原因 |
 |------|---------------|--------------------------------|
 | APK/JS/IDA/r2/固件/pwn | **深** skill + 脚本 | 保持深度与 tool availability 绑定 |
 | 渗透/攻击链/SRC | pentest-tools + attack-chain + src-hunter | Orizon 类可作方法论对照 |

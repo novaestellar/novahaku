@@ -1,6 +1,6 @@
 # Analysis Decision Framework (Issue #77)
 
-> **SSoT role**: Decision-quality / evidence-sufficiency / agent-bias cookbook for reverse-skill agents.
+> **SSoT role**: Decision-quality / evidence-sufficiency / agent-bias cookbook for novahaku agents.
 > **Not** a second master analysis workflow. Obey `re-agent-workflow.md`, feasibility gate (#73), IAT iron rule (#72), A-T / U-AV cookbooks, and `evidence-finding-path.md` first.
 > Rule IDs **R1-R51** keep the reporter numbering (**no R15**; includes **R50/R51**). Do not renumber.
 > **Namespace:** these are **ADF-*** overlay IDs. They are **not** `routing.json` PRIMARY ids (R1=APK, R6=IDA, …). Say "ADF-R1" when speaking. Load this file at Synthesis / stuck-loop only.

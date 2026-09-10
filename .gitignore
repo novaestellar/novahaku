@@ -52,3 +52,20 @@ training_results.json
 
 # Test output
 testing/**/engagements/
+# Backups
+*.bak
+*.bakup
+*.backup
+*.old
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+
+# Temp
+*.tmp
+*.temp

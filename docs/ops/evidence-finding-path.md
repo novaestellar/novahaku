@@ -1,7 +1,7 @@
 # Evidence → Finding → Path 证据链
 
 > 灵感来自 Z3r0 Evidence Plane，落地为 **Markdown 字段契约**。  
-> reverse-skill 特色：与 `docs-generator` 报告模板、`field-journal` 脱敏回写、可复现命令绑定。
+> novahaku 特色：与 `docs-generator` 报告模板、`field-journal` 脱敏回写、可复现命令绑定。
 
 ## 1. Evidence（不可变观察）
 
@@ -28,7 +28,7 @@
 **CLI helper**（写入 `work/<case>/evidence/E-*.md`）：
 
 ```powershell
-powershell -File scripts/reverse-skill/append-evidence.ps1 -CaseRoot work/<case> `
+powershell -File scripts/novahaku/append-evidence.ps1 -CaseRoot work/<case> `
   -Id E-001 -Title "..." -ReproCommand "..." -Severity info -Status observed
 ```
 
@@ -109,7 +109,7 @@ The review is read-only and checks scope fields, Evidence records, work item and
 
 ## 6. 与 Z3r0 的差异（特色）
 
-| Z3r0 | reverse-skill |
+| Z3r0 | novahaku |
 |------|----------------|
 | PG 不可变行 + API | Markdown 文件 + hash 字段 |
 | UI 审阅队列 | 报告 + next-step 菜单 + journal |

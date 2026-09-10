@@ -1,12 +1,12 @@
 {
   "schemaVersion": "1.0",
   "meta": {
-    "description": "reverse-skill 任务路由的单一事实源 (Single Source of Truth)。master-route.ps1 / verify-routing-coherence.ps1 / test-routing.ps1 / extract-summaries.ps1 均从此文件读取。修改路由规则请只改此文件，勿改散落在 markdown / ps1 里的路由表（文档由生成脚本维护，或至少与本站保持一致）。",
+    "description": "novahaku 任务路由的单一事实源 (Single Source of Truth)。master-route.ps1 / verify-routing-coherence.ps1 / test-routing.ps1 / extract-summaries.ps1 均从此文件读取。修改路由规则请只改此文件，勿改散落在 markdown / ps1 里的路由表（文档由生成脚本维护，或至少与本站保持一致）。",
     "fallbackId": "R0",
     "scoring": "每条关键字规则命中后计入候选集；按 priority 数组顺序取『命中分数最高』的为 PRIMARY；分数并列时 priority 靠前者胜出；未命中任何规则时回退 fallbackId。",
     "maintainers": [
       "docs/MASTER-ROUTING.md 中的优先级表与此文件 priority 字段一一对应",
-      "scripts/reverse-skill/verify-routing-coherence.ps1 会校验二者一致性"
+      "scripts/novahaku/verify-routing-coherence.ps1 会校验二者一致性"
     ]
   },
   "routes": {

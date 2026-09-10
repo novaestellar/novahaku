@@ -238,7 +238,7 @@ checksec → 漏洞分类 → 保护检测 → 策略选择 → libc/gadget准�
 ---
 
 
-### 9. 逆向工程模块 (from reverse-skill)
+### 9. 逆向工程模块
 - **reverse-engineering**: 14KB SKILL.md + 32KB反分析参考 + 14个ref文件
 - **ghidra-reverse**: Ghidra专用工作流 + 自动脚本
 - **radare2**: radare2脚本 + 快捷手册
@@ -274,14 +274,14 @@ checksec → 漏洞分类 → 保护检测 → 策略选择 → libc/gadget准�
 ### 13. RE工具链 (已安装)
 | 工具 | 路径 |
 |------|------|
-| Ghidra 12.1.2 | C:/Users/Design/Tools/ghidra_12.1.2_PUBLIC/ |
-| radare2 6.1.8 | C:/Users/Design/Tools/radare2/bin/ |
-| jadx | C:/Users/Design/Tools/jadx/bin/ |
-| apktool | C:/Users/Design/Tools/apktool/ |
-| Frida | Python313/Scripts/ |
-| YARA | C:/Users/Design/Tools/yara/ |
+| Ghidra 12.1.2 | /path/to/ghidra/ |
+| radare2 6.1.8 | /path/to/radare2/bin/ |
+| jadx | /path/to/jadx/bin/ |
+| apktool | /path/to/apktool/ |
+| Frida | python3/Scripts/ |
+| YARA | /path/to/yara/ |
 | Hashcat | pip installed |
-| SecLists | C:/Users/Design/Tools/SecLists/ |
+| SecLists | /path/to/SecLists/ |
 | ProxyCat | pip installed |
 | pwntools | pip installed |
 | binwalk | pip installed |

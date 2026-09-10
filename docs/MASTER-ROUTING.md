@@ -1,4 +1,4 @@
-# reverse-skill PRIMARY 快路径
+# novahaku PRIMARY 快路径
 
 > `scripts/master-route.ps1` 与 `scripts/master-route.sh` 必须保持相同路由契约；平台只改变执行入口，不改变 routing semantics。
 

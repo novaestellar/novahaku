@@ -1,6 +1,6 @@
 # examples/ctf-demo — 完整流程示例
 
-> 本目录演示 reverse-skill 的标准作业流：**路由 → 授权门禁 → 时间线 → 证据链 → 报告**。
+> 本目录演示 novahaku 的标准作业流：**路由 → 授权门禁 → 时间线 → 证据链 → 报告**。
 > 内容为虚构示例（CTF 靶场），仅用于展示工作方式。
 
 ## 流程演示
@@ -27,12 +27,12 @@
 
 ```powershell
 # 初始化真实 case（授权目标）
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/reverse-skill/case-init.ps1 `
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/novahaku/case-init.ps1 `
   -Hint "你的任务" -CaseName my-case -AuthGranted -TargetUrl "https://target/" `
   -NetworkProfile authorized_target_only
 
 # 追加证据
-powershell -File scripts/reverse-skill/append-evidence.ps1 -CaseRoot work\my-case `
+powershell -File scripts/novahaku/append-evidence.ps1 -CaseRoot work\my-case `
   -Id E-001 -Title "..." -ReproCommand "..."
 ```
 

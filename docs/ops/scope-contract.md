@@ -21,12 +21,12 @@ powershell -NoProfile -ExecutionPolicy Bypass -File skills\scripts\case-init.ps1
 Linux / macOS / Kali：
 
 ```bash
-bash scripts/reverse-skill/case-init.sh --hint "<任务一句话>" --case-name "my-case"
+bash scripts/novahaku/case-init.sh --hint "<任务一句话>" --case-name "my-case"
 # 默认产出：caller 当前分析项目的 work/<case>/scope.md 等
 # 从其他目录调用时显式指定：--project-root "/path/to/analysis-project"
 
 # 合法本地离线样本
-bash scripts/reverse-skill/case-init.sh \
+bash scripts/novahaku/case-init.sh \
   --hint "offline apk" --case-name "my-sample" \
   --preset offline-sample --sample ./app.apk
 ```

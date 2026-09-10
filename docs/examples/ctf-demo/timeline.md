@@ -2,7 +2,7 @@
 
 ## 2026-08-02T00:00:00.0000000+08:00 | lead | init
 - action: case-init
-- command_or_ref: scripts/reverse-skill/case-init.ps1
+- command_or_ref: scripts/novahaku/case-init.ps1
 - result_summary: case directory created; scope ready_for_act=true
 - artifacts: [scope.md, workitems.md]
 - evidence_ids: []

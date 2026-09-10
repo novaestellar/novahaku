@@ -1,10 +1,10 @@
 # 可选沙箱工具 Profile（对照 bootstrap-manifest）
 
-> Z3r0 默认镜像工具很全；reverse-skill **不捆绑镜像**，用本表做「覆盖率对照」与可选 Docker 建议。
+> Z3r0 默认镜像工具很全；novahaku **不捆绑镜像**，用本表做「覆盖率对照」与可选 Docker 建议。
 
-## reverse-skill 可自动 bootstrap 的能力
+## novahaku 可自动 bootstrap 的能力
 
-来源：`scripts/reverse-skill/bootstrap-manifest.json`（以文件为准）：
+来源：`scripts/novahaku/bootstrap-manifest.json`（以文件为准）：
 
 | 能力 | 典型场景 |
 |------|----------|
@@ -24,7 +24,7 @@ powershell -File skills\scripts\tool discovery script
 
 ## Z3r0 沙箱常见但本包 manifest 未自动装的
 
-| 工具 | reverse-skill 策略 |
+| 工具 | novahaku 策略 |
 |------|-------------------|
 | subfinder / amass / httpx / ffuf / nuclei / sqlmap | 文档安装 / Kali 脚本 / 外部 MCP；**勿假装 bootstrap 已有** |
 | Ghidra GUI 全量 | ghidra-mcp 能力 + 手动插件步骤 |
@@ -44,7 +44,7 @@ powershell -File skills\scripts\tool discovery script
 逆向：宿主机 IDA/r2 + tool availability
 ```
 
-**MUST NOT** 要求用户安装 Z3r0 才能使用 reverse-skill。
+**MUST NOT** 要求用户安装 Z3r0 才能使用 novahaku。
 
 ## network_profile 联动
 

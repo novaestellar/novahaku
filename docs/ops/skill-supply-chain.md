@@ -6,7 +6,7 @@
 
 本包**可执行脚本面**静态审计（后门 / 删库 / 管道执行）：[`docs/PACKAGE-SECURITY-AUDIT.md`](../../docs/PACKAGE-SECURITY-AUDIT.md)。
 
-## 1. 为什么 reverse-skill 要单独管这个
+## 1. 为什么 novahaku 要单独管这个
 
 本包会：
 

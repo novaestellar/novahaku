@@ -80,7 +80,7 @@ metadata:
 - Credential泄露检查(HaveIBeenPwned、IntelX)
 - 与novaxinwei(v1.1)协同: novaxinwei负责主动网络侦察(WAF绕过、并行抓取、Dork查询) → novahaku负责漏洞发现、利用与报告(73个安全模块、16个触发分类)
 
-### 9. 逆向工程模块 (from reverse-skill)
+### 9. 逆向工程模块
 - **reverse-engineering**: 14KB SKILL.md + 32KB反分析参考 + 14个ref文件
 - **ghidra-reverse**: Ghidra专用工作流 + 自动脚本
 - **radare2**: radare2脚本 + 快捷手册
