@@ -17,6 +17,7 @@ build/
 *.jks
 *.keystore
 vault.dat
+config.yaml
 .env
 .env.*
 !.env.example
@@ -25,6 +26,7 @@ vault.dat
 *.secret
 *.credential
 *.token
+keys_*.txt
 
 # IDE
 .vscode/

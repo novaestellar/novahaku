@@ -190,7 +190,7 @@ def load_key() -> bytes:
     """Load AES-256 key from secure storage."""
     if not KEY_FILE.exists():
         print(f"[!] Key not found: {KEY_FILE}")
-        print("    Run: python3 loader/loader.py init")
+        print("    Run: python3 techniques/loader.py init")
         sys.exit(1)
     with open(KEY_FILE, "rb") as f:
         return f.read()
@@ -492,8 +492,7 @@ def main():
 
     if cmd == "registry":
         registry = scan_modules()
-        import json as json_mod
-        print(json_mod.dumps(registry, indent=2, ensure_ascii=False))
+        print(json.dumps(registry, indent=2, ensure_ascii=False))
         return
 
     if cmd == "verify":

@@ -209,13 +209,12 @@ class Provider:
 
 
 def _http_post_json(url: str, headers: dict, payload: dict, timeout: int = 60):
-    import json as _json
     import urllib.request
-    data = _json.dumps(payload).encode("utf-8")
+    data = json.dumps(payload).encode("utf-8")
     req = urllib.request.Request(url, data=data, headers=headers, method="POST")
     try:
         with urllib.request.urlopen(req, timeout=timeout) as resp:
-            return _json.loads(resp.read().decode("utf-8"))
+            return json.loads(resp.read().decode("utf-8"))
     except Exception as e:
         return {"error": str(e)}
 

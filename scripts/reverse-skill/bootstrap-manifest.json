@@ -342,7 +342,7 @@
       "pinnedVersion": "4.15.0",
       "docsUrl": "https://github.com/Gallopsled/pwntools",
       "canAutoInstall": true,
-      "verifyCommand": "pwntools"
+      "verifyCommand": "python -c \"import pwn\""
     },
     {
       "name": "bkcrack",

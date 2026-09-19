@@ -391,6 +391,17 @@ novahaku/
 │   ├── templates/                   # 技术模板
 │   └── workers/                     # 工作者模块 (7个, techniques/workers/)
 ├── templates/                       # 操作模板
+├── docs/                            # 操作合约 + 路由文档 + 报告模板
+│   ├── MASTER-ROUTING.md            # 三轴路由协议
+│   ├── routing-3axis.md             # 路由架构文档
+│   ├── routing_zh.md                # 路由文档(中文)
+│   ├── CONTRIBUTING.md              # 贡献指南
+│   ├── ops/                         # 操作合约
+│   ├── examples/                    # 示例文档
+│   └── skill-references/            # 技能参考
+├── tests/                           # 路由基准测试
+│   └── routing-benchmark.json       # 390个路由用例
+├── engagements/                     # 渗透测试 engagements
 ├── testing/                         # Web测试 + 安全猎杀 + OSINT + Pwn
 │   ├── scripts/                     # 自动化脚本
 │   │   ├── webtest.py               # 14模块Web扫描器

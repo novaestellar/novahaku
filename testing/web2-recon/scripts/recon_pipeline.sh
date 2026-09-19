@@ -6,7 +6,7 @@ set -uo pipefail
 D="${1:?usage: recon_pipeline.sh <domain>}"
 # Must be a real dotted hostname: blocks '..'/'.' path escapes and leading-'-' option injection into whois/gau.
 [[ "$D" =~ ^[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?)+$ ]] || { echo "error: invalid domain '$D' (expected a dotted hostname, e.g. example.com)" >&2; exit 1; }
-ENG="$HOME/Research/engagements/$D"
+ENG="${NOVAHAKU_ENGAGEMENT_DIR:-$(pwd)/engagements}/$D"
 TS(){ date -u +"%Y-%m-%dT%H:%M:%SZ"; }
 log(){ echo "$(TS) $*" >> "$ENG/run-log.jsonl"; }
 mkdir -p "$ENG"/{evidence/{stage1-seed,stage2-expansion,stage3-enrichment,breach,identity,ports,js},assets,findings,notes,buckets}

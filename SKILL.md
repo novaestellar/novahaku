@@ -26,7 +26,7 @@ metadata:
 - 48个payload参考(HackTricks + PayloadsAllTheThings)
 - 脚本:testing/scripts/webtest.py、race_test.py、jwt_test.py
 
-### 2. 提示工程(121项技术)
+### 2. 提示工程(106项技术)
 - 7大分类:Boundary、Priming、Identity、Encoding、Multi-Provider、Iterative、Stream
 - 4级锁定命令:basic(85%)、double(92%)、godmode(88%)、triple(95%)
 - 7阶段方法论:侦察 → 准备 → 执行 → 分析 → 迭代 → 文档 → 综合
@@ -127,7 +127,7 @@ metadata:
 | reframe、arsenal | 重构引擎 | reframe/reframe_cli.py |
 | CTF、anti-debug、x64dbg、hooking | Windows逆向 | windows-re/windows-re.md |
 | EDR、CrowdStrike、Defender、AMSI、ETW、SysWhispers | EDR绕过 | windows-re/windows-re.md |
-| pwn、ROP、heap、kernel、pwntools、ret2libc、one_gadget | 二进制利用 | testing/pwn-chain.md |
+| pwn、ROP、heap、kernel、pwntools、ret2libc、one_gadget | 二进制利用 | testing/pwn-chain/ |
 | persona、你是谁 | 身份系统 | identity/few-shots-primary.md |
 | hunt XSS, SQLi, IDOR, SSRF, CSRF, RCE, etc. | Hunt Playbooks | testing/hunt/ |
 | audit Supabase, Laravel, Next.js, BaaS | Frameworks | testing/frameworks/ |
@@ -154,6 +154,30 @@ metadata:
 | src-hunter, source code audit, src finger, source hunt | Source Hunter | testing/pentest-tools/src-hunter/ |
 | burp, burpsuite, burp mcp, burp scan | BurpSuite MCP | testing/frameworks/burpsuite-mcp/ |
 | anything analyzer, browser analysis, http analysis | Anything Analyzer | testing/frameworks/anything-analyzer-mcp/ |
+
+| API security, REST API test, GraphQL test, API auth | API Security | testing/api-security/ |
+| binary diff, bindiff, diff binary, patch diff | Binary Diff | testing/binary-diff/ |
+| browser automation, playwright, puppeteer, selenium, stealth | Browser Automation | testing/browser-automation/ |
+| browser extension reverse, chrome extension, manifest v3 | Browser Extension RE | testing/browser-extension-reverse/ |
+| case review, reverse case, forensic case, handoff | Case Review | testing/case-review/ |
+| cloud k8s, kubernetes, docker, container escape, AKS, EKS | Cloud K8s | testing/cloud-k8s/ |
+| code audit, source code review, SAST, static analysis | Code Audit | testing/code-audit/ |
+| database security, SQL audit, DB hardening, postgres security | Database Security | testing/database-security/ |
+| digital forensics, memory dump, volatility, disk image | Digital Forensics | testing/digital-forensics/ |
+| EDR bypass, CrowdStrike bypass, Defender bypass, AMSI, ETW | EDR Bypass RE | testing/edr-bypass-re/ |
+| email security, SPF, DKIM, DMARC, phishing analysis | Email Security | testing/email-security/ |
+| hardware security, JTAG, UART, SWD, side-channel | Hardware Security | testing/hardware-security/ |
+| identity federation, SAML, OIDC, OAuth federation | Identity Federation | testing/identity-federation/ |
+| LLM security, prompt injection, AI agent security | LLM Security | testing/llm-security/ |
+| malware analysis, dynamic analysis, sandbox, unpack | Malware Analysis | testing/malware-analysis/ |
+| OT ICS, SCADA, PLC, Modbus, industrial control | OT/ICS Security | testing/ot-ics/ |
+| radio SDR, software defined radio, spectrum, RF | Radio/SDR | testing/radio-sdr/ |
+| supply chain security, SBOM, dependency audit, typosquat | Supply Chain Security | testing/supply-chain-security/ |
+| thick client, desktop app, Electron, .NET desktop | Thick Client | testing/thick-client/ |
+| threat hunting, detection engineering, YARA, Sigma rules | Threat Hunting | testing/threat-hunting/ |
+| threat intelligence, MITRE ATT&CK, IOC, threat feed | Threat Intelligence | testing/threat-intelligence/ |
+| wifi, wireless, WPA, evil twin, deauth, PMKID | WiFi/Wireless | testing/wifi-wireless/ |
+| Windows AD, Active Directory, Kerberos, bloodhound | Windows AD | testing/windows-ad/ |
 
 ---
 
@@ -196,7 +220,7 @@ cat testing/frameworks/burpsuite-mcp/SKILL.md
 ## 🔗 协同: Novahaku × NovaXinWei
 
 **NovaXinWei** (v3, `web/novaxinwei`) = 主动网络侦察引擎 — 15个数据源渠道、WAF绕过、代理轮换、异步扫描。
-**Novahaku** = 安全研究+漏洞利用代理 — 8大领域能力覆盖。
+**Novahaku** = 安全研究+漏洞利用代理 — 12大领域能力覆盖。
 
 ### 协同工作流
 
@@ -227,4 +251,3 @@ cat testing/frameworks/burpsuite-mcp/SKILL.md
 | 目标命名 | 统一使用目标域名作根目录名 |
 | 上下文传递 | 通过Hermes skill chaining,用户意图自动路由 |
 | 互不侵入 | novaxinwei不写exploit代码,novahaku不写爬虫代码 |
-```

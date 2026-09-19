@@ -3,7 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BOOTSTRAP="$SCRIPT_DIR/bootstrap-reverse.sh"
-KALI_BOOTSTRAP="$SCRIPT_DIR/../../kali/scripts/bootstrap-reverse.sh"
+KALI_BOOTSTRAP="$SCRIPT_DIR/bootstrap-reverse.sh"
 MANIFEST="$SCRIPT_DIR/bootstrap-manifest.json"
 REAL_PYTHON="$(command -v python3)"
 SCRATCH="$(mktemp -d /tmp/reverse-bootstrap-test-XXXXXX)"

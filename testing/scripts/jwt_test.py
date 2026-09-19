@@ -42,7 +42,14 @@ def sign(header, payload, secret, alg):
     digest = _HASH_MAP.get(alg)
     if not digest:
         return None
-    data = (b64u_encode(header) + "." + b64u_encode(payload)).encode()
+    # Handle both dict (from json.loads) and raw bytes/str inputs
+    def _enc(v):
+        if isinstance(v, dict):
+            return b64u_encode(json.dumps(v, separators=(',', ':')).encode())
+        if isinstance(v, str):
+            return b64u_encode(v.encode())
+        return b64u_encode(v)
+    data = (_enc(header) + "." + _enc(payload)).encode()
     return b64u_encode(hmac.new(secret.encode(), data, digest).digest())
 
 def request(url, token, cookie):

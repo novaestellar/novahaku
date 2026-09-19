@@ -3,7 +3,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BENCHMARK="$SCRIPT_DIR/../tests/routing-benchmark.json"
+BENCHMARK="$SCRIPT_DIR/../../tests/routing-benchmark.json"
 ROUTER="$SCRIPT_DIR/master-route.sh"
 
 PYTHON=""
