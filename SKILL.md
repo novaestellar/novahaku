@@ -26,7 +26,7 @@ metadata:
 - 48个payload参考(HackTricks + PayloadsAllTheThings)
 - 脚本:testing/scripts/webtest.py、race_test.py、jwt_test.py
 
-### 2. 提示工程(106项技术)
+### 2. 提示工程(121项技术)
 - 7大分类:Boundary、Priming、Identity、Encoding、Multi-Provider、Iterative、Stream
 - 4级锁定命令:basic(85%)、double(92%)、godmode(88%)、triple(95%)
 - 7阶段方法论:侦察 → 准备 → 执行 → 分析 → 迭代 → 文档 → 综合

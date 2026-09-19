@@ -10,7 +10,7 @@ fail=0
 
 BAD=('..' '.' '../../tmp/pwned' '-rf' '--help' 'a b' 'example.com;id' 'nodot' 'example..com' '-example.com' 'example.com.')
 for s in "$S/recon_pipeline.sh" "$S/findings_gen.py" "$S/build_xlsx.py"; do
-  runner=bash; [[ "$s" == *.py ]] && runner=python3
+  runner=bash; [[ "$s" == *.py ]] && runner=${PYTHON:-python3}
   for d in "${BAD[@]}"; do
     out=$(HOME="$SANDBOX" "$runner" "$s" "$d" 2>&1)
     case "$out" in
@@ -25,7 +25,7 @@ found=$(find "$SANDBOX" -mindepth 1 2>/dev/null)
 
 # A real domain must still pass the guard (python entry points only — the shell one starts a live run).
 for s in "$S/findings_gen.py" "$S/build_xlsx.py"; do
-  out=$(HOME="$SANDBOX" python3 "$s" sub.example.com 2>&1)
+  out=$(HOME="$SANDBOX" ${PYTHON:-python3} "$s" sub.example.com 2>&1)
   case "$out" in *"invalid domain"*) echo "FAIL: $(basename "$s") rejected sub.example.com"; fail=1;; esac
 done
 
