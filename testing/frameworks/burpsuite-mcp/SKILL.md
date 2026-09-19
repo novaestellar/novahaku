@@ -39,3 +39,24 @@ Load via `skill_view(name="novahaku", file_path="testing/frameworks/burpsuite-mc
 3. Use Intruder for parameter fuzzing
 4. Verify findings with Collaborator
 ```
+
+## Verified Working (2026-09-10)
+
+All 83 tools tested against Burp Community 2026.8. Key usage notes:
+
+| Tool | Notes |
+|------|-------|
+| `burp_jwt_attack` | `attack` param must be `"none"` (not `"alg:none"`). Returns forged token with `alg: none`. |
+| `burp_repeater_send` | Pass raw request; LF line endings accepted (auto-normalized to CRLF). |
+| `burp_repeater_modify_send` | Supports `add_header`, `replace_header`, `replace_body`. |
+| `burp_race_condition` | Concurrent send; returns per-request status/length + `verdict`. |
+| `burp_access_control_sweep` | `auth_headers` is pipe-separated; empty entry = unauthenticated baseline. |
+| `burp_inline_fuzzer` | FUZZ marker replacement with wordlist. |
+
+**Not available in Community Edition:** `burp_scan_active` (active scan), `burp_crawl` (needs Pro).
+
+### CRLF patch
+Raw-request tools originally required CRLF line endings; LF-only input (as delivered over JSON/MCP)
+produced malformed requests that failed over TLS (status 0). Fixed in
+`burp-mcp-full/src/main/java/com/burpmcp/McpHttpServer.java` via a `crlf()` normalizer applied at
+every raw-request call site. Jar rebuilt; extension reloads automatically (`auto_reload: true`).
