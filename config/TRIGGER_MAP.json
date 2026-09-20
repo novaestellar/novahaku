@@ -395,5 +395,17 @@
       "elf analysis",
       "ransomware"
     ]
+  },
+  "recon-cache": {
+    "description": "Recon cache reader and engagement integration",
+    "keywords": [
+      "recon cache",
+      "engagement reader",
+      "novaxinwei output",
+      "recon.json",
+      "cached recon",
+      "load recon",
+      "read engagement"
+    ]
   }
 }
