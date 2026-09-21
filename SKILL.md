@@ -80,6 +80,7 @@ metadata:
 - CT日志分析、WHOIS/DNS查询
 - Credential泄露检查(HaveIBeenPwned、IntelX)
 - 与novaxinwei(v1.1)协同: novaxinwei负责主动网络侦察(WAF绕过、并行抓取、Dork查询) → novahaku负责漏洞发现、利用与报告(73个安全模块、16个触发分类)
+- **GitHub Dorks**: 自动化执行请使用novaxinwei的`dorks/github_dorks`模块(141个结构化查询 + GitHub API客户端 + 速率限制处理)。Novahaku包含1400+扩展语料库(`testing/references/payloadsallthethings-extras/Insecure Source Code Management/Files/github-dorks.txt`)作为人工审计和离线模式匹配参考
 
 ### 9. 逆向工程模块
 - **reverse-engineering**: 14KB SKILL.md + 32KB反分析参考 + 14个ref文件
