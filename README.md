@@ -79,7 +79,9 @@ Novahaku 包含以下模块化技能:
 | **SOUL.md** | 根目录 | Agent身份定义 — Haku人格 |
 | **identity/** | 根目录 | 1718个少样本示例 + 338个安全术语映射 |
 | **techniques/** | 根目录 | 121项提示工程技术 (7大分类) |
-| **testing/** | 根目录 | Web测试 + 54个Hunt剧本 + 9个审计框架 + 159个PAT攻击向量 + 38个CTF模块 + src-hunter源码猎人 |
+| **testing/** | 根目录 | Web测试 + 54个Hunt剧本 + 9个审计框架 + 159个PAT攻击向量 + 38个CTF模块 + src-hunter源码猎人 + 2个CVE exploits |
+| **testing/gitlab-exploit/** | testing/ | CVE-2026-85706 GitLab未授权文件读取利用 |
+| **testing/keycloak-exploit/** | testing/ | CVE-2026-18963 Keycloak账户接管利用 |
 | **attack/** | 根目录 | v41攻击框架 + 5个注入面分析 |
 | **reframe/** | 根目录 | 请求重构引擎 (Reframe CLI) |
 | **windows-re/** | 根目录 | Windows逆向工程 / 游戏安全 / EDR绕过 |

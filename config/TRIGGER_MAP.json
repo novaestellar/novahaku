@@ -407,5 +407,43 @@
       "load recon",
       "read engagement"
     ]
+  },
+  "gitlab-exploit": {
+    "description": "CVE-2026-85706 GitLab unauthenticated arbitrary file read exploit",
+    "keywords": [
+      "gitlab-exploit",
+      "cve-2026-85706",
+      "gitlab arbitrary file read",
+      "gitlab unauthenticated",
+      "gitlab lfi",
+      "gitlab workhorse",
+      "gitlab secrets",
+      "gitlab vulnerability",
+      "gitlab ce exploit",
+      "gitlab ee exploit",
+      "gitlab file disclosure",
+      "gitlab-secrets.json",
+      "gitlab unauth read"
+    ]
+  },
+  "keycloak-exploit": {
+    "description": "CVE-2026-18963 Keycloak account takeover via reset-credentials bypass",
+    "keywords": [
+      "keycloak-exploit",
+      "cve-2026-18963",
+      "keycloak ato",
+      "keycloak account takeover",
+      "keycloak reset-credentials",
+      "keycloak unauth",
+      "keycloak misconfiguration",
+      "keycloak vulnerability",
+      "keycloak required action",
+      "keycloak bypass",
+      "keycloak sso",
+      "keycloak iam",
+      "keycloak password reset",
+      "keycloak takeover",
+      "keycloak exploit"
+    ]
   }
 }
