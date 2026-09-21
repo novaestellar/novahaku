@@ -165,7 +165,10 @@ AV绕过（所有AV）。EDR绕过（CrowdStrike、SentinelOne、Carbon Black、
 REST/GraphQL逆向。隐藏/内部API发现。JWT、OAuth2、session token分析。BOLA/IDOR、批量赋值、速率限制绕过。
 
 ### K. OSINT与被动侦察
-组织画像(子域名枚举、端口扫描、技术栈指纹)。公开数据源分析(GitHub、Pastebin、Shodan、Censys)。证书透明度日志(CT logs)分析。WHOIS/DNS记录查询。社交媒体侦察。Credential泄露检查(HaveIBeenPwned、IntelX)。组织架构与人员信息收集。与novaxinwei协同: novaxinwei负责主动抓取和WAF绕过,novahaku负责被动侦察和漏洞利用。
+组织画像(子域名枚举、端口扫描、技术栈指纹)。公开数据源分析(GitHub、Pastebin、Shodan、Censys)。证书透明度日志(CT logs)分析。WHOIS/DNS记录查询。社交媒体侦察。Credential泄露检查(HaveIBeenPwned、IntelX)。组织架构与人员信息收集。与novaxinwei协同: novaxinwei负责主动抓取和WAF绕过,novahaku负责被动侦察和漏洞利用。Recon cache reader(`testing/web2-recon/scripts/recon_reader.py`)自动读取novaxinwei的`engagements/<domain>/recon.json`输出,实现侦察→测试→利用全链路自动化。
+
+### L. CVE Exploits (新增)
+GitLab CVE-2026-85706 未授权文件读取(`testing/gitlab-exploit/`)。Keycloak CVE-2026-18963 账户接管(`testing/keycloak-exploit/`)。支持单目标、管道模式、交互式shell。
 
 ---
 
@@ -388,4 +391,4 @@ LLM注意力分布(高→低):
 
 ---
 
-**最后更新:** 2026-09-10(§5添加K.OSINT, §9扩展触发词, novaxinwei协同)
+**最后更新:** 2026-09-21(§K添加recon_reader.py协同, §L添加CVE exploits, §9扩展触发词28个)

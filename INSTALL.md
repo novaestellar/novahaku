@@ -77,6 +77,18 @@ pip install pwntools
 pip install binwalk
 ```
 
+## Python Dependencies for CVE Exploits
+
+GitLab & Keycloak exploits require:
+```bash
+pip install requests urllib3
+```
+
+Optional (for advanced features):
+```bash
+pip install curl_cffi playwright camoufox  # Anti-detection browser automation
+```
+
 ## MCP Server Setup
 
 ### BurpSuite MCP

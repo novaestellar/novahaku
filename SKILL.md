@@ -24,7 +24,8 @@ metadata:
 - 竞态条件测试(race_test.py)
 - JWT分析 + 伪造 + 暴力破解(jwt_test.py)
 - 48个payload参考(HackTricks + PayloadsAllTheThings)
-- 脚本:testing/scripts/webtest.py、race_test.py、jwt_test.py
+- CVE exploits: GitLab CVE-2026-85706未授权文件读取(gitlab-exploit), Keycloak CVE-2026-18963账户接管(keycloak-exploit)
+- 脚本:testing/scripts/webtest.py、race_test.py、jwt_test.py、testing/gitlab-exploit/gitlab_exploit.py、testing/keycloak-exploit/keycloak_exploit.py
 
 ### 2. 提示工程(121项技术)
 - 7大分类:Boundary、Priming、Identity、Encoding、Multi-Provider、Iterative、Stream
