@@ -263,3 +263,66 @@ trufflehog docker --image ORG/IMAGE:latest --only-verified
 - Trufflehog "unverified" hits that are example/expired keys.
 
 **Severity:** Jenkins console / CVE-2024-23897 / Actions secret exfil / runner poisoning / OIDC role assumption / Terraform live creds = **Critical**. Image/log/artifact secret = **High/Critical** by credential scope.
+
+---
+
+## CVE Intelligence Feed (NovaXinWei Pipeline)
+
+**Source:** NovaXinWei CVE scraper (updated on-demand or daily via cron)  
+**Location:** `cache/cve-feed.json`  
+**Trigger keywords:** `cve feed`, `github advisories`, `h1 disclosed`, `security advisory`
+
+**Usage:**
+```bash
+# Check latest critical GitHub Security Advisories
+cat cache/cve-feed.json | jq '.github_advisories[] | select(.severity=="critical")'
+
+# Find workflow-related CVEs
+cat cache/cve-feed.json | jq '.github_advisories[] | select(.summary | contains("workflow"))'
+
+# Find npm ecosystem CVEs
+cat cache/cve-feed.json | jq '.github_advisories[] | select(.affected_packages[] | contains("npm"))'
+```
+
+**Pipeline:**
+1. NovaXinWei: `python tools/cve/cve_scraper.py --ecosystem npm --severity critical`
+2. Auto-export: `python tools/cve/export_to_novahaku.py`
+3. Novahaku hunt-cicd: reads `cache/cve-feed.json` for exploit context
+
+**Feed schema:**
+- `updated_at`: ISO timestamp
+- `github_advisories[]`: array of {cve_id, ghsa_id, summary, severity, published_at, url, affected_packages}
+- `hackerone_disclosed[]`: array (requires H1 API key)
+- `stats`: {github_count, h1_count}
+
+---
+
+## Automated Workflow Vulnerability Scanner
+
+**Script:** `scripts/workflow_vuln_scan.py`  
+**Requires:** `pip install PyGithub PyYAML`
+
+**Patterns detected:**
+1. **pull_request_target + secrets** (CRITICAL) — untrusted PR can access repo secrets
+2. **Script injection** (HIGH) — `${{ github.event.* }}` in `run:` commands
+3. **Unpinned actions** (MEDIUM) — actions not locked to SHA
+
+**Usage:**
+```bash
+# Scan organization
+python scripts/workflow_vuln_scan.py --target victim-org --token ghp_xxxx
+
+# JSON output
+python scripts/workflow_vuln_scan.py --target victim-org --token ghp_xxxx --json > findings.json
+```
+
+**Example output:**
+```
+[CRITICAL] victim-org/api-server/.github/workflows/pr-auto-commit.yml: pull_request_target with secrets access
+    Job 'auto-commit' grants untrusted PR access to repo secrets
+[HIGH] victim-org/frontend/.github/workflows/ci.yml: Script injection via github.event
+    User input in shell: echo "${{ github.event.pull_request.title }}"
+```
+
+**Cross-reference:** For manual workflow audit methodology, see § Phase 2 recon above.
+

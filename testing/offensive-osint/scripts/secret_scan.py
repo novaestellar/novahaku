@@ -240,11 +240,27 @@ def main():
         if sys.argv[1] in ("-h", "--help"):
             print(__doc__)
             sys.exit(0)
+        if sys.argv[1] == "--stdin":
+            # URL list mode: read URLs from stdin, fetch and scan each
+            # Pipeline: novaxinwei wayai <domain> | secret_scan.py --stdin
+            import urllib.request
+            for line in sys.stdin:
+                url = line.strip()
+                if not url or not url.startswith("http"):
+                    continue
+                try:
+                    with urllib.request.urlopen(url, timeout=10) as response:
+                        content = response.read().decode(errors="replace")
+                        for hit in scan_text(content, source=url):
+                            print(json.dumps(hit))
+                except Exception:
+                    pass  # Skip unreachable URLs
+            return
         for arg in sys.argv[1:]:
             for hit in scan_path(arg):
                 print(json.dumps(hit))
     else:
-        # Read from stdin
+        # Read from stdin (text mode, not URL list)
         try:
             data = sys.stdin.read()
         except KeyboardInterrupt:

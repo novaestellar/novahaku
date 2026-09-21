@@ -79,8 +79,11 @@ metadata:
 - 公开数据源:GitHub/Pastebin/Shodan/Censys/Greynoise
 - CT日志分析、WHOIS/DNS查询
 - Credential泄露检查(HaveIBeenPwned、IntelX)
-- 与novaxinwei(v1.1)协同: novaxinwei负责主动网络侦察(WAF绕过、并行抓取、Dork查询) → novahaku负责漏洞发现、利用与报告(73个安全模块、16个触发分类)
+- 与novaxinwei(v1.1)协同: novaxinwei负责主动网络侦察(WAF绕过、并行抓取、Dork查询) → novahaku负责漏洞发现、利用与报告(149个安全技能、16个触发分类)
 - **GitHub Dorks**: 自动化执行请使用novaxinwei的`dorks/github_dorks`模块(141个结构化查询 + GitHub API客户端 + 速率限制处理)。Novahaku包含1400+扩展语料库(`testing/references/payloadsallthethings-extras/Insecure Source Code Management/Files/github-dorks.txt`)作为人工审计和离线模式匹配参考
+- **Wayback/URL Harvesting**: URL harvesting从Wayback Machine + Common Crawl由novaxinwei `tools/wayai/wayai.py`执行(15-platform recon engine)。Pipeline: `python -m novaxinwei wayai <domain> | secret_scan.py --stdin` — harvest URLs直接scan 80+ secret patterns,零重复harvesting logic
+- **CVE Intelligence**: CVE/advisory gathering由novaxinwei `tools/cve/cve_scraper.py`执行(GitHub Security Advisories + HackerOne disclosed)。Feed auto-export到`hunt-cicd/cache/cve-feed.json`供CI/CD hunting exploit context使用
+- **GitHub Pages Enumeration**: novaxinwei `tools/github_pages/github_pages_enum.py` — detect private repo content leaked via Pages (`username.github.io/repo/`). Novahaku consumes findings for exploit workflows
 
 ### 9. 逆向工程模块
 - **reverse-engineering**: 14KB SKILL.md + 32KB反分析参考 + 14个ref文件
