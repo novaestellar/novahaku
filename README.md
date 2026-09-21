@@ -634,6 +634,30 @@ python ~/.hermes/skills/security/novahaku/testing/scripts/jwt_test.py <token>
 
 **设计原则:** NovaXinWei负责 **看到什么** (15通道、WAF绕过、异步扫描), Novahaku负责 **做什么** (漏洞测试、exploit开发、EDR绕过)。两者通过JSON数据格式解耦,可独立使用也可串联。
 
+### 自动协同流水线 (2026-09 新增)
+
+| 流水线 | 方向 | 触发方式 |
+|--------|------|----------|
+| **CVE Feed** | NovaXinWei `tools/cve/` → Novahaku `hunt-cicd/cache/cve-feed.json` | 自动导出 (运行 `export_to_novahaku.py`) |
+| **Wayback → Secret Scan** | NovaXinWei `wayai` stdout → Novahaku `secret_scan.py --stdin` | 管道命令 |
+| **GitHub Pages 泄露** | NovaXinWei `tools/github_pages/` → Novahaku Web测试/OSINT | 手动调用, 结果JSON |
+
+```bash
+# Pipeline 1: CVE情报自动导出 (daily cron可配)
+cd novaxinwei && python tools/cve/cve_scraper.py --severity critical
+python tools/cve/export_to_novahaku.py
+
+# Pipeline 2: Wayback URL → 秘密扫描
+python tools/wayai/wayai.py --domain target.com | \
+  python ~/.hermes/skills/security/novahaku/testing/offensive-osint/scripts/secret_scan.py --stdin
+
+# Pipeline 3: GitHub Pages 私有仓库泄露检测
+python tools/github_pages/github_pages_enum.py --username victim-org --repos api,config
+
+# CI/CD 工作流漏洞扫描 (Novahaku侧, 需 GITHUB_TOKEN)
+python ~/.hermes/skills/security/novahaku/testing/hunt/hunt-cicd/scripts/workflow_vuln_scan.py --target org-name --token $GITHUB_TOKEN
+```
+
 ---
 
 ## 🤝 贡献

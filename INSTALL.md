@@ -87,6 +87,7 @@ pip install requests urllib3
 Optional (for advanced features):
 ```bash
 pip install curl_cffi playwright camoufox  # Anti-detection browser automation
+pip install PyGithub PyYAML  # CI/CD workflow scanner (hunt-cicd/scripts/workflow_vuln_scan.py)
 ```
 
 ## MCP Server Setup
