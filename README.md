@@ -96,7 +96,7 @@ Novahaku 包含以下模块化技能:
 | **testing/frameworks/anything-analyzer-mcp/** | testing/frameworks/ | Anything Analyzer MCP封装 |
 | **testing/field-journal/** | testing/ | 45+实战案例日志 + 匿名化模板 |
 | **docs/** | root directory | 操作合约 + 路由文档 + 报告模板 |
-| **scripts/** | root directory | 反渗透脚本(参考) + 部署脚本 |
+| **scripts/** | root directory | 反渗透脚本(参考) + 部署脚本 + 本地 Hermes 护栏补丁 |
 | **tests/** | root directory | 路由基准测试 |
 | **INSTALL.md** | root directory | 安装指南 + RE工具路径 + MCP设置 |
 | **.env.example** | root directory | 环境变量配置模板 |
@@ -377,6 +377,12 @@ novahaku/
 │   ├── install.ps1                  # Windows安装
 │   ├── install.sh                   # Linux/macOS安装
 │   └── install.command              # macOS终端安装
+├── scripts/hermes-patch/            # 本地 Hermes 护栏补丁(仅本地,不参与路由)
+│   ├── hermes_patch.py              # 可逆补丁工具 (--check/--apply/--verify/--restore)
+│   ├── run-hermes-patch.ps1         # Windows 包装脚本
+│   ├── run-hermes-patch.sh          # Linux/macOS 包装脚本
+│   ├── test-hermes-patch.sh         # 31 项断言的完整周期测试
+│   └── README.md                    # 作用域、安全属性、回滚流程
 ├── techniques/                      # 提示工程技术
 │   ├── flow.md                      # 流程文档
 │   ├── loader.py                    # 载荷加载器
@@ -664,6 +670,49 @@ python ~/.hermes/skills/security/novahaku/testing/supply-chain-security/scripts/
 # References:
 # - Branch injection payloads: testing/hunt/hunt-cicd/references/branch_injection.md
 # - Unpinned actions bypass: testing/hunt/hunt-cicd/references/unpinned_bypass.md
+
+---
+
+## 本地 Hermes 护栏补丁 (scripts/hermes-patch/)
+
+**仅本地工具** — 不被 loader、路由表或任何 skill 调用。用于解除 Hermes 平台自身的
+prompt-injection 扫描器对 memory 与 cron 写入路径的拦截。
+
+作用域(4 个文件 / 12 个 anchor):
+
+| 文件 | Anchor 数 | 覆盖内容 |
+|---|---|---|
+| `tools/memory_tool_store.py` | 5 | 写入护栏、载入扫描、add/replace/batch 调用点 |
+| `cron/scheduler_prompt.py` | 3 | assembled 与 user prompt 的扫描派发 |
+| `tools/cronjob_tools.py` | 3 | create / run / update |
+| `gateway/platforms/api_server.py` | 1 | API server cron 入口 |
+
+**有意不触碰**:`tools/skills_guard.py`(保留不可绕过的 `hard_block`)、
+`agent/tool_dispatch_helpers.py`(仅咨询性)、`agent/prompt_builder.py`
+(context 文件路径,已有受支持的 `HERMES_CONTEXT_SKIP_SCAN=1` 开关)。
+
+```bash
+export HERMES_AGENT_HOME=/path/to/hermes-agent/app   # 含 tools/ 的目录
+
+python scripts/hermes-patch/hermes_patch.py --root "$HERMES_AGENT_HOME" --check
+python scripts/hermes-patch/hermes_patch.py --root "$HERMES_AGENT_HOME" --apply
+python scripts/hermes-patch/hermes_patch.py --root "$HERMES_AGENT_HOME" --verify
+python scripts/hermes-patch/hermes_patch.py --root "$HERMES_AGENT_HOME" --restore
+
+# 完整周期测试(31 项断言,在一次性副本上运行,不触碰线上安装)
+bash scripts/hermes-patch/test-hermes-patch.sh "$HERMES_AGENT_HOME"
+```
+
+退出码:`0` 成功 / `1` 失败或状态不健康 / `2` 无法解析 root。
+
+**安全属性**:anchor 漂移时 fail-closed(写入前校验全部目标);带 marker 但扫描器仍
+活的文件会被拒绝而非当作已打补丁;写入失败自动从 manifest 回滚;`--restore` 覆盖前
+校验全部备份存在且哈希正确;`--verify` 基于 AST 且覆盖全部 4 个文件,能将重新启用的
+guard 报为 `STILL WIRED`;`--apply` 自动 verify 并在失败时自动回滚。
+
+**注意**:作用域是全平台——重启 gateway 后本机所有会话都按补丁状态运行。cron 无人值守
+执行,因此 cron prompt 中的外泄模式在打补丁后会被接受且没有用户回合可以察觉。
+回滚演练见 `scripts/hermes-patch/README.md`。
 ```
 
 ---
