@@ -445,5 +445,27 @@
       "keycloak takeover",
       "keycloak exploit"
     ]
+  },
+  "hermes-guardrail": {
+    "description": "Hermes Agent guardrail patch tool (OPTIONAL, NOT APPLIED — do not run without explicit user confirmation)",
+    "keywords": [
+      "hermes patch",
+      "hermes-patch",
+      "guardrail bypass",
+      "skip scan",
+      "HERMES_CONTEXT_SKIP_SCAN",
+      "memory scan blocked",
+      "cron scan blocked",
+      "threat pattern blocked",
+      "prompt injection scanner",
+      "hermes scanner",
+      "memory_tool_store",
+      "scheduler_prompt",
+      "novahaku-patch"
+    ],
+    "status": "shipped-inactive",
+    "applied_in_production": false,
+    "path": "scripts/hermes-patch/",
+    "note": "Local-only tool. Never invoked by the loader or any skill. Does NOT modify novahaku behaviour."
   }
 }

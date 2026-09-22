@@ -184,6 +184,7 @@ metadata:
 | threat intelligence, MITRE ATT&CK, IOC, threat feed | Threat Intelligence | testing/threat-intelligence/ |
 | wifi, wireless, WPA, evil twin, deauth, PMKID | WiFi/Wireless | testing/wifi-wireless/ |
 | Windows AD, Active Directory, Kerberos, bloodhound | Windows AD | testing/windows-ad/ |
+| hermes patch, guardrail bypass, memory scan blocked, HERMES_CONTEXT_SKIP_SCAN | Hermes Guardrail Patch (INACTIVE) | scripts/hermes-patch/ |
 
 ---
 
@@ -195,6 +196,9 @@ python testing/scripts/webtest.py https://target.com
 
 # 提示技术
 cat techniques/methods/03-identity/m-03004-dan-mode.md
+
+# Hermes guardrail patch (INACTIVE — read-only inspection only)
+python scripts/hermes-patch/hermes_patch.py --root "$HERMES_AGENT_HOME" --check
 
 # 重构
 python reframe/reframe_cli.py "quest text" --fresh
@@ -220,6 +224,62 @@ cat testing/pentest-tools/src-hunter/SKILL.md
 # MCP工具
 cat testing/frameworks/burpsuite-mcp/SKILL.md
 ```
+
+---
+
+## ⚠️ Hermes Guardrail Patch (INACTIVE — shipped, not applied)
+
+`scripts/hermes-patch/` 是一个**本地工具**，用于解除 Hermes Agent 自身在 memory 和 cron
+写入路径上的 prompt-injection 扫描器。它随 Novahaku 仓库分发，但：
+
+- **未在 production Hermes 上应用** — `$HERMES_AGENT_HOME` 零改动、零 marker
+- **不被 loader 调用** — 不修改 router、不修改任何 Novahaku 能力
+- **不影响 NovaXinWei** — 两者无代码耦合，tools/ 无任何引用
+- **永不自动运行** — 必须由用户显式指定路径才会执行
+
+### 何时使用
+
+仅当用户**明确要求**处理 Hermes 自身的扫描器拦截时。触发场景：
+
+| 症状 | 说明 |
+|------|------|
+| `Blocked: content matches threat pattern` | memory 或 cron 写入被 Hermes 扫描器拒绝 |
+| Mnemosyne 无法保存记忆 | 同上，命中 `_scan_memory_content` |
+| cron job 无法创建 | 命中 `_scan_cron_prompt` |
+| context file (SOUL.md) 被拒 | **不要用这个工具** — 用环境变量开关 |
+
+### 优先选择环境变量开关
+
+如果问题只是 **context file** 被扫（例如 SOUL.md 命中 `known_c2_framework`），
+用受支持的开关，**不要**打补丁：
+
+```bash
+HERMES_CONTEXT_SKIP_SCAN=1
+```
+
+零源码修改、零重启风险、零 memory/cron 副作用。已在 Hermes `agent/prompt_builder.py:90` 实现。
+
+### 工具能力概览（仅供了解，勿自动执行）
+
+| 项 | 值 |
+|----|-----|
+| 模式 | `--check` / `--apply` / `--restore` / `--verify` |
+| 目标 | 4 个文件, 12 个 anchor |
+| 标记 | `# [novahaku-patch]` |
+| 备份 | `.novahaku-patch-backup/` + `manifest.json` |
+| 回滚 | 自带 snapshot；但**真实校验**是 `git diff --stat` 对 upstream |
+| 测试 | 31/31 PASS (`test-hermes-patch.sh`) |
+| 影响面 | platform-wide，**重启 gateway 后生效** |
+| 不触碰 | `skills_guard.py`（按用户决定保留 force-override 保护） |
+
+### 副作用（若被应用）
+
+12 类 payload 在 memory + cron 路径上不再被拦截：
+`prompt_injection`, `deception_hide`, `sys_prompt_override`, `disregard_rules`,
+`read_secrets`, `ssh_backdoor`, `sudoers_mod`, `destructive_root_rm`,
+`exfil_curl_url`, `exfil_wget_post`, `exfil_curl_auth_header`, invisible-unicode `U+200B`。
+
+**功能不会消失** — Mnemosyne 与 cron 照常工作。失效的只是"守门人"。
 
 ---
 
