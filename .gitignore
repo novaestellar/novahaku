@@ -40,9 +40,10 @@ keys_*.txt
 Thumbs.db
 desktop.ini
 
-# Logs
+# Logs & temp
 *.log
 *.tmp
+*.temp
 
 # Runtime
 runs/
@@ -51,23 +52,10 @@ runs/
 # Test results
 webtest_results.json
 training_results.json
-
-# Test output
 testing/**/engagements/
+
 # Backups
 *.bak
 *.bakup
 *.backup
 *.old
-
-# OS files
-.DS_Store
-Thumbs.db
-desktop.ini
-
-# Logs
-*.log
-
-# Temp
-*.tmp
-*.temp
