@@ -101,6 +101,28 @@ pip install PyGithub PyYAML  # CI/CD workflow scanner (hunt-cicd/scripts/workflo
 1. Server runs on localhost:23816
 2. See `testing/frameworks/anything-analyzer-mcp/SKILL.md`
 
+## Local Hermes Patch (optional, local-only)
+
+`scripts/hermes-patch/` defuses Hermes' own prompt-injection scanners on the memory and
+cron write paths. It is **not** installed as part of novahaku and is never invoked by the
+loader, the routing table, or any skill. Stdlib-only Python — no dependencies.
+
+```bash
+export HERMES_AGENT_HOME=/path/to/hermes-agent/app   # the dir containing tools/
+
+python scripts/hermes-patch/hermes_patch.py --root "$HERMES_AGENT_HOME" --check
+python scripts/hermes-patch/hermes_patch.py --root "$HERMES_AGENT_HOME" --apply
+python scripts/hermes-patch/hermes_patch.py --root "$HERMES_AGENT_HOME" --verify
+python scripts/hermes-patch/hermes_patch.py --root "$HERMES_AGENT_HOME" --restore
+
+# prove the tool works before touching a live install (31 assertions, disposable copy)
+bash scripts/hermes-patch/test-hermes-patch.sh "$HERMES_AGENT_HOME"
+```
+
+Take a manual snapshot of the four target files **before** applying — the tool's own backup
+directory is a single point of failure. Scope is platform-wide after a gateway restart.
+See `scripts/hermes-patch/README.md` for blast radius and the rollback drill.
+
 ## Verification
 
 ```bash
@@ -111,4 +133,8 @@ ls $JADX
 python -c "import frida; print(frida.__version__)"
 yara --version
 hashcat --version
+
+# Hermes patch tool (only if you intend to use it; safe to run against any tree)
+python scripts/hermes-patch/hermes_patch.py --help
+bash scripts/hermes-patch/test-hermes-patch.sh "$HERMES_AGENT_HOME"   # expect ALL PASS
 ```
