@@ -656,6 +656,13 @@ python tools/github_pages/github_pages_enum.py --username victim-org --repos api
 
 # CI/CD 工作流漏洞扫描 (Novahaku侧, 需 GITHUB_TOKEN)
 python ~/.hermes/skills/security/novahaku/testing/hunt/hunt-cicd/scripts/workflow_vuln_scan.py --target org-name --token $GITHUB_TOKEN
+
+# Supply chain: dependency leak detection
+python ~/.hermes/skills/security/novahaku/testing/supply-chain-security/scripts/dependency_leak.py --dir ./target-project --json
+
+# References:
+# - Branch injection payloads: testing/hunt/hunt-cicd/references/branch_injection.md
+# - Unpinned actions bypass: testing/hunt/hunt-cicd/references/unpinned_bypass.md
 ```
 
 ---

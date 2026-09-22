@@ -178,7 +178,7 @@ metadata:
 | malware analysis, dynamic analysis, sandbox, unpack | Malware Analysis | testing/malware-analysis/ |
 | OT ICS, SCADA, PLC, Modbus, industrial control | OT/ICS Security | testing/ot-ics/ |
 | radio SDR, software defined radio, spectrum, RF | Radio/SDR | testing/radio-sdr/ |
-| supply chain security, SBOM, dependency audit, typosquat | Supply Chain Security | testing/supply-chain-security/ |
+| supply chain security, SBOM, dependency audit, typosquat, dependency leak, private registry | Supply Chain Security | testing/supply-chain-security/ |
 | thick client, desktop app, Electron, .NET desktop | Thick Client | testing/thick-client/ |
 | threat hunting, detection engineering, YARA, Sigma rules | Threat Hunting | testing/threat-hunting/ |
 | threat intelligence, MITRE ATT&CK, IOC, threat feed | Threat Intelligence | testing/threat-intelligence/ |

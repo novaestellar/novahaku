@@ -299,6 +299,28 @@ cat cache/cve-feed.json | jq '.github_advisories[] | select(.affected_packages[]
 
 ## Automated Workflow Vulnerability Scanner
 
+**Script:** `scripts/workflow_vuln_scan.py`
+**Requires:** `GITHUB_TOKEN` env var + `pip install PyGithub PyYAML`
+**Usage:** `python scripts/workflow_vuln_scan.py --target <org> --token $GITHUB_TOKEN`
+
+Detects: pull_request_target + secrets (CRITICAL), unpinned actions (MEDIUM), script injection (HIGH).
+
+## Branch Injection Payloads
+
+**Reference:** `references/branch_injection.md`
+Covers: branch name injection → RCI via GITHUB_REF, credential theft via branch-based config, cross-repo injection via pull_request_target. Detection patterns + mitigation checklist.
+
+## Unpinned Actions Bypass
+
+**Reference:** `references/unpinned_bypass.md`
+Covers: tag rewrite attacks, maintainer takeover, dependency chain attacks. Real-world incidents (tj-actions/changed-files, actionlint supply chain). Detection patterns + SHA-pinning guide.
+
+## Supply Chain: Dependency Leak Scanner
+
+**Script:** `../supply-chain-security/scripts/dependency_leak.py`
+**Usage:** `python scripts/dependency_leak.py --dir <path> --json`
+Detects: private registry refs in package.json, requirements.txt, Pipfile. Flags npm registry fields, pip custom index URLs, pip trusted hosts.
+
 **Script:** `scripts/workflow_vuln_scan.py`  
 **Requires:** `pip install PyGithub PyYAML`
 
