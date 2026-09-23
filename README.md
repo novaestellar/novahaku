@@ -756,8 +756,9 @@ python scripts/engage_runner.py selftest
 **Integrity check**
 
 `integrity` 校验 state.json / findings.json / findings.csv / lock 四方一致 —
-防止中断运行留下半写状态。基础 9 项检查,存在 findings.csv 时再增 2 项
-(header 合约 + 行数一致性);任一不一致退出码 1。
+防止中断运行留下半写状态。共 12 项检查:CSV 结构 (可读性 + header 合约 + 空文件)
+始终校验;`findings.json` 存在时再比对 state / JSON / CSV 三方行数。
+任一不一致退出码 1。
 
 **配置**:`config/engagement_phases.json` — phase 定义、approach pool、评分表、误报正则。
 

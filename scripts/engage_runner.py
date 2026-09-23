@@ -58,11 +58,22 @@ def load_config(path=None):
 
 
 def load_state(target, base=None):
+    """Read state.json, returning None when it is absent, truncated, or binary.
+
+    This is the trust boundary for engagement state: a corrupt file must degrade
+    to "no state" so the caller can report it, never raise. An uncaught
+    UnicodeDecodeError here previously killed `list` for every engagement on the
+    host because one bad state.json aborted the whole scan.
+    """
     path = os.path.join(engagement_dir(target, base), "state.json")
     if not os.path.exists(path):
         return None
-    with open(path, "r", encoding="utf-8") as fh:
-        return json.load(fh)
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            state = json.load(fh)
+    except (json.JSONDecodeError, IOError, UnicodeDecodeError, ValueError):
+        return None
+    return state if isinstance(state, dict) else None
 
 
 def save_state(target, state, base=None):
@@ -776,26 +787,41 @@ def integrity(target, base=None):
                 issues.append(
                     f"count mismatch: state={state_count} findings.json={disk_count}"
                 )
-        except (json.JSONDecodeError, IOError) as exc:
+        except (json.JSONDecodeError, IOError, UnicodeDecodeError) as exc:
             issues.append(f"findings.json unreadable: {exc}")
     else:
         checks += 1
         if state_count:
             issues.append(f"state records {state_count} finding(s) but findings.json absent")
 
-    if os.path.exists(csv_path) and disk_count is not None:
+    # findings.csv is a first-class output: findings_gen.py consumes it via this
+    # exact header. Its structure and header must be validated whenever the file
+    # exists, independently of findings.json - otherwise a corrupted or truncated
+    # CSV goes unnoticed for as long as no race has run yet, which is precisely
+    # when nobody is looking. Only the row-count comparison needs disk_count.
+    if os.path.exists(csv_path):
+        rows = None
         checks += 1
         try:
+            # A truncated or binary file raises UnicodeDecodeError, which is a
+            # ValueError - not an OSError/csv.Error - so it must be caught too or
+            # integrity dies with a traceback instead of reporting the problem.
             with open(csv_path, "r", encoding="utf-8", newline="") as fh:
                 rows = list(csv.reader(fh))
-            checks += 1
-            if rows and rows[0] != FINDINGS_CSV_HEADER:
-                issues.append("findings.csv header diverged from findings_gen.py contract")
-            checks += 1
-            if len(rows) - 1 != disk_count:
-                issues.append(f"CSV rows ({len(rows) - 1}) != findings.json ({disk_count})")
-        except (IOError, csv.Error) as exc:
+        except (IOError, csv.Error, UnicodeDecodeError) as exc:
             issues.append(f"findings.csv unreadable: {exc}")
+
+        if rows is not None:
+            checks += 1
+            if not rows:
+                issues.append("findings.csv present but empty")
+            elif rows[0] != FINDINGS_CSV_HEADER:
+                issues.append("findings.csv header diverged from findings_gen.py contract")
+
+            if disk_count is not None:
+                checks += 1
+                if len(rows) - 1 != disk_count:
+                    issues.append(f"CSV rows ({len(rows) - 1}) != findings.json ({disk_count})")
 
     # 4. Report, when present, must not be empty
     rep = os.path.join(edir, "report.md")
@@ -946,7 +972,89 @@ def selftest():
         import shutil as _sh
         _sh.rmtree(lockdir, ignore_errors=True)
 
-    print("[+] selftest: 16/16 checks passed")
+    # 17. findings.csv must be validated even before findings.json exists.
+    # Regression guard: tying the CSV checks to findings.json's count left a
+    # corrupted or empty CSV passing integrity for the whole pre-race window.
+    _t = "selftest-csv"
+    _base = tempfile.mkdtemp(prefix="novahaku-csv-selftest-")
+    try:
+        engagement_init(_t, None, _base) if "engagement_init" in globals() else None
+        _edir = os.path.join(_base, _t)
+        os.makedirs(os.path.join(_edir, "findings"), exist_ok=True)
+        _csv = os.path.join(_edir, "findings", "findings.csv")
+        _json = os.path.join(_edir, "findings", "findings.json")
+        # A state file is needed for integrity() to get past check 1.
+        _state = {
+            "schema_version": "1.0", "target": _t, "current_phase": "init",
+            "stats": {"findings_total": 0}, "phases_completed": ["init"],
+            "race_results": [], "notes": [],
+        }
+        with open(os.path.join(_edir, "state.json"), "w", encoding="utf-8") as fh:
+            json.dump(_state, fh)
+
+        def _integrity_issues():
+            import io, contextlib
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                rc = integrity(_t, _base)
+            return rc, buf.getvalue()
+
+        # healthy: header only, no findings.json -> must pass
+        with open(_csv, "w", encoding="utf-8", newline="") as fh:
+            csv.writer(fh).writerow(FINDINGS_CSV_HEADER)
+        rc, out = _integrity_issues()
+        assert rc == 0, f"clean CSV must pass, got rc={rc}: {out}"
+
+        # corrupted header -> must now fail, and must say why
+        with open(_csv, "w", encoding="utf-8", newline="") as fh:
+            csv.writer(fh).writerow(["WRONG", "HEADER"])
+        rc, out = _integrity_issues()
+        assert rc == 1 and "header diverged" in out, f"corrupt header undetected: rc={rc} {out}"
+
+        # empty file -> must fail
+        open(_csv, "w").close()
+        rc, out = _integrity_issues()
+        assert rc == 1 and "empty" in out, f"empty CSV undetected: rc={rc} {out}"
+
+        # findings.json count != CSV rows -> still cross-checked when both exist
+        with open(_csv, "w", encoding="utf-8", newline="") as fh:
+            w = csv.writer(fh); w.writerow(FINDINGS_CSV_HEADER); w.writerow(["F-1", "x"])
+        with open(_json, "w", encoding="utf-8") as fh:
+            json.dump({"count": 5, "findings": []}, fh)
+        rc, out = _integrity_issues()
+        assert rc == 1 and ("count mismatch" in out or "CSV rows" in out), \
+            f"count divergence undetected: rc={rc} {out}"
+    finally:
+        shutil.rmtree(_base, ignore_errors=True)
+
+    # 18. Corrupt state.json must degrade to "no state", never raise.
+    # Regression guard: UnicodeDecodeError is a ValueError, so it slipped past
+    # the (JSONDecodeError, IOError) handlers and one damaged engagement aborted
+    # `list` for every other engagement on the host.
+    _t2 = "selftest-corrupt"
+    _base2 = tempfile.mkdtemp(prefix="novahaku-corrupt-selftest-")
+    try:
+        _edir2 = os.path.join(_base2, _t2)
+        os.makedirs(os.path.join(_edir2, "findings"), exist_ok=True)
+        with open(os.path.join(_edir2, "state.json"), "wb") as fh:
+            fh.write(b"\x00\xff\xfe broken \x80")
+        assert load_state(_t2, _base2) is None, "binary state.json must yield None"
+        assert read_recon(_t2, _base2) == {}, "recon must survive corrupt state"
+
+        # Truncated JSON (valid text, invalid document) must also yield None.
+        with open(os.path.join(_edir2, "state.json"), "w", encoding="utf-8") as fh:
+            fh.write('{"schema_version": "1.0", "target":')
+        assert load_state(_t2, _base2) is None, "truncated state.json must yield None"
+
+        # A JSON array is valid JSON but not state: reject it rather than
+        # handing the caller something that will fail on .get().
+        with open(os.path.join(_edir2, "state.json"), "w", encoding="utf-8") as fh:
+            fh.write("[1, 2, 3]")
+        assert load_state(_t2, _base2) is None, "non-dict state.json must yield None"
+    finally:
+        shutil.rmtree(_base2, ignore_errors=True)
+
+    print("[+] selftest: 18/18 checks passed")
     return 0
 
 

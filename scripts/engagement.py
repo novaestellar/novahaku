@@ -125,9 +125,13 @@ def read_state(target, base=None):
         return None
     try:
         with open(path, "r", encoding="utf-8") as fh:
-            return json.load(fh)
-    except (json.JSONDecodeError, IOError):
+            state = json.load(fh)
+    except (json.JSONDecodeError, IOError, UnicodeDecodeError, ValueError):
+        # A truncated or binary state.json raises UnicodeDecodeError, which is a
+        # ValueError rather than an OSError. Catching it keeps one damaged
+        # engagement from aborting `list` for every other engagement on the host.
         return None
+    return state if isinstance(state, dict) else None
 
 
 def write_state(target, base=None, state=None):
