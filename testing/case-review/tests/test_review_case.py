@@ -181,6 +181,10 @@ class ReviewCaseTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             self.write_case(root)
+            # write_case writes scope.md. This test previously referenced an
+            # undefined `scope`, so it raised NameError and never actually
+            # exercised Windows-drive parsing - the one thing it exists to cover.
+            scope = root / "scope.md"
             scope.write_text(
                 scope.read_text(encoding="utf-8")
                 .replace("  - sample.bin", r"  - D:\reverse-skill")

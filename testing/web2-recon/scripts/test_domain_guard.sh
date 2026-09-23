@@ -4,13 +4,21 @@
 # Asserts on the guard's own error string, not merely a non-zero exit, so a script
 # that dies for some unrelated reason cannot make this pass vacuously.
 set -uo pipefail
-S="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# pwd -W yields a native path (D:/...) on MSYS/Git-Bash. Plain `pwd` yields
+# /d/... which a native python.exe cannot open, and the .py cases then fail with
+# "can't open file" - which reads as the guard being broken rather than the path
+# being wrong. -W is MSYS-only, so fall back to pwd elsewhere.
+S="$(cd "$(dirname "${BASH_SOURCE[0]}")" && { pwd -W 2>/dev/null || pwd; })"
 SANDBOX="$(mktemp -d)"; trap 'rm -rf "$SANDBOX"' EXIT
 fail=0
 
 BAD=('..' '.' '../../tmp/pwned' '-rf' '--help' 'a b' 'example.com;id' 'nodot' 'example..com' '-example.com' 'example.com.')
 for s in "$S/recon_pipeline.sh" "$S/findings_gen.py" "$S/build_xlsx.py"; do
-  runner=bash; [[ "$s" == *.py ]] && runner=${PYTHON:-python3}
+  # PYTHON first, then python3, then python: Windows has no python3 on PATH and
+  # the Store app-alias stub answers instead, which failed every .py case with
+  # "Python was not found" and looked like the guard was broken.
+  runner=bash
+  [[ "$s" == *.py ]] && runner=${PYTHON:-$(command -v python3 || command -v python)}
   for d in "${BAD[@]}"; do
     out=$(HOME="$SANDBOX" "$runner" "$s" "$d" 2>&1)
     case "$out" in

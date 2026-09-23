@@ -136,6 +136,10 @@ def parse_timeline(root, issues):
 
 def parse_scope(root, issues, strict):
     result = {"auth_status": "", "network_mode": "", "ready_for_act": "", "assets": []}
+    # `path` was never bound here, so every call raised NameError and review_case
+    # could not parse scope at all - the whole case review died on the first
+    # fixture. Every sibling parser binds its file the same way.
+    path = root / "scope.md"
     if not path.is_file():
         return result
 
