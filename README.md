@@ -734,9 +734,12 @@ engagements/<target>/
 `results.json` 的 envelope 与 `recon.json` 同形:`version` / `target` / `timestamp` / `source`,
 载荷放在 `engagement` 与 `results` 下。注意 `by_severity` 的键是**小写**
 (`{"high": 1, "low": 1}`),而 `findings[].severity` 保留原始大小写 (`"High"`) —— 两者不一致,
-消费方不要拿它们直接比对。novaxinwei 侧有 12 个只读访问器
-(`read_results`、`get_findings`、`get_severity_counts`、`get_phase`、`get_stats`、
-`get_evidence_files`、`summarize` …),因此消费方不需要也不应该解析原始 JSON。
+消费方不要拿它们直接比对。novaxinwei 侧有 10 个只读访问器
+(`read_results`、`results_exist`、`results_version`、`get_findings`、
+`get_finding_titles`、`get_severity_counts`、`get_phase`、`get_stats`、
+`get_evidence_files`、`summarize`),因此消费方不需要也不应该解析原始 JSON。
+全部保证不抛异常:文件缺失、损坏、是二进制、是非 dict JSON、是 `null` 都返回
+`None` / 空值,而不是让调用方处理 IOError。
 
 `publish_results()` 写入后会调用 `record_chain(target, "results_written", "results.json")`;
 `engagement.py init` 调用 `record_chain(target, "engagement_created", "state.json")`。
@@ -767,6 +770,47 @@ python scripts/engage_runner.py report    --target target.com
 python scripts/engage_runner.py integrity --target target.com
 python scripts/engage_runner.py selftest
 ```
+
+**`status` 会一并显示 NovaXinWei 的贡献**
+
+一个目标的所有信息从一个命令就能看完,不需要再去 sibling repo 跑第二个 CLI ——
+那会变成两份各自漂移的 status。novaxinwei 仍是 recon 的事实来源,这里只报告
+它**已经写好**的内容:
+
+```
+$ python scripts/engagement.py status target.com
+=== Engagement: target.com ===
+Scope:      *.target.com
+Phase:      recon (active)
+Created:    2026-09-23T09:28:14Z
+...
+--- NovaXinWei ---
+Chain:      started_by=novahaku sides=novahaku
+Published:  2026-09-23T09:28:14.720929Z by novahaku
+Last chain: [2026-09-23T09:28:14.720929Z] novahaku engagement_created
+Recon:      3 subdomain(s), 2 port(s), 3 tech
+Tech:       laravel/8.x, nginx/1.18.0, php/7.4
+WAF:        Cloudflare
+Endpoints:  2
+```
+
+`--- NovaXinWei ---` 只在有内容时才打印;只有 `recon.json` 存在才会出现 `Recon:` 行。
+没有 recon 是正常状态(novaxinwei 可能还没跑),不是错误,也不会打印空标题。
+`recon.json` 字段为 `null` 或类型不对(例如 `tech_stack` 是数组)时该行省略,不崩溃。
+
+**`test` 结束后会提示 `exploit`,但不会替你执行**
+
+findings 非空时,推进到 `test` 会打印:
+
+```
+[i] 1 finding(s) ready. Next, to validate them against the target:
+      python scripts/engage_runner.py exploit target.com
+    Sends live requests to target.com. Run it when you are ready.
+```
+
+这是**提示,不是链式调用**。`exploit` 会对目标发真实 HTTP 请求,何时执行属于操作员的决定 ——
+打印命令把选择权留在操作员手上,而不是让一次簿记操作顺手发出活体请求。
+已实测:出现该提示后 `evidence/` 目录不会被创建,`current_phase` 仍为 `test`。
 
 **Approach racing**
 
