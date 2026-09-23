@@ -4,7 +4,7 @@
 
 ## How to use
 
-1. Install the skills (see [`docs/installation.md`](../docs/installation.md)).
+1. Install the skills (see [`docs/installation.md`](installation.md)).
 2. Start a fresh session.
 3. Paste each prompt.
 4. Check Claude's response against "Expected behavior".

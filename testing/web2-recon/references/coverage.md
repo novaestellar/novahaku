@@ -71,7 +71,7 @@ All six stay strictly passive/read-only; each carries an explicit boundary that 
 
 ## Smoke-test results (56 prompts)
 
-The repo ships 56 self-test prompts ([`tests/smoke-test-prompts.md`](../tests/smoke-test-prompts.md)) covering the major capability areas — including Tier 4 prompts (34–48) for the six org-grade depth skills and hard-boundary refusal tests (B3–B8).
+The repo ships 56 self-test prompts ([`tests/smoke-test-prompts.md`](smoke-test-prompts.md)) covering the major capability areas — including Tier 4 prompts (34–48) for the six org-grade depth skills and hard-boundary refusal tests (B3–B8).
 
 | Run | PASS | PARTIAL | FAIL | Grade |
 |---|---|---|---|---|

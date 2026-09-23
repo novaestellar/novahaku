@@ -63,7 +63,7 @@
 ### 工具链与环境
 
 - [2026-09-03 多 Issue/PR 安全边界集成](./2026-09-03_issue-pr-security-boundary-integration.md)
-- [2026-08-17 tool availability r2 fallback 与 powershell/pwsh 子进程入口统一](./2026-08-17_tool availability-r2-fallback-powershell-pwsh-host-fix.md)
+- [2026-08-17 tool availability r2 fallback 与 powershell/pwsh 子进程入口统一](./2026-08-17_tool-index-r2-fallback-powershell-pwsh-host-fix.md)
 - [2026-08-14 Windows PowerShell 原生命令退出码 PR 审查](./2026-08-14_windows-powershell-native-exit-code-pr-review.md)
 - [2026-08-08 平台无关结构化路由 PR 集成](./2026-08-08_client-neutral-structured-routing-pr-integration.md)
 - [2026-07-20_reverse-toolchain-windows-bootstrap](./2026-07-20_reverse-toolchain-windows-bootstrap.md)
@@ -78,7 +78,7 @@
 ### 平台无关路由与供应链门禁
 
 - [隔离 worktree、多 PR 祖先闭环、Git-blob AV 审查与 reference/executable CI 边界](./2026-09-03_issue-pr-security-boundary-integration.md)
-- [Resolve-ReverseHostExe 统一子进程入口、r2 .bat fallback、StrictMode hashtable 安全访问](./2026-08-17_tool availability-r2-fallback-powershell-pwsh-host-fix.md)
+- [Resolve-ReverseHostExe 统一子进程入口、r2 .bat fallback、StrictMode hashtable 安全访问](./2026-08-17_tool-index-r2-fallback-powershell-pwsh-host-fix.md)
 - [原生命令后立即保存退出码、Windows PowerShell 5.1 实宿主复现、PR head 固定](./2026-08-14_windows-powershell-native-exit-code-pr-review.md)
 - [单一 routing.json、多入口 parity、实际安装命令 pin](./2026-08-08_client-neutral-structured-routing-pr-integration.md)
 
@@ -94,7 +94,7 @@
 
 ### Windows PowerShell 供应链引导脚本
 
-- [powershell/pwsh 子进程入口统一、tool availability .bat fallback、pin gate StrictMode](./2026-08-17_tool availability-r2-fallback-powershell-pwsh-host-fix.md)
+- [powershell/pwsh 子进程入口统一、tool availability .bat fallback、pin gate StrictMode](./2026-08-17_tool-index-r2-fallback-powershell-pwsh-host-fix.md)
 - [原生命令输出经过对象管道后退出码失真](./2026-08-14_windows-powershell-native-exit-code-pr-review.md)
 
 ### Cortex-M USB MSC 升级器

@@ -172,7 +172,7 @@ The skills assume you have standard recon tools available (subfinder, httpx, nuc
 
 ## Examples directory
 
-See [`../examples/`](../examples/) for end-to-end walkthroughs:
+See [`01-quick-recon.md`](01-quick-recon.md) and [`02-bug-bounty-workflow.md`](02-bug-bounty-workflow.md) for end-to-end walkthroughs:
 
 - `01-quick-recon.md` — 1-hour rapid recon
 - `02-bug-bounty-workflow.md` — full HackerOne engagement
