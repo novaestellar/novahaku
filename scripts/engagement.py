@@ -427,6 +427,27 @@ def cmd_phase(target, phase, base=None, force=False):
             )
         write_state(target, base, state)
         print(f"[+] {target}: {current} -> {phase}")
+
+        # Show the next command after 'test', as a hint only. The exploit phase
+        # sends real HTTP at the target, so the operator decides when that
+        # happens - printing the command keeps the choice with them instead of
+        # chaining into a live request off the back of a bookkeeping step.
+        if phase == "test":
+            findings_path = os.path.join(findings_dir(target, base), "findings.json")
+            count = 0
+            data = read_json(findings_path, {})
+            if isinstance(data, dict):
+                records = data.get("findings")
+                count = len(records) if isinstance(records, list) else 0
+            if count:
+                print()
+                print(f"[i] {count} finding(s) ready. Next, to validate them "
+                      f"against the target:")
+                print(f"      python scripts/engage_runner.py exploit {target}")
+                print(f"    Sends live requests to {target}. Run it when you are ready.")
+            else:
+                print()
+                print("[i] No findings to validate; exploit has nothing to do yet.")
         return 0
     finally:
         release_lock(target, base)
