@@ -51,6 +51,7 @@ runs/
 
 # Test results
 webtest_results.json
+webtest_results.json.racelock
 training_results.json
 testing/**/engagements/
 

@@ -37,6 +37,10 @@ CONFIG_PATH = os.path.join(SKILL_ROOT, "config", "engagement_phases.json")
 DEFAULT_ENGAGEMENTS_DIR = "engagements"
 
 SEVERITY_ORDER = ["critical", "high", "medium", "low", "info"]
+
+# webtest.py writes one fixed results path, so approaches must take turns on it.
+# A lock older than this is treated as abandoned and reclaimed.
+SCAN_LOCK_STALE_SECONDS = 120
 FINDINGS_CSV_HEADER = [
     "ID", "Title", "Severity", "Confidence", "Category",
     "Asset / Host", "Description", "Remediation", "Evidence",
@@ -206,31 +210,96 @@ def run_approach(approach, target, url, jwt_token, timeout):
         if approach.get("modules"):
             cmd += ["--modules", approach["modules"]]
 
-    # webtest.py writes webtest_results.json next to itself (not to CWD), so
-    # parallel approaches would clobber one shared file. Timestamp it before the
-    # run and only trust it if this approach actually rewrote it.
+    # webtest.py writes webtest_results.json next to its own script, never to CWD,
+    # so every parallel approach would write the same path. An mtime guard cannot
+    # close that window: approach A writes the file, approach B sees a fresh mtime
+    # and adopts A's findings as its own, which corrupts per-module attribution and
+    # therefore the race winner. Serialise the file region with a lock instead, and
+    # copy the result out before releasing so the next approach cannot overwrite it.
     shared_results = os.path.join(SKILL_ROOT, "testing", "scripts", "webtest_results.json")
-    before_mtime = os.path.getmtime(shared_results) if os.path.exists(shared_results) else 0
 
     workdir = tempfile.mkdtemp(prefix="novahaku-approach-")
+    lock_path = shared_results + ".racelock"
+    captured = os.path.join(workdir, "results.json")
+    have_lock = False
     try:
-        proc = subprocess.run(
-            cmd, capture_output=True, text=True, timeout=timeout, cwd=workdir
+        have_lock = _acquire_scan_lock(lock_path, timeout=timeout)
+        if have_lock and os.path.exists(shared_results):
+            # Start from a clean slate so a previous approach's file can never be
+            # mistaken for ours even if the write is skipped on this run.
+            try:
+                os.remove(shared_results)
+            except OSError:
+                pass
+
+        try:
+            proc = subprocess.run(
+                cmd, capture_output=True, text=True, timeout=timeout, cwd=workdir
+            )
+        except subprocess.TimeoutExpired:
+            return approach, [], f"timeout after {timeout}s"
+
+        # Snapshot the result while still holding the lock, then release before
+        # parsing so a slow parse does not block the other approaches.
+        if os.path.exists(shared_results):
+            try:
+                shutil.copyfile(shared_results, captured)
+            except OSError:
+                captured = None
+        else:
+            captured = None
+
+        if have_lock:
+            _release_scan_lock(lock_path)
+            have_lock = False
+
+        findings = parse_scanner_output(
+            proc.stdout, target, approach, captured if captured and os.path.exists(captured) else None
         )
-        # Use the shared file only when this run is the one that wrote it.
-        fresh = None
-        if os.path.exists(shared_results) and os.path.getmtime(shared_results) > before_mtime:
-            fresh = shared_results
-        findings = parse_scanner_output(proc.stdout, target, approach, fresh)
         if proc.returncode != 0 and not findings:
             return approach, [], f"exit {proc.returncode}"
         return approach, findings, None
-    except subprocess.TimeoutExpired:
-        return approach, [], f"timeout after {timeout}s"
     except OSError as exc:
         return approach, [], f"exec failed: {exc}"
     finally:
+        if have_lock:
+            _release_scan_lock(lock_path)
         shutil.rmtree(workdir, ignore_errors=True)
+
+
+def _acquire_scan_lock(lock_path, timeout=300):
+    """Cross-process lock around the shared scanner results file.
+
+    webtest.py has no way to redirect its output path, so the file is a genuine
+    shared resource. A lock file with a staleness bound is enough here: approaches
+    are separate processes on one host, and a crashed run must not wedge the rest.
+    """
+    deadline = time.time() + max(timeout, 30)
+    while time.time() < deadline:
+        try:
+            fd = os.open(lock_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+            with os.fdopen(fd, "w") as fh:
+                fh.write(str(os.getpid()))
+            return True
+        except FileExistsError:
+            # Reclaim locks whose owner died mid-run.
+            try:
+                if time.time() - os.path.getmtime(lock_path) > SCAN_LOCK_STALE_SECONDS:
+                    os.remove(lock_path)
+                    continue
+            except OSError:
+                pass
+            time.sleep(0.05)
+        except OSError:
+            return False
+    return False
+
+
+def _release_scan_lock(lock_path):
+    try:
+        os.remove(lock_path)
+    except OSError:
+        pass
 
 
 def dedupe_findings(findings):
@@ -852,7 +921,32 @@ def selftest():
     s = _sync_finding_stats(st, [sample[0]])
     assert s["findings_total"] == 1, f"resync should replace, got {s['findings_total']}"
 
-    print("[+] selftest: 15/15 checks passed")
+    # 16. The scan lock serialises approaches on the shared results file.
+    # Regression guard: an mtime check alone let one approach adopt another's
+    # findings, corrupting per-module attribution and the race winner.
+    import tempfile, os as _os
+    lockdir = tempfile.mkdtemp(prefix="novahaku-lock-selftest-")
+    lockpath = _os.path.join(lockdir, "results.json.racelock")
+    try:
+        assert _acquire_scan_lock(lockpath, timeout=5), "first acquire must succeed"
+        assert _os.path.exists(lockpath), "lock file must exist while held"
+        assert not _acquire_scan_lock(lockpath, timeout=1), "second acquire must fail"
+        _release_scan_lock(lockpath)
+        assert not _os.path.exists(lockpath), "release must remove the lock"
+        assert _acquire_scan_lock(lockpath, timeout=5), "re-acquire after release"
+        _release_scan_lock(lockpath)
+        # A crashed holder must not wedge the pool: stale locks get reclaimed.
+        with open(lockpath, "w") as fh:
+            fh.write("99999")
+        old = time.time() - (SCAN_LOCK_STALE_SECONDS + 60)
+        _os.utime(lockpath, (old, old))
+        assert _acquire_scan_lock(lockpath, timeout=5), "stale lock must be reclaimed"
+        _release_scan_lock(lockpath)
+    finally:
+        import shutil as _sh
+        _sh.rmtree(lockdir, ignore_errors=True)
+
+    print("[+] selftest: 16/16 checks passed")
     return 0
 
 
