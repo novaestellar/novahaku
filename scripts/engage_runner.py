@@ -1899,6 +1899,43 @@ def selftest():
         assert _recon_roots("D:/x") == [os.path.abspath("D:/x")], (
             "explicit base must be the only root"
         )
+
+        # chain.json is the crossref ledger both sides read. It had no test
+        # coverage, so a writer that silently returned None looked identical to
+        # one that worked - and the ledger is only consulted when deciding
+        # whether recon is stale, which no test reached.
+        _ct = "_chain.example"
+        assert read_chain(_ct, _rd) is None, "absent chain must read as None"
+        _c1 = record_chain(_ct, "engagement_created", "state.json", _rd)
+        assert isinstance(_c1, dict), "record_chain must return the chain it wrote"
+        assert _c1["version"] == CHAIN_VERSION, _c1.get("version")
+        assert _c1["started_by"] == CHAIN_SIDE, _c1.get("started_by")
+        assert [h["action"] for h in _c1["history"]] == ["engagement_created"], _c1["history"]
+        assert _c1["history"][0]["path"] == "state.json", _c1["history"][0]
+        # Round-trip: the ledger must survive the write, not just the return value.
+        _c2 = read_chain(_ct, _rd)
+        assert isinstance(_c2, dict), "chain written but not readable"
+        assert _c2["history"] == _c1["history"], "read chain differs from written chain"
+        # Appending must accumulate, not replace - the whole point of a history.
+        _c3 = record_chain(_ct, "results_written", "results.json", _rd, "report")
+        assert [h["action"] for h in _c3["history"]] == [
+            "engagement_created", "results_written"
+        ], _c3["history"]
+        assert _c3["state"]["phase"] == "report", _c3["state"]
+        assert _c3["state"]["results_by"] == CHAIN_SIDE, _c3["state"]
+        assert os.path.exists(_chain_path(_ct, _rd)), "_chain_path disagrees with writer"
+        assert not os.path.exists(_chain_path(_ct, _rd) + ".tmp"), "tmp file left behind"
+
+        # A corrupt or half-written ledger must not raise: recording is best
+        # effort, and a traceback here would abort a real engagement run.
+        with open(_chain_path(_ct, _rd), "wb") as _fh:
+            _fh.write(b"\x00\x01 not json")
+        assert read_chain(_ct, _rd) is None, "corrupt chain must read as None"
+        _c4 = record_chain(_ct, "engagement_created", None, _rd)
+        assert isinstance(_c4, dict) and len(_c4["history"]) == 1, (
+            "record over corrupt chain must rebuild, not crash: " + repr(_c4)
+        )
+        assert "path" not in _c4["history"][0], "path must be omitted when not given"
     finally:
         shutil.rmtree(_d2, ignore_errors=True)
 
