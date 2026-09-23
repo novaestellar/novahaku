@@ -76,7 +76,7 @@ Novahaku 包含以下模块化技能:
 
 | 技能 | 位置 | 说明 |
 |------|------|------|
-| **SOUL.md** | 根目录 | Agent身份定义 — Haku人格 |
+| **SOUL.md** | 根目录 | Agent身份定义 — Haku人格。**仅 Novahaku 拥有**;NovaXinWei 是被调用的工具,不含 persona,避免两份身份定义冲突 |
 | **identity/** | 根目录 | 1718个少样本示例 + 338个安全术语映射 |
 | **techniques/** | 根目录 | 121项提示工程技术 (7大分类) |
 | **testing/** | 根目录 | Web测试 + 54个Hunt剧本 + 9个审计框架 + 159个PAT攻击向量 + 38个CTF模块 + src-hunter源码猎人 + 2个CVE exploits |
