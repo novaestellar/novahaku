@@ -102,9 +102,24 @@ def save_state(target, state, base=None):
     os.replace(tmp, path)
 
 
+def engagements_root(base=None):
+    """Base engagements directory.
+
+    Precedence: caller-supplied base, then NOVAHAKU_ENGAGEMENT_DIR, then
+    <skill root>/engagements. README.md documents the env var and web2-recon
+    already honours it, so ignoring it here split one engagement across two
+    roots depending on which tool ran.
+    """
+    if base:
+        return os.path.abspath(base)
+    env = os.environ.get("NOVAHAKU_ENGAGEMENT_DIR")
+    if env and env.strip():
+        return os.path.abspath(env)
+    return os.path.join(SKILL_ROOT, DEFAULT_ENGAGEMENTS_DIR)
+
+
 def engagement_dir(target, base=None):
-    root = os.path.abspath(base) if base else os.path.join(SKILL_ROOT, DEFAULT_ENGAGEMENTS_DIR)
-    return os.path.join(root, target)
+    return os.path.join(engagements_root(base), target)
 
 
 def findings_dir(target, base=None):
@@ -131,15 +146,273 @@ def load_recon_reader():
 
 
 def read_recon(target, base=None):
-    """Read recon.json if present. Returns {} when absent - never fatal."""
+    """Read recon.json if present. Returns {} when absent - never fatal.
+
+    With base unset this looks in Novahaku's own engagements directory AND in a
+    sibling NovaXinWei checkout. The two skills keep physically separate
+    engagements/ roots, so preferring only Novahaku's would make this return {}
+    for every engagement that NovaXinWei wrote - which is the normal case, since
+    NovaXinWei is the only producer of recon.json.
+    """
     module = load_recon_reader()
     if module is None:
         return {}
-    # ReconReader resolves paths relative to CWD, so pass the absolute dir.
-    reader = module.ReconReader(target, engagements_dir=os.path.dirname(engagement_dir(target, base)))
-    if not reader.exists():
-        return {}
-    return reader.load() or {}
+    for engagements_root in _recon_roots(base):
+        # ReconReader resolves paths relative to CWD, so pass an absolute dir.
+        # It wants the *engagements* root - the directory holding <target>/ -
+        # which is exactly what base means here.
+        try:
+            reader = module.ReconReader(target, engagements_dir=engagements_root)
+            if not reader.exists():
+                continue
+            loaded = reader.load()
+        except Exception as exc:
+            # Report, do not swallow. A blanket `continue` made a crash inside
+            # the reader indistinguishable from "no recon here", so a real bug in
+            # crossref read-back returned {} and the caller silently behaved as
+            # if NovaXinWei had never written recon. Keep going to the next root
+            # (a broken root must not hide a good one) but say so.
+            print(f"[!] recon read failed in {engagements_root}: "
+                  f"{type(exc).__name__}: {exc}")
+            continue
+        if loaded:
+            return loaded
+    return {}
+
+
+# Phase order, mirroring engagement.py. Kept as a local constant because
+# engage_runner is invoked directly by operators and must not import the CLI.
+PHASE_ORDER = ["init", "recon", "race", "test", "exploit", "report", "closed"]
+
+
+def _artifact_phase(target, state, base=None):
+    """Highest phase the artifacts on disk actually support.
+
+    engage_runner advances the work (race, test, exploit) without touching the
+    phase label, so the label understates progress. Reporting the label alone
+    would tell a consumer the engagement never moved.
+    """
+    fdir = findings_dir(target, base)
+    done = PHASE_ORDER.index("init")
+    label = state.get("current_phase") if isinstance(state, dict) else None
+    if isinstance(label, str) and label in PHASE_ORDER:
+        done = max(done, PHASE_ORDER.index(label))
+    completed = state.get("phases_completed") if isinstance(state, dict) else None
+    if isinstance(completed, list):
+        for name in completed:
+            if isinstance(name, str) and name in PHASE_ORDER:
+                done = max(done, PHASE_ORDER.index(name))
+    if os.path.exists(os.path.join(fdir, "candidates.json")):
+        done = max(done, PHASE_ORDER.index("race"))
+    if os.path.exists(os.path.join(fdir, "findings.json")):
+        done = max(done, PHASE_ORDER.index("test"))
+    if os.path.exists(os.path.join(fdir, "evidence")) and os.path.isdir(
+        os.path.join(fdir, "evidence")
+    ) and os.listdir(os.path.join(fdir, "evidence")):
+        done = max(done, PHASE_ORDER.index("exploit"))
+    if os.path.exists(os.path.join(engagement_dir(target, base), "results.json")):
+        done = max(done, PHASE_ORDER.index("report"))
+    return PHASE_ORDER[done]
+
+
+def _recon_roots(base=None):
+    """Engagements directories to search, in order. First hit wins.
+
+    An explicit base is authoritative: the caller knows where the engagement is,
+    so there is no fallback. Only the default path searches both repos.
+    """
+    if base:
+        return [os.path.abspath(base)]
+    roots = [os.path.join(SKILL_ROOT, DEFAULT_ENGAGEMENTS_DIR)]
+    sibling = os.path.join(
+        os.path.dirname(SKILL_ROOT), "novaxinwei", DEFAULT_ENGAGEMENTS_DIR
+    )
+    if os.path.isdir(sibling):
+        roots.append(sibling)
+    return roots
+
+
+# ---------------------------------------------------------------------------
+# Chain state (who started the engagement, who last contributed)
+# ---------------------------------------------------------------------------
+
+# chain.json is a pure file contract, not a Python API. Novahaku owns its own
+# reader/writer here so it stays installable without NovaXinWei present: loading
+# NovaXinWei's module by path would make Novahaku depend on a sibling directory
+# existing, and would execute code from a path Novahaku does not control.
+# The format is small and fixed, so duplicating it is cheaper than that coupling.
+CHAIN_VERSION = "novalabs.chain.v1"
+CHAIN_FILENAME = "chain.json"
+
+# Side name this repo writes, and the field each side owns in state{}.
+CHAIN_SIDE = "novahaku"
+_CHAIN_STATE_KEYS = {
+    "novaxinwei": ("recon_at", "recon_by"),
+    "novahaku": ("results_at", "results_by"),
+}
+
+
+def _chain_path(target, base=None):
+    return os.path.join(engagements_root(base), target, CHAIN_FILENAME)
+
+
+def read_chain(target, base=None):
+    """Read chain.json. None when absent or unreadable - never fatal."""
+    path = _chain_path(target, base)
+    if not os.path.exists(path):
+        return None
+    data = read_json(path, None)
+    return data if isinstance(data, dict) else None
+
+
+class _ChainLock:
+    """Exclusive lock around chain.json read-modify-write.
+
+    Retry alone is not enough: without serialising the read, two writers append
+    to the same snapshot and the slower entry is overwritten - measured 146 of
+    150 concurrent entries lost. os.replace is atomic per write but does not
+    make read-then-write atomic. O_EXCL create is atomic on Windows and POSIX
+    and needs no new dependency. Stale locks are broken on age.
+    """
+
+    _STALE_AFTER = 30.0
+
+    def __init__(self, path):
+        self.path = path + ".lock"
+        self._held = False
+
+    def __enter__(self):
+        # Each critical section is a few ms of file I/O, but Windows can stall an
+        # unlink for hundreds of ms under contention. 6 processes x 25 writes
+        # needed more than 15s to serialise, so the deadline is generous: the
+        # cost of waiting is latency, the cost of giving up is a lost audit entry.
+        deadline = time.time() + 60.0
+        while True:
+            try:
+                fd = os.open(self.path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+                os.close(fd)
+                self._held = True
+                return self
+            except FileExistsError:
+                try:
+                    if time.time() - os.path.getmtime(self.path) > self._STALE_AFTER:
+                        os.remove(self.path)
+                        continue
+                except OSError:
+                    pass
+                if time.time() >= deadline:
+                    # Could not serialise in time. Proceed without the lock
+                    # rather than fail the caller's real work; the write still
+                    # cannot corrupt the file, it can only lose an entry.
+                    return self
+                time.sleep(0.005)
+            except OSError:
+                # Windows reports a delete-pending or briefly-locked lock file as
+                # PermissionError from O_EXCL, not FileExistsError. Treat it like
+                # contention and retry, otherwise one unlucky writer silently
+                # proceeds unlocked and its entry can be overwritten.
+                if time.time() >= deadline:
+                    return self
+                time.sleep(0.005)
+
+    def __exit__(self, *exc):
+        if self._held:
+            try:
+                os.remove(self.path)
+            except OSError:
+                pass
+        return False
+
+
+def record_chain(target, action, path=None, base=None, phase=None):
+    """Append this side's contribution to chain.json.
+
+    Never fatal: a broken chain only means the start order is unknown, which
+    callers treat as "not stale" rather than as a failure.
+    """
+    import datetime
+
+    out = _chain_path(target, base)
+    now = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+
+    try:
+        os.makedirs(os.path.dirname(out), exist_ok=True)
+    except OSError as exc:
+        print(f"[!] chain.json not updated: {exc}")
+        return None
+
+    with _ChainLock(out):
+        chain = read_chain(target, base)
+
+        if chain is None:
+            chain = {
+                "version": CHAIN_VERSION,
+                "target": target,
+                "created": now,
+                "updated": now,
+                "started_by": CHAIN_SIDE,
+                "state": {},
+                "history": [],
+            }
+        chain["updated"] = now
+        entry = {"at": now, "by": CHAIN_SIDE, "action": action}
+        if path:
+            entry["path"] = path
+        history = chain.get("history")
+        if not isinstance(history, list):
+            history = []
+            chain["history"] = history
+        history.append(entry)
+
+        state = chain.get("state")
+        if not isinstance(state, dict):
+            state = {}
+            chain["state"] = state
+        state["results_at"], state["results_by"] = now, CHAIN_SIDE
+        if phase:
+            state["phase"] = phase
+
+        # Retry briefly: on Windows another process holding chain.json open makes
+        # os.replace raise WinError 32, which is routine when both sides write.
+        tmp = out + ".tmp"
+        payload = json.dumps(chain, indent=2, ensure_ascii=False)
+        for attempt in range(5):
+            try:
+                with open(tmp, "w", encoding="utf-8") as fh:
+                    fh.write(payload)
+                    fh.flush()
+                    os.fsync(fh.fileno())
+                os.replace(tmp, out)
+                return chain
+            except IOError as exc:
+                if attempt == 4:
+                    try:
+                        os.remove(tmp)
+                    except OSError:
+                        pass
+                    print(f"[!] chain.json not updated: {exc}")
+                    return None
+                time.sleep(0.02 * (attempt + 1))
+    return None
+
+
+def recon_is_stale(target, base=None):
+    """True when NovaXinWei contributed recon after Novahaku's last write.
+
+    An absent or incomplete chain returns False: unknown start order is not
+    proof of staleness, and failing closed here would break older engagements.
+    """
+    chain = read_chain(target, base)
+    if not isinstance(chain, dict):
+        return False
+    state = chain.get("state")
+    if not isinstance(state, dict):
+        return False
+    mine = state.get(_CHAIN_STATE_KEYS[CHAIN_SIDE][0])
+    theirs = state.get(_CHAIN_STATE_KEYS["novaxinwei"][0])
+    if not mine or not theirs:
+        return False
+    return str(mine) < str(theirs)
 
 
 # ----------------------------------------------------------------------------
@@ -204,17 +477,63 @@ def filter_false_positives(findings, patterns):
 # ----------------------------------------------------------------------------
 
 def build_approach_list(config, tech_stack=None):
-    """Flatten the approach pool into a runnable list."""
+    """Flatten the approach pool into a runnable list, filtered by tech stack.
+
+    An approach may carry ``when_tech``, a list of technology substrings it is
+    relevant to (e.g. ["php", "wordpress"]). When the caller supplies a
+    tech_stack read from recon, approaches that declare no match are dropped, so
+    the recon actually steers what gets tested instead of being read and
+    discarded. An approach without ``when_tech`` is always kept: the filter is
+    an opt-in narrowing, never a silent exclusion of the whole pool.
+    """
+    teched = _flatten_tech_stack(tech_stack) if tech_stack else set()
     pool = config.get("approach_pool", {})
     approaches = []
+    skipped = []
     for group, items in pool.items():
         if group == "description":
             continue
         for item in items:
+            when = item.get("when_tech")
+            if when and teched:
+                wanted = {str(w).lower() for w in when}
+                if not (wanted & teched):
+                    skipped.append(item.get("name", group))
+                    continue
             a = dict(item)
             a["group"] = group
             approaches.append(a)
+    if skipped:
+        print(f"[i] tech-filter: skipping {', '.join(skipped)} "
+              f"(recon tech_stack: {sorted(teched)})")
     return approaches
+
+
+def _flatten_tech_stack(tech_stack):
+    """Normalise a recon tech_stack into a lowercase set of tokens.
+
+    NovaXinWei has emitted this as a dict ({"php": "5.6"}) and as a list
+    (["php/5.6"]), and either form must match an approach's ``when_tech``.
+    Splits on "/" so "php/5.6" matches "php".
+    """
+    tokens = set()
+    if isinstance(tech_stack, dict):
+        for k, v in tech_stack.items():
+            tokens.add(str(k).lower())
+            if v:
+                for part in str(v).lower().split("/"):
+                    if part.strip():
+                        tokens.add(part.strip())
+    elif isinstance(tech_stack, (list, tuple, set)):
+        for item in tech_stack:
+            for part in str(item).lower().split("/"):
+                if part.strip():
+                    tokens.add(part.strip())
+    elif isinstance(tech_stack, str):
+        for part in tech_stack.lower().split("/"):
+            if part.strip():
+                tokens.add(part.strip())
+    return tokens
 
 
 def run_approach(approach, target, url, jwt_token, timeout):
@@ -776,14 +1095,15 @@ def exploit(target, url, jwt_token, base=None):
 # ReconReader. This is the outbound half: publish results back in a shape a
 # NovaXinWei-side consumer can read without importing novahaku code.
 NOVAXINWEI_RESULTS_SCHEMA = "novaxinwei.results.v1"
+RECON_SCHEMA_VERSION = "1.0"
 
 
 def publish_results(target, base=None):
     """Write engagement results where a NovaXinWei-side consumer expects them.
 
-    Emits engagements/<target>/results.json plus a flat results.csv, mirroring
-    the recon.json layout (target/source/timestamp + one nested object) so a
-    reader can be written against the same conventions. Returns the path, or
+    Emits engagements/<target>/results.json plus a flat results.csv. The envelope
+    matches recon_schema.py (the single source of truth): version, target,
+    timestamp, source. Payload lives in engagement + results. Returns the path, or
     None if there is nothing to publish.
     """
     import csv
@@ -806,12 +1126,21 @@ def publish_results(target, base=None):
         by_conf[conf] = by_conf.get(conf, 0) + 1
 
     payload = {
+        # Namespace split: 'version' names the payload kind, 'schema_version'
+        # carries the wire-format version. Using one key for both made a version
+        # gate apply recon rules to a results file and vice versa.
+        "version": NOVAXINWEI_RESULTS_SCHEMA,
+        "schema_version": RECON_SCHEMA_VERSION,
         "target": target,
-        "source": "novahaku-engagement",
-        "schema": NOVAXINWEI_RESULTS_SCHEMA,
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "source": "novahaku-engagement",
         "engagement": {
-            "phase": state.get("current_phase", "init"),
+            # Report the phase the artifacts support, not the stored label.
+            # The label only advances via 'engagement.py phase', so a run that
+            # finished race/test/exploit would otherwise publish phase='recon'
+            # and tell the consumer the engagement never progressed.
+            "phase": _artifact_phase(target, state, base),
+            "declared_phase": state.get("current_phase", "init"),
             "phases_completed": state.get("phases_completed", []),
             "status": state.get("status", "active"),
             "forced_transitions": state.get("forced_transitions", []),
@@ -837,6 +1166,10 @@ def publish_results(target, base=None):
                 for r in records
             ],
         },
+        "metadata": {
+            "generator": "novahaku",
+            "schema_version": "1.0",
+        },
     }
     out = os.path.join(engagement_dir(target, base), "results.json")
     _atomic_json(out, payload)
@@ -857,6 +1190,7 @@ def publish_results(target, base=None):
     print(f"[+] Published: {out}")
     if csv_path:
         print(f"[+] Published: {csv_path}")
+    record_chain(target, "results_written", "results.json", base)
     return out
 
 
@@ -1297,6 +1631,77 @@ def selftest():
     finally:
         shutil.rmtree(_base2, ignore_errors=True)
 
+    # 18b. read_recon(target, base) must actually resolve the path it is given.
+    # Regression guard: read_recon compared its base against the *parent* of the
+    # engagements directory, so it returned {} for every engagement ever written
+    # - the inbound half of the crossref silently never worked. The old selftest
+    # only checked the corrupt-state path, which passes even when resolution is
+    # broken, so it could not catch this.
+    _t3 = "selftest-recon-read"
+    _base3 = tempfile.mkdtemp(prefix="novahaku-recon-read-selftest-")
+    try:
+        _rdir = os.path.join(_base3, _t3)
+        os.makedirs(_rdir, exist_ok=True)
+        with open(os.path.join(_rdir, "recon.json"), "w", encoding="utf-8") as fh:
+            json.dump({
+                "version": RECON_SCHEMA_VERSION,
+                "target": _t3,
+                "source": "novaxinwei",
+                "recon": {
+                    "subdomains": ["api." + _t3, "admin." + _t3],
+                    "ports": [80, 443, 8080],
+                    "endpoints": ["/api/v1/users"],
+                    "tech_stack": {"php": "5.6"},
+                    "waf": {"detected": True, "product": "Cloudflare"},
+                    "origin_ip": "203.0.113.77",
+                },
+            }, fh)
+        _got = read_recon(_t3, _base3)
+        assert _got, f"read_recon(base) must resolve a present recon.json, got {_got!r}"
+        _rec = _got.get("recon", {})
+        # Every field a caller depends on, not just that *something* came back.
+        assert _rec.get("subdomains") == ["api." + _t3, "admin." + _t3], "subdomains lost"
+        assert _rec.get("ports") == [80, 443, 8080], "ports lost"
+        assert _rec.get("endpoints") == ["/api/v1/users"], "endpoints lost"
+        assert _rec.get("tech_stack") == {"php": "5.6"}, "tech_stack lost"
+        assert _rec.get("waf", {}).get("product") == "Cloudflare", "waf lost"
+        assert _rec.get("origin_ip") == "203.0.113.77", "origin_ip lost"
+
+        # An explicit base is authoritative: no fallback to the sibling repo.
+        _empty = tempfile.mkdtemp(prefix="novahaku-recon-empty-")
+        try:
+            assert read_recon(_t3, _empty) == {}, \
+                "explicit base must not fall back to another engagements root"
+        finally:
+            shutil.rmtree(_empty, ignore_errors=True)
+
+        # Absent target under a valid base yields {}, not an exception.
+        assert read_recon("selftest-no-such-target", _base3) == {}, \
+            "absent target must yield {}"
+
+        # Wrong version is rejected; absent version (old cache) is accepted.
+        with open(os.path.join(_rdir, "recon.json"), "w", encoding="utf-8") as fh:
+            json.dump({"version": "9.9", "target": _t3, "recon": {"ports": [80]}}, fh)
+        assert read_recon(_t3, _base3) == {}, "wrong version must be rejected"
+        with open(os.path.join(_rdir, "recon.json"), "w", encoding="utf-8") as fh:
+            json.dump({"target": _t3, "recon": {"ports": [80]}}, fh)
+        assert read_recon(_t3, _base3), "version-less cache must still be accepted"
+
+        # Corrupt / empty / binary / non-dict recon.json must never raise.
+        for _blob in (b"{broken", b"", bytes([0xFF, 0xFE, 0x00, 0x01]), b"[1,2,3]", b'"str"'):
+            with open(os.path.join(_rdir, "recon.json"), "wb") as fh:
+                fh.write(_blob)
+            assert read_recon(_t3, _base3) == {}, f"recon blob {_blob!r} must yield {{}}"
+
+        # A results.json envelope in the recon.json slot is rejected explicitly
+        # rather than misleadingly blamed on its version string.
+        with open(os.path.join(_rdir, "recon.json"), "w", encoding="utf-8") as fh:
+            json.dump({"version": NOVAXINWEI_RESULTS_SCHEMA, "target": _t3,
+                       "results": {"findings": []}}, fh)
+        assert read_recon(_t3, _base3) == {}, "a results envelope must not read as recon"
+    finally:
+        shutil.rmtree(_base3, ignore_errors=True)
+
     # 19. The scan lock timeout is the caller's bound, honored as given.
     # Regression guard: a max(timeout, 30) floor silently made every short
     # timeout block for 30s, including this selftest.
@@ -1401,7 +1806,9 @@ def selftest():
         _out = publish_results(_t, _d2)
         assert _out and os.path.exists(_out), "publish_results must write results.json"
         _pub = read_json(_out, {})
-        assert _pub.get("schema") == NOVAXINWEI_RESULTS_SCHEMA, _pub.get("schema")
+        assert _pub.get("version") == NOVAXINWEI_RESULTS_SCHEMA, _pub.get("version")
+        assert "schema" not in _pub, "envelope must use 'version', not 'schema'"
+        assert _pub.get("metadata", {}).get("generator") == "novahaku"
         # Consumer parity: same top-level keys recon.json exposes.
         for _k in ("target", "source", "timestamp"):
             assert _k in _pub, f"results.json must expose {_k} like recon.json does"
@@ -1412,10 +1819,48 @@ def selftest():
         assert os.path.exists(os.path.join(_d2, _t, "results.csv")), "results.csv missing"
         assert read_json(os.path.join(_d2, _t, "findings", "findings.json"), {}) == _findings, \
             "publish must not mutate findings.json"
+
+        # 25-27. ReconReader version gate. Permissive on absence (pre-v1.0 cache),
+        # strict on a wrong version, and never raises on unreadable input.
+        _mod = load_recon_reader()
+        assert _mod is not None, "ReconReader must load by path"
+        _rv = getattr(_mod, "SCHEMA_VERSION", None)
+        assert _rv == "1.0", f"reader SCHEMA_VERSION must mirror recon_schema.py, got {_rv!r}"
+        _rd = os.path.join(_d2, "_reconcheck")
+        os.makedirs(_rd, exist_ok=True)
+
+        def _write_recon(payload):
+            _p = os.path.join(_rd, _t, "recon.json")
+            os.makedirs(os.path.dirname(_p), exist_ok=True)
+            with open(_p, "w", encoding="utf-8") as _fh:
+                _fh.write(payload if isinstance(payload, str) else json.dumps(payload))
+
+        _write_recon({"version": "1.0", "target": _t, "recon": {}})
+        assert _mod.load_recon(_t, _rd) is not None, "valid v1.0 cache must load"
+        _write_recon({"version": "9.9", "target": _t, "recon": {}})
+        assert _mod.load_recon(_t, _rd) is None, "wrong version must be rejected"
+        _write_recon({"target": _t, "recon": {}})
+        assert _mod.load_recon(_t, _rd) is not None, \
+            "pre-v1.0 cache without version must still load (backward compat)"
+        _write_recon("{not json")
+        assert _mod.load_recon(_t, _rd) is None, "corrupt cache must return None, not raise"
+
+        # 28. Plan-named API resolves. INTEGRATION_PLAN.md names these; the class
+        # remains the primary interface.
+        for _fn in ("load_recon", "read_recon", "get_waf_info", "get_tech_stack"):
+            assert callable(getattr(_mod, _fn, None)), f"plan-named API missing: {_fn}"
+        _write_recon({"version": "1.0", "target": _t,
+                      "recon": {"waf": {"detected": True}, "tech_stack": {"php": "5.6"}}})
+        assert _mod.get_waf_info(_t, _rd) == {"detected": True}, "get_waf_info must read recon.waf"
+        assert _mod.get_tech_stack(_t, _rd) == {"php": "5.6"}, "get_tech_stack mismatch"
     finally:
         shutil.rmtree(_d2, ignore_errors=True)
 
-    print("[+] selftest: 24/24 checks passed")
+    # Assert-based: every check above aborted the run on failure, so reaching
+    # here means all of them held. The count is NOT restated as a hardcoded
+    # "N/N" - that number drifts the moment a check is added or removed, and a
+    # stale total misreports coverage.
+    print("[+] selftest: all checks passed (assert-based; any failure aborts)")
     return 0
 
 

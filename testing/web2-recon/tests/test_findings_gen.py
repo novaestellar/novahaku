@@ -43,11 +43,17 @@ VULN_EXPECT = [
 def run_engine(domain, home):
     """Copy the fixture into a temp HOME engagement dir, run the engine, return
     (severity, title) pairs from findings.csv."""
-    dst = os.path.join(home, "Research", "engagements", domain)
+    root = os.path.join(home, "Research", "engagements")
+    dst = os.path.join(root, domain)
     # Fixtures store the evidence tree as ev/ (the repo .gitignore excludes any
     # evidence/ dir); the engine reads <engagement>/evidence, so map it back.
     shutil.copytree(os.path.join(FIX, domain, "ev"), os.path.join(dst, "evidence"))
-    eng_env = dict(os.environ, HOME=home, NOVAHAKU_ENGAGEMENT_DIR=dst)
+    # NOVAHAKU_ENGAGEMENT_DIR names the engagements ROOT, matching
+    # recon_pipeline.sh ("${NOVAHAKU_ENGAGEMENT_DIR:-$(pwd)/engagements}/$D") and
+    # README.md's default of <root>/engagements. The engine appends the domain.
+    # Setting it to dst instead would be the per-target dir and the engine would
+    # look for <dst>/<domain>/evidence, which never exists.
+    eng_env = dict(os.environ, HOME=home, NOVAHAKU_ENGAGEMENT_DIR=root)
     r = subprocess.run([sys.executable, ENGINE, domain], env=eng_env,
                        capture_output=True, text=True, timeout=120)
     if r.returncode != 0:

@@ -762,6 +762,22 @@ python scripts/engage_runner.py selftest
 
 **配置**:`config/engagement_phases.json` — phase 定义、approach pool、评分表、误报正则。
 
+**recon 驱动的 approach 过滤**
+
+`recon.json` 里的 `tech_stack` 会真正影响跑哪些 approach:approach 可声明
+`"when_tech": ["php", "wordpress"]`,当 recon 的 tech_stack 非空且与之无交集时,
+该 approach 被跳过并打印 `[i] tech-filter: skipping <name> (recon tech_stack: [...])`。
+未声明 `when_tech` 的 approach 永远保留 — 过滤是选择性收窄,不会静默剔掉整个 pool。
+`tech_stack` 三种历史形态都能匹配:`{"php": "5.6"}`、`["php/5.6"]`、`"php/5.6"`
+(按 `/` 切分,故 `php/5.6` 命中 `php`)。
+
+**环境变量**
+
+`NOVAHAKU_ENGAGEMENT_DIR` 覆盖 engagement 根目录,优先级为
+调用方参数 > 环境变量 > `<skill root>/engagements`。`engagement.py`、`engage_runner.py`
+(含 `chain.json` 路径)与 web2-recon 脚本共用同一优先级,因此同一次 engagement
+不会因为调用哪个工具而落到两个根目录。
+
 ---
 
 ## 本地 Hermes 护栏补丁 (scripts/hermes-patch/)

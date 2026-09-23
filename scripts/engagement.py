@@ -43,9 +43,19 @@ def skill_root():
 
 
 def engagements_dir(base=None):
-    """Resolve engagements directory. Caller-supplied path wins."""
+    """Resolve engagements directory.
+
+    Precedence: caller-supplied path, then NOVAHAKU_ENGAGEMENT_DIR, then
+    <skill root>/engagements. The env var is documented in README.md and already
+    honoured by web2-recon scripts; ignoring it here meant a pipeline writing to
+    the requested directory and this CLI writing to the default, so neither
+    could find the other's files.
+    """
     if base:
         return os.path.abspath(base)
+    env = os.environ.get("NOVAHAKU_ENGAGEMENT_DIR")
+    if env and env.strip():
+        return os.path.abspath(env)
     return os.path.join(skill_root(), DEFAULT_ENGAGEMENTS_DIR)
 
 
@@ -229,9 +239,26 @@ def cmd_init(target, scope=None, base=None):
         print(f"[+] Engagement created: {epath}")
         print(f"    state:    {state_path(target, base)}")
         print(f"    findings: {csv_path}")
+        _record_chain(target, "engagement_created", "state.json", base)
         return 0
     finally:
         release_lock(target, base)
+
+
+def _record_chain(target, action, artifact=None, base=None, phase=None):
+    """Record this side's contribution in chain.json, best effort.
+
+    Novahaku may create the engagement before NovaXinWei has written any recon,
+    and vice versa. chain.json is how either side learns the start order, so the
+    init path records it too. Failure here must never break engagement creation.
+    """
+    try:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import engage_runner
+
+        engage_runner.record_chain(target, action, artifact, base, phase)
+    except Exception as exc:
+        print(f"[!] chain.json not updated: {exc}")
 
 
 def _phase_gate(target, phase, state, base=None):
@@ -258,8 +285,9 @@ def _phase_gate(target, phase, state, base=None):
         if not os.path.exists(candidates_path) and state.get("stats", {}).get(
             "modules_tested", 0
         ) == 0:
-            if PHASES.index(state.get("current_phase", "init")) < PHASES.index("recon"):
-                problems.append("recon has not been run (no testable surface recorded)")
+            # Gate on evidence, never on the phase label: a label can be advanced
+            # by --force, and the label then hides the missing work.
+            problems.append("recon has not been run (no testable surface recorded)")
 
     if phase in ("exploit", "report", "closed"):
         if not os.path.exists(candidates_path):
@@ -282,25 +310,45 @@ def _phase_gate(target, phase, state, base=None):
     return problems
 
 
-def _artifact_phase(target, state, base=None):
-    """Highest phase whose artifacts exist on disk.
+def _artifact_phase_index(target, state, base=None):
+    """Highest phase the artifacts on disk actually support, as an index.
 
-    engage_runner.py advances the work (race, test) without touching the phase
-    label, so the label alone understates progress. This reconciles the two.
+    engage_runner.py advances the work (race, test, exploit) without touching the
+    phase label, so the label alone understates progress. This reconciles the
+    two, and covers the same five artifact classes the runner does - candidates,
+    findings, evidence, results.json - so both sides reach the same answer for
+    the same state. Without that, a phase whose prerequisites are on disk gets
+    rejected as a multi-step jump.
     """
     fdir = findings_dir(target, base)
     done = PHASES.index("init")
-    if PHASES.index(state.get("current_phase", "init")) > done:
-        done = PHASES.index(state.get("current_phase", "init"))
-    if state.get("phases_completed"):
-        for p in state["phases_completed"]:
-            if p in PHASES and PHASES.index(p) > done:
-                done = PHASES.index(p)
+    label = state.get("current_phase") if isinstance(state, dict) else None
+    if isinstance(label, str) and label in PHASES:
+        done = max(done, PHASES.index(label))
+    completed = state.get("phases_completed") if isinstance(state, dict) else None
+    if isinstance(completed, list):
+        for name in completed:
+            if isinstance(name, str) and name in PHASES:
+                done = max(done, PHASES.index(name))
     if os.path.exists(os.path.join(fdir, "candidates.json")):
         done = max(done, PHASES.index("race"))
     if os.path.exists(os.path.join(fdir, "findings.json")):
         done = max(done, PHASES.index("test"))
+    evid = os.path.join(fdir, "evidence")
+    if os.path.isdir(evid) and os.listdir(evid):
+        done = max(done, PHASES.index("exploit"))
+    if os.path.exists(os.path.join(engagement_path(target, base), "results.json")):
+        done = max(done, PHASES.index("report"))
     return done
+
+
+def _artifact_phase(target, state, base=None):
+    """Highest phase the artifacts on disk actually support, as a phase name.
+
+    Canonical form, matching engage_runner._artifact_phase. Callers that need an
+    index use _artifact_phase_index().
+    """
+    return PHASES[_artifact_phase_index(target, state, base)]
 
 
 def cmd_phase(target, phase, base=None, force=False):
@@ -337,7 +385,7 @@ def cmd_phase(target, phase, base=None, force=False):
         # Measure progress from artifacts, not the label: race/test run through
         # engage_runner and leave current_phase behind, so a label-based gap
         # falsely rejects a phase whose prerequisites are already on disk.
-        done = _artifact_phase(target, state, base)
+        done = _artifact_phase_index(target, state, base)
         gap = PHASES.index(phase) - done
         forced = False
         if gap > 1 and phase != "closed" and not force:
@@ -658,13 +706,15 @@ def selftest():
                   "w", encoding="utf-8") as fh:
             json.dump({"winners": {}}, fh)
         st = read_state(target, base)
-        assert _artifact_phase(target, st, base) >= PHASES.index("race"), \
+        assert _artifact_phase_index(target, st, base) >= PHASES.index("race"), \
             "candidates.json must count as race having run"
 
         # 20. Non-list phase argument list is not mutated by --force parsing
         assert cmd_phase(target, "recon", base) == 0
 
-        print("[+] engagement selftest: 20/20 checks passed")
+        # Assert-based: a failure above aborts the run. The count is not
+        # restated as a hardcoded "N/N", which would drift as checks change.
+        print("[+] engagement selftest: all checks passed (assert-based)")
         return 0
     finally:
         shutil.rmtree(base, ignore_errors=True)

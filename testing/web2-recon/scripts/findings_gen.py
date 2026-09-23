@@ -8,6 +8,13 @@ DOMAIN_RE = re.compile(r"[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?(?:\.[A-Za-z0-9
 D = sys.argv[1] if len(sys.argv) > 1 else sys.exit("usage: findings_gen.py <domain>")
 if not DOMAIN_RE.fullmatch(D): sys.exit(f"error: invalid domain {D!r} (expected a dotted hostname, e.g. example.com)")
 ENG = os.environ.get("NOVAHAKU_ENGAGEMENT_DIR", os.path.join(os.getcwd(), "engagements", D))
+# The env var names the engagements ROOT, so the target has to be appended;
+# recon_pipeline.sh already does "${NOVAHAKU_ENGAGEMENT_DIR:-$(pwd)/engagements}/$D".
+# Without this, setting the variable sent the findings engine to <root>/evidence
+# while the pipeline wrote to <root>/<domain>/evidence, so every run reported
+# 0 findings even with the evidence files sitting on disk.
+if "NOVAHAKU_ENGAGEMENT_DIR" in os.environ:
+    ENG = os.path.join(ENG, D)
 EV = f"{ENG}/evidence"
 
 def rl(p):
