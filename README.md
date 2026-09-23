@@ -99,7 +99,7 @@ Novahaku 包含以下模块化技能:
 | **scripts/** | root directory | 反渗透脚本(参考) + 部署脚本 + 本地 Hermes 护栏补丁 |
 | **tests/** | root directory | 路由基准测试 |
 | **INSTALL.md** | root directory | 安装指南 + RE工具路径 + MCP设置 |
-| **.env.example** | root directory | 环境变量配置模板 |
+| **.env.example** | root directory | 环境变量配置模板 (复制为 `.env` 后填值,`.env` 不入库) |
 | **templates/** | 根目录 | 操作计划 / 测试报告模板 |
 
 ---
@@ -645,7 +645,7 @@ python ~/.hermes/skills/security/novahaku/testing/scripts/jwt_test.py <token>
 
 | 流水线 | 方向 | 触发方式 |
 |--------|------|----------|
-| **CVE Feed** | NovaXinWei `tools/cve/` → Novahaku `hunt-cicd/cache/cve-feed.json` | 自动导出 (运行 `export_to_novahaku.py`) |
+| **CVE Feed** | NovaXinWei `tools/cve/` → Novahaku `testing/hunt-cicd/cache/cve-feed.json`(运行时生成,不入库) | 自动导出 (运行 `export_to_novahaku.py`) |
 | **Wayback → Secret Scan** | NovaXinWei `wayai` stdout → Novahaku `secret_scan.py --stdin` | 管道命令 |
 | **GitHub Pages 泄露** | NovaXinWei `tools/github_pages/` → Novahaku Web测试/OSINT | 手动调用, 结果JSON |
 
@@ -740,15 +740,24 @@ python scripts/engage_runner.py selftest
 
 **Approach racing**
 
-15 个测试方法并行执行,按 `severity(40%) + confidence(30%) + reproducibility(20%) + impact(10%)`
+16 个测试方法并行执行 (14 web + 1 auth + 1 concurrency,见 `config/engagement_phases.json`
+的 `approach_pool`),按 `severity(40%) + confidence(30%) + reproducibility(20%) + impact(10%)`
 评分,每个类别选出得分最高的方法进入深度测试。并行执行不会互相污染:
-每个 approach 独立临时 CWD,共享的 `webtest_results.json` 用修改时间判定归属,
+每个 approach 独立临时 CWD;由于 `webtest.py` 固定写 `testing/scripts/webtest_results.json`
+且不接受输出路径覆盖,该文件由跨进程锁 (`webtest_results.json.racelock`) 串行化 —
+取锁 → 清空 → 运行 → 拷贝结果到本 approach 临时目录 → 释放。锁超过
+`SCAN_LOCK_STALE_SECONDS` 视为租约失效并被回收,崩溃的 approach 不会卡住其余进程。
 重复 findings 按 (asset, category, title) 去重并保留最高严重度。
+
+> 早期版本用修改时间判定归属。实测 10 次 × 8 worker 有 5 次发生串台:
+> `race_probe` 把 `webtest_dirfuzz` 的 33 条 findings 记成自己的,单次总数在 81–118 间浮动。
+> 已改为互斥锁,修复后 10/10 干净且每次总数相同。
 
 **Integrity check**
 
 `integrity` 校验 state.json / findings.json / findings.csv / lock 四方一致 —
-防止中断运行留下半写状态。12 项检查,任一不一致退出码 1。
+防止中断运行留下半写状态。基础 9 项检查,存在 findings.csv 时再增 2 项
+(header 合约 + 行数一致性);任一不一致退出码 1。
 
 **配置**:`config/engagement_phases.json` — phase 定义、approach pool、评分表、误报正则。
 
