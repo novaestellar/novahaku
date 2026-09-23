@@ -463,6 +463,9 @@ def race(target, url, jwt_token, base=None, workers=None):
     ]
     state["stats"]["modules_tested"] = len(runnable)
     state["stats"]["modules_failed"] = len(errors)
+    # race() writes findings.json, so the state tally must move with it. Leaving
+    # stats stale here makes integrity report a false mismatch after race.
+    _sync_finding_stats(state, all_findings)
     save_state(target, state, base)
 
     print()
@@ -523,11 +526,7 @@ def test(target, url, jwt_token, base=None):
     all_findings = dedupe_findings(all_findings)
     _write_findings(target, all_findings, base)
 
-    state["stats"]["findings_total"] = len(all_findings)
-    for sev in SEVERITY_ORDER:
-        state["stats"][f"findings_{sev}"] = sum(
-            1 for f in all_findings if str(f.get("severity", "info")).lower() == sev
-        )
+    _sync_finding_stats(state, all_findings)
     state["findings_references"] = [
         {"id": f.get("id"), "file": "findings/findings.json",
          "severity": str(f.get("severity", "info")).lower()}
@@ -836,7 +835,24 @@ def selftest():
     # 13. Severity ranking used by dedupe is ordered highest-first
     assert SEVERITY_ORDER[0] == "critical" and SEVERITY_ORDER[-1] == "info"
 
-    print("[+] selftest: 13/13 checks passed")
+    # 14. _sync_finding_stats keeps the tally consistent with the records, so
+    # integrity does not report a false mismatch after race writes findings.
+    st = {"stats": {}}
+    sample = [
+        {"asset": "a.com", "title": "Exposed .git", "severity": "high"},
+        {"asset": "a.com", "title": "Missing HSTS", "severity": "low"},
+        {"asset": "b.com", "title": "CORS wildcard", "severity": "high"},
+    ]
+    s = _sync_finding_stats(st, sample)
+    assert s["findings_total"] == 3, f"total should be 3, got {s['findings_total']}"
+    assert s["findings_high"] == 2 and s["findings_low"] == 1
+    assert s["findings_critical"] == 0 and s["findings_info"] == 0
+
+    # 15. A later phase re-syncs rather than double-counting
+    s = _sync_finding_stats(st, [sample[0]])
+    assert s["findings_total"] == 1, f"resync should replace, got {s['findings_total']}"
+
+    print("[+] selftest: 15/15 checks passed")
     return 0
 
 
@@ -859,6 +875,37 @@ def _atomic_json(path, payload):
         fh.flush()
         os.fsync(fh.fileno())
     os.replace(tmp, path)
+
+
+def _sync_finding_stats(state, findings, mode="replace"):
+    """Keep state.stats in step with the findings records actually on disk.
+
+    state.json and findings.json are two views of the same data; every writer
+    must move both or integrity reports a mismatch. mode="merge" unions with any
+    findings a previous phase already recorded (test runs after race).
+    """
+    stats = state.setdefault("stats", {})
+    known = None
+    if mode == "merge":
+        known = {(f.get("asset"), f.get("title")) for f in state.get("findings", [])}
+    if known is None:
+        state["findings"] = list(findings)
+    else:
+        merged = list(state.get("findings", []))
+        seen = set(known)
+        for f in findings:
+            key = (f.get("asset"), f.get("title"))
+            if key not in seen:
+                merged.append(f)
+                seen.add(key)
+        state["findings"] = merged
+    counted = state["findings"]
+    stats["findings_total"] = len(counted)
+    for sev in SEVERITY_ORDER:
+        stats[f"findings_{sev}"] = sum(
+            1 for f in counted if str(f.get("severity", "")).lower() == sev
+        )
+    return stats
 
 
 def _write_findings(target, findings, base=None):
