@@ -709,13 +709,43 @@ init → recon → race → test → exploit → report → closed
 ```
 engagements/<target>/
 ├── state.json          # 阶段、统计、race 结果、备注
-├── recon.json          # 可选 — novaxinwei 侦察输出 (ReconReader 读取)
+├── recon.json          # 可选 — 入站:novaxinwei 侦察输出 (ReconReader 读取)
+├── chain.json          # 双向:谁先开始、谁最后贡献 (schema novalabs.chain.v1)
+├── results.json        # 出站:发布给 novaxinwei 读取 (schema novaxinwei.results.v1)
+├── results.csv         # 出站:扁平 CSV 孪生
 ├── report.md           # report 阶段生成
 └── findings/
     ├── findings.csv    # 兼容 findings_gen.py header
     ├── findings.json   # 结构化记录 + 评分
     └── candidates.json # race 原始结果
 ```
+
+**跨技能文件契约 (Crossref contract)**
+
+两个技能之间**没有 Python import** —— 只通过 `engagements/<target>/` 下的文件通信。
+这是 novahaku 可以单独安装的原因:novaxinwei 缺席时,所有读写路径都优雅降级。
+
+| 文件 | 方向 | 写入方 | 读取方 | Schema |
+|---|---|---|---|---|
+| `recon.json` | novaxinwei → novahaku | novaxinwei | `engage_runner.read_recon()` / `ReconReader` | `1.0` |
+| `results.json` | novahaku → novaxinwei | `engage_runner.publish_results()` | `novaxinwei/engine/results_reader.py` | `novaxinwei.results.v1` |
+| `chain.json` | 双向 | 双方各自实现 | 双方各自实现 | `novalabs.chain.v1` |
+
+`results.json` 的 envelope 与 `recon.json` 同形:`version` / `target` / `timestamp` / `source`,
+载荷放在 `engagement` 与 `results` 下。注意 `by_severity` 的键是**小写**
+(`{"high": 1, "low": 1}`),而 `findings[].severity` 保留原始大小写 (`"High"`) —— 两者不一致,
+消费方不要拿它们直接比对。novaxinwei 侧有 12 个只读访问器
+(`read_results`、`get_findings`、`get_severity_counts`、`get_phase`、`get_stats`、
+`get_evidence_files`、`summarize` …),因此消费方不需要也不应该解析原始 JSON。
+
+`publish_results()` 写入后会调用 `record_chain(target, "results_written", "results.json")`;
+`engagement.py init` 调用 `record_chain(target, "engagement_created", "state.json")`。
+两边各自持有 `chain.json` 的实现(避免跨技能 import),`CHAIN_VERSION` 必须保持
+`novalabs.chain.v1` —— 任一侧改版本号都会让另一侧把对方的 chain 判为不可读。
+
+发布是**显式操作**,不是 `test` 的副作用:`engage_runner.py report` 会发布,
+也可单独调用 `engage_runner.py publish --target <t>`。这样在受限 engagement 里,
+写文件到共享根目录始终是操作员的决定。
 
 **命令**
 
