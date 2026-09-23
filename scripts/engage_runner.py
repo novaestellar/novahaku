@@ -219,15 +219,29 @@ def _recon_roots(base=None):
     """Engagements directories to search, in order. First hit wins.
 
     An explicit base is authoritative: the caller knows where the engagement is,
-    so there is no fallback. Only the default path searches both repos.
+    so there is no fallback. Otherwise the same precedence engagement_dir() uses:
+    NOVAHAKU_ENGAGEMENT_DIR, then the sibling NovaXinWei checkout, then our own
+    engagements/.
+
+    The env var has to come first. Without it, an operator who pointed the
+    toolchain at a shared root got a status page that found the engagement (the
+    parent used engagement_dir(), which honours the env var) but never found
+    recon.json (this function used SKILL_ROOT) - so a target with recon on disk
+    reported as having no recon at all. Two root definitions in one file.
     """
     if base:
         return [os.path.abspath(base)]
-    roots = [os.path.join(SKILL_ROOT, DEFAULT_ENGAGEMENTS_DIR)]
+    env = os.environ.get("NOVAHAKU_ENGAGEMENT_DIR", "").strip()
+    if env:
+        roots = [os.path.abspath(env)]
+    else:
+        roots = [os.path.join(SKILL_ROOT, DEFAULT_ENGAGEMENTS_DIR)]
+    # The sibling is a fallback location, never a replacement for an explicit
+    # root: search it only when it is not already one of the roots above.
     sibling = os.path.join(
         os.path.dirname(SKILL_ROOT), "novaxinwei", DEFAULT_ENGAGEMENTS_DIR
     )
-    if os.path.isdir(sibling):
+    if os.path.isdir(sibling) and os.path.abspath(sibling) not in roots:
         roots.append(sibling)
     return roots
 
@@ -1853,6 +1867,38 @@ def selftest():
                       "recon": {"waf": {"detected": True}, "tech_stack": {"php": "5.6"}}})
         assert _mod.get_waf_info(_t, _rd) == {"detected": True}, "get_waf_info must read recon.waf"
         assert _mod.get_tech_stack(_t, _rd) == {"php": "5.6"}, "get_tech_stack mismatch"
+
+        # Recon and engagement roots agree. A regression here is invisible from
+        # the outside: the engagement is found (via engagement_dir, which honours
+        # the env var) but its recon.json is not (via _recon_roots, which used
+        # SKILL_ROOT) - so a status page reports a target as having no recon
+        # while the file sits on disk. _mod is the ReconReader module here, so
+        # this section asserts against engage_runner itself.
+        _saved_env = os.environ.get("NOVAHAKU_ENGAGEMENT_DIR")
+        try:
+            os.environ["NOVAHAKU_ENGAGEMENT_DIR"] = _rd
+            _roots = _recon_roots()
+            assert os.path.abspath(_rd) in [os.path.abspath(r) for r in _roots], (
+                f"env root missing from _recon_roots: {_roots}"
+            )
+            # Every path reader resolves through must live under the same root.
+            assert engagement_dir(_t, None).startswith(os.path.abspath(_rd)), (
+                "engagement_dir and _recon_roots disagree on the env root"
+            )
+            # And recon must actually be reachable through the default path.
+            assert read_recon(_t, None), (
+                "read_recon(base=None) found nothing under NOVAHAKU_ENGAGEMENT_DIR"
+            )
+        finally:
+            if _saved_env is None:
+                os.environ.pop("NOVAHAKU_ENGAGEMENT_DIR", None)
+            else:
+                os.environ["NOVAHAKU_ENGAGEMENT_DIR"] = _saved_env
+
+        # Explicit base still wins and still short-circuits the search.
+        assert _recon_roots("D:/x") == [os.path.abspath("D:/x")], (
+            "explicit base must be the only root"
+        )
     finally:
         shutil.rmtree(_d2, ignore_errors=True)
 

@@ -519,7 +519,75 @@ def cmd_status(target, base=None):
     notes = state.get("notes", [])
     if notes:
         print(f"Last note:  [{notes[-1].get('timestamp')}] {notes[-1].get('text')}")
+
+    # --- NovaXinWei context -------------------------------------------------
+    # Read-only, best effort. An operator should see everything about one target
+    # from one command instead of running a second CLI in a sibling repo; that
+    # would give two status views that drift apart. NovaXinWei stays the source
+    # of truth for recon - this only reports what it already wrote.
+    _print_crossref(target, base)
     return 0
+
+
+def _print_crossref(target, base=None):
+    """Print NovaXinWei's contribution for this target, when it exists.
+
+    Never fatal and never prints an empty section: a target with no recon is a
+    normal state (novaxinwei may simply not have run yet), not an error.
+    """
+    try:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import engage_runner
+    except Exception as exc:
+        print(f"[!] crossref unavailable: {exc}")
+        return
+
+    lines = []
+
+    # chain.json - who touched this engagement, and how recently.
+    chain = engage_runner.read_chain(target, base)
+    if isinstance(chain, dict):
+        state = chain.get("state") or {}
+        history = chain.get("history") or []
+        lines.append(f"Chain:      started_by={chain.get('started_by') or '-'} "
+                     f"sides={','.join(sorted({h.get('by') for h in history if h.get('by')})) or '-'}")
+        if state.get("results_at"):
+            lines.append(f"Published:  {state.get('results_at')} by {state.get('results_by')}")
+        if history:
+            last = history[-1]
+            lines.append(f"Last chain: [{last.get('at')}] {last.get('by')} {last.get('action')}")
+
+    # recon.json - what novaxinwei handed us.
+    recon = engage_runner.read_recon(target, base)
+    if isinstance(recon, dict) and recon:
+        # recon.json has appeared in several shapes; guard every field. A null
+        # inside a valid dict is routine (waf: null), not a malformed file.
+        inner = recon.get("recon")
+        r = inner if isinstance(inner, dict) else recon
+        subs = r.get("subdomains")
+        ports = r.get("ports")
+        tech = r.get("tech_stack")
+        waf = r.get("waf")
+        endpoints = r.get("endpoints")
+        subs = subs if isinstance(subs, list) else []
+        ports = ports if isinstance(ports, list) else []
+        tech = tech if isinstance(tech, dict) else {}
+        waf = waf if isinstance(waf, dict) else {}
+        endpoints = endpoints if isinstance(endpoints, list) else []
+        lines.append(f"Recon:      {len(subs)} subdomain(s), {len(ports)} port(s), "
+                     f"{len(tech)} tech")
+        if tech:
+            tech_str = ", ".join(f"{k}/{v}" for k, v in sorted(tech.items())[:8])
+            lines.append(f"Tech:       {tech_str}")
+        if waf.get("detected"):
+            lines.append(f"WAF:        {waf.get('name') or 'detected'}")
+        if endpoints:
+            lines.append(f"Endpoints:  {len(endpoints)}")
+
+    if lines:
+        print("--- NovaXinWei ---")
+        for line in lines:
+            print(line)
 
 
 def cmd_list(base=None):
