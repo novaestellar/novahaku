@@ -16,6 +16,7 @@ Usage:
   python engagement.py close <target>
   python engagement.py rollback <target> <phase>
   python engagement.py verify <target>
+  python engagement.py selftest
 
 Phases: init, recon, race, test, exploit, report, closed
 No-arg = help.
@@ -407,6 +408,91 @@ def cmd_verify(target, base=None):
 
 
 # ----------------------------------------------------------------------------
+# Self-check
+# ----------------------------------------------------------------------------
+
+def selftest():
+    """Self-check the state machine. Runs in a temp dir, touches nothing real."""
+    import shutil
+    import tempfile
+
+    base = tempfile.mkdtemp(prefix="novahaku-eng-selftest-")
+    target = "selftest.local"
+    try:
+        # 1. Phase ordering table is sane
+        assert PHASES[0] == "init" and PHASES[-1] == "closed"
+        assert len(PHASES) == len(set(PHASES)), "duplicate phase names"
+
+        # 2. init creates the workspace
+        rc = cmd_init(target, "*.selftest.local", base)
+        assert rc == 0, f"init returned {rc}"
+        assert read_state(target, base) is not None, "state.json missing after init"
+
+        # 3. The CSV header contract findings_gen.py depends on
+        csv_path = os.path.join(findings_dir(target, base), "findings.csv")
+        assert os.path.exists(csv_path), "findings.csv missing after init"
+        header = open(csv_path, encoding="utf-8").readline().strip()
+        assert header.startswith("ID,Title,Severity,Confidence,Category"), \
+            f"unexpected CSV header: {header}"
+
+        # 4. init is idempotent - second call must not clobber
+        rc = cmd_init(target, None, base)
+        assert rc == 0, "re-init should succeed as a no-op"
+
+        # 5. Forward transition works
+        rc = cmd_phase(target, "recon", base)
+        assert rc == 0, f"phase recon returned {rc}"
+        st = read_state(target, base)
+        assert st is not None and st["phase"] == "recon"
+
+        # 6. Backward transition is refused
+        rc = cmd_phase(target, "init", base)
+        assert rc == 1, "backward transition must be refused"
+
+        # 7. rollback moves backwards explicitly
+        rc = cmd_rollback(target, "init", base)
+        assert rc == 0, f"rollback returned {rc}"
+        st = read_state(target, base)
+        assert st is not None and st["phase"] == "init"
+
+        # 8. Unknown phase is refused
+        rc = cmd_phase(target, "nonexistent-phase", base)
+        assert rc == 1, "unknown phase must be refused"
+
+        # 9. Lock acquire/release round-trip. The lock file is state.json.lock -
+        # keep this assertion on the real path so a rename cannot silently pass.
+        assert acquire_lock(target, base), "lock acquire failed"
+        lock_path = _lock_file(target, base)
+        assert os.path.exists(lock_path), f"lock file not created at {lock_path}"
+        release_lock(target, base)
+        assert not os.path.exists(lock_path), "lock file not removed"
+
+        # 10. write_state is atomic - no .tmp left behind
+        state = read_state(target, base)
+        assert state is not None, "state vanished mid-selftest"
+        state["notes"].append({"timestamp": _now(), "text": "selftest"})
+        write_state(target, base, state)
+        leftovers = [f for f in os.listdir(engagement_path(target, base)) if f.endswith(".tmp")]
+        assert not leftovers, f"atomic write left temp files: {leftovers}"
+        after = read_state(target, base)
+        assert after is not None and after["notes"][-1]["text"] == "selftest", \
+            "state write did not persist"
+
+        # 11. list finds the engagement
+        rc = cmd_list(base)
+        assert rc == 0, f"list returned {rc}"
+
+        # 12. verify passes on a healthy workspace
+        rc = cmd_verify(target, base)
+        assert rc == 0, f"verify returned {rc} on a healthy workspace"
+
+        print("[+] engagement selftest: 12/12 checks passed")
+        return 0
+    finally:
+        shutil.rmtree(base, ignore_errors=True)
+
+
+# ----------------------------------------------------------------------------
 # CLI
 # ----------------------------------------------------------------------------
 
@@ -431,6 +517,8 @@ def main(argv):
         base = rest[i + 1]
         rest = rest[:i] + rest[i + 2:]
 
+    if cmd == "selftest":
+        return selftest()
     if cmd == "init":
         if not rest:
             print("[!] init requires <target>")

@@ -735,13 +735,16 @@ def integrity(target, base=None):
     if os.path.exists(rep) and os.path.getsize(rep) < 100:
         issues.append("report.md present but suspiciously small")
 
-    # 5. No stale lock (a crashed run leaves one behind and blocks the next)
+    # 5. No stale lock (a crashed run leaves one behind and blocks the next).
+    # engagement.py locks state.json.lock, not a bare .lock.
     checks += 1
-    lock = os.path.join(edir, ".lock")
-    if os.path.exists(lock):
-        age = time.time() - os.path.getmtime(lock)
-        if age > 60:
-            issues.append(f"stale lock file present ({int(age)}s old)")
+    for lock in (os.path.join(edir, "state.json.lock"), os.path.join(edir, ".lock")):
+        if os.path.exists(lock):
+            age = time.time() - os.path.getmtime(lock)
+            if age > 60:
+                issues.append(
+                    f"stale lock file present ({os.path.basename(lock)}, {int(age)}s old)"
+                )
 
     print(f"[*] integrity: {target} - {checks} checks")
     if issues:
