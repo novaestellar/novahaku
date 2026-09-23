@@ -57,13 +57,27 @@ testing/**/engagements/
 
 # Engagement runtime data - per-target state, evidence, and findings never ship.
 # The TEMPLATE ships so the layout stays documented and git-tracked.
-engagements/*
-!engagements/TEMPLATE
+#
+# Ignore by *file pattern at depth*, not by ignoring the directory. A blanket
+# 'engagements/*' excludes each target directory itself, and git never descends
+# into an excluded directory - so '!engagements/TEMPLATE' could not re-include
+# anything, and a newly created engagement's files were silently uncommittable.
+# Only files already in the index survived, which hid the breakage until the next
+# new engagement. Same protection, without the trap.
+engagements/*/findings.json
+engagements/*/findings.csv
+engagements/*/candidates.json
+engagements/*/results.json
+engagements/*/results.csv
+engagements/*/chain.json
+engagements/*/state.json.lock
 engagements/**/evidence/
 engagements/**/report.md
-engagements/**/candidates.json
 engagements/**/recon.json
 engagements/**/.lock
+# Re-include the shipped template last, so the rules above cannot re-ignore it.
+!engagements/TEMPLATE/state.json
+!engagements/TEMPLATE/findings/findings.csv
 
 # Engagement/scan artifacts that can carry target data or credentials
 *_results.json

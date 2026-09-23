@@ -140,9 +140,13 @@ python scripts/engage_runner.py integrity --target target.com
 python scripts/engage_runner.py selftest
 ```
 
-Data engagement tersimpan di `engagements/<target>/` dan **gitignored** — state
-per-target, evidence, dan findings tidak pernah ikut ter-commit. Hanya
-`engagements/TEMPLATE/` yang di-track sebagai dokumentasi layout.
+Data engagement tersimpan di `engagements/<target>/` — state per-target, evidence,
+report, dan hasil recon tidak pernah ikut ter-commit. Yang di-track hanya
+`engagements/TEMPLATE/` (dokumentasi layout) dan `state.json` +
+`findings/findings.csv` per target. Pola ignore berbasis nama file, bukan
+mengabaikan direktori target, supaya engagement baru tetap bisa men-commit
+dokumennya (git tidak menelusuri direktori yang di-ignore, sehingga aturan
+`!re-include` di dalamnya tidak akan pernah berlaku).
 
 ## Local Hermes Patch (optional, local-only)
 
