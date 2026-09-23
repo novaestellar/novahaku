@@ -337,10 +337,14 @@ def cmd_status(target, base=None):
           f"{s.get('modules_failed', 0)} failed")
     races = state.get("race_results", [])
     if races:
-        print(f"Races:      {len(races)}")
-        for r in races[:5]:
+        # One entry per group, showing which module won and its score.
+        print(f"Winners:    {len(races)} group(s)")
+        for r in races:
             w = r.get("winner") or {}
-            print(f"  - {r.get('module')}: winner={w.get('type')} score={w.get('score')}")
+            grp = r.get("group", "?")
+            cnt = r.get("count")
+            shown = f" ({cnt} findings)" if isinstance(cnt, int) else ""
+            print(f"  - {grp:<12} {w.get('type')} score={w.get('score')}{shown}")
     notes = state.get("notes", [])
     if notes:
         print(f"Last note:  [{notes[-1].get('timestamp')}] {notes[-1].get('text')}")

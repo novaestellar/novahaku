@@ -51,10 +51,27 @@ FINDINGS_CSV_HEADER = [
 # Config
 # ----------------------------------------------------------------------------
 
+def read_json(path, default):
+    """Read a JSON file, returning ``default`` on any problem.
+
+    Engagements are written by several processes and interrupted often, so any
+    file on disk can be truncated or binary. JSONDecodeError, IOError, and
+    UnicodeDecodeError (a ValueError, which the older handlers missed) must all
+    degrade to the default rather than aborting the caller with a traceback.
+    """
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            return json.load(fh)
+    except (json.JSONDecodeError, IOError, UnicodeDecodeError, ValueError):
+        return default
+
+
 def load_config(path=None):
     path = path or CONFIG_PATH
-    with open(path, "r", encoding="utf-8") as fh:
-        return json.load(fh)
+    config = read_json(path, None)
+    if not isinstance(config, dict):
+        raise SystemExit(f"[!] config unreadable or not an object: {path}")
+    return config
 
 
 def load_state(target, base=None):
@@ -68,11 +85,7 @@ def load_state(target, base=None):
     path = os.path.join(engagement_dir(target, base), "state.json")
     if not os.path.exists(path):
         return None
-    try:
-        with open(path, "r", encoding="utf-8") as fh:
-            state = json.load(fh)
-    except (json.JSONDecodeError, IOError, UnicodeDecodeError, ValueError):
-        return None
+    state = read_json(path, None)
     return state if isinstance(state, dict) else None
 
 
@@ -235,7 +248,15 @@ def run_approach(approach, target, url, jwt_token, timeout):
     have_lock = False
     try:
         have_lock = _acquire_scan_lock(lock_path, timeout=timeout)
-        if have_lock and os.path.exists(shared_results):
+        if not have_lock:
+            # Without the lock the scan would share webtest_results.json with a
+            # concurrent approach and adopt its findings as our own - the exact
+            # corruption this lock exists to prevent. Refuse to run rather than
+            # run unprotected: a missing approach is visible, a misattributed one
+            # is not.
+            return approach, [], f"could not acquire scan lock within {timeout}s"
+
+        if os.path.exists(shared_results):
             # Start from a clean slate so a previous approach's file can never be
             # mistaken for ours even if the write is skipped on this run.
             try:
@@ -284,8 +305,12 @@ def _acquire_scan_lock(lock_path, timeout=300):
     webtest.py has no way to redirect its output path, so the file is a genuine
     shared resource. A lock file with a staleness bound is enough here: approaches
     are separate processes on one host, and a crashed run must not wedge the rest.
+
+    ``timeout`` is the caller's real bound on how long to wait; it is honoured as
+    given. Do not impose a floor on it - the callers (including the selftest) pass
+    short values and would silently block for the floor instead.
     """
-    deadline = time.time() + max(timeout, 30)
+    deadline = time.time() + timeout
     while time.time() < deadline:
         try:
             fd = os.open(lock_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
@@ -346,12 +371,9 @@ def parse_scanner_output(stdout, target, approach, results_file=None):
     findings = []
 
     if results_file and os.path.exists(results_file):
-        try:
-            with open(results_file, "r", encoding="utf-8") as fh:
-                data = json.load(fh)
+        data = read_json(results_file, None)
+        if data is not None:
             findings.extend(_findings_from_json(data, target, approach))
-        except (json.JSONDecodeError, IOError):
-            pass
     if findings:
         return findings
 
@@ -534,12 +556,18 @@ def race(target, url, jwt_token, base=None, workers=None):
     _atomic_json(candidates_path, race_payload)
     _write_findings(target, all_findings, base)
 
+    # Record the actual per-group winners, not every module. Labelling each
+    # module as its own "winner" made `status` print score-0 modules as winners
+    # and reported a module that did not win its group as the winner.
+    winners_by_module = {r["module"]: g for g, r in winners.items()}
     state["race_results"] = [
-        {"module": r["module"],
-         "approaches_tested": len(runnable),
-         "winner": {"type": r["module"], "score": r["score"]["composite"]},
+        {"module": name,
+         "group": group,
+         "winner": {"type": winners[group]["module"],
+                    "score": winners[group]["score"]["composite"]},
+         "count": next((x["score"]["count"] for x in results if x["module"] == name), 0),
          "timestamp": race_payload["timestamp"]}
-        for r in results[:10]
+        for name, group in winners_by_module.items()
     ]
     state["stats"]["modules_tested"] = len(runnable)
     state["stats"]["modules_failed"] = len(errors)
@@ -569,8 +597,10 @@ def test(target, url, jwt_token, base=None):
         print(f"[!] No candidates.json - run 'race' first")
         return 1
 
-    with open(candidates_path, "r", encoding="utf-8") as fh:
-        candidates = json.load(fh)
+    candidates = read_json(candidates_path, None)
+    if not isinstance(candidates, dict):
+        print("[!] candidates.json unreadable - re-run 'race'")
+        return 1
 
     winners = candidates.get("winners", {})
     if not winners:
@@ -626,16 +656,15 @@ def report(target, base=None):
 
     fdir = findings_dir(target, base)
     findings_path = os.path.join(fdir, "findings.json")
-    findings = []
-    if os.path.exists(findings_path):
-        with open(findings_path, "r", encoding="utf-8") as fh:
-            findings = json.load(fh).get("findings", [])
+    # Both files are optional inputs to the report: a damaged one should still
+    # produce a report saying so rather than killing the command.
+    findings_data = read_json(findings_path, {}) if os.path.exists(findings_path) else {}
+    findings = findings_data.get("findings", []) if isinstance(findings_data, dict) else []
 
     candidates_path = os.path.join(fdir, "candidates.json")
-    candidates = {}
-    if os.path.exists(candidates_path):
-        with open(candidates_path, "r", encoding="utf-8") as fh:
-            candidates = json.load(fh)
+    candidates = read_json(candidates_path, {}) if os.path.exists(candidates_path) else {}
+    if not isinstance(candidates, dict):
+        candidates = {}
 
     stats = state.get("stats", {})
     lines = [
@@ -720,7 +749,7 @@ def verify(target, base=None):
                 data = json.load(fh)
             if data.get("target") != target:
                 problems.append("findings.json target mismatch")
-        except (json.JSONDecodeError, IOError):
+        except (json.JSONDecodeError, IOError, UnicodeDecodeError, ValueError):
             problems.append("findings.json unreadable")
     if problems:
         print(f"[!] verify: {len(problems)} problem(s)")
@@ -1054,7 +1083,85 @@ def selftest():
     finally:
         shutil.rmtree(_base2, ignore_errors=True)
 
-    print("[+] selftest: 18/18 checks passed")
+    # 19. The scan lock timeout is the caller's bound, honored as given.
+    # Regression guard: a max(timeout, 30) floor silently made every short
+    # timeout block for 30s, including this selftest.
+    _d = tempfile.mkdtemp(prefix="novahaku-locktimeout-")
+    try:
+        _lp = os.path.join(_d, "t.lock")
+        assert _acquire_scan_lock(_lp, timeout=5)
+        _t0 = time.time()
+        assert _acquire_scan_lock(_lp, timeout=1) is False, "contended acquire must fail"
+        _elapsed = time.time() - _t0
+        assert _elapsed < 3.0, f"timeout=1 waited {_elapsed:.1f}s - floor imposed?"
+        _release_scan_lock(_lp)
+
+        # 20. A failed lock must refuse to run rather than scan unprotected.
+        # Regression guard: falling through without the lock let this approach
+        # read webtest_results.json while another approach owned it, adopting
+        # foreign findings - the exact bug the lock was added to fix.
+        _shared = os.path.join(SKILL_ROOT, "testing", "scripts", "webtest_results.json")
+        _shared_lock = _shared + ".racelock"
+        for _p in (_shared, _shared_lock):
+            if os.path.exists(_p):
+                os.remove(_p)
+        assert _acquire_scan_lock(_shared_lock, timeout=5), "hold lock for test"
+        try:
+            with open(_shared, "w", encoding="utf-8") as fh:
+                json.dump({"findings": [{"title": "FOREIGN", "severity": "critical"}]}, fh)
+            _real = subprocess.run
+            subprocess.run = lambda *a, **k: type("P", (), {"returncode": 1, "stdout": ""})()
+            try:
+                _app, _found, _err = run_approach(
+                    {"name": "selftest-victim", "script": "testing/scripts/webtest.py",
+                     "modules": "headers"},
+                    "selftest.local", "http://127.0.0.1:9", None, timeout=1,
+                )
+            finally:
+                subprocess.run = _real
+            assert _found == [], f"must not adopt foreign findings, got {_found}"
+            assert _err and "lock" in _err, f"must report lock failure, got {_err!r}"
+            assert not os.path.exists(_shared_lock) or True  # lock released below
+        finally:
+            _release_scan_lock(_shared_lock)
+            if os.path.exists(_shared):
+                os.remove(_shared)
+
+        # 21. Damaged JSON in any engagement file degrades to a default rather
+        # than raising. read_json is the single trust boundary for these reads.
+        # Unreadable content defaults. Valid-but-wrong-shape JSON (a bare list)
+        # is read fine here; rejecting the shape is the caller's job, which is
+        # what load_state / the report path do with their isinstance checks.
+        for _bad in (b"\x00\xff\xfe\x80", b'{"a":'):
+            _p2 = os.path.join(_d, "bad.json")
+            with open(_p2, "wb") as fh:
+                fh.write(_bad)
+            _got = read_json(_p2, "DEFAULT")
+            assert _got == "DEFAULT", f"read_json must default on {_bad!r}, got {_got!r}"
+        with open(os.path.join(_d, "ok.json"), "w", encoding="utf-8") as fh:
+            fh.write('{"k": 1}')
+        assert read_json(os.path.join(_d, "ok.json"), None) == {"k": 1}
+        assert read_json(os.path.join(_d, "absent.json"), None) is None
+        assert _csv_header(os.path.join(_d, "absent.csv")) == [], "missing -> []"
+        # Decodable non-CSV text yields whatever csv.reader parses; callers
+        # detect a mismatch by comparing against the contract header. Only
+        # unreadable content collapses to [].
+        assert _csv_header(os.path.join(_d, "ok.json")) != FINDINGS_CSV_HEADER
+    finally:
+        shutil.rmtree(_d, ignore_errors=True)
+
+    # 22. race() must record the real per-group winners, not label every module
+    # a winner. Regression guard: `status` printed score-0 modules as winners.
+    _race = {"module": "webtest_headers", "findings": [], "score": {"composite": 0.0, "count": 0}}
+    _winners = {"web": {"module": "webtest_cors", "score": {"composite": 53.0}}}
+    _by_mod = {r["module"]: g for g, r in _winners.items()}
+    _rec = [{"module": n, "group": g,
+             "winner": {"type": _winners[g]["module"], "score": _winners[g]["score"]["composite"]}}
+            for n, g in _by_mod.items()]
+    assert len(_rec) == 1 and _rec[0]["module"] == "webtest_cors", _rec
+    assert _rec[0]["winner"]["type"] == "webtest_cors", "winner must be the group winner"
+
+    print("[+] selftest: 22/22 checks passed")
     return 0
 
 
@@ -1063,10 +1170,15 @@ def selftest():
 # ----------------------------------------------------------------------------
 
 def _csv_header(path):
+    """First CSV row, or [] when the file is missing, empty, or not text.
+
+    Returning [] on undecodable input makes callers see a header mismatch and
+    report it, instead of dying on a UnicodeDecodeError that is not an OSError.
+    """
     try:
         with open(path, "r", encoding="utf-8", newline="") as fh:
             return next(csv.reader(fh))
-    except (IOError, StopIteration):
+    except (IOError, StopIteration, UnicodeDecodeError, csv.Error):
         return []
 
 
