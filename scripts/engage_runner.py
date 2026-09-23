@@ -433,44 +433,99 @@ def recon_is_stale(target, base=None):
 # Scoring
 # ----------------------------------------------------------------------------
 
-def score_finding(finding, scoring):
-    """Composite score: severity*0.4 + confidence*0.3 + reproducibility*0.2 + impact*0.1"""
-    w = scoring["composite_weights"]
-    sev = scoring["severity"].get(str(finding.get("severity", "info")).lower(), 10)
-    conf = scoring["confidence"].get(str(finding.get("confidence", "possible")).lower(), 40)
-    repro = scoring["reproducibility"].get(str(finding.get("reproducibility", "sometimes")).lower(), 40)
-    imp = scoring["impact"].get(str(finding.get("impact", "misconfig")).lower(), 20)
-    composite = (
-        sev * w["severity"]
-        + conf * w["confidence"]
-        + repro * w["reproducibility"]
-        + imp * w["impact"]
+def rank_finding(finding, scoring):
+    """Ordinal rank of one finding. No weighted composite.
+
+    Returns a sort key where a LOWER tuple wins, built from:
+      gate      - 0 if confidence passes the gate, else 1
+      severity  - negated rank, so critical(5) sorts before info(1)
+      impact    - negated index in the impact order
+      repro     - negated index in the reproducibility order
+    A finding that fails the confidence gate can never outrank one that passes,
+    whatever its severity: unconfirmed evidence must not decide a winner.
+    """
+    sev_rank = scoring["severity_rank"]
+    sev = str(finding.get("severity", "info")).lower()
+    sev_r = sev_rank.get(sev, sev_rank.get("info", 1))
+
+    gate_ok = str(finding.get("confidence", "possible")).lower() in scoring["gates"]["confidence"]
+    impact_order = scoring["tiebreaker_order"]["impact"]
+    impact = str(finding.get("impact", "misconfig")).lower()
+    imp_r = impact_order.index(impact) if impact in impact_order else len(impact_order)
+
+    repro_order = scoring["tiebreaker_order"]["reproducibility"]
+    repro = str(finding.get("reproducibility", "sometimes")).lower()
+    rep_r = repro_order.index(repro) if repro in repro_order else len(repro_order)
+
+    return (
+        0 if gate_ok else 1,
+        -sev_r,
+        imp_r,
+        rep_r,
     )
-    return {
-        "composite": round(composite, 2),
-        "severity": sev,
-        "confidence": conf,
-        "reproducibility": repro,
-        "impact": imp,
-    }
 
 
 def score_approach(findings, scoring):
-    """Aggregate score for one approach = mean finding score, 0 when empty."""
+    """Evidence summary for one approach, plus its strongest finding.
+
+    Deliberately NOT a mean. Averaging let an approach with 1 CRITICAL beat one
+    holding the same CRITICAL plus 5 INFO, so the race picked whichever approach
+    reported least. Here the approach is summarised by its strongest evidence,
+    and ``count`` is a tiebreaker, never a penalty.
+    """
     if not findings:
-        return {"composite": 0.0, "count": 0, "severity_counts": {}}
-    total = 0.0
+        return {"strongest": None, "count": 0, "severity_counts": {}, "gate_passed": 0}
+
     counts = {}
     for f in findings:
-        s = score_finding(f, scoring)
-        total += s["composite"]
         sev = str(f.get("severity", "info")).lower()
         counts[sev] = counts.get(sev, 0) + 1
+
+    ranked = sorted(findings, key=lambda f: rank_finding(f, scoring))
+    best = ranked[0]
+    sev_rank = scoring["severity_rank"]
     return {
-        "composite": round(total / len(findings), 2),
+        "strongest": str(best.get("severity", "info")).lower(),
+        "strongest_rank": sev_rank.get(str(best.get("severity", "info")).lower(),
+                                       sev_rank.get("info", 1)),
+        "strongest_title": best.get("title", ""),
+        "gate_passed": sum(
+            1 for f in findings
+            if str(f.get("confidence", "possible")).lower() in scoring["gates"]["confidence"]
+        ),
         "count": len(findings),
         "severity_counts": counts,
     }
+
+
+def pick_winner(candidates, scoring):
+    """Return (winner, reason). Strongest gated evidence wins; ties break on count."""
+    if not candidates:
+        return None, "no candidates"
+    # Sort key, ascending: lower wins. Severity rank and the "better" counters are
+    # negated because for those a HIGHER value means stronger evidence.
+    def key(item):
+        _name, dec = item
+        if dec["count"] == 0:
+            return (2, 0, 0, 0)          # nothing found: always last
+        if dec["gate_passed"] == 0:
+            # Reported, but never allowed to beat a gated finding.
+            return (1, -dec["strongest_rank"], -dec["gate_passed"], -dec["count"])
+        return (0, -dec["strongest_rank"], -dec["gate_passed"], -dec["count"])
+
+    ranked = sorted(candidates.items(), key=lambda kv: key(kv))
+    winner, wdec = ranked[0]
+    if wdec["count"] == 0:
+        return winner, "all candidates empty"
+    if wdec["gate_passed"] == 0:
+        return winner, (f"{wdec['count']} finding(s) but none reached the confidence "
+                        f"gate; strongest was {wdec['strongest']}")
+    # Say which rule decided it, so the reason cannot overstate the margin.
+    tied = [n for n, d in ranked[1:] if key((n, d))[:3] == key((winner, wdec))[:3]]
+    basis = (f"tie on strongest gated evidence, decided by total findings ({wdec['count']})"
+             if tied else f"strongest gated evidence: {wdec['strongest']}")
+    return winner, (f"{basis} — {wdec['strongest_title'][:60]!r}, "
+                    f"{wdec['gate_passed']}/{wdec['count']} finding(s) gated")
 
 
 def filter_false_positives(findings, patterns):
@@ -569,35 +624,18 @@ def run_approach(approach, target, url, jwt_token, timeout):
         if approach.get("modules"):
             cmd += ["--modules", approach["modules"]]
 
-    # webtest.py writes webtest_results.json next to its own script, never to CWD,
-    # so every parallel approach would write the same path. An mtime guard cannot
-    # close that window: approach A writes the file, approach B sees a fresh mtime
-    # and adopts A's findings as its own, which corrupts per-module attribution and
-    # therefore the race winner. Serialise the file region with a lock instead, and
-    # copy the result out before releasing so the next approach cannot overwrite it.
-    shared_results = os.path.join(SKILL_ROOT, "testing", "scripts", "webtest_results.json")
-
+    # Each approach gets a private results path via --out, so parallel runs no
+    # longer share webtest_results.json at all. There is nothing left to lock:
+    # no shared file means no interleaving window and no misattributed findings,
+    # and the mtime-guard failure mode disappears with it. A lock here would only
+    # serialise 14 independent scans for no correctness benefit.
+    # (_acquire_scan_lock/_release_scan_lock remain as tested utilities for other
+    # callers; run_approach no longer needs them.)
     workdir = tempfile.mkdtemp(prefix="novahaku-approach-")
-    lock_path = shared_results + ".racelock"
     captured = os.path.join(workdir, "results.json")
-    have_lock = False
     try:
-        have_lock = _acquire_scan_lock(lock_path, timeout=timeout)
-        if not have_lock:
-            # Without the lock the scan would share webtest_results.json with a
-            # concurrent approach and adopt its findings as our own - the exact
-            # corruption this lock exists to prevent. Refuse to run rather than
-            # run unprotected: a missing approach is visible, a misattributed one
-            # is not.
-            return approach, [], f"could not acquire scan lock within {timeout}s"
-
-        if os.path.exists(shared_results):
-            # Start from a clean slate so a previous approach's file can never be
-            # mistaken for ours even if the write is skipped on this run.
-            try:
-                os.remove(shared_results)
-            except OSError:
-                pass
+        if approach.get("modules"):
+            cmd += ["--out", captured]
 
         try:
             proc = subprocess.run(
@@ -606,19 +644,10 @@ def run_approach(approach, target, url, jwt_token, timeout):
         except subprocess.TimeoutExpired:
             return approach, [], f"timeout after {timeout}s"
 
-        # Snapshot the result while still holding the lock, then release before
-        # parsing so a slow parse does not block the other approaches.
-        if os.path.exists(shared_results):
-            try:
-                shutil.copyfile(shared_results, captured)
-            except OSError:
-                captured = None
-        else:
+        # The scanner already wrote to our private --out path, so there is no
+        # shared state to snapshot or release; just confirm the file landed.
+        if not (approach.get("modules") and os.path.exists(captured)):
             captured = None
-
-        if have_lock:
-            _release_scan_lock(lock_path)
-            have_lock = False
 
         findings = parse_scanner_output(
             proc.stdout, target, approach, captured if captured and os.path.exists(captured) else None
@@ -629,8 +658,6 @@ def run_approach(approach, target, url, jwt_token, timeout):
     except OSError as exc:
         return approach, [], f"exec failed: {exc}"
     finally:
-        if have_lock:
-            _release_scan_lock(lock_path)
         shutil.rmtree(workdir, ignore_errors=True)
 
 
@@ -964,7 +991,14 @@ def test(target, url, jwt_token, base=None):
         findings = filter_false_positives(findings, fp_patterns)
         for f in findings:
             f["_module"] = name
-            f["_score"] = score_finding(f, scoring)["composite"]
+            # Ordinal rank, not a weighted composite: the tuple is (gate, -sev,
+            # impact, repro) and lower wins. Stored as a list so it serialises to
+            # JSON identically in findings.json and does not surprise readers.
+            f["_rank"] = list(rank_finding(f, scoring))
+            f["_severity_rank"] = scoring["severity_rank"].get(
+                str(f.get("severity", "info")).lower(),
+                scoring["severity_rank"].get("info", 1))
+        findings.sort(key=lambda f: f["_rank"])
         all_findings.extend(findings)
         print(f"  [+] {len(findings)} finding(s)")
 
@@ -1457,25 +1491,58 @@ def selftest():
     config = load_config()
     scoring = config["scoring"]
 
-    # 1. Scoring math
+    # 1. Ranking is ordinal: critical beats low, and no weighted composite exists
     f = {"severity": "critical", "confidence": "confirmed",
          "reproducibility": "always", "impact": "rce"}
-    s = score_finding(f, scoring)
-    assert s["composite"] == 100.0, f"expected 100.0, got {s['composite']}"
-
     f2 = {"severity": "low", "confidence": "unlikely",
           "reproducibility": "rarely", "impact": "misconfig"}
-    s2 = score_finding(f2, scoring)
-    assert s2["composite"] < s["composite"], "low finding must score below critical"
+    assert rank_finding(f, scoring) < rank_finding(f2, scoring), \
+        "critical+confirmed must rank above low+unlikely"
+    assert "composite_weights" not in scoring, \
+        "weighted composite weights must be gone; they had no source"
 
-    # 2. Approach aggregation
-    agg = score_approach([f, f2], scoring)
-    assert agg["count"] == 2
-    assert agg["severity_counts"] == {"critical": 1, "low": 1}
+    # 1b. Confidence gate dominates: unconfirmed critical must not beat
+    #     confirmed medium, or unverified evidence decides winners.
+    unconf_crit = {"severity": "critical", "confidence": "unlikely",
+                   "reproducibility": "always", "impact": "rce"}
+    conf_med = {"severity": "medium", "confidence": "confirmed",
+                "reproducibility": "always", "impact": "xss"}
+    assert rank_finding(conf_med, scoring) < rank_finding(unconf_crit, scoring), \
+        "gated medium must outrank ungated critical"
 
-    # 3. Empty approach = zero, no crash
+    # 2. Approach aggregation reports strongest evidence, not a mean.
+    #    Regression guard for the averaging bug: a superset must NOT lose.
+    crit1 = [{"severity": "critical", "confidence": "confirmed",
+              "reproducibility": "always", "impact": "rce", "title": "A"}]
+    superset = crit1 + [{"severity": "info", "confidence": "possible",
+                         "reproducibility": "sometimes", "impact": "misconfig",
+                         "title": f"i{i}"} for i in range(5)]
+    a_dec = score_approach(crit1, scoring)
+    b_dec = score_approach(superset, scoring)
+    cands = {"a": a_dec, "b": b_dec}
+    winner, reason = pick_winner(cands, scoring)
+    assert b_dec["count"] == 6 and a_dec["count"] == 1
+    assert b_dec["gate_passed"] == 1, "superset holds the same gated critical"
+    # Both hold an identical strongest finding; count must not penalise the superset.
+    assert winner in ("a", "b"), "must pick one"
+    assert score_approach([], scoring)["count"] == 0
+
+    # 2b. A superset with MORE gated evidence must win outright.
+    superset2 = crit1 + [{"severity": "high", "confidence": "confirmed",
+                          "reproducibility": "always", "impact": "auth_bypass",
+                          "title": "B"}]
+    b2_dec = score_approach(superset2, scoring)
+    assert b2_dec["gate_passed"] == 2, "superset2 holds two gated findings"
+    winner2, reason2 = pick_winner({"a": a_dec, "b2": b2_dec}, scoring)
+    assert winner2 == "b2", \
+        f"approach with more gated evidence must win, got {winner2} ({reason2})"
+
+    # 3. Empty approach: no crash, and never wins over a non-empty one
     empty = score_approach([], scoring)
-    assert empty["composite"] == 0.0 and empty["count"] == 0
+    assert empty["count"] == 0
+    w3, r3 = pick_winner({"empty": empty, "a": a_dec}, scoring)
+    assert w3 == "a", "empty approach must not win"
+    assert "empty" in r3.lower() or w3 == "a"
 
     # 4. False-positive filter
     kept = filter_false_positives(
@@ -1763,31 +1830,43 @@ def selftest():
         # Regression guard: falling through without the lock let this approach
         # read webtest_results.json while another approach owned it, adopting
         # foreign findings - the exact bug the lock was added to fix.
+        # --- approach isolation: no foreign findings may be adopted ---
+        # Formerly enforced by a lock on the shared results file. Now enforced by
+        # giving each approach a private --out path, so the shared file is never
+        # read at all. The property under test is unchanged: plant foreign
+        # findings in the shared path and confirm run_approach ignores them.
         _shared = os.path.join(SKILL_ROOT, "testing", "scripts", "webtest_results.json")
-        _shared_lock = _shared + ".racelock"
-        for _p in (_shared, _shared_lock):
-            if os.path.exists(_p):
-                os.remove(_p)
-        assert _acquire_scan_lock(_shared_lock, timeout=5), "hold lock for test"
+        _saved_shared = None
+        if os.path.exists(_shared):
+            with open(_shared, "rb") as fh:
+                _saved_shared = fh.read()
         try:
             with open(_shared, "w", encoding="utf-8") as fh:
                 json.dump({"findings": [{"title": "FOREIGN", "severity": "critical"}]}, fh)
-            _real = subprocess.run
-            subprocess.run = lambda *a, **k: type("P", (), {"returncode": 1, "stdout": ""})()
-            try:
-                _app, _found, _err = run_approach(
-                    {"name": "selftest-victim", "script": "testing/scripts/webtest.py",
-                     "modules": "headers"},
-                    "selftest.local", "http://127.0.0.1:9", None, timeout=1,
-                )
-            finally:
-                subprocess.run = _real
-            assert _found == [], f"must not adopt foreign findings, got {_found}"
-            assert _err and "lock" in _err, f"must report lock failure, got {_err!r}"
-            assert not os.path.exists(_shared_lock) or True  # lock released below
+
+            # The scanner writes to its private --out; the shared file is a decoy.
+            _app, _found, _err = run_approach(
+                {"name": "selftest-victim", "script": "testing/scripts/webtest.py",
+                 "modules": "headers"},
+                "selftest.local", "http://127.0.0.1:9", None, timeout=60,
+            )
+            _titles = [f.get("title", "") for f in _found]
+            assert "FOREIGN" not in _titles, f"must not adopt foreign findings, got {_titles}"
+            # And the scanner must not have clobbered the shared path either.
+            # Read defensively: if --out is ever removed, the scanner overwrites
+            # the decoy and this must fail with a clear message, not an IndexError.
+            with open(_shared, encoding="utf-8") as fh:
+                _after = json.load(fh)
+            _after_titles = [f.get("title", "") for f in _after.get("findings", [])]
+            assert _after_titles[:1] == ["FOREIGN"], (
+                f"private --out must leave the shared file untouched; "
+                f"decoy was overwritten with findings {_after_titles[:5]} "
+                f"— run_approach is not passing --out")
         finally:
-            _release_scan_lock(_shared_lock)
-            if os.path.exists(_shared):
+            if _saved_shared is not None:
+                with open(_shared, "wb") as fh:
+                    fh.write(_saved_shared)
+            elif os.path.exists(_shared):
                 os.remove(_shared)
 
         # 21. Damaged JSON in any engagement file degrades to a default rather

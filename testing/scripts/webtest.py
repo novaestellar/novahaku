@@ -4,8 +4,9 @@
 webtest.py — NovaHaku Exploit Battery (stdlib-only)
 Usage:
   python webtest.py <url> [--modules a,b,c] [--cookie "k=v"] [--jwt TOKEN]
-                   [--proxy http://127.0.0.1:8080] [--timeout 10]
-No-arg = help. Results saved to webtest_results.json next to this script.
+                   [--proxy http://127.0.0.1:8080] [--timeout 10] [--out PATH]
+No-arg = help. Results saved to webtest_results.json next to this script,
+or to --out PATH when given (required for concurrent runs).
 
 Modules: headers,exposed,cors,methods,admin,xss,sqli,ssrf,ssti,traversal,redirect,info,dirfuzz,https
 Default: all modules.
@@ -20,13 +21,33 @@ if hasattr(sys.stdout, 'buffer') and sys.stdout.encoding != 'utf-8':
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "webtest_results.json")
+# Overridable via --out. Callers that run several modules concurrently must pass
+# a private path, otherwise every instance fights over this one file and can
+# adopt another instance's findings as its own.
+OUT_OVERRIDE = None
 
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 webtest-battery/1.0"
 
-def make_opener(proxy=None, timeout=10):
+class NoRedirect(urllib.request.HTTPRedirectHandler):
+    """Refuse to follow 3xx so the caller can inspect the redirect itself.
+
+    Supplying our own instance replaces urllib's default HTTPRedirectHandler
+    (build_opener keys handlers by class), so this really does stop the follow.
+    ponytail: no-follow is opt-in per caller. Other modules still follow
+    redirects, so a redirecting endpoint can feed them a third-party page.
+    Flip those to no-follow too once a false positive is actually observed.
+    """
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
+def make_opener(proxy=None, timeout=10, follow_redirects=True):
     handlers = []
     if proxy:
         handlers.append(urllib.request.ProxyHandler({"http": proxy, "https": proxy}))
+    if not follow_redirects:
+        handlers.append(NoRedirect())
     ctx = ssl.create_default_context()
     ctx.check_hostname = False
     ctx.verify_mode = ssl.CERT_NONE
@@ -42,7 +63,7 @@ class T:
         self.findings = []
         self.checked = 0
 
-    def req(self, path, method="GET", data=None, headers=None, timeout=None):
+    def req(self, path, method="GET", data=None, headers=None, timeout=None, opener=None):
         url = self.base + path
         h = {"User-Agent": UA, "Accept": "*/*"}
         if self.cookie:
@@ -55,7 +76,7 @@ class T:
             data = urllib.parse.urlencode(data).encode()
         r = urllib.request.Request(url, data=data, headers=h, method=method)
         try:
-            resp = self.opener.open(r, timeout=timeout or self.timeout)
+            resp = (opener or self.opener).open(r, timeout=timeout or self.timeout)
             body = resp.read(200000)
             return resp.status, dict(resp.headers), body
         except urllib.error.HTTPError as e:
@@ -292,8 +313,11 @@ class T:
 
     def mod_redirect(self):
         payload = "https://evil.com"
+        # No-follow opener: following the 3xx would turn the status into the
+        # destination's 200 and hide the redirect we are looking for.
+        opener, timeout = make_opener(follow_redirects=False)
         for p in ["url", "next", "return", "redirect", "goto", "redirect_uri"]:
-            st, hd, body = self.req("/?" + p + "=" + urllib.parse.quote(payload))
+            st, hd, _body = self.req("/?" + p + "=" + urllib.parse.quote(payload), timeout=timeout, opener=opener)
             if st in (301, 302, 303, 307, 308):
                 loc = hd.get("Location", "")
                 if payload in loc:
@@ -332,16 +356,22 @@ class T:
         if not self.base.startswith("http://"):
             return
         https_url = self.base.replace("http://", "https://", 1)
+        # Check the HTTP root WITHOUT following redirects: the 3xx and its
+        # Location are the whole point, and following it turns them into a 200.
+        opener, timeout = make_opener(follow_redirects=False)
         try:
-            st, hd, body = self.req("/")
+            st, hd, body = self.req("/", timeout=timeout, opener=opener)
             if st and st in (301, 302, 303, 307, 308):
                 loc = hd.get("Location", "")
                 if loc.startswith("https"):
                     self.checked += 1
                     return
-            self.add("https", "LOW", "No forced HTTP→HTTPS redirect", "")
+                self.add("https", "LOW", f"HTTP→ redirect but not to HTTPS: {loc[:60]}", "")
+                return
+            self.add("https", "LOW", "No forced HTTP→HTTPS redirect", f"HTTP root returned {st}")
+            return
         except Exception:
-            self.add("https", "LOW", "HTTPS not responding", "")
+            self.add("https", "LOW", "HTTPS not responding", f"probe target was {https_url}")
 
 def main():
     args = sys.argv[1:]
@@ -350,6 +380,7 @@ def main():
         sys.exit(0)
     url = args[0]
     opts = {}
+    out_path = None
     i = 1
     while i < len(args):
         if args[i] == "--modules":
@@ -362,6 +393,8 @@ def main():
             opts["proxy"] = args[i + 1]; i += 2
         elif args[i] == "--timeout":
             opts["timeout"] = int(args[i + 1]); i += 2
+        elif args[i] == "--out":
+            out_path = args[i + 1]; i += 2
         else:
             i += 1
     if not url.startswith("http"):
@@ -374,9 +407,10 @@ def main():
         "ssti", "traversal", "redirect", "info", "dirfuzz", "https",
     ])
     t.run(modules)
-    with open(OUT, "w") as f:
+    out = out_path or OUT
+    with open(out, "w") as f:
         json.dump({"target": url, "findings": t.findings}, f, indent=2)
-    print(f"\n[*] done — {len(t.findings)} findings -> {OUT}")
+    print(f"\n[*] done — {len(t.findings)} findings -> {out}")
     if t.findings:
         print("[*] verify each [!!] manually — 200 OK is not proof of exploit")
 

