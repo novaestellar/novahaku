@@ -1413,6 +1413,17 @@ def integrity(target, base=None):
                 checks += 1
                 if len(rows) - 1 != disk_count:
                     issues.append(f"CSV rows ({len(rows) - 1}) != findings.json ({disk_count})")
+    else:
+        # Mirror the findings.json branch above: absence is itself an inconsistency
+        # once anything has been recorded. Without this, deleting findings.csv made
+        # integrity drop three checks and still report OK, so findings_gen.py - the
+        # consumer that reads this exact header - would silently work from nothing.
+        checks += 1
+        if state_count or disk_count:
+            issues.append(
+                f"findings.csv absent but findings are recorded "
+                f"(state={state_count} findings.json={disk_count})"
+            )
 
     # 4. Report, when present, must not be empty
     rep = os.path.join(edir, "report.md")
@@ -1615,6 +1626,25 @@ def selftest():
         rc, out = _integrity_issues()
         assert rc == 1 and ("count mismatch" in out or "CSV rows" in out), \
             f"count divergence undetected: rc={rc} {out}"
+
+        # Absent CSV while findings are recorded -> must fail.
+        # Regression guard: the whole CSV block sat behind `if os.path.exists`,
+        # so deleting findings.csv skipped three checks and integrity still
+        # reported OK - leaving findings_gen.py to consume this header from
+        # nothing, with no signal that the file had gone.
+        os.remove(_csv)
+        rc, out = _integrity_issues()
+        assert rc == 1 and "findings.csv absent" in out, \
+            f"absent CSV undetected: rc={rc} {out}"
+
+        # A genuinely empty engagement (nothing recorded, no CSV) stays clean:
+        # absence is only an inconsistency once there is something to lose.
+        os.remove(_json)
+        _state["stats"]["findings_total"] = 0
+        with open(os.path.join(_edir, "state.json"), "w", encoding="utf-8") as fh:
+            json.dump(_state, fh)
+        rc, out = _integrity_issues()
+        assert rc == 0, f"empty engagement must pass, got rc={rc}: {out}"
     finally:
         shutil.rmtree(_base, ignore_errors=True)
 
