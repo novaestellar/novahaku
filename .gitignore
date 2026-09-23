@@ -54,6 +54,11 @@ webtest_results.json
 training_results.json
 testing/**/engagements/
 
+# Engagement runtime data - per-target state, evidence, and findings never ship.
+# The TEMPLATE ships so the layout stays documented and git-tracked.
+engagements/*
+!engagements/TEMPLATE
+
 # Backups
 *.bak
 *.bakup

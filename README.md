@@ -673,6 +673,68 @@ python ~/.hermes/skills/security/novahaku/testing/supply-chain-security/scripts/
 
 ---
 
+## 持久渗透模式 (Persistent Engagement)
+
+跨会话保存每个目标的测试状态。中断后 `status` 即可接着做,不必重跑侦察与测试。
+
+**状态机**
+
+```
+init → recon → race → test → exploit → report → closed
+```
+
+只能前进。要回退需显式 `rollback`,避免误操作把已完成的阶段清掉。
+
+**工作区布局**
+
+```
+engagements/<target>/
+├── state.json          # 阶段、统计、race 结果、备注
+├── recon.json          # 可选 — novaxinwei 侦察输出 (ReconReader 读取)
+├── report.md           # report 阶段生成
+└── findings/
+    ├── findings.csv    # 兼容 findings_gen.py header
+    ├── findings.json   # 结构化记录 + 评分
+    └── candidates.json # race 原始结果
+```
+
+**命令**
+
+```bash
+# 创建 / 查看
+python scripts/engagement.py init target.com --scope "*.target.com"
+python scripts/engagement.py status target.com
+python scripts/engagement.py list
+
+# 阶段推进
+python scripts/engagement.py phase target.com recon
+python scripts/engagement.py rollback target.com recon
+python scripts/engagement.py note target.com "surface enumerated"
+
+# 测试执行 (并行 approach racing)
+python scripts/engage_runner.py race      --target target.com --url https://target.com
+python scripts/engage_runner.py test      --target target.com --url https://target.com
+python scripts/engage_runner.py report    --target target.com
+python scripts/engage_runner.py integrity --target target.com
+python scripts/engage_runner.py selftest
+```
+
+**Approach racing**
+
+15 个测试方法并行执行,按 `severity(40%) + confidence(30%) + reproducibility(20%) + impact(10%)`
+评分,每个类别选出得分最高的方法进入深度测试。并行执行不会互相污染:
+每个 approach 独立临时 CWD,共享的 `webtest_results.json` 用修改时间判定归属,
+重复 findings 按 (asset, category, title) 去重并保留最高严重度。
+
+**Integrity check**
+
+`integrity` 校验 state.json / findings.json / findings.csv / lock 四方一致 —
+防止中断运行留下半写状态。12 项检查,任一不一致退出码 1。
+
+**配置**:`config/engagement_phases.json` — phase 定义、approach pool、评分表、误报正则。
+
+---
+
 ## 本地 Hermes 护栏补丁 (scripts/hermes-patch/)
 
 **仅本地工具** — 不被 loader、路由表或任何 skill 调用。用于解除 Hermes 平台自身的

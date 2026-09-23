@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "target": "<target-domain>",
+  "scope": "<scope, e.g. *.target.com>",
+  "created": "<ISO8601>",
+  "updated": "<ISO8601>",
+  "phase": "init",
+  "status": "active",
+  "phases_completed": [
+    "init"
+  ],
+  "current_phase": "init",
+  "stats": {
+    "findings_total": 0,
+    "findings_critical": 0,
+    "findings_high": 0,
+    "findings_medium": 0,
+    "findings_low": 0,
+    "findings_info": 0,
+    "modules_tested": 0,
+    "modules_failed": 0
+  },
+  "race_results": [],
+  "findings_references": [],
+  "notes": [
+    {
+      "timestamp": "<ISO8601>",
+      "text": "Engagement initialized"
+    }
+  ]
+}

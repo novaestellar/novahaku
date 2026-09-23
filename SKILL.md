@@ -1,7 +1,7 @@
 ---
 name: novahaku
 description: "Novahaku — 统一安全研究代理。Web测试、提示工程、攻击框架、逆向工程、请求重构、OSINT侦察、CTF竞赛、源码猎人、MCP工具集成。所有能力,单一技能,自动检测。与novaxinwei(v1.1)协同: recon→exploit全链路。"
-version: 4.0.0
+version: 4.1.0
 author: novalabs
 license: MIT
 platforms: [windows, macos, linux]
@@ -118,6 +118,20 @@ metadata:
 - **pentest-ai**: 55个自动化渗透工具 (需DB)
 - 位置: testing/frameworks/
 
+### 13. Persistent Engagement (持续渗透状态)
+- **跨会话状态**: `engagements/<target>/state.json` 持久化每个目标的阶段、findings、race结果
+- **状态机**: `init → recon → race → test → exploit → report → closed` (支持 rollback)
+- **Approach Racing**: 15个测试方法并行执行 → 评分 → 每类选出最优方法
+- **评分模型**: severity(40%) + confidence(30%) + reproducibility(20%) + impact(10%)
+- **Findings 契约**: 双输出 `findings.csv` (兼容 findings_gen.py header) + `findings.json`
+- **Integrity Check**: state / findings.json / findings.csv / lock 四方一致性校验
+- **锁协议**: 原子写 (tmp→fsync→os.replace) + stale lock 自动清理 (>30s)
+- **命令**:
+  - `python scripts/engagement.py init|status|phase|rollback|note|list|verify <target>`
+  - `python scripts/engage_runner.py race|test|report|verify|integrity|selftest --target <target> [--url URL]`
+- **配置**: `config/engagement_phases.json` (phase定义、approach pool、评分表、误报正则)
+- 位置: scripts/engagement.py, scripts/engage_runner.py, engagements/
+
 ---
 
 ## 自动加载规则
@@ -184,6 +198,8 @@ metadata:
 | threat intelligence, MITRE ATT&CK, IOC, threat feed | Threat Intelligence | testing/threat-intelligence/ |
 | wifi, wireless, WPA, evil twin, deauth, PMKID | WiFi/Wireless | testing/wifi-wireless/ |
 | Windows AD, Active Directory, Kerberos, bloodhound | Windows AD | testing/windows-ad/ |
+| engage, engagement, persistent mode, resume target, continue testing | Persistent Engagement | scripts/engagement.py |
+| race approaches, approach racing, best method, engagement status | Engagement Runner | scripts/engage_runner.py |
 | hermes patch, guardrail bypass, memory scan blocked, HERMES_CONTEXT_SKIP_SCAN | Hermes Guardrail Patch (INACTIVE) | scripts/hermes-patch/ |
 
 ---
@@ -223,6 +239,12 @@ cat testing/pentest-tools/src-hunter/SKILL.md
 
 # MCP工具
 cat testing/frameworks/burpsuite-mcp/SKILL.md
+
+# Persistent Engagement (跨会话状态)
+python scripts/engagement.py init target.com --scope "*.target.com"
+python scripts/engagement.py status target.com
+python scripts/engage_runner.py race --target target.com --url https://target.com
+python scripts/engage_runner.py integrity --target target.com
 ```
 
 ---

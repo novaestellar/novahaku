@@ -1,0 +1,158 @@
+{
+  "schema_version": "1.0",
+  "description": "Engagement lifecycle phase definitions for novahaku persistent engagement mode.",
+  "phases": [
+    {
+      "name": "init",
+      "order": 0,
+      "description": "Create engagement workspace and persistent state for a target.",
+      "steps": [
+        "Create engagements/<target>/ directory tree",
+        "Write state.json (schema v1.0, phase=init)",
+        "Seed findings/findings.csv with the findings_gen.py header"
+      ],
+      "produces": ["state.json", "findings/findings.csv"],
+      "commands": ["python scripts/engagement.py init <target>"]
+    },
+    {
+      "name": "recon",
+      "order": 1,
+      "description": "Consume reconnaissance output and enumerate testable surface.",
+      "steps": [
+        "Read engagements/<target>/recon.json via ReconReader",
+        "Extract subdomains, ports, endpoints, tech stack, WAF, origin IP",
+        "Record the testable surface into state.json notes",
+        "Confirm scope bounds before any active testing"
+      ],
+      "consumes": ["recon.json", "metadata.json"],
+      "produces": ["state.json (phase=recon)"],
+      "commands": ["python scripts/engagement.py phase <target> recon"]
+    },
+    {
+      "name": "race",
+      "order": 2,
+      "description": "Run candidate testing approaches in parallel and rank them by productivity.",
+      "steps": [
+        "Load approach pool for the observed tech stack",
+        "Execute approaches in a bounded thread pool",
+        "Score each approach (severity, confidence, reproducibility, impact)",
+        "Select one winner approach per vulnerability class",
+        "Record race_results into state.json"
+      ],
+      "produces": ["state.json (race_results)", "candidates.json"],
+      "commands": ["python scripts/engage_runner.py race --target <target>"]
+    },
+    {
+      "name": "test",
+      "order": 3,
+      "description": "Deep execution of the winning approaches; emit structured findings.",
+      "steps": [
+        "Run the selected approach per vulnerability class",
+        "Filter false positives by evidence pattern",
+        "Write findings to findings/findings.json and findings.csv",
+        "Update stats counters in state.json"
+      ],
+      "consumes": ["candidates.json"],
+      "produces": ["findings/findings.json", "findings/findings.csv"],
+      "commands": ["python scripts/engage_runner.py test --target <target>"]
+    },
+    {
+      "name": "exploit",
+      "order": 4,
+      "description": "Validate confirmed findings into reproducible proof-of-concept evidence.",
+      "steps": [
+        "Re-run each confirmed finding for reproducibility",
+        "Capture raw request/response evidence",
+        "Mark confidence level (confirmed, likely, possible)",
+        "Drop findings that fail to reproduce"
+      ],
+      "produces": ["findings/evidence/*", "state.json (confidence updates)"],
+      "commands": ["python scripts/engage_runner.py exploit --target <target>"]
+    },
+    {
+      "name": "report",
+      "order": 5,
+      "description": "Emit the engagement report with severity breakdown and remediation.",
+      "steps": [
+        "Aggregate findings by severity",
+        "Render markdown report into engagements/<target>/report.md",
+        "Include race results and coverage summary",
+        "Emit CSV export for downstream tooling"
+      ],
+      "produces": ["report.md", "findings/findings.csv"],
+      "commands": ["python scripts/engage_runner.py report --target <target>"]
+    },
+    {
+      "name": "closed",
+      "order": 6,
+      "description": "Terminal state. Engagement archived, no further active testing.",
+      "steps": [
+        "Freeze state.json (status=closed)",
+        "Verify findings references resolve",
+        "Optionally archive the engagement directory"
+      ],
+      "produces": ["state.json (status=closed)"],
+      "commands": ["python scripts/engagement.py close <target>"]
+    }
+  ],
+  "approach_pool": {
+    "description": "Built-in testing approaches available to the race phase.",
+    "web": [
+      {"name": "webtest_headers", "script": "testing/scripts/webtest.py", "modules": "headers"},
+      {"name": "webtest_exposed", "script": "testing/scripts/webtest.py", "modules": "exposed"},
+      {"name": "webtest_cors", "script": "testing/scripts/webtest.py", "modules": "cors"},
+      {"name": "webtest_methods", "script": "testing/scripts/webtest.py", "modules": "methods"},
+      {"name": "webtest_admin", "script": "testing/scripts/webtest.py", "modules": "admin"},
+      {"name": "webtest_xss", "script": "testing/scripts/webtest.py", "modules": "xss"},
+      {"name": "webtest_sqli", "script": "testing/scripts/webtest.py", "modules": "sqli"},
+      {"name": "webtest_ssrf", "script": "testing/scripts/webtest.py", "modules": "ssrf"},
+      {"name": "webtest_ssti", "script": "testing/scripts/webtest.py", "modules": "ssti"},
+      {"name": "webtest_traversal", "script": "testing/scripts/webtest.py", "modules": "traversal"},
+      {"name": "webtest_redirect", "script": "testing/scripts/webtest.py", "modules": "redirect"},
+      {"name": "webtest_info", "script": "testing/scripts/webtest.py", "modules": "info"},
+      {"name": "webtest_dirfuzz", "script": "testing/scripts/webtest.py", "modules": "dirfuzz"},
+      {"name": "webtest_https", "script": "testing/scripts/webtest.py", "modules": "https"}
+    ],
+    "auth": [
+      {"name": "jwt_analysis", "script": "testing/scripts/jwt_test.py", "requires": "jwt"}
+    ],
+    "concurrency": [
+      {"name": "race_probe", "script": "testing/scripts/race_test.py", "requires": "url"}
+    ]
+  },
+  "scoring": {
+    "composite_weights": {
+      "severity": 0.4,
+      "confidence": 0.3,
+      "reproducibility": 0.2,
+      "impact": 0.1
+    },
+    "severity": {"critical": 100, "high": 75, "medium": 50, "low": 25, "info": 10},
+    "confidence": {"confirmed": 100, "likely": 70, "possible": 40, "unlikely": 10},
+    "reproducibility": {"always": 100, "most_times": 70, "sometimes": 40, "rarely": 10},
+    "impact": {
+      "rce": 100,
+      "data_leak": 80,
+      "auth_bypass": 70,
+      "xss": 50,
+      "info_disclosure": 30,
+      "misconfig": 20
+    }
+  },
+  "false_positive_patterns": [
+    "no\\s+vulnerab",
+    "not\\s+exploitable",
+    "does\\s+not\\s+exist",
+    "404\\s+not\\s+found",
+    "access\\s+denied",
+    "connection\\s+refused",
+    "blocked\\s+by\\s+waf",
+    "rate[\\s-]limited"
+  ],
+  "limits": {
+    "max_workers": 5,
+    "module_timeout_seconds": 300,
+    "max_engagements": 50,
+    "stuck_iterations": 2
+  }
+}
