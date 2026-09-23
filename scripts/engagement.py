@@ -118,6 +118,20 @@ def release_lock(target, base=None):
 # Atomic state I/O
 # ----------------------------------------------------------------------------
 
+def read_json(path, default):
+    """Read a JSON file, returning ``default`` on any problem.
+
+    The same trust boundary as engage_runner.read_json: any file on disk can be
+    truncated or binary, and UnicodeDecodeError is a ValueError that older
+    handlers missed.
+    """
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            return json.load(fh)
+    except (json.JSONDecodeError, IOError, UnicodeDecodeError, ValueError):
+        return default
+
+
 def read_state(target, base=None):
     """Read state.json. Returns None when missing or unreadable."""
     path = state_path(target, base)
@@ -220,8 +234,82 @@ def cmd_init(target, scope=None, base=None):
         release_lock(target, base)
 
 
-def cmd_phase(target, phase, base=None):
-    """Advance engagement to a phase. Forward-only, append-only history."""
+def _phase_gate(target, phase, state, base=None):
+    """Return a list of reasons ``phase`` may not be entered yet.
+
+    Gate on artifacts on disk, never on the previous phase label: race/test run
+    through engage_runner.py and produce candidates.json / findings.json without
+    advancing ``current_phase``, so a label-based check rejects work that has
+    actually been done.
+
+    Findings are read from findings.json. state has no ``findings`` key - reading
+    one was the original integrity bug and must not be reintroduced.
+    """
+    problems = []
+    fdir = findings_dir(target, base)
+    candidates_path = os.path.join(fdir, "candidates.json")
+    found_json = os.path.join(fdir, "findings.json")
+
+    if phase == "recon":
+        # recon is the first step after init; it needs no prior artifact.
+        return problems
+
+    if phase in ("race", "test", "exploit", "report", "closed"):
+        if not os.path.exists(candidates_path) and state.get("stats", {}).get(
+            "modules_tested", 0
+        ) == 0:
+            if PHASES.index(state.get("current_phase", "init")) < PHASES.index("recon"):
+                problems.append("recon has not been run (no testable surface recorded)")
+
+    if phase in ("exploit", "report", "closed"):
+        if not os.path.exists(candidates_path):
+            problems.append("race has not been run (findings/candidates.json missing)")
+
+    if phase in ("report", "closed"):
+        if not os.path.exists(found_json):
+            problems.append("test has not produced findings (findings/findings.json missing)")
+
+    if phase == "closed" and os.path.exists(found_json):
+        data = read_json(found_json, {})
+        records = data.get("findings", []) if isinstance(data, dict) else []
+        missing = [
+            f for f in records
+            if isinstance(f, dict) and (not f.get("id") or not f.get("asset"))
+        ]
+        if missing:
+            problems.append(f"{len(missing)} finding(s) in findings.json lack id/asset")
+
+    return problems
+
+
+def _artifact_phase(target, state, base=None):
+    """Highest phase whose artifacts exist on disk.
+
+    engage_runner.py advances the work (race, test) without touching the phase
+    label, so the label alone understates progress. This reconciles the two.
+    """
+    fdir = findings_dir(target, base)
+    done = PHASES.index("init")
+    if PHASES.index(state.get("current_phase", "init")) > done:
+        done = PHASES.index(state.get("current_phase", "init"))
+    if state.get("phases_completed"):
+        for p in state["phases_completed"]:
+            if p in PHASES and PHASES.index(p) > done:
+                done = PHASES.index(p)
+    if os.path.exists(os.path.join(fdir, "candidates.json")):
+        done = max(done, PHASES.index("race"))
+    if os.path.exists(os.path.join(fdir, "findings.json")):
+        done = max(done, PHASES.index("test"))
+    return done
+
+
+def cmd_phase(target, phase, base=None, force=False):
+    """Advance engagement to a phase. Forward-only, append-only history.
+
+    ``force`` bypasses the artifact gate and the one-phase-at-a-time rule. It is
+    an explicit override for recovery, and it is recorded as a note so the state
+    shows the jump was deliberate rather than earned.
+    """
     if phase not in PHASES:
         print(f"[!] Unknown phase: {phase}")
         print(f"    Valid: {', '.join(PHASES)}")
@@ -245,6 +333,35 @@ def cmd_phase(target, phase, base=None):
             print(f"    Use 'rollback {target} {phase}' to move backwards explicitly.")
             return 1
 
+        # Multi-step jumps skip work; require each intervening phase explicitly.
+        # Measure progress from artifacts, not the label: race/test run through
+        # engage_runner and leave current_phase behind, so a label-based gap
+        # falsely rejects a phase whose prerequisites are already on disk.
+        done = _artifact_phase(target, state, base)
+        gap = PHASES.index(phase) - done
+        forced = False
+        if gap > 1 and phase != "closed" and not force:
+            skipped = PHASES[done + 1:PHASES.index(phase)]
+            print(f"[!] Cannot jump to {phase}; missing: {', '.join(skipped)}")
+            print(f"    Run: {', '.join(skipped)}")
+            print(f"    Advance one phase at a time, or pass --force to override.")
+            return 1
+        elif gap > 1:
+            forced = True
+
+        problems = _phase_gate(target, phase, state, base)
+        if problems and not force:
+            print(f"[!] Cannot enter phase '{phase}' yet:")
+            for p in problems:
+                print(f"    - {p}")
+            print(f"    Run the missing phase, or pass --force to override.")
+            return 1
+        elif problems:
+            forced = True
+            print(f"[!] --force: entering '{phase}' with unmet preconditions:")
+            for p in problems:
+                print(f"    - {p}")
+
         state["phase"] = phase
         state["current_phase"] = phase
         if phase not in state["phases_completed"]:
@@ -252,8 +369,14 @@ def cmd_phase(target, phase, base=None):
         if phase == "closed":
             state["status"] = "closed"
         state.setdefault("notes", []).append(
-            {"timestamp": _now(), "text": f"Phase transition: {current} -> {phase}"}
+            {"timestamp": _now(),
+             "text": f"Phase transition: {current} -> {phase}"
+                     + (" (forced, preconditions bypassed)" if forced else "")}
         )
+        if forced:
+            state.setdefault("forced_transitions", []).append(
+                {"timestamp": _now(), "from": current, "to": phase}
+            )
         write_state(target, base, state)
         print(f"[+] {target}: {current} -> {phase}")
         return 0
@@ -313,8 +436,8 @@ def cmd_note(target, text, base=None):
         release_lock(target, base)
 
 
-def cmd_close(target, base=None):
-    return cmd_phase(target, "closed", base)
+def cmd_close(target, base=None, force=False):
+    return cmd_phase(target, "closed", base, force)
 
 
 def cmd_status(target, base=None):
@@ -494,7 +617,54 @@ def selftest():
         rc = cmd_verify(target, base)
         assert rc == 0, f"verify returned {rc} on a healthy workspace"
 
-        print("[+] engagement selftest: 12/12 checks passed")
+        # 13-16. Phase gate: work cannot be skipped. Regression cover for the
+        # defect where init -> closed succeeded and recorded a closed engagement
+        # with no recon, no race and no findings.
+        cmd_rollback(target, "init", base)
+        for ph in ("race", "test", "exploit", "report", "closed"):
+            rc = cmd_phase(target, ph, base)
+            assert rc == 1, f"jump init -> {ph} must be refused"
+        st = read_state(target, base)
+        assert st is not None and st["phase"] == "init", "refused jump still moved the phase"
+
+        # 17. --force is a recorded override, not a silent bypass
+        rc = cmd_phase(target, "closed", base, force=True)
+        assert rc == 0, f"forced transition returned {rc}"
+        st = read_state(target, base)
+        assert st is not None and st.get("forced_transitions"), \
+            "forced transition must be recorded in forced_transitions"
+        assert any("forced" in n.get("text", "") for n in st.get("notes", [])), \
+            "forced transition must be noted"
+
+        # 18. The gate reads findings.json, never state["findings"]. A missing
+        # findings.json must be reported as missing test output - reading a
+        # nonexistent state key was the original integrity bug.
+        assert "findings" not in st or isinstance(st["findings"], list), \
+            "unexpected state findings shape"
+        found_json = os.path.join(findings_dir(target, base), "findings.json")
+        if os.path.exists(found_json):
+            os.remove(found_json)
+        problems = _phase_gate(target, "closed", st, base)
+        assert any("test has not produced findings" in p for p in problems), \
+            f"gate must cite missing findings.json, got: {problems}"
+        assert not any("lack id/asset" in p for p in problems), \
+            "gate must not report id/asset problems for an absent file"
+
+        # 19. Artifact-derived progress: candidates.json advances effective phase
+        # without the label moving, so race is not reported as missing.
+        shutil.rmtree(engagement_path(target, base), ignore_errors=True)
+        cmd_init(target, None, base)
+        with open(os.path.join(findings_dir(target, base), "candidates.json"),
+                  "w", encoding="utf-8") as fh:
+            json.dump({"winners": {}}, fh)
+        st = read_state(target, base)
+        assert _artifact_phase(target, st, base) >= PHASES.index("race"), \
+            "candidates.json must count as race having run"
+
+        # 20. Non-list phase argument list is not mutated by --force parsing
+        assert cmd_phase(target, "recon", base) == 0
+
+        print("[+] engagement selftest: 20/20 checks passed")
         return 0
     finally:
         shutil.rmtree(base, ignore_errors=True)
@@ -545,10 +715,14 @@ def main(argv):
     if cmd == "list":
         return cmd_list(base)
     if cmd == "phase":
+        rest = [a for a in rest]
+        force = "--force" in rest
+        if force:
+            rest.remove("--force")
         if len(rest) < 2:
             print("[!] phase requires <target> <phase>")
             return 1
-        return cmd_phase(rest[0], rest[1], base)
+        return cmd_phase(rest[0], rest[1], base, force)
     if cmd == "rollback":
         if len(rest) < 2:
             print("[!] rollback requires <target> <phase>")
@@ -560,10 +734,12 @@ def main(argv):
             return 1
         return cmd_note(rest[0], rest[1], base)
     if cmd == "close":
+        force = "--force" in rest
+        rest = [a for a in rest if a != "--force"]
         if not rest:
             print("[!] close requires <target>")
             return 1
-        return cmd_close(rest[0], base)
+        return cmd_close(rest[0], base, force)
     if cmd == "verify":
         if not rest:
             print("[!] verify requires <target>")

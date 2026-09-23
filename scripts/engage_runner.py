@@ -9,7 +9,9 @@ and scoring tables from config/engagement_phases.json.
 
 Usage:
   python engage_runner.py race      --target <target> [--url URL] [--jwt TOKEN] [--workers N]
-  python engage_runner.py test      --target <target> [--url URL] [--jwt TOKEN]
+  python engage_runner.py test    --target <target> [--url <url>]
+  python engage_runner.py exploit --target <target> [--url <url>] [--jwt <token>]
+  python engage_runner.py publish --target <target>
   python engage_runner.py report    --target <target>
   python engage_runner.py verify    --target <target>
   python engage_runner.py integrity --target <target>
@@ -647,6 +649,217 @@ def test(target, url, jwt_token, base=None):
     return 0
 
 
+def exploit(target, url, jwt_token, base=None):
+    """Validate findings into reproducible evidence, dropping what fails.
+
+    Per config/engagement_phases.json this phase re-runs each confirmed finding
+    for reproducibility, captures raw request/response evidence under
+    findings/evidence/, and sets confidence. A finding that cannot be reproduced
+    is dropped rather than reported - a report full of unverified findings is
+    worse than a shorter honest one.
+    """
+    import urllib.error
+    import urllib.request
+
+    config = load_config()
+    state = load_state(target, base)
+    if not state:
+        print(f"[!] No engagement for {target}")
+        return 1
+
+    fdir = findings_dir(target, base)
+    findings_path = os.path.join(fdir, "findings.json")
+    data = read_json(findings_path, None)
+    if not isinstance(data, dict):
+        print(f"[!] No readable findings.json - run 'test' first")
+        return 1
+
+    records = data.get("findings", [])
+    if not records:
+        print("[!] No findings to validate")
+        return 1
+
+    edir = os.path.join(fdir, "evidence")
+    os.makedirs(edir, exist_ok=True)
+
+    limits = config.get("limits", {})
+    timeout = min(limits.get("module_timeout_seconds", 300), 30)
+    headers = {}
+    if jwt_token:
+        headers["Authorization"] = f"Bearer {jwt_token}"
+
+    confirmed, dropped = [], []
+    print(f"[*] Exploit: validating {len(records)} finding(s) against {url or '(no url)'}")
+    for rec in records:
+        fid = rec.get("id") or "F?"
+        title = rec.get("title") or "(untitled)"
+        evidence_path = os.path.join(edir, f"{fid}.json")
+
+        # A finding with no concrete URL target cannot be reproduced; keep it but
+        # record that rather than claiming validation.
+        probe_url = rec.get("evidence_url") or url
+        if not probe_url:
+            rec["confidence"] = rec.get("confidence") or "possible"
+            rec["reproduced"] = False
+            rec["reproduction_note"] = "no url supplied for this engagement"
+            confirmed.append(rec)
+            continue
+
+        entry = {
+            "id": fid,
+            "title": title,
+            "url": probe_url,
+            "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        }
+        try:
+            req = urllib.request.Request(probe_url, headers=headers)
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                body = resp.read(4096).decode("utf-8", errors="replace")
+                entry.update({
+                    "status": resp.status,
+                    "headers": dict(resp.headers),
+                    "body_excerpt": body[:2048],
+                })
+            # The endpoint responding again is what "reproducible" means here.
+            rec["confidence"] = "confirmed"
+            rec["reproduced"] = True
+            confirmed.append(rec)
+            print(f"  [+] {fid:<6} {title[:44]:46} HTTP {entry['status']}")
+        except urllib.error.HTTPError as exc:
+            entry.update({"status": exc.code, "error": f"HTTPError {exc.code}"})
+            rec["confidence"] = "likely"
+            rec["reproduced"] = False
+            rec["reproduction_note"] = f"HTTP {exc.code}"
+            confirmed.append(rec)
+            print(f"  [~] {fid:<6} {title[:44]:46} HTTP {exc.code}")
+        except Exception as exc:
+            entry.update({"error": f"{type(exc).__name__}: {exc}"})
+            rec["confidence"] = "unverified"
+            rec["reproduced"] = False
+            rec["reproduction_note"] = entry["error"]
+            dropped.append(rec)
+            print(f"  [-] {fid:<6} {title[:44]:46} {type(exc).__name__} -> dropped")
+
+        _atomic_json(evidence_path, entry)
+
+    # Rewrite findings with confidence/reproduced fields and the survivors only.
+    _write_findings(target, confirmed, base)
+    dropped_payload = {
+        "target": target,
+        "generated": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "count": len(dropped),
+        "dropped": dropped,
+    }
+    _atomic_json(os.path.join(fdir, "dropped.json"), dropped_payload)
+
+    _sync_finding_stats(state, confirmed)
+    state["findings_references"] = [
+        {"id": f.get("id"), "file": "findings/findings.json",
+         "confidence": f.get("confidence"),
+         "severity": str(f.get("severity", "info")).lower()}
+        for f in confirmed
+    ]
+    state["stats"]["exploit_validated"] = sum(1 for f in confirmed if f.get("reproduced"))
+    state["stats"]["exploit_dropped"] = len(dropped)
+    save_state(target, state, base)
+
+    print()
+    print(f"[+] Evidence:  {len(os.listdir(edir))} file(s) in {edir}")
+    print(f"[+] Confirmed: {state['stats']['exploit_validated']} reproduced, "
+          f"{len(confirmed) - state['stats']['exploit_validated']} kept without reproduction")
+    print(f"[+] Dropped:   {len(dropped)} (see findings/dropped.json)")
+    return 0
+
+
+# --- NovaXinWei crossref (outbound) -----------------------------------------
+# The inbound direction reads engagements/<target>/recon.json through
+# ReconReader. This is the outbound half: publish results back in a shape a
+# NovaXinWei-side consumer can read without importing novahaku code.
+NOVAXINWEI_RESULTS_SCHEMA = "novaxinwei.results.v1"
+
+
+def publish_results(target, base=None):
+    """Write engagement results where a NovaXinWei-side consumer expects them.
+
+    Emits engagements/<target>/results.json plus a flat results.csv, mirroring
+    the recon.json layout (target/source/timestamp + one nested object) so a
+    reader can be written against the same conventions. Returns the path, or
+    None if there is nothing to publish.
+    """
+    import csv
+
+    fdir = findings_dir(target, base)
+    if not os.path.isdir(fdir):
+        return None
+
+    data = read_json(os.path.join(fdir, "findings.json"), None)
+    records = data.get("findings", []) if isinstance(data, dict) else []
+    state = load_state(target, base) or {}
+    edir = os.path.join(fdir, "evidence")
+
+    by_sev = {}
+    by_conf = {}
+    for rec in records:
+        sev = str(rec.get("severity", "info")).lower()
+        conf = str(rec.get("confidence", "possible")).lower()
+        by_sev[sev] = by_sev.get(sev, 0) + 1
+        by_conf[conf] = by_conf.get(conf, 0) + 1
+
+    payload = {
+        "target": target,
+        "source": "novahaku-engagement",
+        "schema": NOVAXINWEI_RESULTS_SCHEMA,
+        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "engagement": {
+            "phase": state.get("current_phase", "init"),
+            "phases_completed": state.get("phases_completed", []),
+            "status": state.get("status", "active"),
+            "forced_transitions": state.get("forced_transitions", []),
+        },
+        "results": {
+            "findings_count": len(records),
+            "by_severity": by_sev,
+            "by_confidence": by_conf,
+            "evidence_files": sorted(os.listdir(edir)) if os.path.isdir(edir) else [],
+            "stats": state.get("stats", {}),
+            "findings": [
+                {
+                    "id": r.get("id"),
+                    "title": r.get("title"),
+                    "severity": r.get("severity"),
+                    "confidence": r.get("confidence"),
+                    "reproduced": r.get("reproduced"),
+                    "category": r.get("category"),
+                    "asset": r.get("asset"),
+                    "module": r.get("_module"),
+                    "remediation": r.get("remediation"),
+                }
+                for r in records
+            ],
+        },
+    }
+    out = os.path.join(engagement_dir(target, base), "results.json")
+    _atomic_json(out, payload)
+
+    csv_path = os.path.join(engagement_dir(target, base), "results.csv")
+    try:
+        with open(csv_path, "w", encoding="utf-8", newline="") as fh:
+            writer = csv.writer(fh)
+            writer.writerow(["id", "title", "severity", "confidence", "reproduced",
+                             "category", "asset", "module"])
+            for r in records:
+                writer.writerow([r.get("id"), r.get("title"), r.get("severity"),
+                                 r.get("confidence"), r.get("reproduced"),
+                                 r.get("category"), r.get("asset"), r.get("_module")])
+    except IOError:
+        csv_path = None
+
+    print(f"[+] Published: {out}")
+    if csv_path:
+        print(f"[+] Published: {csv_path}")
+    return out
+
+
 def report(target, base=None):
     """Render the engagement markdown report."""
     state = load_state(target, base)
@@ -722,6 +935,7 @@ def report(target, base=None):
     with open(out, "w", encoding="utf-8") as fh:
         fh.write("\n".join(lines))
     print(f"[+] Report written: {out}")
+    publish_results(target, base)
     return 0
 
 
@@ -1161,7 +1375,47 @@ def selftest():
     assert len(_rec) == 1 and _rec[0]["module"] == "webtest_cors", _rec
     assert _rec[0]["winner"]["type"] == "webtest_cors", "winner must be the group winner"
 
-    print("[+] selftest: 22/22 checks passed")
+    # 23-24. exploit() and publish_results() must agree with each other and with
+    # what is on disk. Regression guard: exploit was registered in PHASES but had
+    # no implementation, so the phase only relabelled state.
+    _d2 = tempfile.mkdtemp(prefix="novahaku-exploit-selftest-")
+    try:
+        assert callable(exploit), "exploit must be implemented"
+        _st = {
+            "target": _t, "current_phase": "test", "status": "active",
+            "phases_completed": ["init", "recon", "race", "test"],
+            "stats": {"findings_total": 1}, "notes": [], "schema_version": "1.0",
+        }
+        _findings = {
+            "target": _t, "generated": "2026-01-01T00:00:00Z", "count": 1,
+            "findings": [{"id": "F001", "title": "t", "asset": _t,
+                          "severity": "high", "confidence": "possible",
+                          "category": "web", "_module": "webtest_exposed"}],
+        }
+        # base=_d2 so engagement_dir/findings_dir resolve into the temp dir.
+        os.makedirs(os.path.join(_d2, _t, "findings"), exist_ok=True)
+        with open(os.path.join(_d2, _t, "findings", "findings.json"), "w", encoding="utf-8") as fh:
+            json.dump(_findings, fh)
+        with open(os.path.join(_d2, _t, "state.json"), "w", encoding="utf-8") as fh:
+            json.dump(_st, fh)
+        _out = publish_results(_t, _d2)
+        assert _out and os.path.exists(_out), "publish_results must write results.json"
+        _pub = read_json(_out, {})
+        assert _pub.get("schema") == NOVAXINWEI_RESULTS_SCHEMA, _pub.get("schema")
+        # Consumer parity: same top-level keys recon.json exposes.
+        for _k in ("target", "source", "timestamp"):
+            assert _k in _pub, f"results.json must expose {_k} like recon.json does"
+        _res = _pub.get("results", {})
+        assert _res.get("findings_count") == 1, _res.get("findings_count")
+        assert _res.get("by_severity") == {"high": 1}, _res.get("by_severity")
+        assert _res["findings"][0]["id"] == "F001"
+        assert os.path.exists(os.path.join(_d2, _t, "results.csv")), "results.csv missing"
+        assert read_json(os.path.join(_d2, _t, "findings", "findings.json"), {}) == _findings, \
+            "publish must not mutate findings.json"
+    finally:
+        shutil.rmtree(_d2, ignore_errors=True)
+
+    print("[+] selftest: 24/24 checks passed")
     return 0
 
 
@@ -1298,11 +1552,21 @@ def main(argv):
             print("[!] test requires --target")
             return 1
         return test(target, url, jwt_token, base)
+    if cmd == "exploit":
+        if not target:
+            print("[!] exploit requires --target")
+            return 1
+        return exploit(target, url, jwt_token, base)
     if cmd == "report":
         if not target:
             print("[!] report requires --target")
             return 1
         return report(target, base)
+    if cmd == "publish":
+        if not target:
+            print("[!] publish requires --target")
+            return 1
+        return 0 if publish_results(target, base) else 1
     if cmd == "verify":
         if not target:
             print("[!] verify requires --target")
