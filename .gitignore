@@ -58,6 +58,18 @@ testing/**/engagements/
 # The TEMPLATE ships so the layout stays documented and git-tracked.
 engagements/*
 !engagements/TEMPLATE
+engagements/**/evidence/
+engagements/**/report.md
+engagements/**/candidates.json
+engagements/**/recon.json
+engagements/**/.lock
+
+# Engagement/scan artifacts that can carry target data or credentials
+*_results.json
+api_scan_*.json
+secret_scan_*.txt
+dorks_*.json
+cve-feed.json
 
 # Backups
 *.bak

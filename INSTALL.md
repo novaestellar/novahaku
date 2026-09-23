@@ -90,6 +90,27 @@ pip install curl_cffi playwright camoufox  # Anti-detection browser automation
 pip install PyGithub PyYAML  # CI/CD workflow scanner (hunt-cicd/scripts/workflow_vuln_scan.py)
 ```
 
+## Environment Overrides
+
+Semua script menyelesaikan path relatif ke lokasi skripnya sendiri, jadi tidak ada
+path absolut yang di-hardcode di dalam kode. Override hanya perlu kalau layout
+instalasi Anda berbeda — isi di `.env`, jangan edit skripnya.
+
+```bash
+# Root skill novahaku (kosongkan = auto-detect dari lokasi skrip)
+NOVAHAKU_HOME=/path/to/novahaku
+
+# Interpreter Python untuk test suite Windows (kosongkan = "python" di PATH)
+NOVAHAKU_PYTHON=python
+
+# Direktori kerja engagement (kosongkan = <skill_root>/engagements)
+# Dibaca oleh engagement.py, engage_runner.py, dan findings_gen.py
+NOVAHAKU_ENGAGEMENT_DIR=/path/to/engagements
+```
+
+`scripts/test/novahaku_test_all.ps1` memakai urutan yang sama:
+`NOVAHAKU_HOME` → lokasi skrip. Tidak ada path mesin yang tertanam di dalamnya.
+
 ## MCP Server Setup
 
 ### BurpSuite MCP
@@ -100,6 +121,28 @@ pip install PyGithub PyYAML  # CI/CD workflow scanner (hunt-cicd/scripts/workflo
 ### Anything Analyzer MCP
 1. Server runs on localhost:23816
 2. See `testing/frameworks/anything-analyzer-mcp/SKILL.md`
+
+## Persistent Engagement (cross-session state)
+
+Tidak perlu instalasi tambahan — stdlib-only, tanpa dependency.
+
+```bash
+# Buat engagement untuk target
+python scripts/engagement.py init target.com --scope "*.target.com"
+
+# Cek status kapan saja (termasuk setelah sesi baru)
+python scripts/engagement.py status target.com
+python scripts/engagement.py list
+
+# Jalankan testing paralel
+python scripts/engage_runner.py race      --target target.com --url https://target.com
+python scripts/engage_runner.py integrity --target target.com
+python scripts/engage_runner.py selftest
+```
+
+Data engagement tersimpan di `engagements/<target>/` dan **gitignored** — state
+per-target, evidence, dan findings tidak pernah ikut ter-commit. Hanya
+`engagements/TEMPLATE/` yang di-track sebagai dokumentasi layout.
 
 ## Local Hermes Patch (optional, local-only)
 

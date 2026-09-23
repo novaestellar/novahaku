@@ -673,6 +673,25 @@ python ~/.hermes/skills/security/novahaku/testing/supply-chain-security/scripts/
 
 ---
 
+## 环境变量 (Environment Overrides)
+
+所有脚本以 **自身位置** 为基准解析相对路径 —— 代码里不写死任何机器绝对路径。
+只有当你的安装布局不同才需要覆盖,填在 `.env`,不要改脚本。
+
+| 变量 | 默认 | 作用 |
+|---|---|---|
+| `NOVAHAKU_HOME` | 脚本自动推断 | 技能根目录 |
+| `NOVAHAKU_PYTHON` | `python`(PATH) | Windows 测试套件的解释器 |
+| `NOVAHAKU_ENGAGEMENT_DIR` | `<root>/engagements` | engagement 工作目录 |
+| `NOVAHAKU_SCAN_CACHE_DIR` | `<root>/testing/scripts` | 扫描器缓存目录 |
+
+完整清单(含 RE 工具路径、MCP 端口)见 `.env.example`。
+
+`scripts/test/novahaku_test_all.ps1` 使用相同顺序:`NOVAHAKU_HOME` → 脚本所在目录,
+不再内置 `C:\Users\<name>\...` 这类路径。
+
+---
+
 ## 持久渗透模式 (Persistent Engagement)
 
 跨会话保存每个目标的测试状态。中断后 `status` 即可接着做,不必重跑侦察与测试。

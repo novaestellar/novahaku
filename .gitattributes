@@ -10,3 +10,33 @@
 *.bat text eol=crlf
 *.yml text eol=lf
 *.yaml text eol=lf
+
+# Data and payload corpora - keep byte-exact, no eol rewriting
+*.csv text eol=lf
+*.xml text eol=lf
+*.html text eol=lf
+*.js text eol=lf
+*.ts text eol=lf
+*.sql text eol=lf
+
+# Engagement runtime state must never be line-ending-normalised
+engagements/** text eol=lf
+
+# Binary payloads and artifacts - never diff or convert
+*.bin binary
+*.dat binary
+*.exe binary
+*.dll binary
+*.so binary
+*.zip binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.pdf binary
+*.xlsx binary
+
+# Vendor / minified / generated - excluded from diffs and language stats
+*.min.js linguist-generated=true -diff
+*.min.css linguist-generated=true -diff
+*.lock linguist-generated=true

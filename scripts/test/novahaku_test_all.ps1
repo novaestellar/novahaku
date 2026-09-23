@@ -16,8 +16,16 @@
 #>
 
 $ErrorActionPreference = "Continue"
-$NOVAHAKU = "C:\Users\Design\AppData\Local\hermes\skills\security\novahaku"
-$PYTHON = "python"
+
+# Resolve the skill root instead of hardcoding one machine's install path.
+# Order: explicit override -> env var -> the directory this script lives in.
+if ($env:NOVAHAKU_HOME) {
+    $NOVAHAKU = $env:NOVAHAKU_HOME
+} else {
+    $NOVAHAKU = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+}
+$NOVAHAKU = (Resolve-Path -LiteralPath $NOVAHAKU).Path
+$PYTHON = if ($env:NOVAHAKU_PYTHON) { $env:NOVAHAKU_PYTHON } else { "python" }
 $PASS = 0
 $FAIL = 0
 $WARN = 0
