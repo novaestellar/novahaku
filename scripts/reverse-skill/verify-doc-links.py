@@ -23,7 +23,12 @@ import sys
 
 sys.stdout.reconfigure(encoding="utf-8")
 
-LINK = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
+LINK = re.compile(r"\[[^\]]*\]\(([^)\s]*(?:\([^)]*\)[^)\s]*)*)\)")
+# HackTricks wraps some targets in angle brackets so embedded spaces/parentheses
+# survive Markdown parsing:  [alt](<../images/image (284).png>)
+# The plain LINK regex above stops at the first ')' inside the path and silently
+# mangles such targets, so normalize the bracketed form away before matching.
+BRACKET_LINK = re.compile(r"\]\(<([^>]+)>\)")
 INLINE_CODE = re.compile(r"`[^`]*`")
 FENCE = re.compile(r"^\s*(```|~~~)")
 SKIP_PREFIX = ("http://", "https://", "mailto:", "tel:", "ftp:", "data:", "//", "#")
@@ -60,7 +65,7 @@ def links_in(path):
             continue
         if in_fence:
             continue
-        for m in LINK.finditer(INLINE_CODE.sub("", line)):
+        for m in LINK.finditer(INLINE_CODE.sub("", BRACKET_LINK.sub(r"](\1)", line))):
             raw = m.group(1).strip().strip("<>")
             if not raw:
                 continue

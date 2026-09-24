@@ -1,0 +1,42 @@
+# Web Cache Deception — Attack Walkthrough
+
+## Required Conditions
+1. Application is served through a caching layer (CDN, reverse proxy, or cache server)
+2. The cache uses the **full URL path** as its cache key, not the response `Content-Type`
+3. A path-confusion gap exists: app treats the suffix as ignorable path info, cache treats it as a distinct resource
+4. Victim is authenticated while the attacker's request hits the shared cache
+
+## Attack Sequence (8 steps)
+1. Attacker identifies an authenticated endpoint that returns sensitive data, e.g. `http://www.example.com/home.php`
+2. Attacker crafts a URL that the **application** resolves to `home.php` but the **cache** sees as a static file:
+   `http://www.example.com/home.php/non-existent.css`
+3. Attacker sends the crafted URL to the victim (email, chat, embedded link)
+4. Victim's browser requests the URL **with their session cookies**
+5. The origin application normalises the path back to `home.php` and returns the victim's private page
+6. The cache sees a request ending in `.css`, stores the response keyed on the full path
+7. Attacker requests the same URL **without any cookies**
+8. Cache serves the stored response — the attacker now reads the victim's private data
+
+## Variants
+- `.css`, `.js`, `.jpg`, `.ico` suffixes — any extension the cache treats as static
+- Trailing `;` or `%00` path-parameter confusion
+- `..;/` Tomcat path traversal combined with caching
+
+## PoC
+```bash
+# Step 1: verify the endpoint leaks via path confusion
+curl -s -b "session=<victim-cookie>" "https://target.com/account/settings/nonexistent.css" | head
+
+# Step 2: confirm the response is cached and reachable unauthenticated
+curl -s "https://target.com/account/settings/nonexistent.css" | head
+# If step 2 returns the victim's data, the app is vulnerable
+
+# Detect cache state
+curl -sI "https://target.com/account/settings/nonexistent.css" | grep -i "x-cache"
+```
+
+## Mitigations
+- Cache only on the exact path (`Cache-Control: no-store` for authenticated responses)
+- Send `Vary: Cookie` or bypass cache entirely for authenticated routes
+- Reject requests whose path contains extra path segments after a known endpoint
+- Set `Cache-Control: private` on any response derived from a session

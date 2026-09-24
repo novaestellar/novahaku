@@ -1,5 +1,6 @@
 # NoSQL injection
 
+{{#include ../banners/hacktricks-training.md}}
 
 ## Exploit
 
@@ -97,7 +98,7 @@ The **`$func`** operator in the [MongoLite](https://github.com/agentejo/cockpit/
 "user":{"$func": "var_dump"}
 ```
 
-https://swarm.ptsecurity.com/wp-content/uploads/2021/04/cockpit_auth_check_10.png.png>)
+![https://swarm.ptsecurity.com/wp-content/uploads/2021/04/cockpit_auth_check_10.png](<../images/image (933).png>)
 
 ### Get info from different collection
 
@@ -348,3 +349,4 @@ for u in get_usernames(""):
 - [10] [RCE in Cockpit CMS via NoSQL Injection – PT SWARM](https://swarm.ptsecurity.com/rce-cockpit-cms/)
 - [11] [cr0hn/nosqlinjection_wordlists – MongoDB NoSQLi Payloads](https://github.com/cr0hn/nosqlinjection_wordlists/blob/master/mongodb_nosqli.txt)
 
+{{#include ../banners/hacktricks-training.md}}
