@@ -199,6 +199,21 @@ PATTERNS = [
 COMPILED = [(n, s, c, re.compile(p)) for (n, s, c, p) in PATTERNS]
 
 
+def _redact(value: str) -> str:
+    """Never write a live credential into a report.
+
+    Detection must be verbatim, but the finding is going into a report that gets
+    pasted into tickets and chats. Keep a short head so the operator can confirm
+    which key it is, mask the rest.
+    """
+    v = value.strip()
+    if len(v) <= 12:
+        return v
+    head = v[:6]
+    tail = v[-2:] if len(v) > 24 else ""
+    return f"{head}***REDACTED***{tail}"
+
+
 def scan_text(text: str, source: str = "<stdin>"):
     """Scan a text blob; yield one dict per match."""
     for line_no, line in enumerate(text.splitlines(), start=1):
@@ -208,7 +223,7 @@ def scan_text(text: str, source: str = "<stdin>"):
                     "pattern": name,
                     "severity": sev,
                     "category": cat,
-                    "match": m.group(0)[:80],   # truncate to avoid huge dumps
+                    "match": _redact(m.group(0)),
                     "source": source,
                     "line": line_no,
                 }
