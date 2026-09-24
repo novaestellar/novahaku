@@ -136,3 +136,4 @@ novahaku:
   6. If refusal → pivot to M-05001 (parallel race) across 5 providers
   7. Return best result
 ```
+```

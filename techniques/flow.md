@@ -127,3 +127,4 @@ Level 3: Technical script → Level 4: Full implementation → Level 5: Complete
 ---
 
 *novahaku — "Every phase is precise. Every phase is decisive."*
+```
