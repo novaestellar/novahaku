@@ -48,6 +48,9 @@ desktop.ini
 # Runtime
 runs/
 *.pid
+# master-route.sh writes one timestamped folder per invocation here; it is
+# scratch output, never a deliverable.
+work/
 
 # Test results
 webtest_results.json

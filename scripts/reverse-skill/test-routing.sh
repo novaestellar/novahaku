@@ -3,14 +3,25 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Git-Bash/MSYS `pwd` yields /d/Labs/... which native Windows Python reads as
+# "\d\Labs\..." and cannot open. Convert to a native path when cygpath exists;
+# on Linux/macOS cygpath is absent and the POSIX path is already correct.
+if command -v cygpath >/dev/null 2>&1; then
+  SCRIPT_DIR="$(cygpath -w "$SCRIPT_DIR")"
+fi
 BENCHMARK="$SCRIPT_DIR/../../tests/routing-benchmark.json"
 ROUTER="$SCRIPT_DIR/master-route.sh"
 
 PYTHON=""
 for candidate in python3 python; do
   if command -v "$candidate" >/dev/null 2>&1; then
-    PYTHON="$candidate"
-    break
+    # On Windows, `python3` often resolves to the Microsoft Store App Execution
+    # Alias stub: `command -v` succeeds but running it fails. Probe it for real
+    # before committing, otherwise every run dies with "Python was not found".
+    if "$candidate" -c 'import sys; sys.exit(0 if sys.version_info[0] == 3 else 1)' >/dev/null 2>&1; then
+      PYTHON="$candidate"
+      break
+    fi
   fi
 done
 if [[ -z "$PYTHON" ]]; then
@@ -27,8 +38,28 @@ import subprocess
 import sys
 import tempfile
 
+import os
+
 benchmark_path = pathlib.Path(sys.argv[1])
 router_path = pathlib.Path(sys.argv[2])
+
+# Resolving `bash` from PATH picks whichever bash Windows finds first; on a host
+# with WSL installed that can be the WSL bash, which cannot execute a Windows
+# path and fails every case with exit=1. Prefer an explicit interpreter:
+#   BASH_BIN env override > the bash that is running us > PATH lookup.
+bash_bin = os.environ.get("BASH_BIN", "")
+if not bash_bin:
+    for candidate in (
+        r"C:\Program Files\Git\usr\bin\bash.exe",
+        r"C:\Program Files\Git\bin\bash.exe",
+        "/usr/bin/bash",
+        "/bin/bash",
+    ):
+        if os.path.isfile(candidate):
+            bash_bin = candidate
+            break
+if not bash_bin:
+    bash_bin = shutil.which("bash") or "bash"
 benchmark = json.loads(benchmark_path.read_text(encoding="utf-8-sig"))
 cases = benchmark["cases"]
 
@@ -43,7 +74,7 @@ with tempfile.TemporaryDirectory(prefix="rs-routing-bash-") as scratch:
         expected = case["expect"]
         out_dir = root / str(index)
         result = subprocess.run(
-            ["bash", str(router_path), "--hint", hint, "--out-dir", str(out_dir)],
+            [bash_bin, str(router_path), "--hint", hint, "--out-dir", str(out_dir)],
             capture_output=True,
             text=True,
             encoding="utf-8",
@@ -70,8 +101,8 @@ with tempfile.TemporaryDirectory(prefix="rs-routing-bash-") as scratch:
     # Regression: when neither --project-root nor --out-dir is supplied, the
     # Bash router must behave like the PowerShell router and write under the
     # caller's current project, not under the installed reverse-skill package.
-    source_skills = router_path.parent.parent
-    source_config = source_skills / "config" / "routing.json"
+    source_skills = router_path.parent.parent.parent
+    source_config = source_skills / "config" / "reverse-skill-routing.json"
     config = json.loads(source_config.read_text(encoding="utf-8-sig"))
     default_case = cases[0]
     default_skill_rel = pathlib.PurePosixPath(
@@ -79,9 +110,9 @@ with tempfile.TemporaryDirectory(prefix="rs-routing-bash-") as scratch:
     )
 
     fixture_package = root / "package"
-    fixture_router = fixture_package / "skills" / "scripts" / "master-route.sh"
-    fixture_config = fixture_package / "skills" / "config" / "routing.json"
-    fixture_skill = fixture_package / "skills" / pathlib.Path(*default_skill_rel.parts)
+    fixture_router = fixture_package / "scripts" / "reverse-skill" / "master-route.sh"
+    fixture_config = fixture_package / "config" / "reverse-skill-routing.json"
+    fixture_skill = fixture_package / pathlib.Path(*default_skill_rel.parts)
     fixture_router.parent.mkdir(parents=True, exist_ok=True)
     fixture_config.parent.mkdir(parents=True, exist_ok=True)
     fixture_skill.parent.mkdir(parents=True, exist_ok=True)
@@ -92,7 +123,7 @@ with tempfile.TemporaryDirectory(prefix="rs-routing-bash-") as scratch:
     caller_root = root / "caller-project"
     caller_root.mkdir()
     default_result = subprocess.run(
-        ["bash", str(fixture_router), "--hint", default_case["hint"]],
+        [bash_bin, str(fixture_router), "--hint", default_case["hint"]],
         cwd=caller_root,
         capture_output=True,
         text=True,

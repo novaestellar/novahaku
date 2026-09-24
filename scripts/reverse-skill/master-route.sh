@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Client-neutral Bash entry for the structured router.
-# routing.json is the only route table; this file must not duplicate route rules.
+# reverse-skill-routing.json is the only route table; this file must not duplicate route rules.
 set -euo pipefail
 
 HINT=""
@@ -24,15 +24,26 @@ while [[ $# -gt 0 ]]; do
 done
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SKILLS_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+# This script lives at <skill-root>/scripts/reverse-skill/master-route.sh, and
+# config/ sits at <skill-root>/config/. So the skill root is TWO levels up, not
+# one: `SCRIPT_DIR/..` yields <skill-root>/scripts, where no config/ exists.
+SKILLS_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+if command -v cygpath >/dev/null 2>&1; then
+  SKILLS_ROOT="$(cygpath -w "$SKILLS_ROOT")"
+  SCRIPT_DIR="$(cygpath -w "$SCRIPT_DIR")"
+fi
 PACKAGE_ROOT="$(cd "$SKILLS_ROOT/.." && pwd)"
-CONFIG_PATH="$SKILLS_ROOT/config/routing.json"
+CONFIG_PATH="$SKILLS_ROOT/config/reverse-skill-routing.json"
 
 PYTHON=""
 for candidate in python3 python; do
   if command -v "$candidate" >/dev/null 2>&1; then
-    PYTHON="$candidate"
-    break
+    # Windows App Execution Alias makes `command -v python3` succeed on a stub
+    # that cannot run. Probe the interpreter for real before choosing it.
+    if "$candidate" -c 'import sys; sys.exit(0 if sys.version_info[0] == 3 else 1)' >/dev/null 2>&1; then
+      PYTHON="$candidate"
+      break
+    fi
   fi
 done
 if [[ -z "$PYTHON" ]]; then
@@ -46,7 +57,15 @@ fi
 
 # Match the PowerShell entrypoint: by default, route artifacts belong to the
 # caller's current project rather than the installed reverse-skill package.
-if [[ -z "$PROJECT_ROOT" ]]; then PROJECT_ROOT="$(pwd -P)"; fi
+if [[ -z "$PROJECT_ROOT" ]]; then
+  PROJECT_ROOT="$(pwd -P)"
+  # MSYS pwd gives /d/Labs/... which native Python reads as "\d\Labs\...".
+  # Only convert the auto-detected default; an explicit --project-root is
+  # taken verbatim so the caller keeps full control.
+  if command -v cygpath >/dev/null 2>&1; then
+    PROJECT_ROOT="$(cygpath -w "$PROJECT_ROOT")"
+  fi
+fi
 if [[ -z "$OUT_DIR" ]]; then
   OUT_DIR="$PROJECT_ROOT/work/master-route-$(date +%Y%m%d-%H%M%S)"
 fi
@@ -103,7 +122,7 @@ try:
                 if route_id not in selected_order:
                     selected_order.append(route_id)
 except re.error as exc:
-    print(f"ERROR: invalid regex in routing.json: {exc}", file=sys.stderr)
+    print(f"ERROR: invalid regex in reverse-skill-routing.json: {exc}", file=sys.stderr)
     raise SystemExit(2)
 
 primary = None
@@ -134,7 +153,7 @@ if not skill_path.is_file():
     raise SystemExit(2)
 
 out_dir.mkdir(parents=True, exist_ok=True)
-secondary = [f"skills/{routes[item]['skill']}" for item in selected_order if item != primary]
+secondary = [routes[item]['skill'] for item in selected_order if item != primary]
 lines = [
     "# reverse-skill Master route (PRIMARY)",
     f"- created: {datetime.datetime.now(datetime.timezone.utc).astimezone().isoformat()}",
@@ -142,7 +161,7 @@ lines = [
     f"- hint: {hint}",
     f"- primary: {primary}",
     f"- primary_label: {route['label']}",
-    f"- primary_skill: skills/{primary_path}",
+    f"- primary_skill: {primary_path}",
     f"- confidence: {confidence}",
     f"- project_root: {project_root}",
     f"- secondary: {', '.join(secondary) if secondary else '(none)'}",
@@ -150,7 +169,7 @@ lines = [
     "## MUST open next",
     "",
     "1. docs/MASTER-ROUTING.md",
-    f"2. skills/{primary_path}",
+    f"2. {primary_path}",
     "",
     "## Notes",
 ]
@@ -159,7 +178,7 @@ if not notes:
     lines.append("- (none)")
 (out_dir / "route-scope.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
-print(f"PRIMARY -> skills/{primary_path}")
+print(f"PRIMARY -> {primary_path}")
 print(f"Label: {route['label']} | confidence: {confidence}")
 for note in notes:
     print(f"NOTE: {note}")
