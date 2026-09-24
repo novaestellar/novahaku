@@ -30,6 +30,25 @@ def b64u(s):
         s += "=" * (4 - pad)
     return base64.urlsafe_b64decode(s)
 
+
+def _decode_segment(seg):
+    """Decode one JWT segment to a JSON object.
+
+    A token can split into three parts and still carry garbage in a segment —
+    'not.a.jwt' does. Return None instead of raising, so a malformed token is
+    reported as malformed rather than crashing the tool with a traceback.
+    """
+    try:
+        raw = b64u(seg)
+    except Exception:
+        return None
+    try:
+        obj = json.loads(raw)
+    except Exception:
+        return None
+    return obj if isinstance(obj, dict) else None
+
+
 def b64u_encode(b):
     return base64.urlsafe_b64encode(b).rstrip(b"=").decode()
 
@@ -122,8 +141,11 @@ def main():
         print("[x] not a JWT (need 3 parts)")
         sys.exit(1)
 
-    hdr = json.loads(b64u(parts[0]))
-    pay = json.loads(b64u(parts[1]))
+    hdr = _decode_segment(parts[0])
+    pay = _decode_segment(parts[1])
+    if hdr is None or pay is None:
+        print("[x] not a JWT (a segment is not valid base64url-encoded JSON)")
+        sys.exit(1)
     print("=== HEADER ===")
     print(json.dumps(hdr, indent=2))
     print("=== PAYLOAD ===")

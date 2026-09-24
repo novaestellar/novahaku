@@ -96,7 +96,7 @@ The script accepts `sha256:<64 hex characters>` and checks that the artifact rem
 The PowerShell Evidence helper can record a hash while appending a record:
 
 ```powershell
-powershell -File testing/case-review/scripts/append-evidence.ps1 -CaseRoot work\<case> -Id E-001 -Title "Sample hash" -ReproCommand "sha256sum evidence/sample.bin" -ArtifactPath "evidence\sample.bin"
+powershell -NoProfile -File scripts/reverse-skill/append-evidence.ps1 -CaseRoot work\<case> -Id E-001 -Title "Sample hash" -ReproCommand "sha256sum evidence/sample.bin" -ArtifactPath "evidence\sample.bin"
 ```
 
 ## 建议下一步（选一个编号）

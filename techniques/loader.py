@@ -495,6 +495,9 @@ def main():
 
     else:
         print(f"[!] Unknown command: {cmd}")
+        print("    Available: init, build, scan, registry, verify, locks, lock, "
+              "decrypt, method, category, trigger, persona, godmode")
+        sys.exit(1)
 
 
 if __name__ == "__main__":

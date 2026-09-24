@@ -14,7 +14,14 @@ DOMAIN_RE = re.compile(r"[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?(?:\.[A-Za-z0-9
 
 D = sys.argv[1] if len(sys.argv) > 1 else sys.exit("usage: build_xlsx.py <domain>")
 if not DOMAIN_RE.fullmatch(D): sys.exit(f"error: invalid domain {D!r} (expected a dotted hostname, e.g. example.com)")
-ENG = os.path.expanduser(f"~/Research/engagements/{D}")
+ENG = os.environ.get("NOVAHAKU_ENGAGEMENT_DIR", os.path.join(os.getcwd(), "engagements", D))
+# Same root contract as findings_gen.py and recon_pipeline.sh: the env var names
+# the engagements ROOT, so the target has to be appended. This script used to
+# hardcode ~/Research/engagements, which ignored NOVAHAKU_ENGAGEMENT_DIR and
+# diverged from the engine that wrote findings.csv — the workbook then read from
+# a directory the pipeline never populated.
+if "NOVAHAKU_ENGAGEMENT_DIR" in os.environ:
+    ENG = os.path.join(ENG, D)
 EV = f"{ENG}/evidence"
 OUT = f"{ENG}/{D}-osint-consolidated.xlsx"
 
@@ -112,5 +119,9 @@ sheet("Internal-IP-Leak",["Host (public DNS)","Internal RFC1918 IPs"],irows or [
 # 9. Screenshots
 sheet("Screenshots",["File","Path"],[[os.path.basename(s),s] for s in sorted(shots)] or [["(none)",""]],widths=[60,80])
 
-wb.save(OUT)
+try:
+    wb.save(OUT)
+except OSError as e:
+    print(f"error: cannot write workbook {OUT}: {e}", file=sys.stderr)
+    sys.exit(1)
 print("WROTE", OUT); print("sheets:", wb.sheetnames)

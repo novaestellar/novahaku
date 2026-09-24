@@ -465,6 +465,27 @@ def rank_finding(finding, scoring):
     )
 
 
+
+def approach_rank_key(score):
+    """Ordinal ordering key for one approach's score dict.
+
+    Replaces the removed weighted ``composite``. Order of precedence:
+      1. gate_passed  - findings whose confidence cleared the scoring gate (desc)
+      2. strongest_rank - the strongest single finding, lower rank = stronger
+      3. count        - tiebreaker only, never a penalty (desc)
+
+    Rationale is the same as ``score_approach``: an approach holding one
+    CRITICAL must beat one holding only INFO, and reporting MORE findings must
+    never be the reason an approach loses.
+    """
+    if not score:
+        return (0, 0, 0)
+    gate = int(score.get("gate_passed") or 0)
+    strongest = int(score.get("strongest_rank") or 0)
+    count = int(score.get("count") or 0)
+    return (gate, strongest, count)
+
+
 def score_approach(findings, scoring):
     """Evidence summary for one approach, plus its strongest finding.
 
@@ -866,14 +887,17 @@ def race(target, url, jwt_token, base=None, workers=None):
                 errors.append((approach["name"], err))
                 print(f"  [-] {approach['name']:<22} {err}")
                 results.append({"module": approach["name"], "findings": [],
-                                "score": {"composite": 0.0, "count": 0}, "error": err})
+                                "score": {"strongest": None, "strongest_rank": 0,
+                                          "gate_passed": 0, "count": 0,
+                                          "severity_counts": {}}, "error": err})
                 continue
             findings = filter_false_positives(findings, fp_patterns)
             s = score_approach(findings, scoring)
             results.append({"module": approach["name"], "findings": findings, "score": s})
-            print(f"  [+] {approach['name']:<22} findings={s['count']:<3} score={s['composite']}")
+            print(f"  [+] {approach['name']:<22} findings={s['count']:<3} "
+                  f"strongest={s.get('strongest')} gate={s.get('gate_passed', 0)}")
 
-    results.sort(key=lambda r: r["score"]["composite"], reverse=True)
+    results.sort(key=lambda r: approach_rank_key(r["score"]), reverse=True)
 
     # Winner per vulnerability class (group)
     winners = {}
@@ -885,7 +909,7 @@ def race(target, url, jwt_token, base=None, workers=None):
             if a["name"] == r["module"]:
                 group = a.get("group", "web")
                 break
-        if group not in winners or r["score"]["composite"] > winners[group]["score"]["composite"]:
+        if group not in winners or approach_rank_key(r["score"]) > approach_rank_key(winners[group]["score"]):
             winners[group] = r
 
     all_findings = []
@@ -907,11 +931,14 @@ def race(target, url, jwt_token, base=None, workers=None):
         "approaches_skipped": [{"name": n, "reason": r} for n, r in skipped],
         "errors": [{"name": n, "error": e} for n, e in errors],
         "results": [
-            {"module": r["module"], "score": r["score"]["composite"],
+            {"module": r["module"], "strongest_rank": r["score"].get("strongest_rank", 0),
+             "strongest": r["score"].get("strongest"),
              "count": r["score"]["count"], "severity_counts": r["score"]["severity_counts"]}
             for r in results
         ],
-        "winners": {g: {"module": r["module"], "score": r["score"]["composite"]}
+        "winners": {g: {"module": r["module"],
+                        "strongest_rank": r["score"].get("strongest_rank", 0),
+                        "strongest": r["score"].get("strongest")}
                     for g, r in winners.items()},
     }
     candidates_path = os.path.join(fdir, "candidates.json")
@@ -926,7 +953,8 @@ def race(target, url, jwt_token, base=None, workers=None):
         {"module": name,
          "group": group,
          "winner": {"type": winners[group]["module"],
-                    "score": winners[group]["score"]["composite"]},
+                    "strongest_rank": winners[group]["score"].get("strongest_rank", 0),
+                    "strongest": winners[group]["score"].get("strongest")},
          "count": next((x["score"]["count"] for x in results if x["module"] == name), 0),
          "timestamp": race_payload["timestamp"]}
         for name, group in winners_by_module.items()
@@ -1894,14 +1922,26 @@ def selftest():
 
     # 22. race() must record the real per-group winners, not label every module
     # a winner. Regression guard: `status` printed score-0 modules as winners.
-    _race = {"module": "webtest_headers", "findings": [], "score": {"composite": 0.0, "count": 0}}
-    _winners = {"web": {"module": "webtest_cors", "score": {"composite": 53.0}}}
-    _by_mod = {r["module"]: g for g, r in _winners.items()}
+    _z = score_approach([], scoring)
+    _w1 = {"module": "webtest_headers", "findings": [], "score": _z}
+    _w2 = {"module": "webtest_cors", "findings": [], "score": score_approach([{
+        "severity": "high", "confidence": "firm", "category": "web",
+        "title": "CORS reflects origin", "asset": _t}, ], scoring)}
+    _by_mod = {"webtest_headers": "web", "webtest_cors": "web"}
+    _winners = {"web": _w2}
     _rec = [{"module": n, "group": g,
-             "winner": {"type": _winners[g]["module"], "score": _winners[g]["score"]["composite"]}}
+             "winner": {"type": _winners[g]["module"],
+                        "strongest_rank": _winners[g]["score"].get("strongest_rank", 0),
+                        "strongest": _winners[g]["score"].get("strongest")}}
             for n, g in _by_mod.items()]
-    assert len(_rec) == 1 and _rec[0]["module"] == "webtest_cors", _rec
+    assert len(_rec) == 2, _rec
     assert _rec[0]["winner"]["type"] == "webtest_cors", "winner must be the group winner"
+    # The empty approach must rank below the one holding a gated finding, and
+    # ordering must never reward reporting fewer findings.
+    assert approach_rank_key(_w2["score"]) > approach_rank_key(_w1["score"]), \
+        "an approach with a gated high finding must outrank an empty one"
+    assert all("composite" not in r["score"] for r in (_w1, _w2)), \
+        "score dicts must not carry the removed composite key"
 
     # 23-24. exploit() and publish_results() must agree with each other and with
     # what is on disk. Regression guard: exploit was registered in PHASES but had
