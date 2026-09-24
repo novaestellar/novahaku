@@ -258,7 +258,7 @@
 | wfuzz | `pentest-tools/` — Web 参数模糊测试（Kali 预装） |
 | Wireshark / tshark | `pentest-tools/` — 网络协议分析与 PCAP 解析（Kali 预装） |
 | BurpSuite | `pentest-tools/` — Web 代理、拦截、漏洞扫描（Kali 预装 Community 版） |
-| BurpSuite MCP | `pentest-tools/` — 63 工具 AI 全控制（代理历史/Intruder/Repeater/Scanner/Collaborator），参见 `references/burpsuite-mcp-guide.md` |
+| BurpSuite MCP | `pentest-tools/` — 83 工具 AI 全控制（代理历史/Intruder/Repeater/Scanner/Collaborator），参见 `references/burpsuite-mcp-guide.md` |
 | ProxyCat | `pentest-tools/` — 代理池管理与 IP 轮换 |
 | objdump / strings / file | `reverse-engineering/` — 基础静态分析（Kali 预装） |
 | Cobalt Strike / Sliver / Havoc / Mythic | `pentest-tools/` — C2 框架工具（与 AdaptixC2 同模块） |

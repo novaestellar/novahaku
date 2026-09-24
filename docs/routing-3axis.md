@@ -156,7 +156,7 @@ Route tasks to the most appropriate skill module by target type, user intent, an
 | "attack surface assessment / path planning" | `attack-chain/SKILL.md` — path planning decision tree |
 | "got shell, what next / post-exploitation" | `attack-chain/SKILL.md` — plan from current foothold |
 | "BurpSuite / Burp proxy / intercept" | `pentest-tools/SKILL.md` + `references/burpsuite-mcp-guide.md` |
-| "Burp MCP / proxy history analysis" | `pentest-tools/references/burpsuite-mcp-guide.md` — 78 tools |
+| "Burp MCP / proxy history analysis" | `pentest-tools/references/burpsuite-mcp-guide.md` — 83 tools |
 | "Intruder brute force / Repeater replay" | `pentest-tools/references/burpsuite-mcp-guide.md` |
 | "Collaborator / OOB testing" | `pentest-tools/references/burpsuite-mcp-guide.md` |
 | "API security / GraphQL / JWT attack" | `api-security/SKILL.md` — REST/GraphQL/JWT/OAuth |
@@ -249,7 +249,7 @@ Do NOT force the user to repeatedly confirm "this is CTF/local." Carry the CTF/l
 | Hashcat / John / Hydra | `pentest-tools/` — password cracking |
 | Metasploit / Impacket | `pentest-tools/` — exploitation framework |
 | BurpSuite | `pentest-tools/` — web proxy, interception, vulnerability scanning |
-| BurpSuite MCP | `pentest-tools/` — 78-tool AI full control, see `references/burpsuite-mcp-guide.md` |
+| BurpSuite MCP | `pentest-tools/` — 83-tool AI full control, see `references/burpsuite-mcp-guide.md` |
 | ProxyCat | `pentest-tools/` — proxy pool management & IP rotation |
 | Cobalt Strike / Sliver / Havoc | `attack-chain/` — C2 framework |
 | pentestMCP (Docker) | `pentest-tools/` — 20+ tools one-click MCP |
