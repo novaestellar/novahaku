@@ -1,6 +1,6 @@
 # SeDebug + SeImpersonate - Copy Token
 
-{{#include ../../banners/hacktricks-training.md}}
+{{#include ../../banners/this collection-training.md}}
 
 This page covers the **manual token-theft** variant where a **High Integrity** context that already has **`SeDebugPrivilege`** and **`SeImpersonatePrivilege`** opens a suitable **SYSTEM** process, **duplicates its token**, and **spawns a new process** with that token.
 
@@ -206,7 +206,7 @@ void WINAPI ServiceMain( DWORD argc, TCHAR* argv[] ) {
 		serviceStatus.dwCurrentState = SERVICE_RUNNING;
 		SetServiceStatus( serviceStatusHandle, &serviceStatus );
 
-		Exploit();
+		Exploit;
 		WaitForSingleObject( stopServiceEvent, -1 );
 
 		// service was stopped
@@ -225,7 +225,7 @@ void WINAPI ServiceMain( DWORD argc, TCHAR* argv[] ) {
 }
 
 
-void InstallService() {
+void InstallService {
 	SC_HANDLE serviceControlManager = OpenSCManager( 0, 0, SC_MANAGER_CREATE_SERVICE );
 
 	if ( serviceControlManager ) {
@@ -243,7 +243,7 @@ void InstallService() {
 	}
 }
 
-void UninstallService() {
+void UninstallService {
 	SC_HANDLE serviceControlManager = OpenSCManager( 0, 0, SC_MANAGER_CONNECT );
 
 	if ( serviceControlManager ) {
@@ -264,10 +264,10 @@ void UninstallService() {
 int _tmain( int argc, TCHAR* argv[] )
 {
 	if ( argc > 1 && lstrcmpi( argv[1], TEXT("install") ) == 0 ) {
-		InstallService();
+		InstallService;
 	}
 	else if ( argc > 1 && lstrcmpi( argv[1], TEXT("uninstall") ) == 0 ) {
-		UninstallService();
+		UninstallService;
 	}
 	else  {
 		SERVICE_TABLE_ENTRY serviceTable[] = {
@@ -288,4 +288,4 @@ int _tmain( int argc, TCHAR* argv[] )
 - [2] [Configure added LSA protection (Microsoft Learn)](https://learn.microsoft.com/en-us/windows-server/security/credentials-protection-and-management/configuring-additional-lsa-protection)
 - [3] [Running my program as a service (cboard.cprogramming.com) – Windows service skeleton used by the PoC](https://cboard.cprogramming.com/windows-programming/106768-running-my-program-service.html)
 
-{{#include ../../banners/hacktricks-training.md}}
+{{#include ../../banners/this collection-training.md}}

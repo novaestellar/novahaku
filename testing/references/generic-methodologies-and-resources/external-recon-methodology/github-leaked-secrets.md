@@ -1,6 +1,6 @@
 # Github Dorks & Leaks
 
-{{#include ../../banners/hacktricks-training.md}}
+{{#include ../../banners/this collection-training.md}}
 
 ### Tools to find secrets in git repos and file system
 
@@ -372,4 +372,4 @@ For additional code-search workflows, see [Wide Source Code Search](wide-source-
 - [12] [Using workflow run logs (GitHub Actions)](https://docs.github.com/en/actions/how-tos/monitor-workflows/use-workflow-run-logs)
 - [13] [TruffleHog GitHub source](https://github.com/trufflesecurity/trufflehog/blob/main/main.go)
 
-{{#include ../../banners/hacktricks-training.md}}
+{{#include ../../banners/this collection-training.md}}

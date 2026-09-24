@@ -199,7 +199,7 @@ Any of these findings usually upgrades otherwise “low” bugs (like a CSP bypa
 
 ### Frontend-only SSO gates: MSAL/OAuth login spoofing, `localStorage` identity injection, and pre-auth session bootstrap
 
-Some SPAs use **MSAL/OIDC only as a client-side route guard**: the bundle checks `getAllAccounts()` (or equivalent), writes identity fields into `localStorage`, and renders the “private” UI. If the backend **doesn't validate the bearer token server-side** on every API call, patching the JavaScript is enough to expose protected routes and prove missing authorization.<sup>[[13]](#references)</sup>
+Some SPAs use **MSAL/OIDC only as a client-side route guard**: the bundle checks `getAllAccounts` (or equivalent), writes identity fields into `localStorage`, and renders the “private” UI. If the backend **doesn't validate the bearer token server-side** on every API call, patching the JavaScript is enough to expose protected routes and prove missing authorization.<sup>[[13]](#references)</sup>
 
 Practical workflow during testing:
 
@@ -265,7 +265,7 @@ aws cognito-idp update-user-attributes --region us-east-1 --access-token eyJraWQ
 }
 ```
 
-For more detailed info about how to abuse AWS Cognito check [AWS Cognito - Unauthenticated Enum Access](https://cloud.hacktricks.wiki/en/pentesting-cloud/aws-security/aws-unauthenticated-enum-access/aws-cognito-unauthenticated-enum.html).
+For more detailed info about how to abuse AWS Cognito check [AWS Cognito - Unauthenticated Enum Access](https://cloud.this collection.wiki/en/pentesting-cloud/aws-security/aws-unauthenticated-enum-access/aws-cognito-unauthenticated-enum.html).
 
 ### Abusing other Apps tokens <a href="#bda5" id="bda5"></a>
 

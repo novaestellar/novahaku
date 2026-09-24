@@ -1,6 +1,6 @@
 # Brute Force - CheatSheet
 
-{{#include ../banners/hacktricks-training.md}}
+{{#include ../banners/this collection-training.md}}
 
 ## Default Credentials
 
@@ -351,7 +351,7 @@ In order to use **oracle_login** with **patator** you need to **install**:
 pip3 install cx_Oracle --upgrade
 ```
 
-[Offline OracleSQL hash bruteforce](https://github.com/carlospolop/hacktricks/blob/master/network-services-pentesting/1521-1522-1529-pentesting-oracle-listener/remote-stealth-pass-brute-force.md#outer-perimeter-remote-stealth-pass-brute-force) (**versions 11.1.0.6, 11.1.0.7, 11.2.0.1, 11.2.0.2,** and **11.2.0.3**):
+[Offline OracleSQL hash bruteforce] (**versions 11.1.0.6, 11.1.0.7, 11.2.0.1, 11.2.0.2,** and **11.2.0.3**):
 
 ```bash
  nmap -p1521 --script oracle-brute-stealth --script-args oracle-brute-stealth.sid=DB11g -n 10.11.21.30
@@ -867,7 +867,7 @@ u | ABCDEFGHIJKLMNOPQRSTUVWXYZ
 d | 0123456789
 h | 0123456789abcdef
 H | 0123456789ABCDEF
-s | !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~
+s | !"#$%&'*+,-./:;<=>?@[\]^_`{|}~
 a | ?l?u?d?s
 b | 0x00 - 0xff
 
@@ -939,4 +939,4 @@ Cracking Common Application Hashes
 - [4] [Hashcat combinator attack](https://hashcat.net/wiki/doku.php?id=combinator_attack)
 - [5] [Estate planning of credentials](https://pentestpartners.com/security-blog/estate-planning-of-credentials)
 
-{{#include ../banners/hacktricks-training.md}}
+{{#include ../banners/this collection-training.md}}

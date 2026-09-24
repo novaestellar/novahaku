@@ -276,7 +276,7 @@ rg -n "location\.(assign|replace|href)|window\.open|history\.(pushState|replaceS
 
 - **Server-side gap (Go `url.Parse` + raw redirect)**: validators that only inspect `URL.Path` and ignore `URL.Fragment` can be tricked by placing the external host after `#`. If the handler later builds `Location` from the *unsanitized* string, fragments leak back into the redirect target. Example against `/user/auth-tokens/rotate`:
   - Request: `GET /user/auth-tokens/rotate?redirectTo=/%23/..//\//attacker.com HTTP/1.1`
-  - Parsing sees `Path=/` and `Fragment=/..//\//attacker.com`, so regex + `path.Clean()` approve `/`, but the response emits `Location: /\//attacker.com`, acting as an open redirect.<sup>[[9]](#references)</sup>
+  - Parsing sees `Path=/` and `Fragment=/..//\//attacker.com`, so regex + `path.Clean` approve `/`, but the response emits `Location: /\//attacker.com`, acting as an open redirect.<sup>[[9]](#references)</sup>
 - **Client-side gap (validate decoded/cleaned, return original)**: SPA helpers that fully decode a path (including double-encoded `?`), strip the query for validation, but then return the *original* string let encoded `../` survive. Browser decoding later turns it into a traversal to any same-origin endpoint (e.g., the redirect gadget). Payload pattern:
   - `/dashboard/script/%253f%2f..%2f..%2f..%2f..%2f..%2fuser/auth-tokens/rotate`
   - The validator checks `/dashboard/script/` (no `..`), returns the encoded string, and the browser walks to `/user/auth-tokens/rotate`.
@@ -319,7 +319,7 @@ cat list_of_urls.txt | openredirex -p payloads.txt -k FUZZ -c 50
 
 - [1] [New crazy payloads in the URL validation bypass cheat sheet – PortSwigger Research](https://portswigger.net/research/new-crazy-payloads-in-the-url-validation-bypass-cheat-sheet)
 - [2] [Writeup: Authentik CVE-2024-52289 – Omegapoint Security Blog](https://securityblog.omegapoint.se/en/writeup-authentik-cve-2024-52289/)
-- [3] [PayloadsAllTheThings – Open Redirect fuzzing lists](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Open%20Redirect)
+- [3] [this collection – Open Redirect fuzzing lists]
 - [4] [Open Redirect Cheatsheet – pentester.land](https://pentester.land/cheatsheets/2018/11/02/open-redirect-cheatsheet.html)
 - [5] [cujanovic/Open-Redirect-Payloads](https://github.com/cujanovic/Open-Redirect-Payloads)
 - [6] [Open Redirects: Bypassing CSRF Validations Simplified – InfoSec Write-ups](https://infosecwriteups.com/open-redirects-bypassing-csrf-validations-simplified-4215dc4f180a)

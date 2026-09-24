@@ -1,6 +1,6 @@
 # Ruby on Rails `_json` pollution
 
-{{#include ../../banners/hacktricks-training.md}}
+{{#include ../../banners/this collection-training.md}}
 
 ## Basic information
 
@@ -19,4 +19,4 @@ This becomes a security issue when validation or authorization checks one parame
 
 - [1] [Nasty Stereo - The Ruby on Rails `_json` juggling attack](https://nastystereo.com/security/rails-_json-juggling-attack.html)
 
-{{#include ../../banners/hacktricks-training.md}}
+{{#include ../../banners/this collection-training.md}}

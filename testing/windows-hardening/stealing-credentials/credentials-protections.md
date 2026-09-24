@@ -1,6 +1,6 @@
 # Windows Credentials Protections
 
-{{#include ../../banners/hacktricks-training.md}}
+{{#include ../../banners/this collection-training.md}}
 
 ## WDigest
 
@@ -28,7 +28,7 @@ This structure is packed into a single byte and determines **who can access whom
 - **Higher signer values can access lower ones**
 - **PPLs can’t access PPs**
 - **Unprotected processes can't access any PPL/PP**
-  
+
 ### What you need to know from an offensive perspective
 
 - When **LSASS runs as a PPL**, attempts to open it using `OpenProcess(PROCESS_VM_READ | QUERY_INFORMATION)` from a normal admin context **fail with `0x5 (Access Denied)`**, even if `SeDebugPrivilege` is enabled.
@@ -37,7 +37,7 @@ This structure is packed into a single byte and determines **who can access whom
 - PPL is a **Userland-only restriction**; **kernel-level code can fully bypass it**.
 - LSASS being PPL does **not prevent credential dumping if you can execute kernel shellcode** or **leverage a high-privileged process with proper access**.
 - **Setting or removing PPL** requires reboot or **Secure Boot/UEFI settings**, which can persist the PPL setting even after registry changes are reversed.
-  
+
 ### Create a PPL process at launch (documented API)
 
 Windows exposes a documented way to request a Protected Process Light level for a child process during creation using the extended startup attribute list. This does not bypass signing requirements — the target image must be signed for the requested signer class.
@@ -56,7 +56,7 @@ int wmain(int argc, wchar_t **argv) {
 
     SIZE_T attrSize = 0;
     InitializeProcThreadAttributeList(NULL, 1, 0, &attrSize);
-    si.lpAttributeList = (PPROC_THREAD_ATTRIBUTE_LIST)HeapAlloc(GetProcessHeap(), 0, attrSize);
+    si.lpAttributeList = (PPROC_THREAD_ATTRIBUTE_LIST)HeapAlloc(GetProcessHeap, 0, attrSize);
     if (!si.lpAttributeList) return 1;
 
     if (!InitializeProcThreadAttributeList(si.lpAttributeList, 1, 0, &attrSize)) return 1;
@@ -79,7 +79,7 @@ int wmain(int argc, wchar_t **argv) {
 
     // cleanup
     DeleteProcThreadAttributeList(si.lpAttributeList);
-    HeapFree(GetProcessHeap(), 0, si.lpAttributeList);
+    HeapFree(GetProcessHeap, 0, si.lpAttributeList);
     CloseHandle(pi.hThread);
     CloseHandle(pi.hProcess);
     return 0;
@@ -215,4 +215,4 @@ For more detailed information, consult the official [documentation](https://docs
 - [10] [Protected Users Security Group (Microsoft Learn)](https://docs.microsoft.com/en-us/windows-server/security/credentials-protection-and-management/protected-users-security-group)
 - [11] [Appendix C: Protected Accounts and Groups in Active Directory (Microsoft Learn)](https://docs.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices/appendix-c--protected-accounts-and-groups-in-active-directory)
 
-{{#include ../../banners/hacktricks-training.md}}
+{{#include ../../banners/this collection-training.md}}

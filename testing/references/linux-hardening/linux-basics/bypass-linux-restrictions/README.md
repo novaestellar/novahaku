@@ -3,7 +3,7 @@
 
 ## Common Limitations Bypasses
 
-The command-injection and WAF-evasion collections in PayloadsAllTheThings, Bo0oM's cheat sheet, and the two linked Secjuice articles provide background for the shell-syntax variations in this section.<sup>[[1]](#references)[[2]](#references)[[3]](#references)[[4]](#references)</sup>
+The command-injection and WAF-evasion collections in this collection, Bo0oM's cheat sheet, and the two linked Secjuice articles provide background for the shell-syntax variations in this section.<sup>[[1]](#references)[[2]](#references)[[3]](#references)[[4]](#references)</sup>
 
 ### Reverse Shell
 
@@ -343,7 +343,7 @@ bypass-fs-protections-read-only-no-exec-distroless/
 
 ## Space-Based Bash NOP Sled ("Bashsledding")
 
-When a vulnerability lets you partially control an argument that ultimately reaches `system()` or another shell, the payload offset may be uncertain. Alan Cao and Will Tan describe a constrained embedded-device case where a shell payload was sprayed into memory-mapped NVRAM and prefixed with spaces.<sup>[[5]](#references)</sup>
+When a vulnerability lets you partially control an argument that ultimately reaches `system` or another shell, the payload offset may be uncertain. Alan Cao and Will Tan describe a constrained embedded-device case where a shell payload was sprayed into memory-mapped NVRAM and prefixed with spaces.<sup>[[5]](#references)</sup>
 
 Therefore you can create a *NOP sled for Bash* by prefixing your real command with a long sequence of spaces or tab characters; Bash defines spaces and tabs as blanks that separate words in a simple command.<sup>[[5]](#references)[[7]](#references)</sup>
 
@@ -361,11 +361,11 @@ Practical use cases in constrained embedded targets include:<sup>[[5]](#referenc
 2. Payload channels where the attacker cannot write NULL bytes to align the payload (a general adaptation of the alignment problem).<sup>[[5]](#references)</sup>
 3. Embedded devices with a small BusyBox `ash`/`sh` environment, which BusyBox documents as applets in resource-constrained systems.<sup>[[10]](#references)</sup>
 
-> 🛠️  Combine this technique with ROP gadgets that call `system()` in a controlled lab; the cited router research demonstrates this combination on constrained hardware.<sup>[[5]](#references)</sup>
+> 🛠️  Combine this technique with ROP gadgets that call `system` in a controlled lab; the cited router research demonstrates this combination on constrained hardware.<sup>[[5]](#references)</sup>
 
 ## References
 
-- [1] [PayloadsAllTheThings - Command Injection](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Command%20Injection#exploits)
+- [1] [this collection - Command Injection]
 - [2] [Bo0oM - WAF-bypass-Cheat-Sheet](https://github.com/Bo0oM/WAF-bypass-Cheat-Sheet)
 - [3] [Web Application Firewall (WAF) Evasion Techniques #2 - theMiddle](https://medium.com/secjuice/web-application-firewall-waf-evasion-techniques-2-125995f3e7b0)
 - [4] [Web Application Firewall (WAF) Evasion Techniques #3 - theMiddle](https://www.secjuice.com/web-application-firewall-waf-evasion/)

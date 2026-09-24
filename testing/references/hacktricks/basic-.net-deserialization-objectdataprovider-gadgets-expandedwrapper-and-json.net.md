@@ -15,13 +15,13 @@ Using [**dnSpy**](https://github.com/0xd4d/dnSpy) you can **inspect the code** o
 
 ObjectDataProvider Gadget - How is this possible: Using dnSpy you can inspect the code of the class we are interested in. In the image below we are seeing the code of....png>)
 
-When `MethodName` is set, `base.Refresh()` is called. The following image shows that path:
+When `MethodName` is set, `base.Refresh` is called. The following image shows that path:
 
-ObjectDataProvider Gadget - How is this possible: As you can observe when MethodName is set base.Refresh() is called, lets take a look to what does it do.png>)
+ObjectDataProvider Gadget - How is this possible: As you can observe when MethodName is set base.Refresh is called, lets take a look to what does it do.png>)
 
-Next, `this.BeginQuery()` runs. `ObjectDataProvider` overrides `BeginQuery` as shown below:
+Next, `this.BeginQuery` runs. `ObjectDataProvider` overrides `BeginQuery` as shown below:
 
-ObjectDataProvider Gadget - How is this possible: Ok, lets continue seeing what does this.BeginQuery() does. BeginQuery is overridden by ObjectDataProvider and this is what it does.png>)
+ObjectDataProvider Gadget - How is this possible: Ok, lets continue seeing what does this.BeginQuery does. BeginQuery is overridden by ObjectDataProvider and this is what it does.png>)
 
 At the end of the code, it calls `this.QueryWorker(null)`. The next image shows the relevant execution path:
 
@@ -44,7 +44,7 @@ namespace ODPCustomSerialExample
     {
         static void Main(string[] args)
         {
-            ObjectDataProvider myODP = new ObjectDataProvider();
+            ObjectDataProvider myODP = new ObjectDataProvider;
             myODP.ObjectType = typeof(Process);
             myODP.MethodParameters.Add("cmd.exe");
             myODP.MethodParameters.Add("/c calc.exe");
@@ -80,9 +80,9 @@ namespace ODPCustomSerialExample
     {
         static void Main(string[] args)
         {
-            ExpandedWrapper<Process, ObjectDataProvider> myExpWrap = new ExpandedWrapper<Process, ObjectDataProvider>();
-            myExpWrap.ProjectedProperty0 = new ObjectDataProvider();
-            myExpWrap.ProjectedProperty0.ObjectInstance = new Process();
+            ExpandedWrapper<Process, ObjectDataProvider> myExpWrap = new ExpandedWrapper<Process, ObjectDataProvider>;
+            myExpWrap.ProjectedProperty0 = new ObjectDataProvider;
+            myExpWrap.ProjectedProperty0.ObjectInstance = new Process;
             myExpWrap.ProjectedProperty0.MethodParameters.Add("cmd.exe");
             myExpWrap.ProjectedProperty0.MethodParameters.Add("/c calc.exe");
             myExpWrap.ProjectedProperty0.MethodName = "Start";
@@ -293,7 +293,7 @@ The compiled `ysonet.exe` can then be found under `ysonet/bin/Release/`.
 
 A practical .NET sink reachable in authenticated Sitecore XP Content Editor flows:<sup>[[4]](#references)</sup>
 
-- Sink API: `Sitecore.Convert.Base64ToObject(string)` wraps `new BinaryFormatter().Deserialize(...)`.
+- Sink API: `Sitecore.Convert.Base64ToObject(string)` wraps `new BinaryFormatter.Deserialize(...)`.
 - Trigger path: pipeline `convertToRuntimeHtml` → `ConvertWebControls`, which searches for a sibling element with `id="{iframeId}_inner"` and reads a `value` attribute that is treated as base64‐encoded serialized data. The result is cast to string and inserted into the HTML.
 
 <details>
@@ -327,7 +327,7 @@ For a full chain that starts pre‑auth with HTML cache poisoning in Sitecore an
 - Product/role: Windows Server Update Services (WSUS) role on Windows Server 2012 → 2025.
 - Attack surface: IIS-hosted WSUS endpoints over HTTP/HTTPS on TCP 8530/8531 (often exposed internally; Internet exposure is high risk).
 - Root cause: Unauthenticated deserialization of attacker-controlled data using legacy formatters:
-  - `GetCookie()` endpoint deserializes an `AuthorizationCookie` with `BinaryFormatter`.
+  - `GetCookie` endpoint deserializes an `AuthorizationCookie` with `BinaryFormatter`.
   - `ReportingWebService` performs unsafe deserialization via `SoapFormatter`.
 - Impact: A crafted serialized object triggers a gadget chain during deserialization, leading to arbitrary code execution as `NT AUTHORITY\SYSTEM` under either the WSUS service (`wsusservice.exe`) or the IIS app pool `wsuspool` (`w3wp.exe`).<sup>[[5]](#references)</sup><sup>[[6]](#references)</sup><sup>[[7]](#references)</sup>
 

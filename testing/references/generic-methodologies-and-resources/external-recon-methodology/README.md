@@ -1,6 +1,6 @@
 # External Recon Methodology
 
-{{#include ../../banners/hacktricks-training.md}}
+{{#include ../../banners/this collection-training.md}}
 
 ## Assets discoveries
 
@@ -38,7 +38,7 @@ amass intel -org tesla
 amass intel -asn 8911,50313,394161
 ```
 
-Also, [**BBOT**](https://github.com/blacklanternsecurity/bbot)**'s** 
+Also, [**BBOT**](https://github.com/blacklanternsecurity/bbot)**'s**
  enumeration automatically aggregates and summarizes ASNs at the end of the scan.
 
 ```bash
@@ -360,7 +360,7 @@ curl https://jldc.me/anubis/subdomains/tesla.com | jq -r ".[]"
 
 ```bash
 # Get Domains from rapiddns free API
-rapiddns(){
+rapiddns{
  curl -s "https://rapiddns.io/subdomain/$1?full=1" \
   | grep -oE "[\.a-zA-Z0-9-]+\.$1" \
   | sort -u
@@ -372,7 +372,7 @@ rapiddns tesla.com
 
 ```bash
 # Get Domains from crt free API
-crt(){
+crt{
  curl -s "https://crt.sh/?q=%25.$1" \
   | grep -oE "[\.a-zA-Z0-9-]+\.$1" \
   | sort -u
@@ -688,7 +688,7 @@ Credential leaks are related to hacks of companies where **sensitive information
 ### Github Leaks
 
 Credentials and APIs might be leaked in the **public repositories** of the **company** or of the **users** working by that github company.\
-You can use the **tool** [**Leakos**](https://github.com/carlospolop/Leakos) to **download** all the **public repos** of an **organization** and of its **developers** and run [**gitleaks**](https://github.com/zricethezav/gitleaks) over them automatically.
+You can use the **tool** [**Leakos**] to **download** all the **public repos** of an **organization** and of its **developers** and run [**gitleaks**](https://github.com/zricethezav/gitleaks) over them automatically.
 
 **Leakos** can also be used to run **gitleaks** agains all the **text** provided **URLs passed** to it as sometimes **web pages also contains secrets**.
 
@@ -699,11 +699,11 @@ Check the [GitHub dorks and leaks page](github-leaked-secrets.md) for potential 
 ### Pastes Leaks
 
 Sometimes attackers or just workers will **publish company content in a paste site**. This might or might not contain **sensitive information**, but it's very interesting to search for it.\
-You can use the tool [**Pastos**](https://github.com/carlospolop/Pastos) to search in more that 80 paste sites at the same time.
+You can use the tool [**Pastos**] to search in more that 80 paste sites at the same time.
 
 ### Google Dorks
 
-Old but gold google dorks are always useful to find **exposed information that shouldn't be there**. The only problem is that the [**google-hacking-database**](https://www.exploit-db.com/google-hacking-database) contains several **thousands** of possible queries that you cannot run manually. So, you can get your favourite 10 ones or you could use a **tool such as** [**Gorks**](https://github.com/carlospolop/Gorks) **to run them all**.
+Old but gold google dorks are always useful to find **exposed information that shouldn't be there**. The only problem is that the [**google-hacking-database**](https://www.exploit-db.com/google-hacking-database) contains several **thousands** of possible queries that you cannot run manually. So, you can get your favourite 10 ones or you could use a **tool such as** [**Gorks**] **to run them all**.
 
 _Note that the tools that expect to run all the database using the regular Google browser will never end as google will block you very very soon._
 
@@ -766,4 +766,4 @@ There are several tools out there that will perform part of the proposed actions
 - [10] [Carlos Polop – Full Subdomain Brute Force Discovery Using Automated Trickest Workflow, Part 2](https://trickest.com/blog/full-subdomain-brute-force-discovery-using-workflow/)
 - [11] [InfoSecMatter – favihash output screenshot](https://www.infosecmatter.com/wp-content/uploads/2020/07/favihash.jpg)
 
-{{#include ../../banners/hacktricks-training.md}}
+{{#include ../../banners/this collection-training.md}}

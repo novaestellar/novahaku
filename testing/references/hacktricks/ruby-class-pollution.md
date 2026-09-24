@@ -49,7 +49,7 @@ class Person
 
   # Health check that executes all protected methods using `instance_eval`
   def health_check
-    protected_methods().each do |method|
+    protected_methods.each do |method|
       instance_eval(method.to_s)
     end
   end

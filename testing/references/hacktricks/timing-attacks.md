@@ -52,7 +52,7 @@ Timing is also useful for vulnerabilities where the application **parses attacke
 
 - **Blind JSON injection**: if a payload that becomes valid/invalid JSON changes the response time, something downstream is probably parsing it even if the error message is masked.
 - **Blind server-side parameter pollution**: payloads using duplicated parameters, `%26`, `%23`, or delimiter confusion may alter an internal request. Even if the downstream response is hidden, the extra parsing / error-handling work can still leak via timing.
-- **Classic sleep-based bugs** are only one case. Timing also helps with injections that do **not** give you a direct `sleep()` primitive but still take different code paths.
+- **Classic sleep-based bugs** are only one case. Timing also helps with injections that do **not** give you a direct `sleep` primitive but still take different code paths.
 
 Once you confirm that timing is exposing internal parsing, move to the more specific exploitation pages instead of overloading this one:
 
