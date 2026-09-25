@@ -92,24 +92,23 @@ pip install PyGithub PyYAML  # CI/CD workflow scanner (hunt-cicd/scripts/workflo
 
 ## Environment Overrides
 
-Semua script menyelesaikan path relatif ke lokasi skripnya sendiri, jadi tidak ada
-path absolut yang di-hardcode di dalam kode. Override hanya perlu kalau layout
-instalasi Anda berbeda — isi di `.env`, jangan edit skripnya.
+所有脚本以自身所在位置为基准解析相对路径，代码中不含硬编码的绝对路径。
+仅当安装布局不同才需要覆盖 —— 写入 `.env`，不要修改脚本本身。
 
 ```bash
-# Root skill novahaku (kosongkan = auto-detect dari lokasi skrip)
+# novahaku 技能根目录（留空 = 从脚本位置自动探测）
 NOVAHAKU_HOME=/path/to/novahaku
 
-# Interpreter Python untuk test suite Windows (kosongkan = "python" di PATH)
+# Windows 测试套件使用的 Python 解释器（留空 = PATH 中的 "python"）
 NOVAHAKU_PYTHON=python
 
-# Direktori kerja engagement (kosongkan = <skill_root>/engagements)
-# Dibaca oleh engagement.py, engage_runner.py, dan findings_gen.py
+# 交战（engagement）工作目录（留空 = <skill_root>/engagements）
+# 由 engagement.py、engage_runner.py 和 findings_gen.py 读取
 NOVAHAKU_ENGAGEMENT_DIR=/path/to/engagements
 ```
 
-`scripts/test/novahaku_test_all.ps1` memakai urutan yang sama:
-`NOVAHAKU_HOME` → lokasi skrip. Tidak ada path mesin yang tertanam di dalamnya.
+`scripts/test/novahaku_test_all.ps1` 遵循相同顺序：
+`NOVAHAKU_HOME` → 脚本位置。其中不内嵌任何本机路径。
 
 ## MCP Server Setup
 
@@ -124,29 +123,27 @@ NOVAHAKU_ENGAGEMENT_DIR=/path/to/engagements
 
 ## Persistent Engagement (cross-session state)
 
-Tidak perlu instalasi tambahan — stdlib-only, tanpa dependency.
+无需额外安装 —— 仅使用标准库，无外部依赖。
 
 ```bash
-# Buat engagement untuk target
+# 为目标创建交战（engagement）
 python scripts/engagement.py init target.com --scope "*.target.com"
 
-# Cek status kapan saja (termasuk setelah sesi baru)
+# 随时查看状态（包括新会话之后）
 python scripts/engagement.py status target.com
 python scripts/engagement.py list
 
-# Jalankan testing paralel
+# 运行并行测试
 python scripts/engage_runner.py race      --target target.com --url https://target.com
 python scripts/engage_runner.py integrity --target target.com
 python scripts/engage_runner.py selftest
 ```
 
-Data engagement tersimpan di `engagements/<target>/` — state per-target, evidence,
-report, dan hasil recon tidak pernah ikut ter-commit. Yang di-track hanya
-`engagements/TEMPLATE/` (dokumentasi layout) dan `state.json` +
-`findings/findings.csv` per target. Pola ignore berbasis nama file, bukan
-mengabaikan direktori target, supaya engagement baru tetap bisa men-commit
-dokumennya (git tidak menelusuri direktori yang di-ignore, sehingga aturan
-`!re-include` di dalamnya tidak akan pernah berlaku).
+交战数据存放于 `engagements/<target>/` —— 每个目标的状态、证据、报告和侦察结果
+永不提交。纳入追踪的只有 `engagements/TEMPLATE/`（布局文档）以及每个目标的
+`state.json` + `findings/findings.csv`。忽略规则基于文件名而非整个目标目录，
+这样新的交战仍可提交其文档（git 不会遍历被忽略的目录，因此其中的
+`!re-include` 规则永远不会生效）。
 
 ## Local Hermes Patch (optional, local-only)
 
