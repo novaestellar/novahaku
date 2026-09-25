@@ -46,7 +46,9 @@ Example: `AAEAAAD/////AQAAAAAAAAAMAgAAAF9TeXN0ZW0u[...]0KPC9PYmpzPgs=`
 
 ## Formatters
 
-![NETNativeFormatters.png]
+![.NET native formatters](Images/NETNativeFormatters.png)
+
+Formatters as text: [net-native-formatters.md](../../visuals/net-native-formatters.md)
 .NET Native Formatters from [pwntester/attacking-net-serialization](https://speakerdeck.com/pwntester/attacking-net-serialization?slide=15)
 
 ### XmlSerializer

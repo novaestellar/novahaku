@@ -33,6 +33,8 @@ Imagine an attacker lures a logged-in victim into accessing `http://www.example.
 
 ![WCD Demonstration](Images/wcd.jpg)
 
+Request flow as text: [wcd-flow.md](../../visuals/wcd-flow.md)
+
 ### Caching Sensitive Data
 
 **Example 1** - Web Cache Deception on PayPal Home Page

@@ -162,7 +162,9 @@ The SAML response is accepted by the service provider. Due to the vulnerability,
 
 An XSLT can be carried out by using the `transform` element.
 
-![http://sso-attacks.org/images/4/49/XSLT1.jpg](http://sso-attacks.org/images/4/49/XSLT1.jpg)
+![XSLT attack against SAML](Images/XSLT1.jpg)
+
+Flow as text: [xslt-attack.md](../../visuals/xslt-attack.md)
 Picture from [http://sso-attacks.org/XSLT_Attack](http://sso-attacks.org/XSLT_Attack)
 
 ```xml

@@ -3,7 +3,7 @@
 Entry point for the third-party reference corpus integrated under this tree.
 Every page below is reachable from this file; nothing here is decorative.
 
-**277 pages across 10 categories.** Generated from disk by
+**285 pages across 11 categories.** Generated from disk by
 `scripts/test/gen_corpus_index.py` — do not edit by hand, regeneration
 overwrites it and drift is caught by `--check`.
 
@@ -33,14 +33,18 @@ Linux restriction bypass notes.
 
 - [README](linux-hardening/linux-basics/bypass-linux-restrictions/README.md) — `linux-hardening/linux-basics/bypass-linux-restrictions/README.md` (12,993 B)
 
-## `misc` — 4 page(s)
+## `misc` — 8 page(s)
 
 Bug-bounty writeup notes and mindmap outlines.
 
 - [bb-sqli](misc/bb-sqli.md) — `misc/bb-sqli.md` (1,526 B)
 - [bb-ssrf](misc/bb-ssrf.md) — `misc/bb-ssrf.md` (1,130 B)
 - [bb-xss](misc/bb-xss.md) — `misc/bb-xss.md` (9,248 B)
-- [web-hacking-notes](misc/web-hacking-notes.md) — `misc/web-hacking-notes.md` (978 B)
+- [web-hacking-notes](misc/web-hacking-notes.md) — `misc/web-hacking-notes.md` (956 B)
+- [CORS](misc/mindmaps/CORS.md) — `misc/mindmaps/CORS.md` (1,542 B)
+- [Prototype Pollution](misc/mindmaps/Prototype Pollution.md) — `misc/mindmaps/Prototype Pollution.md` (1,509 B)
+- [SSRF](misc/mindmaps/SSRF.md) — `misc/mindmaps/SSRF.md` (1,714 B)
+- [XXE](misc/mindmaps/XXE.md) — `misc/mindmaps/XXE.md` (1,536 B)
 
 ## `network-services-pentesting` — 4 page(s)
 
@@ -101,7 +105,7 @@ Fast per-topic payload sheets (one file per class) plus per-class deep dives.
 - [README](payloads/HTTP Parameter Pollution/README.md) — `payloads/HTTP Parameter Pollution/README.md` (4,639 B)
 - [README](payloads/Headless Browser/README.md) — `payloads/Headless Browser/README.md` (8,744 B)
 - [README](payloads/Hidden Parameters/README.md) — `payloads/Hidden Parameters/README.md` (2,457 B)
-- [DotNET](payloads/Insecure Deserialization/DotNET.md) — `payloads/Insecure Deserialization/DotNET.md` (9,837 B)
+- [DotNET](payloads/Insecure Deserialization/DotNET.md) — `payloads/Insecure Deserialization/DotNET.md` (10,003 B)
 - [Java](payloads/Insecure Deserialization/Java.md) — `payloads/Insecure Deserialization/Java.md` (18,198 B)
 - [Node](payloads/Insecure Deserialization/Node.md) — `payloads/Insecure Deserialization/Node.md` (2,313 B)
 - [PHP](payloads/Insecure Deserialization/PHP.md) — `payloads/Insecure Deserialization/PHP.md` (14,244 B)
@@ -131,7 +135,7 @@ Fast per-topic payload sheets (one file per class) plus per-class deep dives.
 - [README](payloads/Regular Expression/README.md) — `payloads/Regular Expression/README.md` (3,421 B)
 - [README](payloads/Request Smuggling/README.md) — `payloads/Request Smuggling/README.md` (8,154 B)
 - [README](payloads/Reverse Proxy Misconfigurations/README.md) — `payloads/Reverse Proxy Misconfigurations/README.md` (6,940 B)
-- [README](payloads/SAML Injection/README.md) — `payloads/SAML Injection/README.md` (11,724 B)
+- [README](payloads/SAML Injection/README.md) — `payloads/SAML Injection/README.md` (11,775 B)
 - [BigQuery Injection](payloads/SQL Injection/BigQuery Injection.md) — `payloads/SQL Injection/BigQuery Injection.md` (3,561 B)
 - [Cassandra Injection](payloads/SQL Injection/Cassandra Injection.md) — `payloads/SQL Injection/Cassandra Injection.md` (2,098 B)
 - [DB2 Injection](payloads/SQL Injection/DB2 Injection.md) — `payloads/SQL Injection/DB2 Injection.md` (6,551 B)
@@ -153,10 +157,10 @@ Fast per-topic payload sheets (one file per class) plus per-class deep dives.
 - [README](payloads/Server Side Template Injection/README.md) — `payloads/Server Side Template Injection/README.md` (10,905 B)
 - [Ruby](payloads/Server Side Template Injection/Ruby.md) — `payloads/Server Side Template Injection/Ruby.md` (2,693 B)
 - [README](payloads/Tabnabbing/README.md) — `payloads/Tabnabbing/README.md` (2,294 B)
-- [README](payloads/Type Juggling/README.md) — `payloads/Type Juggling/README.md` (7,151 B)
+- [README](payloads/Type Juggling/README.md) — `payloads/Type Juggling/README.md` (7,357 B)
 - [README](payloads/Upload Insecure Files/README.md) — `payloads/Upload Insecure Files/README.md` (18,355 B)
 - [README](payloads/Virtual Hosts/README.md) — `payloads/Virtual Hosts/README.md` (3,631 B)
-- [README](payloads/Web Cache Deception/README.md) — `payloads/Web Cache Deception/README.md` (8,574 B)
+- [README](payloads/Web Cache Deception/README.md) — `payloads/Web Cache Deception/README.md` (8,638 B)
 - [README](payloads/Web Sockets/README.md) — `payloads/Web Sockets/README.md` (7,299 B)
 - [README](payloads/XPATH Injection/README.md) — `payloads/XPATH Injection/README.md` (2,676 B)
 - [README](payloads/XS-Leak/README.md) — `payloads/XS-Leak/README.md` (10,636 B)
@@ -201,7 +205,7 @@ Additional per-class reference material beyond the fast sheets.
 - [README](payloads-extras/HTTP Parameter Pollution/README.md) — `payloads-extras/HTTP Parameter Pollution/README.md` (4,639 B)
 - [README](payloads-extras/Headless Browser/README.md) — `payloads-extras/Headless Browser/README.md` (8,744 B)
 - [README](payloads-extras/Hidden Parameters/README.md) — `payloads-extras/Hidden Parameters/README.md` (2,457 B)
-- [DotNET](payloads-extras/Insecure Deserialization/DotNET.md) — `payloads-extras/Insecure Deserialization/DotNET.md` (9,838 B)
+- [DotNET](payloads-extras/Insecure Deserialization/DotNET.md) — `payloads-extras/Insecure Deserialization/DotNET.md` (9,957 B)
 - [Java](payloads-extras/Insecure Deserialization/Java.md) — `payloads-extras/Insecure Deserialization/Java.md` (24,699 B)
 - [Node](payloads-extras/Insecure Deserialization/Node.md) — `payloads-extras/Insecure Deserialization/Node.md` (2,313 B)
 - [PHP](payloads-extras/Insecure Deserialization/PHP.md) — `payloads-extras/Insecure Deserialization/PHP.md` (14,244 B)
@@ -261,12 +265,12 @@ Additional per-class reference material beyond the fast sheets.
 - [README](payloads-extras/Regular Expression/README.md) — `payloads-extras/Regular Expression/README.md` (4,414 B)
 - [README](payloads-extras/Request Smuggling/README.md) — `payloads-extras/Request Smuggling/README.md` (8,154 B)
 - [README](payloads-extras/Reverse Proxy Misconfigurations/README.md) — `payloads-extras/Reverse Proxy Misconfigurations/README.md` (6,994 B)
-- [README](payloads-extras/SAML Injection/README.md) — `payloads-extras/SAML Injection/README.md` (11,724 B)
+- [README](payloads-extras/SAML Injection/README.md) — `payloads-extras/SAML Injection/README.md` (11,738 B)
 - [README](payloads-extras/Server Side Include Injection/README.md) — `payloads-extras/Server Side Include Injection/README.md` (4,691 B)
 - [README](payloads-extras/Tabnabbing/README.md) — `payloads-extras/Tabnabbing/README.md` (2,294 B)
-- [README](payloads-extras/Type Juggling/README.md) — `payloads-extras/Type Juggling/README.md` (7,298 B)
+- [README](payloads-extras/Type Juggling/README.md) — `payloads-extras/Type Juggling/README.md` (7,468 B)
 - [README](payloads-extras/Virtual Hosts/README.md) — `payloads-extras/Virtual Hosts/README.md` (3,631 B)
-- [README](payloads-extras/Web Cache Deception/README.md) — `payloads-extras/Web Cache Deception/README.md` (8,574 B)
+- [README](payloads-extras/Web Cache Deception/README.md) — `payloads-extras/Web Cache Deception/README.md` (8,638 B)
 - [README](payloads-extras/XPATH Injection/README.md) — `payloads-extras/XPATH Injection/README.md` (2,676 B)
 - [README](payloads-extras/XS-Leak/README.md) — `payloads-extras/XS-Leak/README.md` (10,636 B)
 - [README](payloads-extras/XSLT Injection/README.md) — `payloads-extras/XSLT Injection/README.md` (9,082 B)
@@ -278,6 +282,13 @@ Web tooling and takeover notes.
 
 - [domain-subdomain-takeover](pentesting-web/domain-subdomain-takeover.md) — `pentesting-web/domain-subdomain-takeover.md` (12,872 B)
 - [web-tool-wfuzz](pentesting-web/web-tool-wfuzz.md) — `pentesting-web/web-tool-wfuzz.md` (8,415 B)
+
+## `visuals` — 4 page(s)
+
+- [net-native-formatters](visuals/net-native-formatters.md) — `visuals/net-native-formatters.md` (2,272 B)
+- [php-loose-comparison](visuals/php-loose-comparison.md) — `visuals/php-loose-comparison.md` (5,533 B)
+- [wcd-flow](visuals/wcd-flow.md) — `visuals/wcd-flow.md` (2,468 B)
+- [xslt-attack](visuals/xslt-attack.md) — `visuals/xslt-attack.md` (2,122 B)
 
 ## `web-notes` — 48 page(s)
 

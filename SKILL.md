@@ -141,7 +141,8 @@ metadata:
 | 意图 | 领域 | 加载 |
 |------|------|------|
 | test web、scan、pentest、XSS、SQLi、IDOR、payload | Web测试 | testing/scripts/ |
-| payload bank、payload class、XSS payload、SQLi payload、bypass payload、payload 参考 | Reference corpus | **`testing/references/00-INDEX.md`**(277 页 / 10 类别 — 先读这个索引,再定点取页) |
+| payload bank、payload class、XSS payload、SQLi payload、bypass payload、payload 参考 | Reference corpus | **`testing/references/00-INDEX.md`**(285 页 / 11 类别 — 先读这个索引,再定点取页) |
+| 图片资源、binary asset、visual reproduction、mindmap | Reference corpus | [BINARY-ASSETS.md](testing/references/BINARY-ASSETS.md)(每个二进制资源的保留原因与实际调用方) |
 | prompt injection、delimiter、encoding、lock | 提示工程 | techniques/methods/ |
 | attack mode、v41、jailbreak | 攻击框架 | identity/novahaku-files/claude-config-bundle/system-prompt.md |
 | reframe、arsenal | 重构引擎 | reframe/reframe_cli.py |

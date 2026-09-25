@@ -29,10 +29,10 @@ You can also contribute.
 
 
 ## Mindmaps for Bug Hunters
-* [XXE](mindmaps-pdf/XXE.pdf)
-* [SSRF](mindmaps-pdf/SSRF.pdf)
-* [CORS](mindmaps-pdf/CORS.pdf)
-* [Prototype Pollution](mindmaps-pdf/Prototype%20Pollution.pdf)
+* [XXE](mindmaps/XXE.md)
+* [SSRF](mindmaps/SSRF.md)
+* [CORS](mindmaps/CORS.md)
+* [Prototype Pollution](mindmaps/Prototype Pollution.md)
 
 ## Red Team Attacks
 

@@ -40,7 +40,9 @@
 
 > PHP8 won't try to cast string into numbers anymore, thanks to the Saner string to number comparisons RFC, meaning that collision with hashes starting with 0e and the likes are finally a thing of the past! The Consistent type errors for internal functions RFC will prevent things like `0 == strcmp($_GET['username'], $password)` bypasses, since strcmp won't return null and spit a warning any longer, but will throw a proper exception instead.
 
-![LooseTypeComparison]
+![PHP loose comparison matrix](../../payloads-extras/Type Juggling/Images/table_representing_behavior_of_PHP_with_loose_type_comparisons.png)
+
+Full matrix as text: [php-loose-comparison.md](../../visuals/php-loose-comparison.md)
 
 Loose Type comparisons occurs in many languages:
 
