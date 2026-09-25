@@ -63,7 +63,40 @@ MCP 是**可选**的实时接入，不是使用 Ghidra 的前提。手动与 hea
 ```text
 GhidraMCP 有两条路，都提供同一套 250+ 工具。选一条。
 
-【A】Headless —— 不需要 GUI，推荐用于批量与自动化：
+【A】桥接 headless —— 不需要 GUI，推荐用于批量与自动化：
+
+`ghidramcp_bridge.py` 按需启动 headless 服务器，并把每个端点重新发布成
+MCP 工具。因为该服务器是 REST 而非 MCP，包装层是必需的；这个包装层读取
+服务器自己发布的 `/mcp/schema`，不硬编码工具清单——插件升级后自动多出
+新工具，无需改代码。
+
+注册一次：
+
+```bash
+hermes mcp add ghidra-mcp \
+  --command python \
+  --env GHIDRA_HOME=/opt/ghidra_12.1.2_PUBLIC \
+  --args /path/to/novahaku/scripts/reverse-skill/ghidramcp_bridge.py
+```
+
+新会话中：
+
+```text
+ghidra_status()                          # 是否在线、载入了什么
+ghidra_open(binary="/path/to/target")    # 冷启动 + 载入 + 自动分析
+ghidra_decompile_function(address="0x140001870")
+ghidra_call("/list_segments")            # 未按名注册的任意端点
+```
+
+服务器在首次调用时才启动，不碰 Ghidra 的会话不付任何启动代价。
+冷启动一个小型 PE 约 7-10 秒。
+
+环境变量：`GHIDRA_HOME`（自启动必需）、`GHIDRA_MCP_PORT`（首选端口；
+被占用时自动换空闲端口，因为 `:8089` 与 GUI 插件共用）、
+`GHIDRA_MCP_AUTOSTART=0` 禁止自启动、`GHIDRA_MCP_PROJECT`（项目目录）、
+`GHIDRA_MCP_BOOT_TIMEOUT`。
+
+手动启动服务器（调试包装层本身时用）：
 
 ```bash
 GH="<ghidra-root>"
@@ -89,13 +122,19 @@ curl -s http://127.0.0.1:8089/health
 仅监听回环。此传输是 **REST，不是 MCP**：端点是路径形式，
 如 `/decompile_function?address=0x...`、`/list_methods`、`/list_segments`、
 `/analyze_call_graph`。注意 `decompile_function` 用 `address=` 参数，
-不是 `name=`。要注册进 MCP 客户端，需要一个把 MCP 调用翻译成这些路径的包装层。
+不是 `name=`。载入二进制用 `POST /load_program`，body 为 `{"file":"<path>"}`。
+完整的工具与参数元数据在 `/mcp/schema`。
 
 【B】GUI 插件 —— 原生说 MCP，可被 MCP 客户端直接注册：
 
 安装扩展 → 打开程序 → 从 GhidraMCP 面板启动服务器。
 必须有程序打开，否则每个请求返回 `404 No context found for request`——
 这条消息的意思是「没有载入任何程序」，不是「路径错了」。
+
+【端口】GUI 插件与 headless 服务器默认都用 `:8089`，先启动的那个占住，
+另一个绑定失败。所以包装层选择空闲端口而不是固定端口：写死的 URL 会指向
+GUI，或者指向空——取决于上一次操作是什么。`:8080` 不是 Ghidra，那是 Burp
+代理监听端口。
 
 ### 无 GUI 的批量反编译（不经过 MCP）
 

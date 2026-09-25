@@ -23,6 +23,22 @@ TOOL_DISCOVERY="$SCRIPT_DIR/lib/ToolDiscovery.ps1"
 PASS=0
 FAIL=0
 
+# Any Python 3 will do for the syntax checks; the bridge's own dependencies are
+# not needed to byte-compile it. Skip the Python checks cleanly when absent.
+#
+# On Windows `python3` is often the Microsoft Store stub: `command -v` finds it,
+# but it exits 9009 and prints an install advert. Probe with a real import so a
+# stub is rejected rather than silently failing every check under it.
+PY=""
+for cand in python python3 py; do
+  if command -v "$cand" >/dev/null 2>&1 && \
+     "$cand" -c 'import sys, py_compile; sys.exit(0 if sys.version_info[0] == 3 else 1)' \
+       >/dev/null 2>&1; then
+    PY="$cand"
+    break
+  fi
+done
+
 ok()   { PASS=$((PASS + 1)); printf '  [OK]   %s\n' "$1"; }
 bad()  { FAIL=$((FAIL + 1)); printf '  [FAIL] %s\n' "$1"; }
 check() { if [[ "$2" == "1" ]]; then ok "$1"; else bad "$1"; fi; }
@@ -195,6 +211,66 @@ done < <(find "$SCRIPT_DIR" "$REPO_ROOT/testing" -type f \
            \( -name '*.sh' -o -name '*.ps1' -o -name '*.py' \) \
            -not -path '*/.git/*' -not -path '*__pycache__*' 2>/dev/null | sort)
 check "no machine-specific paths in shipped scripts" "$([[ $leaks -eq 0 ]] && echo 1 || echo 0)"
+
+# ─── 7. ghidramcp bridge — registers tools, signatures are valid ─────────────
+echo
+echo "7. ghidramcp bridge"
+
+BRIDGE="$SCRIPT_DIR/ghidramcp_bridge.py"
+if [[ -f "$BRIDGE" ]]; then
+  ok "bridge present"
+else
+  bad "bridge missing: $BRIDGE"
+fi
+
+if [[ -f "$BRIDGE" && -n "$PY" ]]; then
+  # Native Windows python.exe cannot open an MSYS path like /d/Labs/... ; MSYS
+  # does not translate arguments for native programs. Convert when cygpath is
+  # available, and keep the MSYS path elsewhere (bash handles it fine).
+  BRIDGE_NATIVE="$BRIDGE"
+  if command -v cygpath >/dev/null 2>&1; then
+    BRIDGE_NATIVE="$(cygpath -w "$BRIDGE" 2>/dev/null || echo "$BRIDGE")"
+  fi
+
+  # Byte-compile without importing: catches syntax errors with no Ghidra, no
+  # MCP SDK, and no running server.
+  if "$PY" -c "import py_compile,sys; py_compile.compile(sys.argv[1], doraise=True)" "$BRIDGE_NATIVE" 2>/dev/null; then
+    ok "bridge compiles"
+  else
+    bad "bridge does not compile"
+  fi
+
+  # The bridge must discover tools from the server, not carry a frozen list.
+  # A hardcoded tool table silently rots on every plugin upgrade.
+  if grep -q '/mcp/schema' "$BRIDGE"; then
+    ok "bridge reads the server-published schema"
+  else
+    bad "bridge does not read /mcp/schema"
+  fi
+
+  # Python rejects a signature with a required parameter after a defaulted one.
+  # The server emits parameters in its own order, so the bridge must re-sort.
+  if grep -q 'for req_pass in (True, False)' "$BRIDGE"; then
+    ok "bridge orders required params before optional"
+  else
+    bad "bridge does not order params by requiredness"
+  fi
+
+  # Port 8089 is shared with the GUI plugin; a fixed port breaks when the GUI
+  # holds it, so the bridge must be able to fall back to a free one.
+  if grep -q '_free_port' "$BRIDGE"; then
+    ok "bridge falls back to a free port"
+  else
+    bad "bridge assumes a fixed port"
+  fi
+
+  # It writes to stderr only: stdout is the MCP transport.
+  if grep -q 'sys.stdout.write' "$BRIDGE"; then
+    bad "bridge writes to stdout (corrupts the MCP transport)"
+  else
+    ok "bridge keeps stdout clean"
+  fi
+fi
 
 # ─── summary ─────────────────────────────────────────────────────────────────
 echo

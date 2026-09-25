@@ -126,7 +126,7 @@ Each server below is independent. Install only the ones you need.
 | Anything Analyzer MCP | `http://localhost:23816/mcp` | remote HTTP | `testing/frameworks/anything-analyzer-mcp/` |
 | Binary Ninja MCP | `http://127.0.0.1:24642/mcp` | remote HTTP | `testing/binary-ninja-reverse/` |
 | IDA Pro MCP | `http://127.0.0.1:13337/mcp` | remote HTTP | `testing/ida-reverse/` |
-| GhidraMCP | `http://127.0.0.1:8089/` | local HTTP (headless) or MCP (GUI) | `testing/ghidra-reverse/` |
+| GhidraMCP | wrapper-managed, default `:8089` | stdio bridge over local REST | `testing/ghidra-reverse/` |
 
 ### BurpSuite MCP
 
@@ -188,8 +188,39 @@ port, or the tools will be registered twice.
 
 GhidraMCP serves the same 250+ analysis tools two ways. Pick one.
 
-**Headless (no GUI required).** The extension bundles a launcher class, so a
-running Ghidra window is not needed:
+**Bridged headless server (recommended, no GUI required).** `ghidramcp_bridge.py`
+starts the headless server on demand and republishes every endpoint as an MCP
+tool. Because the server is REST and not MCP, a bridge is required; this one
+reads the server's own `/mcp/schema` rather than hardcoding a tool list, so a
+plugin upgrade adds tools with no edit here.
+
+Register it once:
+
+```bash
+hermes mcp add ghidra-mcp \
+  --command python \
+  --env GHIDRA_HOME=/opt/ghidra_12.1.2_PUBLIC \
+  --args /path/to/novahaku/scripts/reverse-skill/ghidramcp_bridge.py
+```
+
+Then, from a new session:
+
+```
+ghidra_status()                          # is it up, what is loaded
+ghidra_open(binary="/path/to/target")    # boots the server, loads, analyses
+ghidra_decompile_function(address="0x140001870")
+ghidra_call("/list_segments")            # any endpoint not registered by name
+```
+
+The server starts lazily on the first call, so a session that never touches
+Ghidra pays nothing. A cold boot takes roughly 7-10 s for a small PE.
+
+Environment: `GHIDRA_HOME` (required for autostart), `GHIDRA_MCP_PORT`
+(preferred port; a free one is chosen when busy, because `:8089` is shared with
+the GUI plugin), `GHIDRA_MCP_AUTOSTART=0` to forbid launching, `GHIDRA_MCP_PROJECT`
+(project directory, default under the temp dir), `GHIDRA_MCP_BOOT_TIMEOUT`.
+
+**Starting the server by hand** — useful when debugging the bridge itself:
 
 ```bash
 GH="<ghidra-root>"                      # e.g. /opt/ghidra_12.1.2_PUBLIC
@@ -218,16 +249,22 @@ curl -s http://127.0.0.1:8089/health
 # {"status":"healthy","program_loaded":true,"program_name":"..."}
 ```
 
-This transport is **REST, not MCP**. Endpoints are paths such as
-`/decompile_function?address=0x...`, `/list_methods`, `/list_segments`,
-`/list_imports`, `/analyze_call_graph`. Registering it in an MCP client requires
-a wrapper that translates MCP calls to these paths.
+Useful endpoints: `/mcp/schema` (full tool + parameter metadata, the bridge's
+input), `/health`, `/server/status`, `/load_program`, `/decompile_function?address=0x...`,
+`/list_methods`, `/list_segments`, `/list_imports`, `/analyze_call_graph`.
 
 **GUI plugin (talks MCP natively).** Install the extension, open a program, then
 start the server from the GhidraMCP panel. It binds an MCP endpoint that an MCP
 client can register directly. A program must be open, or every request returns
 `404 No context found for request` — that message means "nothing loaded", not
 "wrong path".
+
+> **Port sharing.** The GUI plugin and the headless server both default to
+> `:8089`. Whichever starts first holds it, and the other fails to bind. That is
+> why the bridge picks a free port instead of a fixed one — a hardcoded URL would
+> point at the GUI, or at nothing, depending on what the operator did last.
+>
+> `:8080` is not Ghidra. That port belongs to the Burp proxy listener.
 
 Either way the server is loopback-only. Do not expose it to a network.
 
