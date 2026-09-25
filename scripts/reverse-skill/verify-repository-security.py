@@ -15,7 +15,7 @@ from pathlib import PurePosixPath
 
 
 PAYLOAD_PATH = "testing/references/web-notes/waf-bypass.md"
-PAYLOAD_SHA256 = "ff8986f527a1ab71f99ed19d21c08b4b6592f55491a9cb4dc3864f7e59ffd103"
+PAYLOAD_SHA256 = "ee20666bd4e026c9cae42b6c7b97596490e6f364a0009ce65be1b1990c90e2c0"
 ALLOWED_BINARY_HASHES = {
     "burp-mcp-full/gradle/wrapper/gradle-wrapper.jar":
         "2db75c40782f5e8ba1fc278a5574bab070adccb2d21ca5a6e5ed840888448046",
