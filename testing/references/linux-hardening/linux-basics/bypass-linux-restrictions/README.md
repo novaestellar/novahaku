@@ -364,8 +364,6 @@ Practical use cases in constrained embedded targets include:<sup>[[5]](#referenc
 > 🛠️  Combine this technique with ROP gadgets that call `system` in a controlled lab; the cited router research demonstrates this combination on constrained hardware.<sup>[[5]](#references)</sup>
 
 ## References
-
-- [1] [this collection - Command Injection]
 - [2] [Bo0oM - WAF-bypass-Cheat-Sheet](https://github.com/Bo0oM/WAF-bypass-Cheat-Sheet)
 - [3] [Web Application Firewall (WAF) Evasion Techniques #2 - theMiddle](https://medium.com/secjuice/web-application-firewall-waf-evasion-techniques-2-125995f3e7b0)
 - [4] [Web Application Firewall (WAF) Evasion Techniques #3 - theMiddle](https://www.secjuice.com/web-application-firewall-waf-evasion/)

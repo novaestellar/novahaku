@@ -1,7 +1,4 @@
 # SeDebug + SeImpersonate - Copy Token
-
-{{#include ../../banners/this collection-training.md}}
-
 This page covers the **manual token-theft** variant where a **High Integrity** context that already has **`SeDebugPrivilege`** and **`SeImpersonatePrivilege`** opens a suitable **SYSTEM** process, **duplicates its token**, and **spawns a new process** with that token.
 
 If you only need a quick `SYSTEM` shell from a privileged admin process, also check:
@@ -287,5 +284,3 @@ int _tmain( int argc, TCHAR* argv[] )
 - [1] [CreateProcessWithTokenW function (Microsoft Learn)](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-createprocesswithtokenw)
 - [2] [Configure added LSA protection (Microsoft Learn)](https://learn.microsoft.com/en-us/windows-server/security/credentials-protection-and-management/configuring-additional-lsa-protection)
 - [3] [Running my program as a service (cboard.cprogramming.com) – Windows service skeleton used by the PoC](https://cboard.cprogramming.com/windows-programming/106768-running-my-program-service.html)
-
-{{#include ../../banners/this collection-training.md}}

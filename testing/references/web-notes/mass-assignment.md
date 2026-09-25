@@ -1,7 +1,4 @@
 # Mass Assignment (CWE-915) – Privilege Escalation via Unsafe Model Binding
-
-{{#include ../banners/this collection-training.md}}
-
 Mass assignment (a.k.a. insecure object binding / autobinding / over-posting) happens when an API/controller takes user-supplied JSON and directly binds it to a server-side model/entity without an explicit allow-list of fields. If privileged properties like roles, `isAdmin`, `status`, ownership fields, or backend-only processing options are bindable, any authenticated user can escalate privileges, tamper with protected state, or steer downstream code paths.<sup>[[5]](#references)</sup>
 
 This is a Broken Access Control issue (OWASP A01:2021). In API-centric applications it now fits neatly into **OWASP API3:2023 Broken Object Property Level Authorization (BOPLA)**, which merged the old API6:2019 Mass Assignment and API3:2019 Excessive Data Exposure categories. It commonly affects frameworks that support automatic binding of request bodies to data models (Rails, Laravel/Eloquent, Django forms/serializers, Spring/Jackson, ASP.NET model binding, Express/Mongoose, Sequelize, Go structs, FastAPI/Pydantic, etc.).<sup>[[4]](#references)</sup>
@@ -255,5 +252,3 @@ class UserUpdate(BaseModel):
 - [3] [PortSwigger Web Security Academy - Exploiting a mass assignment vulnerability](https://portswigger.net/web-security/api-testing/lab-exploiting-mass-assignment-vulnerability)
 - [4] [OWASP API3:2023 - Broken Object Property Level Authorization](https://owasp.org/API-Security/editions/2023/en/0xa3-broken-object-property-level-authorization/)
 - [5] [CWE-915: Improperly Controlled Modification of Dynamically-Determined Object Attributes](https://cwe.mitre.org/data/definitions/915.html)
-
-{{#include ../banners/this collection-training.md}}

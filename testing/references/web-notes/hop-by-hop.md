@@ -1,7 +1,4 @@
 # Abusing Hop-by-Hop Headers
-
-{{#include ../banners/this collection-training.md}}
-
 ---
 
 **This is a summary of the post** [**https://nathandavison.com/blog/abusing-http-hop-by-hop-request-headers**](https://nathandavison.com/blog/abusing-http-hop-by-hop-request-headers)<sup>[[1]](#references)</sup>
@@ -43,5 +40,3 @@ If a nominated field changes an origin response but is omitted from the cache ke
 
 - [1] [Abusing HTTP hop-by-hop request headers](https://nathandavison.com/blog/abusing-http-hop-by-hop-request-headers)
 - [2] [RFC 9110, section 7.6.1 — Connection](https://www.rfc-editor.org/rfc/rfc9110.html#section-7.6.1)
-
-{{#include ../banners/this collection-training.md}}

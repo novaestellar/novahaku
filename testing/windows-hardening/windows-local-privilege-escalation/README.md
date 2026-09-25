@@ -1,7 +1,4 @@
 # Windows Local Privilege Escalation
-
-{{#include ../../banners/this collection-training.md}}
-
 ### **Best tool to look for Windows local privilege escalation vectors:** [**WinPEAS**]
 
 This page consolidates general Windows privilege-escalation methodology from several foundational guides.<sup>[[1]](#references)[[3]](#references)[[6]](#references)[[7]](#references)[[8]](#references)[[11]](#references)</sup> Its practical enumeration flow also draws on community workshops and checklists.<sup>[[4]](#references)[[9]](#references)[[10]](#references)</sup> The historical attack material includes the DerbyCon presentation on Windows privilege escalation.<sup>[[5]](#references)</sup>
@@ -2247,7 +2244,6 @@ C:\Windows\microsoft.net\framework\v4.0.30319\MSBuild.exe -version #Compile the 
 - [4] [lpeworkshop - Windows / Linux Local Privilege Escalation Workshop](https://github.com/sagishahar/lpeworkshop)
 - [5] [DerbyCon 3.0 - Windows Attacks: AT is the new black (Rob Fuller & Chris Gates)](https://www.youtube.com/watch?v=_8xJaaQlpBo)
 - [6] [Privilege Escalation - Windows - Total OSCP Guide](https://sushant747.gitbooks.io/total-oscp-guide/privilege_escalation_windows.html)
-- [7] [Windows - Privilege Escalation - this collection]
 - [8] [Windows Privilege Escalation Guide](https://www.absolomb.com/2018-01-26-Windows-Privilege-Escalation-Guide/)
 - [9] [Windows-Privilege-Escalation checklist](https://github.com/netbiosX/Checklists/blob/master/Windows-Privilege-Escalation.md)
 - [10] [Windows-Privilege-Escalation](https://github.com/frizb/Windows-Privilege-Escalation)
@@ -2281,5 +2277,3 @@ C:\Windows\microsoft.net\framework\v4.0.30319\MSBuild.exe -version #Compile the 
 - [38] [SpecterOps – Turning Enterprise Update Servers Into Backdoor Factories (0_o) – Part 1](https://specterops.io/blog/2026/08/05/turning-enterprise-update-servers-into-backdoor-factories-part-1/)
 - [39] [SpecterOps – Turning Enterprise Update Servers Into Backdoor Factories (0_o) – Part 2](https://specterops.io/blog/2026/08/05/turning-enterprise-update-servers-into-backdoor-factories-part-2/)
 - [40] [bagelByt3s – NotWSUSPicious](https://github.com/bagelByt3s/NotWSUSPicious)
-
-{{#include ../../banners/this collection-training.md}}

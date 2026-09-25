@@ -337,7 +337,6 @@ for u in get_usernames:
 ## References
 
 - [1] [NoSQL, No Injection? – Ron Shulman-Peleg & Bronshtein](https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2F-L_2uGJGU7AVNRcqRvEi%2Fuploads%2Fgit-blob-3b49b5d5a9e16cb1ec0d50cb1e62cb60f3f9155a%2FEN-NoSQL-No-injection-Ron-Shulman-Peleg-Bronshtein-1.pdf?alt=media)
-- [2] [this collection – NoSQL Injection]
 - [3] [A NoSQL Injection Primer with Mongo – nullsweep](https://nullsweep.com/a-nosql-injection-primer-with-mongo/)
 - [4] [Hacking Node.js and MongoDB – Websecurify Blog](https://blog.websecurify.com/2014/08/hacking-nodejs-and-mongodb)
 - [5] [NoSQL Error-Based Injection – SensePost](https://sensepost.com/blog/2025/nosql-error-based-injection/)

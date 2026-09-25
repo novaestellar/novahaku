@@ -1,7 +1,4 @@
 # Upgrade Header Smuggling
-
-{{#include ../banners/this collection-training.md}}
-
 ### H2C Smuggling <a href="#h2c-smuggling" id="h2c-smuggling"></a>
 
 #### HTTP/2 Over Cleartext (H2C) <a href="#http2-over-cleartext-h2c" id="http2-over-cleartext-h2c"></a>
@@ -90,5 +87,3 @@ Check the labs to test both scenarios in [https://github.com/0ang3el/websocket-s
 - [1] [H2C Smuggling: Request Smuggling Via HTTP/2 Cleartext (Assetnote)](https://blog.assetnote.io/2021/03/18/h2c-smuggling/)
 - [2] [H2C Smuggling: Request Smuggling Via HTTP/2 Cleartext (BishopFox)](https://bishopfox.com/blog/h2c-smuggling-request)
 - [3] [Websocket smuggling research and labs (0ang3el/websocket-smuggle)](https://github.com/0ang3el/websocket-smuggle.git)
-
-{{#include ../banners/this collection-training.md}}

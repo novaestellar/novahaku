@@ -1,8 +1,4 @@
 # CORS - Misconfigurations & Bypass
-
-{{#include ../banners/this collection-training.md}}
-
-
 ## What is CORS?
 
 Cross-Origin Resource Sharing (CORS) standard **enables servers to define who can access their assets** and **which HTTP request methods are permitted** from external sources.<sup>[[5]](#references)</sup>
@@ -497,7 +493,6 @@ DoH simply tunnels the classic RFC1035 DNS wire format inside HTTPS (usually a P
 - [5] [Fetch Standard: HTTP CORS protocol](https://fetch.spec.whatwg.org/#http-cors-protocol)
 - [6] [OWASP WSTG: Testing Cross-Origin Resource Sharing](https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/11-Client-side_Testing/07-Testing_Cross_Origin_Resource_Sharing)
 - [7] [Hacking It Out: When CORS Won't Let You Be Great](https://medium.com/netscape/hacking-it-out-when-cors-wont-let-you-be-great-35f6206cc646)
-- [8] [this collection - CORS Misconfiguration]
 - [9] [Every bug bounty hunter should know: the evil smile of the JSONP over the browser's Same Origin](https://medium.com/entersoftsecurity/every-bug-bounty-hunter-should-know-the-evil-smile-of-the-jsonp-over-the-browsers-same-origin-438af3a0ac3b)
 - [10] [Impact of DNS over HTTPS (DoH) on DNS Rebinding Attacks - NCC Group](https://www.nccgroup.com/research-blog/impact-of-dns-over-https-doh-on-dns-rebinding-attacks/)
 - [11] [New, crazy payloads in the URL Validation Bypass Cheat Sheet](https://portswigger.net/research/new-crazy-payloads-in-the-url-validation-bypass-cheat-sheet)
@@ -508,5 +503,3 @@ DoH simply tunnels the classic RFC1035 DNS wire format inside HTTPS (usually a P
 - [16] [DNS Rebinding: The Hijacking of Trust](https://unit42.paloaltonetworks.com/dns-rebinding/)
 - [17] [Gerald Doussot - State of DNS Rebinding Attacks & Singularity of Origin - DEF CON 27](https://www.youtube.com/watch?v=y9-0lICNjOQ)
 - [18] [PortSwigger](https://portswigger.net/web-security/cross-site-scripting/stored)
-
-{{#include ../banners/this collection-training.md}}

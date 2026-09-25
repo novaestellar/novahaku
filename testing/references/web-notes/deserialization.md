@@ -1,7 +1,4 @@
 # Deserialization
-
-{{#include ../../banners/this collection-training.md}}
-
 ## Basic Information
 
 **Serialization** is understood as the method of converting an object into a format that can be preserved, with the intent of either storing the object or transmitting it as part of a communication process. This technique is commonly employed to ensure that the object can be recreated at a later time, maintaining its structure and state.
@@ -1263,5 +1260,3 @@ Industrialized gadget discovery:
 - [50] [NCC Group – Freddy](https://github.com/nccgroup/freddy)
 - [51] [es.slideshare.net - Java Deserialization Vulnerabilities The Forgotten Bug Class](https://es.slideshare.net/codewhitesec/java-deserialization-vulnerabilities-the-forgotten-bug-class?next_slideshow=1)
 - [52] [alphabot.com - Fastjson Exceptional Deserialization Vulnerabilities](https://www.alphabot.com/security/blog/2020/java/Fastjson-exceptional-deserialization-vulnerabilities.html)
-
-{{#include ../../banners/this collection-training.md}}

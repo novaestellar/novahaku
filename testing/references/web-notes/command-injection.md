@@ -1,7 +1,4 @@
 # Command Injection
-
-{{#include ../banners/this collection-training.md}}
-
 ## What Is Command Injection?
 
 A **command injection** permits the execution of arbitrary operating system commands by an attacker on the server hosting an application. As a result, the application and all its data can be fully compromised. The execution of these commands typically allows the attacker to gain unauthorized access or control over the application's environment and underlying system.<sup>[[2]](#references)</sup>
@@ -272,8 +269,6 @@ java.lang.Runtime.getRuntime.exec(cmd);
 
 
 ## References
-
-- [1] [this collection - Command Injection]
 - [2] [OS command injection | Web Security Academy](https://portswigger.net/web-security/os-command-injection)
 - [3] [Extraction of Synology encrypted archives – Synacktiv 2025](https://www.synacktiv.com/publications/extraction-des-archives-chiffrees-synology-pwn2own-irlande-2024.html)
 - [4] [Unit 42 – TOTOLINK X6000R: Three New Vulnerabilities Uncovered](https://unit42.paloaltonetworks.com/totolink-x6000r-vulnerabilities/)
@@ -284,5 +279,3 @@ java.lang.Runtime.getRuntime.exec(cmd);
 - [9] [Unit 42 – Bash arithmetic expansion RCE in Ivanti RewriteMap scripts](https://unit42.paloaltonetworks.com/ivanti-cve-2026-1281-cve-2026-1340/)
 - [11] [PHP proc_open manual](https://www.php.net/manual/en/function.proc-open.php)
 - [12] [HTB Nocturnal: IDOR → Command Injection → Root via ISPConfig (CVE‑2023‑46818)](https://0xdf.gitlab.io/2025/08/16/htb-nocturnal.html)
-
-{{#include ../banners/this collection-training.md}}

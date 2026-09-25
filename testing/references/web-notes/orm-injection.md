@@ -1,7 +1,4 @@
 # ORM Injection
-
-{{#include ../banners/this collection-training.md}}
-
 ## Django ORM (Python)
 
 [**This post**](https://www.elttam.com/blog/plormbing-your-django-orm/) explains how directly expanding attacker-controlled data into Django ORM filters can expose an application, for example:<sup>[[1]](#references)</sup>
@@ -491,5 +488,3 @@ Calibrating payloads to the real collation avoids wasted probes and significantl
 - [4] [Ransack Data Exfiltration – Positive Security](https://positive.security/blog/ransack-data-exfiltration)
 - [5] [CVE-2026-27886: Unauthenticated Boolean-Oracle Exfiltration of Administrator Secrets in Strapi – Bishop Fox](https://bishopfox.com/blog/cve-2026-27886-unauthenticated-boolean-oracle-exfiltration-of-administrator-secrets-in-strapi)
 - [6] [GHSA-rjg2-95x7-8qmx – Strapi Content API where-clause injection advisory](https://github.com/advisories/GHSA-rjg2-95x7-8qmx)
-
-{{#include ../banners/this collection-training.md}}

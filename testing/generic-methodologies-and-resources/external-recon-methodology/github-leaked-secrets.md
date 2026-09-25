@@ -1,7 +1,4 @@
 # Github Dorks & Leaks
-
-{{#include ../../banners/this collection-training.md}}
-
 ### Tools to find secrets in git repos and file system
 
 - [TruffleHog](https://github.com/dxa4481/truffleHog)
@@ -371,5 +368,3 @@ For additional code-search workflows, see [Wide Source Code Search](wide-source-
 - [11] [Secrets (GitHub Actions)](https://docs.github.com/en/actions/concepts/security/secrets)
 - [12] [Using workflow run logs (GitHub Actions)](https://docs.github.com/en/actions/how-tos/monitor-workflows/use-workflow-run-logs)
 - [13] [TruffleHog GitHub source](https://github.com/trufflesecurity/trufflehog/blob/main/main.go)
-
-{{#include ../../banners/this collection-training.md}}

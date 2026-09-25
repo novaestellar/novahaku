@@ -1,7 +1,4 @@
 # Login Bypass
-
-{{#include ../../banners/this collection-training.md}}
-
 ## **Bypass regular login**
 
 If you find a login page, test the following authentication and authorization failure modes.<sup>[[3]](#references)</sup>
@@ -120,5 +117,3 @@ Common patterns:
 - [2] [Client-side Authentication Bypass](https://kuldeep.io/posts/client-side-authentication-bypass/)
 - [3] [OWASP Authentication Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html)
 - [4] [MDN - HTML `autocomplete` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete)
-
-{{#include ../../banners/this collection-training.md}}

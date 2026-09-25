@@ -1,7 +1,4 @@
 # JSON, XML, and YAML Hacking and Issues
-
-{{#include ../banners/this collection-training.md}}
-
 ## Go JSON Decoder
 
 The following Go parser behaviors can create security problems when different components interpret the same input differently. They were analyzed in [this Trail of Bits post](https://blog.trailofbits.com/2025/06/17/unexpected-security-footguns-in-gos-parsers/), and the Go documentation explicitly records several `encoding/json` interoperability behaviors.<sup>[[1]](#references)[[4]](#references)</sup>
@@ -190,5 +187,3 @@ mass-assignment-cwe-915.md
 - [8] [HashiCorp security advisory - CVE-2020-16250](https://discuss.hashicorp.com/t/hcsec-2020-18-vault-s-aws-authentication-method-is-vulnerable-to-authentication-bypass/13981)
 - [9] [CVE record - CVE-2024-38517](https://www.cve.org/CVERecord?id=CVE-2024-38517)
 - [10] [CVE record - CVE-2024-39684](https://www.cve.org/CVERecord?id=CVE-2024-39684)
-
-{{#include ../banners/this collection-training.md}}

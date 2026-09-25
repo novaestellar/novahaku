@@ -1,7 +1,4 @@
 # Named Pipe Client Impersonation
-
-{{#include ../../banners/this collection-training.md}}
-
 Named Pipe client impersonation is a local privilege escalation primitive that lets a named-pipe server thread adopt the security context of a client that connects to it. In practice, an attacker who can run code with SeImpersonatePrivilege can coerce a privileged client (e.g., a SYSTEM service) to connect to an attacker-controlled pipe, call ImpersonateNamedPipeClient, duplicate the resulting token into a primary token, and spawn a process as the client (often NT AUTHORITY\SYSTEM).<sup>[[2]](#references)</sup>
 
 This page focuses on the core technique. For end-to-end exploit chains that coerce SYSTEM to your pipe, see the Potato family pages referenced below.
@@ -189,5 +186,3 @@ client.write(b"OP\x00\x01...")
 - [6] [pipetap – a Windows named pipe proxy tool](https://sensepost.com/blog/2025/pipetap-a-windows-named-pipe-proxy-tool/)
 - [7] [Synacktiv: Hooking Windows Named Pipes](https://www.synacktiv.com/en/publications/hooking-windows-named-pipes.html)
 - [8] [Synacktiv: thats_no_pipe](https://github.com/synacktiv/thats_no_pipe)
-
-{{#include ../../banners/this collection-training.md}}

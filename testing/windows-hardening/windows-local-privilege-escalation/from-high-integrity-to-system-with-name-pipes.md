@@ -1,7 +1,4 @@
 # From High Integrity to SYSTEM with Name Pipes
-
-{{#include ../../banners/this collection-training.md}}
-
 This is the **administrator/SCM variant** of named-pipe impersonation: an elevated process creates a temporary service whose child connects as `SYSTEM`, then impersonates that client. If the starting context cannot create services but has `SeImpersonatePrivilege`, use a privileged-service coercion instead; see [Named Pipe Client Impersonation](named-pipe-client-impersonation.md) and [RoguePotato, PrintSpoofer, SharpEfsPotato, GodPotato](roguepotato-and-printspoofer.md). Creating the service requires access to the SCM and `SERVICE_START` access to the new service, while `CreateProcessWithTokenW` requires `SeImpersonatePrivilege`.<sup>[[2]](#references)[[3]](#references)</sup>
 
 Quickly confirm the expected starting context:
@@ -154,4 +151,3 @@ int main {
 - [3] [Microsoft Learn — `CreateServiceA`](https://learn.microsoft.com/en-us/windows/win32/api/winsvc/nf-winsvc-createservicea)
 - [4] [Microsoft Learn — `ConnectNamedPipe`](https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-connectnamedpipe)
 - [5] [Microsoft Learn — `DuplicateTokenEx`](https://learn.microsoft.com/en-us/windows/win32/api/securitybaseapi/nf-securitybaseapi-duplicatetokenex)
-{{#include ../../banners/this collection-training.md}}

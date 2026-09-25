@@ -1,7 +1,4 @@
 # SeImpersonate from High To System
-
-{{#include ../../banners/this collection-training.md}}
-
 This page is about the **manual** version of going from a **High Integrity administrator process** to **`NT AUTHORITY\SYSTEM`** by **opening a non-protected SYSTEM process, duplicating its token, and spawning a child process with that token**.
 
 If you only have **`SeImpersonatePrivilege`** / **`SeAssignPrimaryTokenPrivilege`** but **cannot open a suitable SYSTEM process**, the **Potato / named-pipe** path is usually more reliable:
@@ -260,5 +257,3 @@ Inside that process "Administrators" can "Read Memory" and "Read Permissions" wh
 - [1] [Microsoft: CreateProcessWithTokenW](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-createprocesswithtokenw)
 - [2] [SensePost: Abusing Windows' tokens to compromise Active Directory without touching LSASS](https://sensepost.com/blog/2022/abusing-windows-tokens-to-compromise-active-directory-without-touching-lsass/)
 - [3] [Understanding and Abusing Process Tokens — Part II](https://medium.com/@seemant.bisht24/understanding-and-abusing-access-tokens-part-ii-b9069f432962)
-
-{{#include ../../banners/this collection-training.md}}

@@ -1,7 +1,4 @@
 # Node inspector/CEF debug abuse
-
-{{#include ../../banners/this collection-training.md}}
-
 Historical practical examples include the Multimaster walkthrough and the CVE-2019-1414 Visual Studio Code debugger attack; use them as version-specific context rather than assuming every current Electron or Chromium target exposes the same primitives.<sup>[[1]](#references)[[3]](#references)</sup>
 
 ## Basic Information
@@ -226,4 +223,3 @@ For macOS-specific Chromium relaunch, extension, and CDP tradecraft, see [macOS 
 - [13] [Google Project Zero Issue 1944 (Chromium bug tracker)](https://bugs.chromium.org/p/project-zero/issues/detail?id=1944)
 - [14] [Changes to remote debugging switches to improve security - Chrome for Developers](https://developer.chrome.com/blog/remote-debugging-port)
 - [15] [Injecting CDP into a Running Edge Browser: A Deep Dive into Runtime Browser Instrumentation](https://deathflamingo.com/blog/cdp_enabler/)
-{{#include ../../banners/this collection-training.md}}

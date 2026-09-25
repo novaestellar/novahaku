@@ -1,7 +1,4 @@
 # Captcha Bypass
-
-{{#include ../banners/this collection-training.md}}
-
 ## CAPTCHA bypass testing
 
 During an authorized assessment, test whether the **server** actually binds a CAPTCHA solution to the intended action, session, challenge, and expiry. A CAPTCHA is a rate-abuse control, not a replacement for authorization, throttling, or account lockout.<sup>[[1]](#references)</sup>
@@ -41,5 +38,3 @@ https://www.capsolver.com/?utm_campaign=scraping&utm_content=captchabypass&utm_m
 - [1] [OWASP WSTG — Testing for Weak Lock Out Mechanism (CAPTCHA test cases)](https://owasp.org/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/04-Authentication_Testing/03-Testing_for_Weak_Lock_Out_Mechanism)
 - [2] [Tesseract OCR](https://github.com/tesseract-ocr/tesseract)
 - [3] [CapSolver documentation](https://docs.capsolver.com/)
-
-{{#include ../banners/this collection-training.md}}

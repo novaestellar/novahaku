@@ -1,7 +1,4 @@
 # 2FA/MFA/OTP Bypass
-
-{{#include ../banners/this collection-training.md}}
-
 ## **Enhanced Two-Factor Authentication Bypass Techniques**
 
 ### **Direct Endpoint Access**
@@ -127,5 +124,3 @@ If the OTP is derived only from predictable or client-supplied data, a user may 
 - [3] [Behind the Scenes of a Security Bug: The Perils of 2FA Cookie Generation](https://srahulceh.medium.com/behind-the-scenes-of-a-security-bug-the-perils-of-2fa-cookie-generation-496d9519771b)
 - [4] [The $2,200 ATO Most Bug Hunters Overlooked by Closing Intruder Too Soon](https://mokhansec.medium.com/the-2-200-ato-most-bug-hunters-overlooked-by-closing-intruder-too-soon-505f21d56732)
 - [5] [OWASP Multifactor Authentication Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Multifactor_Authentication_Cheat_Sheet.html)
-
-{{#include ../banners/this collection-training.md}}

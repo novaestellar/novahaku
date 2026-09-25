@@ -1,8 +1,4 @@
 # Domain/Subdomain takeover
-
-{{#include ../banners/this collection-training.md}}
-
-
 ## Domain takeover
 
 If an in-scope service still depends on a domain whose registration has expired, an authorized tester may be able to register it and demonstrate a **domain takeover**. The impact increases when applications send the domain sensitive data in URL parameters, redirects, or the `Referer` header.<sup>[[1]](#references)</sup>
@@ -116,5 +112,3 @@ For cloud providers, verifying domain ownership is crucial to prevent subdomain 
 - [2] [Subdomain Takeover Guide - Stratus Security](https://www.stratussecurity.com/post/subdomain-takeover-guide)
 - [3] [A Guide To Subdomain Takeovers - HackerOne](https://www.hackerone.com/blog/guide-subdomain-takeovers-20)
 - [4] [Undocumented JS API - niteCTF 2022 write-up](https://ctf.zeyu2001.com/2022/nitectf-2022/undocumented-js-api)
-
-{{#include ../banners/this collection-training.md}}

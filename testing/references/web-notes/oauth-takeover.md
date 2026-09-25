@@ -1,7 +1,4 @@
 # OAuth to Account Takeover
-
-{{#include ../banners/this collection-training.md}}
-
 ## Basic Information <a href="#d4a8" id="d4a8"></a>
 
 OAuth has several versions and grant types; [oauth.net provides a concise OAuth 2.0 overview](https://oauth.net/2/) and a focused guide to the [authorization-code grant](https://oauth.net/2/grant-types/authorization-code/). This page focuses on that widely used grant, an **authorization framework that lets an application access or perform approved actions on a user's resources managed by another service**.<sup>[[24]](#references)</sup>
@@ -478,5 +475,3 @@ In mobile OAuth implementations, apps use **custom URI schemes** to receive redi
 - [22] [A bypass on GitLab’s login email verification via OAuth ROPC flow](https://cybxis.medium.com/a-bypass-on-gitlabs-login-email-verification-via-oauth-ropc-flow-e194242cad96)
 - [23] [OAuth Non-Happy Path to ATO](https://blog.voorivex.team/oauth-non-happy-path-to-ato)
 - [24] [RFC 6749 – The OAuth 2.0 Authorization Framework](https://www.rfc-editor.org/rfc/rfc6749)
-
-{{#include ../banners/this collection-training.md}}

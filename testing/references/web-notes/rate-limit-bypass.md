@@ -1,7 +1,4 @@
 # Rate Limit Bypass
-
-{{#include ../banners/this collection-training.md}}
-
 ## Rate limit bypass techniques
 
 ### Exploring Similar Endpoints
@@ -164,5 +161,3 @@ Make sure the limiter key is not per-account; otherwise also rotate user IDs / s
 - [4] [Cloudflare Docs – Request rate calculation and PoP-local counters](https://developers.cloudflare.com/waf/rate-limiting-rules/request-rate/)
 - [5] [OWASP WSTG — Testing for Weak Lock Out Mechanism](https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/04-Authentication_Testing/03-Testing_for_Weak_Lock_Out_Mechanism)
 - [6] [PortSwigger Research — HTTP/2: The Sequel is Always Worse](https://portswigger.net/research/http2)
-
-{{#include ../banners/this collection-training.md}}

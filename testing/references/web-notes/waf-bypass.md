@@ -1,8 +1,4 @@
 # Proxy / WAF Protections Bypass
-
-{{#include ../banners/this collection-training.md}}
-
-
 ## Bypass Nginx ACL Rules with Pathname Manipulation <a href="#heading-pathname-manipulation-bypassing-reverse-proxies-and-load-balancers-security-rules" id="heading-pathname-manipulation-bypassing-reverse-proxies-and-load-balancers-security-rules"></a>
 
 Techniques [from this research](https://rafa.hashnode.dev/exploiting-http-parsers-inconsistencies).<sup>[[1]](#references)</sup>
@@ -319,9 +315,6 @@ data:text/html;base64,PHN2Zy9vbmxvYWQ9YWxlcnQoMik+ #base64 encoding the javascri
 - [8] [Turning a Harmless XSS Behind a WAF into a Realistic Phishing Vector](https://blog.hackcommander.com/posts/2025/12/28/turning-a-harmless-xss-behind-a-waf-into-a-realistic-phishing-vector/)
 - [9] [5 Ways I Bypassed Your Web Application Firewall (WAF)](https://medium.com/@allypetitt/5-ways-i-bypassed-your-web-application-firewall-waf-43852a43a1c2)
 - [10] [#NahamCon2024: Modern WAF Bypass Techniques on Large Attack Surfaces](https://www.youtube.com/watch?v=0OMmWtU2Y_g)
-- [11] [/this collection - this collection]
 - [12] [cheatsheetseries.owasp.org - OWASP](https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html)
 - [13] [PortSwigger Bypass Bot Detection extension](https://github.com/PortSwigger/bypass-bot-detection)
 - [14] [When a Web App Detects Burp Suite via TLS Fingerprinting](https://kecman.co/blog/burp-suite-tls-fingerprint-bot-detection-bypass.html)
-
-{{#include ../banners/this collection-training.md}}

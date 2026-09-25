@@ -1,7 +1,4 @@
 # External Recon Methodology
-
-{{#include ../../banners/this collection-training.md}}
-
 ## Assets discoveries
 
 > So you were said that everything belonging to some company is inside the scope, and you want to figure out what this company actually owns.
@@ -765,5 +762,3 @@ There are several tools out there that will perform part of the proposed actions
 - [9] [Carlos Polop – Full Subdomain Discovery Workflow, Part 1](https://trickest.com/blog/full-subdomain-discovery-using-workflow/)
 - [10] [Carlos Polop – Full Subdomain Brute Force Discovery Using Automated Trickest Workflow, Part 2](https://trickest.com/blog/full-subdomain-brute-force-discovery-using-workflow/)
 - [11] [InfoSecMatter – favihash output screenshot](https://www.infosecmatter.com/wp-content/uploads/2020/07/favihash.jpg)
-
-{{#include ../../banners/this collection-training.md}}

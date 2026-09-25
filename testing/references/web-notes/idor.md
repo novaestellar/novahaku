@@ -1,7 +1,4 @@
 # IDOR (Insecure Direct Object Reference)
-
-{{#include ../banners/this collection-training.md}}
-
 IDOR (Insecure Direct Object Reference) / Broken Object Level Authorization (BOLA) appears when a web or API endpoint discloses or accepts a user–controllable identifier that is used **directly** to access an internal object **without verifying that the caller is authorized** to access/modify that object.
 Successful exploitation normally allows horizontal or vertical privilege-escalation such as reading or modifying other users’ data and, in the worst case, full account takeover or mass-data exfiltration.
 
@@ -174,5 +171,3 @@ for band_id in ["C-285-100", "T-544-492"]:
 - [5] [0xdf – HTB Era: predictable download IDs → backups and signing keys](https://0xdf.gitlab.io/2025/11/29/htb-era.html)
 - [6] [0xdf – HTB: Guardian](https://0xdf.gitlab.io/2026/02/28/htb-guardian.html)
 - [7] [Carlsberg memories wristband IDOR – predictable QR IDs + Intruder brute force (2026)](https://www.pentestpartners.com/security-blog/carlsberg-probably-not-the-best-cybersecurity-in-the-world/)
-
-{{#include ../banners/this collection-training.md}}

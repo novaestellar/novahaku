@@ -1,7 +1,4 @@
 # JWT Vulnerabilities (JSON Web Tokens)
-
-{{#include ../banners/this collection-training.md}}
-
 Part of this page is based on the [**jwt_tool attack methodology**](https://github.com/ticarpi/jwt_tool/wiki/Attack-Methodology).<sup>[[3]](#references)</sup> The same author maintains [**jwt_tool**](https://github.com/ticarpi/jwt_tool) for JWT assessment.
 
 ### **Quick Wins**
@@ -428,5 +425,3 @@ https://github.com/ticarpi/jwt_tool
 - [6] [CodeAnt AI - Inside CVE-2026-29000: The pac4j JWT Authentication Bypass Explained](https://www.codeant.ai/blogs/pac4j-vulnerability-cve-2026-29000)
 - [7] [Bishop Fox - Detecting CVE-2026-0265 at Scale: PAN-OS CAS Authentication Bypass](https://bishopfox.com/blog/detecting-cve-2026-0265-at-scale-pan-os-cas-authentication-bypass)
 - [8] [Palo Alto Networks Advisory - CVE-2026-0265 PAN-OS: Authentication Bypass with Cloud Authentication Service (CAS) enabled](https://security.paloaltonetworks.com/CVE-2026-0265)
-
-{{#include ../banners/this collection-training.md}}

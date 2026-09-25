@@ -1,7 +1,4 @@
 # Custom Security Support Providers
-
-{{#include ../../banners/this collection-training.md}}
-
 [Security Support Providers (SSPs)](../authentication-credentials-uac-and-efs/index.html#security-support-provider-interface-sspi) are DLL-based security packages loaded by the Local Security Authority (LSA). Windows registers custom SSP/AP DLLs through the `HKLM\SYSTEM\CurrentControlSet\Control\Lsa\Security Packages` `REG_MULTI_SZ` value and loads registered packages when the system starts.<sup>[[1]](#references)</sup>
 
 Because SSPs run in LSA and can receive credentials, adversaries may abuse a malicious package for credential access and persistence. MITRE tracks this behavior as T1547.005.<sup>[[2]](#references)</sup>
@@ -52,5 +49,3 @@ Where compatible, enable added LSA protection and investigate unsigned or unexpe
 - [3] [Mimikatz repository - `mimilib`](https://github.com/gentilkiwi/mimikatz/tree/master/mimilib)
 - [4] [Microsoft Learn - Security event 4657](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4657)
 - [5] [Microsoft Learn - Configure added LSA protection](https://learn.microsoft.com/en-us/windows-server/security/credentials-protection-and-management/configuring-additional-lsa-protection)
-
-{{#include ../../banners/this collection-training.md}}

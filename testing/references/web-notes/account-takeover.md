@@ -1,7 +1,4 @@
 # Account Takeover
-
-{{#include ../banners/this collection-training.md}}
-
 ## **Authorization Issue**
 
 The email of an account should be attempted to be changed, and the confirmation process **must be examined**. If found to be **weak**, the email should be changed to that of the intended victim and then confirmed.<sup>[[2]](#references)</sup>
@@ -263,5 +260,3 @@ access_token=PAGE_ACCESS_TOKEN&method=post
 - [9] [Bishop Fox - CVE-2026-11374 detection tool](https://github.com/BishopFox/CVE-2026-11374-check)
 - [10] [Till Recollapse: Fuzzing the Web for Mysterious Vulnerabilities - Andre Baptista](https://www.youtube.com/watch?v=CiIyaZ3x49c)
 - [11] [Uncovering the hidden vulnerability: how I found an authentication bypass on Shopify's Exchange](https://medium.com/@niraj1mahajan/uncovering-the-hidden-vulnerability-how-i-found-an-authentication-bypass-on-shopifys-exchange-cc2729ea31a9)
-
-{{#include ../banners/this collection-training.md}}

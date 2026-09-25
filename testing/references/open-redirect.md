@@ -319,7 +319,6 @@ cat list_of_urls.txt | openredirex -p payloads.txt -k FUZZ -c 50
 
 - [1] [New crazy payloads in the URL validation bypass cheat sheet – PortSwigger Research](https://portswigger.net/research/new-crazy-payloads-in-the-url-validation-bypass-cheat-sheet)
 - [2] [Writeup: Authentik CVE-2024-52289 – Omegapoint Security Blog](https://securityblog.omegapoint.se/en/writeup-authentik-cve-2024-52289/)
-- [3] [this collection – Open Redirect fuzzing lists]
 - [4] [Open Redirect Cheatsheet – pentester.land](https://pentester.land/cheatsheets/2018/11/02/open-redirect-cheatsheet.html)
 - [5] [cujanovic/Open-Redirect-Payloads](https://github.com/cujanovic/Open-Redirect-Payloads)
 - [6] [Open Redirects: Bypassing CSRF Validations Simplified – InfoSec Write-ups](https://infosecwriteups.com/open-redirects-bypassing-csrf-validations-simplified-4215dc4f180a)

@@ -1,7 +1,4 @@
 # Clickjacking
-
-{{#include ../banners/this collection-training.md}}
-
 ## What is Clickjacking
 
 In a clickjacking attack, a **user** is **tricked** into **clicking** an **element** on a webpage that is either **invisible** or disguised as a different element. This manipulation can lead to unintended consequences for the user, such as the downloading of malware, redirection to malicious web pages, provision of credentials or sensitive information, money transfers, or the online purchasing of products.<sup>[[1]](#references)</sup>
@@ -331,5 +328,3 @@ if (top !== self) {
 - [10] [DoubleClickjacking: a New Era of UI Redressing (Paulos Yibelo)](https://www.paulosyibelo.com/2024/12/doubleclickjacking-what.html)
 - [11] [DoubleClickjacking: Clickjacking on major websites (Security Affairs)](https://securityaffairs.com/172572/hacking/doubleclickjacking-clickjacking-on-major-websites.html)
 - [12] [DoubleClickjacking PoC details (evil.blog)](https://www.evil.blog/2024/12/doubleclickjacking-what.html)
-
-{{#include ../banners/this collection-training.md}}

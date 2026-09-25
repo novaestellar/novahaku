@@ -1,7 +1,4 @@
 # LDAP Injection
-
-{{#include ../banners/this collection-training.md}}
-
 ## LDAP Injection
 
 ### **LDAP**
@@ -216,5 +213,3 @@ intitle:"phpLDAPadmin" inurl:cmd.php
 {{#ref}}
 
 {{#endref}}
-
-{{#include ../banners/this collection-training.md}}

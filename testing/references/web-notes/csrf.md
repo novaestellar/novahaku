@@ -1,7 +1,4 @@
 # CSRF (Cross Site Request Forgery)
-
-{{#include ../banners/this collection-training.md}}
-
 ## Cross-Site Request Forgery (CSRF) Explained
 
 **Cross-Site Request Forgery (CSRF)** lets an attacker trigger actions through a victim's authenticated browser session. The victim visits attacker-controlled content, which causes requests through JavaScript, forms, images, or other browser primitives while the browser supplies ambient credentials.<sup>[[1]](#references)</sup><sup>[[7]](#references)</sup><sup>[[8]](#references)</sup>
@@ -885,5 +882,3 @@ Use purpose-built tooling and hands-on labs to validate PoCs without losing brow
 - [14] [brycec - corCTF 2021 challenges writeup](https://brycec.me/posts/corctf_2021_challenges)
 - [15] [anonymousyogi - JSON CSRF: CSRF that none talks about](https://anonymousyogi.medium.com/json-csrf-csrf-that-none-talks-about-c2bf9a480937)
 - [16] [MDN - HTTP - CORS: Simple Requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#simple_requests)
-
-{{#include ../banners/this collection-training.md}}

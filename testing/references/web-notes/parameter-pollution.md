@@ -1,9 +1,4 @@
 # Parameter Pollution | JSON Injection
-
-{{#include ../banners/this collection-training.md}}
-
-
-
 ## HTTP Parameter Pollution (HPP) Overview
 
 HTTP Parameter Pollution (HPP) is a technique where attackers manipulate HTTP parameters to change the behavior of a web application in unintended ways. This manipulation is done by adding, modifying, or duplicating HTTP parameters. The effect of these manipulations is not directly visible to the user but can significantly alter the application's functionality on the server side, with observable impacts on the client side.
@@ -258,5 +253,3 @@ These differing numeric representations can create parser inconsistencies.<sup>[
 - [4] [JSON Interoperability Vulnerabilities](https://bishopfox.com/blog/json-interoperability-vulnerabilities)
 - [5] [Testing for HTTP Parameter Pollution - OWASP WSTG](https://owasp.org/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/07-Input_Validation_Testing/04-Testing_for_HTTP_Parameter_Pollution)
 - [6] [Server-side parameter pollution - PortSwigger](https://portswigger.net/web-security/api-testing/server-side-parameter-pollution)
-
-{{#include ../banners/this collection-training.md}}

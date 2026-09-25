@@ -1,8 +1,4 @@
 # Open Redirect
-
-{{#include ../banners/this collection-training.md}}
-
-
 ## Open redirect
 
 ### Redirect to localhost or arbitrary domains
@@ -326,12 +322,9 @@ cat list_of_urls.txt | openredirex -p payloads.txt -k FUZZ -c 50
 
 - [1] [New crazy payloads in the URL validation bypass cheat sheet – PortSwigger Research](https://portswigger.net/research/new-crazy-payloads-in-the-url-validation-bypass-cheat-sheet)
 - [2] [Writeup: Authentik CVE-2024-52289 – Omegapoint Security Blog](https://securityblog.omegapoint.se/en/writeup-authentik-cve-2024-52289/)
-- [3] [this collection – Open Redirect fuzzing lists]
 - [4] [Open Redirect Cheatsheet – pentester.land](https://pentester.land/cheatsheets/2018/11/02/open-redirect-cheatsheet.html)
 - [5] [cujanovic/Open-Redirect-Payloads](https://github.com/cujanovic/Open-Redirect-Payloads)
 - [6] [Open Redirects: Bypassing CSRF Validations Simplified – InfoSec Write-ups](https://infosecwriteups.com/open-redirects-bypassing-csrf-validations-simplified-4215dc4f180a)
 - [7] [PortSwigger Web Security Academy – DOM-based open redirection](https://portswigger.net/web-security/dom-based/open-redirection)
 - [8] [OpenRedireX – A fuzzer for detecting open redirect vulnerabilities](https://github.com/devanshbatham/OpenRedireX)
 - [9] [Grafana CVE-2025-6023 redirect + traversal bypass chain](https://blog.ethiack.com/blog/grafana-cve-2025-6023-bypass-a-technical-deep-dive)
-
-{{#include ../banners/this collection-training.md}}

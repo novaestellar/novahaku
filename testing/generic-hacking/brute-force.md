@@ -1,7 +1,4 @@
 # Brute Force - CheatSheet
-
-{{#include ../banners/this collection-training.md}}
-
 ## Default Credentials
 
 **Search in google** for default credentials of the technology that is being used, or **try these links**:
@@ -938,5 +935,3 @@ Cracking Common Application Hashes
 - [3] [Hashcat example hashes and Microsoft Office modes](https://hashcat.net/wiki/doku.php?id=example_hashes)
 - [4] [Hashcat combinator attack](https://hashcat.net/wiki/doku.php?id=combinator_attack)
 - [5] [Estate planning of credentials](https://pentestpartners.com/security-blog/estate-planning-of-credentials)
-
-{{#include ../banners/this collection-training.md}}

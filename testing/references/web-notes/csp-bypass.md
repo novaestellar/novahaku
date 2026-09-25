@@ -1,7 +1,4 @@
 # Content Security Policy (CSP) Bypass
-
-{{#include ../../banners/this collection-training.md}}
-
 ## What is CSP
 
 Content Security Policy (CSP) is recognized as a browser technology, primarily aimed at **shielding against attacks such as cross-site scripting (XSS)**. It functions by defining and detailing paths and sources from which resources can be securely loaded by the browser. These resources encompass a range of elements such as images, frames, and JavaScript. For instance, a policy might permit the loading and execution of resources from the same domain (self), including inline resources and the execution of string code through functions like `eval`, `setTimeout`, or `setInterval`.<sup>[[1]](#references)</sup>
@@ -932,5 +929,3 @@ The csper.io documentation describes generating a candidate policy from observed
 - [34] [https://lab.wallarm.com/how-to-trick-csp-in-letting-you-run-whatever-you-want-73cb5ff428aa/](https://lab.wallarm.com/how-to-trick-csp-in-letting-you-run-whatever-you-want-73cb5ff428aa/)
 - [35] [Google Zer0pts / Imaginary CTF 2023 writeup (reCAPTCHA CSP bypass)](https://blog.huli.tw/2023/07/28/en/google-zer0pts-imaginary-ctf-2023-writeup/)
 - [36] [cure53/XSSChallengeWiki](https://github.com/cure53/XSSChallengeWiki/wiki/H5SC-Minichallenge-3:-%22Sh*t,-it)
-
-{{#include ../../banners/this collection-training.md}}

@@ -1,7 +1,4 @@
 # CRLF (%0D%0A) Injection
-
-{{#include ../banners/this collection-training.md}}
-
 ### CRLF
 
 Carriage Return (CR) and Line Feed (LF), collectively known as CRLF, are special character sequences used in the HTTP protocol to denote the end of a line or the start of a new one. Web servers and browsers use CRLF to distinguish between HTTP headers and the body of a response. These characters are universally employed in HTTP/1.1 communications across various web server types, such as Apache and Microsoft IIS.
@@ -293,5 +290,3 @@ into a reflected header. If every intermediary preserves the injected fields and
 - [11] [HackerOne Report #192667 - CRLF injection in the URL path](https://hackerone.com/reports/192667)
 - [12] [Sonarsource: Zimbra - Mail Stealing Clear-Text Credentials via Memcache Injection](https://www.sonarsource.com/blog/zimbra-mail-stealing-clear-text-credentials-via-memcache-injection/)
 - [14] [RFC 9110, Section 8.4.1: Content Codings](https://www.rfc-editor.org/rfc/rfc9110.html#section-8.4.1)
-
-{{#include ../banners/this collection-training.md}}

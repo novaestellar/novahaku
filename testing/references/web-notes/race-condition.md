@@ -1,7 +1,4 @@
 # Race Condition
-
-{{#include ../banners/this collection-training.md}}
-
 > [!WARNING]
 > For obtaining a deep understanding of this technique check the original report in [https://portswigger.net/research/smashing-the-state-machine](https://portswigger.net/research/smashing-the-state-machine)<sup>[[1]](#references)</sup>
 
@@ -520,5 +517,3 @@ See [**OAuth to Account Takeover**](oauth-to-account-takeover.md) for more OAuth
 - [14] [HackerOne report #55140](https://hackerone.com/reports/55140)
 - [15] [PortSwigger Web Security Academy - Race conditions](https://portswigger.net/web-security/race-conditions)
 - [16] [Wikipedia: List of OAuth providers](https://en.wikipedia.org/wiki/List_of_OAuth_providers)
-
-{{#include ../banners/this collection-training.md}}

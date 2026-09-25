@@ -1,7 +1,4 @@
 # Bypass Payment Process
-
-{{#include ../banners/this collection-training.md}}
-
 ## Payment Bypass Techniques
 
 ### Request Interception
@@ -41,5 +38,3 @@ If you encounter a parameter that contains a URL, especially one following the p
 ## References
 
 - [1] [OWASP WSTG — Test Payment Functionality](https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/10-Business_Logic_Testing/10-Test-Payment-Functionality)
-
-{{#include ../banners/this collection-training.md}}

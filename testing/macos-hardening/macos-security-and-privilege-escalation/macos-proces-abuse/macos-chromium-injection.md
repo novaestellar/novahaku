@@ -1,7 +1,4 @@
 # macOS Chromium Injection
-
-{{#include ../../../banners/this collection-training.md}}
-
 ## Basic Information
 
 Chromium-based browsers like Google Chrome, Microsoft Edge, Brave, Arc, Vivaldi, and Opera all consume the same command-line switches, preference files, and DevTools automation interfaces. On macOS, any user with GUI access can terminate an existing browser session and re-open it with arbitrary flags, extensions, or DevTools endpoints that run with the target's entitlements.
@@ -158,5 +155,3 @@ Find more examples in the tools links.
 - [4] [Ron Masas (@RonMasas) on X](https://twitter.com/RonMasas/status/1758106347222995007)
 - [5] [Changes to remote debugging switches to improve security - Chrome for Developers](https://developer.chrome.com/blog/remote-debugging-port)
 - [6] [Chrowned by an Extension: Abusing the Chrome DevTools Protocol through the Debugger API (arXiv:2305.11506)](https://arxiv.org/abs/2305.11506)
-
-{{#include ../../../banners/this collection-training.md}}

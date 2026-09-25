@@ -1,7 +1,4 @@
 # Registration & Takeover Vulnerabilities
-
-{{#include ../banners/this collection-training.md}}
-
 ## Registration Takeover
 
 ### Duplicate Registration
@@ -367,5 +364,3 @@ Impact: Full Account Takeover (ATO) without any reset token, OTP, or email verif
 - [2] [Microsoft MSRC – Pre‑hijacking attacks on web user accounts (May 2022)](https://msrc.microsoft.com/blog/2022/05/pre-hijacking-attacks/)
 - [3] [SalmonSec – Account Takeover cheatsheet](https://salmonsec.com/cheatsheet/account_takeover)
 - [4] [Hey there! You are using WhatsApp: Enumerating Three Billion Accounts for Security and Privacy (NDSS 2026 paper & dataset)](https://github.com/sbaresearch/whatsapp-census)
-
-{{#include ../banners/this collection-training.md}}
