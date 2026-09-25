@@ -10,45 +10,68 @@ Where IDA gives one pseudocode view, BN exposes LLIL, MLIL and HLIL separately �
 which makes it the better tool for understanding optimizer behaviour, dataflow,
 and what a compiler actually did to your code.
 
-## ⚠️ Edition gate — read this first
+## Capability gate — read this first
 
-Check the edition before planning any work:
+Confirm what the local install can actually do before planning work:
 
 ```bash
-"/c/Program Files/Vector35/BinaryNinja/binaryninja.exe" --version
-# -> "Binary Ninja 6.0.10601 free"   <-- free edition
+binaryninja.exe --version          # prints the running build, e.g. "Binary Ninja 6.0"
 ```
 
-| Capability | Free | Personal | Commercial / Ultimate |
-|---|---|---|---|
-| GUI analysis | yes | yes | yes |
-| **Python API** | no | yes | yes |
-| **Headless (`-p`) batch** | limited | yes | yes |
-| HLIL / decompiler | yes | yes | yes |
-| Debugger plugins | yes | yes | yes |
-| Automation / scripting | **no** | yes | yes |
+| Capability | Availability |
+|---|---|
+| GUI analysis, HLIL / decompiler | yes — always |
+| Debugger plugins | yes — always |
+| **Python API / headless `-p` batch** | **depends on the licence on this machine** |
+| **MCP bridge over loopback** | **yes — works with GUI-only installs** |
 
-**On a Free licence there is no `binaryninja` Python module and no headless
-entry point.** Verify before writing any script that imports it:
+**The Python API and headless batch mode require a licence that is valid in the
+running process.** Do not assume they are available, and do not report a scripted
+result you did not actually obtain.
+
+**When the API is not available, use the MCP bridge instead.** The
+`binary_ninja_mcp` plugin runs *inside* the Binary Ninja GUI process, so it reaches
+the API from the inside and does not need an externally licenced interpreter:
+
+```
+Binary Ninja GUI  ->  binary_ninja_mcp plugin  ->  HTTP on localhost:9009
+                                                       ^
+                                     MCP client  <-- bridge
+```
+
+Setup: install the plugin (Binary Ninja Plugin Manager, or copy the repo into the
+Binary Ninja plugins folder), open a binary, click the button in the bottom-left
+corner to start the HTTP server, then point your MCP client at it.
+
+```json
+{
+  "mcpServers": {
+    "binary-ninja-mcp": {
+      "command": "npx",
+      "args": ["-y", "binary-ninja-mcp@1.0.0", "--host", "localhost", "--port", "9009"]
+    }
+  }
+}
+```
+
+The bridge is GPL-3.0 and is consumed as an external tool over loopback — keep it
+out of this repository.
+
+Probe the API before writing any script that imports it:
 
 ```bash
 python -c "import binaryninja; print(binaryninja.core_version())"
-# ModuleNotFoundError: No module named 'binaryninja'   <-- expected on Free
-find "/c/Program Files/Vector35/BinaryNinja" -maxdepth 2 -iname '*headless*'
-# no results      <-- expected on Free
+# ModuleNotFoundError / RuntimeError -> the API is not usable from this interpreter
 ```
 
-If both fail, this skill is **GUI-only**: do the analysis by hand in the BN
-window and record the result. Do not fabricate scripted output. Report the
-licence gap to the user so they can decide to upgrade.
+If that fails, take one of two paths:
 
-A known-good install layout for the paid editions:
+- **MCP bridge over loopback** (preferred) — scripted access from inside the GUI
+  process, see above.
+- **GUI-only** — do the analysis by hand in the BN window and record the result,
+  or route the automated part to IDA headless (`idat64.exe -A -S script.py`).
 
-```bash
-"/c/Program Files/Vector35/BinaryNinja/python/binaryninja_api"   # API package
-"/c/Program Files/Vector35/BinaryNinja/binaryninja"              # headless driver
-"/c/Program Files/Vector35/BinaryNinja/scripts/quick_analysis.py" # batch entry
-```
+Never fabricate scripted output.
 
 ## IL levels — what each one answers
 
@@ -146,12 +169,13 @@ If BN is on a paid licence, the equivalent is `binaryninja -p` with a script.
 
 ## Pitfalls
 
-- **Free edition has no API.** Confirmed above; do not attempt to script it.
+- **API may be unavailable.** Confirm with the import probe above before scripting.
+  When it fails, use the MCP bridge — do not silently fabricate a scripted result.
 - **Analysis cache.** Re-running analysis after a type change does not always
   refresh HLIL. Close and reopen the view.
 - **`-p` still loads debugger plugins** on some builds. If startup hangs, use
   `-p` plus `--help` first to confirm the flag is honoured.
 - **Do not trust the decompiler on obfuscated code.** Verify at LLIL, and verify
   again in a debugger before writing an exploit around it.
-- **Licence check first, always.** Reporting a scripted result from a Free
-  install is a fabricated result.
+- **Probe first, always.** Reporting a scripted result you did not obtain is a
+  fabricated result.
