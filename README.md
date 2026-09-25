@@ -68,6 +68,32 @@ python ~/.hermes/skills/security/novahaku/testing/scripts/webtest.py --help
 python ~/.hermes/skills/security/novahaku/reframe/reframe_cli.py --help
 ```
 
+### 配置环境变量（可选）
+
+```bash
+# 复制模板，按需填值。.env 不入库。
+cp .env.example .env
+```
+
+Novahaku 在没有 `.env` 的情况下也能完整运行 —— 它的每个技能都靠自带的
+脚本工作。`.env` 只用于覆盖默认值（工具路径、MCP 端口、可选 token）。
+完整变量清单见 `.env.example`。
+
+### 接入 MCP 服务器（可选）
+
+五台 MCP 服务器全部**可选**，且都只监听回环地址。逐台安装步骤见
+`INSTALL.md` → MCP Server Setup。
+
+| 服务器 | 默认端点 | 工具数 |
+|--------|----------|--------|
+| BurpSuite MCP | `:9876` | 83 |
+| Binary Ninja MCP | `http://127.0.0.1:24642/mcp` | 75 |
+| Anything Analyzer MCP | `http://localhost:23816/mcp` | 30 |
+| GhidraMCP | `http://127.0.0.1:8089/` | 250+ |
+| IDA Pro MCP | `http://127.0.0.1:13337/mcp` | — |
+
+没有 MCP 服务器时 Novahaku 仍然可用 —— 它只是额外的实时工具接入。
+
 ---
 
 ## 🧩 技能列表
