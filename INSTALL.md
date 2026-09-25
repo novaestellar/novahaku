@@ -204,7 +204,13 @@ java -Djava.system.class.loader=ghidra.GhidraClassLoader \
 
 Options: `--port` (default 8089), `--bind` (default 127.0.0.1), `--file`,
 `--project`, `--program`. Set `GHIDRA_MCP_BIND_ADDRESS` to override the bind
-address. Confirm it came up:
+address.
+
+The `--project` directory must already exist. On a missing directory the server
+still starts and logs `ERROR No .gpr file found in: <dir>`, then creates a
+temporary project in memory — the program loads and the endpoints work, but
+nothing persists after exit. Create the directory first; the error is a warning
+about persistence, not a startup failure. Confirm it came up:
 
 ```bash
 curl -s http://127.0.0.1:8089/health
