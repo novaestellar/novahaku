@@ -55,6 +55,64 @@ bloodhound-python -d domain.local -u user -p pass -c All -ns <DC>
 □ 每步写 Evidence；高危等用户确认
 ```
 
+## 本地提权：令牌与 SeImpersonate
+
+服务账号（IIS APPPOOL、MSSQL$、NETWORK SERVICE 等）常带 `SeImpersonate`。
+拿到这类令牌后，从服务账号到 SYSTEM 有一条稳定路径。
+
+### 1. 令牌特权枚举
+
+```text
+whoami /priv
+# 关注：SeImpersonatePrivilege / SeAssignPrimaryTokenPrivilege / SeDebugPrivilege
+```
+
+### 2. Potato 家族（SeImpersonate → SYSTEM）
+
+由拥有 `SeImpersonate` 的服务账号强制一个高权限进程向自己认证，再假冒其令牌。
+
+```text
+□ JuicyPotato   — Windows Server 2019 之前，需可用的 CLSID
+□ RoguePotato   — 2019+，走 OXID resolver 回连
+□ SweetPotato   — 合并多种触发，自动挑可用 CLSID
+□ PrintSpoofer  — 利用 Spooler 命名管道，2016/2019 常用
+□ GodPotato     — 覆盖面最广，2012–2022 通吃
+```
+
+```text
+# PrintSpoofer 典型形态
+PrintSpoofer.exe -i -c "cmd /c whoami"
+PrintSpoofer.exe -c "C:\path\payload.exe"
+```
+
+### 3. 命名管道客户端假冒
+
+原理：服务端创建管道并持有 `SeImpersonate`，客户端写入时服务端可冒充客户端令牌。
+
+```text
+□ 找到以 SYSTEM 运行、且会连接外部管道的服务
+□ 抢夺管道名 → 服务连上来 → 冒充其令牌
+□ meterpreter getsystem 用的就是这条路
+```
+
+配套工具：`PipeViewer`（列出所有管道找提权点）、`pipe-intercept`（拦截管道通信）。
+
+### 4. SeDebug + SeImpersonate 复制令牌
+
+拥有这两个特权时可打开任意非保护进程、复制其令牌、以该令牌创建进程。
+
+```text
+□ 挑一个以 SYSTEM 运行且持有全部令牌特权的进程
+□ OpenProcess(SeDebug) → OpenProcessToken → DuplicateTokenEx
+□ CreateProcessWithTokenW → SYSTEM shell
+```
+
+### 5. 相关
+
+- High Integrity → System（命名管道）：`references/windows-local-privilege-escalation/`
+- Token 窃取后横向：`#secretsdump` / PtH
+- 每次都记 Evidence；提权动作只限授权范围
+
 ## 工具链
 
 | 工具 | 用途 |
