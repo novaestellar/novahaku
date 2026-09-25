@@ -829,15 +829,28 @@ function Start-IdaProService {
         return
     }
 
-    $startScript = $Definition.startScript
-    $shell = Get-PreferredPowerShellPath
-    & $shell -NoProfile -ExecutionPolicy Bypass -File $startScript
-    if ($LASTEXITCODE -ne 0 -and -not (Test-ReverseTcpPort -Port ([int]$Definition.servicePort))) {
-        throw 'Failed to start idapro service.'
+    # IDA Pro ships no headless launcher in this repo. Launch a startScript only
+    # when the manifest actually points at a file that exists; otherwise tell the
+    # operator what to do instead of throwing on a phantom path.
+    $startScript = $null
+    if ($Definition.PSObject.Properties['startScript'] -and -not [string]::IsNullOrWhiteSpace([string]$Definition.startScript)) {
+        $candidate = [string]$Definition.startScript
+        if (Test-Path -LiteralPath $candidate) {
+            $startScript = $candidate
+        }
+    }
+
+    if ($startScript) {
+        $shell = Get-PreferredPowerShellPath
+        & $shell -NoProfile -ExecutionPolicy Bypass -File $startScript
+    }
+    else {
+        Write-Warning "No IDA Pro launcher available in this repo. Start IDA Pro manually and open a target so the MCP plugin listens on 127.0.0.1:$([int]$Definition.servicePort)."
     }
 
     if (-not (Wait-ForPort -Port ([int]$Definition.servicePort) -TimeoutSeconds 45)) {
-        throw 'idapro service did not open port 13337 in time.'
+        Write-Warning "idapro MCP service is not online on port $([int]$Definition.servicePort) yet. Start IDA Pro manually and check the IDA Output window for the [MCP] port= line."
+        return
     }
 }
 
@@ -911,6 +924,29 @@ function Ensure-Capability {
                 throw "$Name was installed, but bootstrap could not resolve the executable in this process."
             }
             return $toolSpec
+        }
+        'android-build-tools' {
+            # zipalign and apksigner ship inside the Android SDK build-tools package;
+            # no standalone installer exists for either one.
+            $toolSpec = Resolve-ReverseToolSpec -Name $Name
+            if ($toolSpec.Available) { return $toolSpec }
+            Ensure-WingetPackage -Id 'Google.AndroidStudio' -Label 'Android Studio (provides SDK build-tools)'
+            $toolSpec = Resolve-ReverseToolSpec -Name $Name
+            if ($toolSpec.Available) { return $toolSpec }
+            $hint = if ($definition.PSObject.Properties['manualInstallHint']) { $definition.manualInstallHint } else { "Install Android SDK build-tools. Docs: $($definition.docsUrl)" }
+            Write-Warning "MANUAL_INSTALL_REQUIRED: $Name — $hint"
+            return $false
+        }
+        'jdk-provided' {
+            # keytool ships with any JDK; no standalone installer exists for it.
+            $toolSpec = Resolve-ReverseToolSpec -Name $Name
+            if ($toolSpec.Available) { return $toolSpec }
+            Ensure-WingetPackage -Id 'Microsoft.OpenJDK.21' -Label 'Microsoft Build of OpenJDK 21 (provides keytool)'
+            $toolSpec = Resolve-ReverseToolSpec -Name $Name
+            if ($toolSpec.Available) { return $toolSpec }
+            $hint = if ($definition.PSObject.Properties['manualInstallHint']) { $definition.manualInstallHint } else { "Install a JDK. Docs: $($definition.docsUrl)" }
+            Write-Warning "MANUAL_INSTALL_REQUIRED: $Name — $hint"
+            return $false
         }
         'npm-mcp' {
             Ensure-NodeRuntime

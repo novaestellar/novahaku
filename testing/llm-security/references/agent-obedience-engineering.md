@@ -29,7 +29,7 @@ WRONG (Agent 忽略):
   → "下一步：运行 bootstrap 安装缺失工具"
 
 CORRECT (Agent 执行):
-  "## 立即执行：运行 `Hermes auto-install` 检查并安装缺失工具
+  "## 立即执行：运行 `scripts/reverse-skill/bootstrap-reverse.ps1` 检查并安装缺失工具
    → 完成后读取 routing.md 确定进入哪个 skill"
   [然后是项目背景和工具列表]
 ```

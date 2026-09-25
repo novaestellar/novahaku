@@ -10,7 +10,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-KALI_BOOTSTRAP="$(cd "$SCRIPT_DIR/../../../kali/scripts" 2>/dev/null && pwd)/Hermes auto-install"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+BOOTSTRAP_SCRIPT="$REPO_ROOT/scripts/reverse-skill/bootstrap-reverse.sh"
 DEFAULT_KEYSTORE="$HOME/.android/debug.keystore"
 
 # ─── 参数 ──────────────────────────────────────────────────────────────────────────
@@ -64,8 +65,8 @@ ensure_tool() {
         return 0
     fi
     echo "INFO: $name 未找到，尝试自动安装..."
-    if [[ -x "$KALI_BOOTSTRAP" ]]; then
-        bash "$KALI_BOOTSTRAP" "$name" --skip-refresh 2>/dev/null || true
+    if [[ -f "$BOOTSTRAP_SCRIPT" ]]; then
+        bash "$BOOTSTRAP_SCRIPT" "$name" --skip-refresh 2>/dev/null || true
     fi
     if ! command -v "$name" &>/dev/null; then
         echo "ERR: $name 不可用。"

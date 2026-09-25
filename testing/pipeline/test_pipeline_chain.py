@@ -39,8 +39,8 @@ import sys
 import tempfile
 from pathlib import Path
 
-NOVAHAKU = Path("D:/Labs/novahaku")
-NOVAXINWEI = Path("D:/Labs/novaxinwei")
+NOVAHAKU = Path(__file__).resolve().parents[2]
+NOVAXINWEI = Path(os.environ.get("NOVAXINWEI_ROOT", str(NOVAHAKU.parent / "novaxinwei")))
 PY = sys.executable
 
 checks: list[tuple[str, bool, str]] = []

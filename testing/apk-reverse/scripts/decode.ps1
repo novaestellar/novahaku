@@ -66,7 +66,7 @@ if (-not (Test-Path -LiteralPath $ApkPath)) {
 
 $jadxSpec = $null
 $apktoolSpec = $null
-$bootstrapScript = Join-Path $PSScriptRoot '..\..\scripts\Hermes auto-install'
+$bootstrapScript = Join-Path $PSScriptRoot '..\..\..\scripts\reverse-skill\bootstrap-reverse.ps1'
 
 if (-not $SkipJadx) {
     $jadxSpec = Resolve-ReverseToolSpec -Name 'jadx'

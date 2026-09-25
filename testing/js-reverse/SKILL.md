@@ -196,10 +196,10 @@ description: 在使用 js-reverse-mcp 做前端 JavaScript 逆向时使用，适
 
 ```powershell
 # 安装并注册 jshookmcp；Codex 可替换为 Claude 或 Both
-powershell -File "<skill-root>\scripts\Hermes auto-install" -Capability @('jshookmcp') -McpHostTarget Codex
+powershell -File "<repo-root>\scripts\reverse-skill\bootstrap-reverse.ps1" -Capability @('jshookmcp') -McpHostTarget Codex
 
 # 注册并启动 anything-analyzer
-powershell -File "<skill-root>\scripts\Hermes auto-install" -Capability @('anything-analyzer') -StartServices -McpHostTarget Codex
+powershell -File "<repo-root>\scripts\reverse-skill\bootstrap-reverse.ps1" -Capability @('anything-analyzer') -StartServices -McpHostTarget Codex
 ```
 
 ### 注意事项

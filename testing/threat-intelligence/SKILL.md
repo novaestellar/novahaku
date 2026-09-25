@@ -64,12 +64,12 @@ Xquik is an independent third-party service. Not affiliated with X Corp. "Twitte
 优先使用 Xquik MCP。运行平台 bootstrap 只会在用户明确选择的 MCP 客户端中登记远程 URL。它不会安装本地桥接、写入密钥或启动后台服务。
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File skills\scripts\Hermes auto-install `
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\reverse-skill\bootstrap-reverse.ps1 `
   -Capability xquik-mcp -McpHostTarget Codex
 ```
 
 ```bash
-bash Hermes auto-install xquik-mcp --mcp-host=codex
+bash scripts/reverse-skill/bootstrap-reverse.sh xquik-mcp --mcp-host=codex
 ```
 
 随后在客户端完成 OAuth。若改用 REST，只从环境或批准的密钥存储读取 `XQUIK_API_KEY`。禁止把密钥写进命令行、配置、报告或证据正文。

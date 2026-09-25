@@ -10,7 +10,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-KALI_BOOTSTRAP="$(cd "$SCRIPT_DIR/../../../kali/scripts" 2>/dev/null && pwd)/Hermes auto-install"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+BOOTSTRAP_SCRIPT="$REPO_ROOT/scripts/reverse-skill/bootstrap-reverse.sh"
 
 # ─── 参数 ──────────────────────────────────────────────────────────────────────────
 
@@ -47,8 +48,8 @@ ensure_frida() {
         return 0
     fi
     echo "INFO: frida 未找到，尝试安装..."
-    if [[ -x "$KALI_BOOTSTRAP" ]]; then
-        bash "$KALI_BOOTSTRAP" frida --skip-refresh 2>/dev/null || true
+    if [[ -f "$BOOTSTRAP_SCRIPT" ]]; then
+        bash "$BOOTSTRAP_SCRIPT" frida --skip-refresh 2>/dev/null || true
     fi
     if ! command -v frida &>/dev/null; then
         echo "ERR: frida 不可用。安装: pip3 install frida-tools"

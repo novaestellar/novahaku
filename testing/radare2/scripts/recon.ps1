@@ -18,7 +18,7 @@ $ErrorActionPreference = 'Stop'
 
 . (Join-Path $PSScriptRoot '..\..\scripts\lib\ToolDiscovery.ps1')
 
-$bootstrapScript = Join-Path $PSScriptRoot '..\..\scripts\Hermes auto-install'
+$bootstrapScript = Join-Path $PSScriptRoot '..\..\..\scripts\reverse-skill\bootstrap-reverse.ps1'
 
 function Get-RequiredToolSpec {
     param(

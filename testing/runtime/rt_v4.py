@@ -20,13 +20,17 @@ import subprocess
 import sys
 import tempfile
 
-T = r"C:\Users\Design\AppData\Local\Temp"
+T = tempfile.gettempdir()
 sp = iu.spec_from_file_location("rtutil", os.path.join(T, "rtutil.py"))
 u = iu.module_from_spec(sp)
 sp.loader.exec_module(u)
 
-NHA = r"C:\Users\Design\AppData\Local\hermes\skills\security\novahaku"
-NX = r"C:\Users\Design\AppData\Local\hermes\skills\web\novaxinwei"
+# Resolve both skill trees from the environment, falling back to the Hermes
+# skills root this file lives under. No machine-specific absolute paths.
+_HERE = os.path.dirname(os.path.abspath(__file__))
+_SKILLS_ROOT = os.environ.get("HERMES_SKILLS_ROOT", os.path.dirname(os.path.dirname(_HERE)))
+NHA = os.path.join(_SKILLS_ROOT, "security", "novahaku")
+NX = os.path.join(_SKILLS_ROOT, "web", "novaxinwei")
 PARENT_NX = os.path.dirname(NX)
 RUNNER = os.path.join(NHA, "scripts", "engage_runner.py")
 PY = sys.executable

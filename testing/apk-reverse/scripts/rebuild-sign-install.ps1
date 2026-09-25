@@ -73,7 +73,7 @@ function Get-ToolPath {
     }
 
     # Attempt auto-bootstrap for supported tools
-    $bootstrapScript = Join-Path $PSScriptRoot '..\..\scripts\Hermes auto-install'
+    $bootstrapScript = Join-Path $PSScriptRoot '..\..\..\scripts\reverse-skill\bootstrap-reverse.ps1'
     $bootstrapSupported = @('adb', 'apktool')
     if ($Name -in $bootstrapSupported -and (Test-Path -LiteralPath $bootstrapScript)) {
         Write-Host "INFO: $Name not found, attempting auto-bootstrap..." -ForegroundColor Yellow

@@ -21,16 +21,15 @@ import sys
 
 EXT = (".md", ".py", ".json", ".yaml", ".yml", ".sh", ".ps1", ".txt")
 
-# Ordered: longest / most specific first so a path rule never loses to a prose rule.
+# Ordered: longest / most specific first so a host rule never loses to a prose rule.
+# A rule whose replacement equals its pattern is a no-op; it inflates the reported
+# count while changing nothing, so only real branding substitutions belong here.
+# "payloads" alone is a generic technical noun (the corpus directory name), not
+# upstream branding, and must not be rewritten.
 RULES: list[tuple[str, str, str]] = [
     # (pattern, replacement, note)
     (r"cloud\.payloads\.wiki", "novalabs.security", "upstream wiki host in cloud notes"),
     (r"book\.payloads\.wiki", "novalabs.security", "upstream book host in DNS notes"),
-    (r"payloads-extras/", "payloads-extras/", "filesystem path — directory is payloads-extras"),
-    (r"payloads-extras", "payloads-extras", "bare directory name"),
-    (r"testing/references/payloads/", "testing/references/payloads/", "filesystem path"),
-    (r"payloads/", "payloads/", "directory name in listings"),
-    (r"payloads", "payloads", "remaining prose, table and heading uses"),
 ]
 
 # A line that is a link target keeps angle brackets intact; nothing else is special.
@@ -42,10 +41,32 @@ def purge(text: str) -> tuple[str, int]:
     return text, n
 
 
+def self_check() -> list[str]:
+    """Report rules that cannot change anything.
+
+    A rule whose replacement equals its pattern is a no-op: it inflates the
+    reported count while changing nothing, which hides real gaps. Only the
+    literal case is checked here; a regex rule is validated by actually running
+    it against a sample, not by comparing the raw pattern text.
+    """
+    problems: list[str] = []
+    for pat, rep, _ in RULES:
+        if pat == rep:
+            problems.append(f"no-op rule (pattern == replacement): {pat!r}")
+    return problems
+
+
 def main(argv: list[str]) -> int:
     args = [a for a in argv[1:] if not a.startswith("--")]
     apply = "--apply" in argv
     root = os.path.abspath(args[0] if args else ".")
+
+    problems = self_check()
+    if problems:
+        for problem in problems:
+            sys.stderr.write(f"purge_branding: {problem}\n")
+        sys.stderr.write("purge_branding: refusing to run with ineffective rules\n")
+        return 2
 
     # Guard: the mapped targets must exist, otherwise a rewrite would point at nothing.
     ref = os.path.join(root, "testing", "references")
@@ -67,7 +88,7 @@ def main(argv: list[str]) -> int:
                 original = open(path, encoding="utf-8").read()
             except (UnicodeDecodeError, OSError):
                 continue
-            if "payloads" not in original:
+            if not any(re.search(pat, original) for pat, _, _ in RULES):
                 continue
             updated, n = purge(original)
             rel = os.path.relpath(path, root).replace("\\", "/")

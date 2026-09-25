@@ -192,7 +192,7 @@ sysmon64.exe -i sysmonconfig.xml
 ### 自举命令
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File "&lt;SKILL_ROOT&gt;\skills\scripts\Hermes auto-install" -Capability @('pe-sieve','syswhispers3','sysmon') -StartServices
+powershell -NoProfile -ExecutionPolicy Bypass -File "&lt;REPO_ROOT&gt;\scripts\reverse-skill\bootstrap-reverse.ps1" -Capability @('pe-sieve','syswhispers3','sysmon') -StartServices
 ```
 
 ## 路由上下文

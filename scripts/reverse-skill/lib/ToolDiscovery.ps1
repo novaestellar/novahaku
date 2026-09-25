@@ -89,20 +89,44 @@ function Get-ReverseToolCatalog {
             Name = 'apksigner'
             Skill = 'apk-reverse'
             Purpose = 'APK 签名'
-            FixedVersion = 'v0.5.0'
-            VersionArgs = @()
+            VersionArgs = @('--version')
             Fallbacks = @(
                 [pscustomobject]@{ Type = 'command'; Value = 'apksigner' }
+                [pscustomobject]@{ Type = 'path'; Value = (Join-Path $localAppData 'Android\Sdk\build-tools\35.0.0\apksigner.bat') }
+                [pscustomobject]@{ Type = 'path'; Value = (Join-Path $localAppData 'Android\Sdk\build-tools\36.0.0\apksigner.bat') }
             )
         }
         [pscustomobject]@{
             Name = 'zipalign'
             Skill = 'apk-reverse'
             Purpose = 'APK 对齐'
-            FixedVersion = 'v0.5.0'
             VersionArgs = @()
             Fallbacks = @(
                 [pscustomobject]@{ Type = 'command'; Value = 'zipalign' }
+                [pscustomobject]@{ Type = 'path'; Value = (Join-Path $localAppData 'Android\Sdk\build-tools\35.0.0\zipalign.exe') }
+                [pscustomobject]@{ Type = 'path'; Value = (Join-Path $localAppData 'Android\Sdk\build-tools\36.0.0\zipalign.exe') }
+            )
+        }
+        [pscustomobject]@{
+            Name = 'keytool'
+            Skill = 'apk-reverse'
+            Purpose = '密钥库与证书管理（随 JDK 提供）'
+            VersionArgs = @('-help')
+            Fallbacks = @(
+                [pscustomobject]@{ Type = 'command'; Value = 'keytool' }
+            )
+        }
+        [pscustomobject]@{
+            Name = 'idat64'
+            Skill = 'ida-reverse'
+            Purpose = 'IDA Pro headless batch driver (idat64 -A -S)'
+            VersionArgs = @('-h')
+            Fallbacks = @(
+                [pscustomobject]@{ Type = 'command'; Value = 'idat64' }
+                [pscustomobject]@{ Type = 'path'; Value = 'C:\Program Files\IDA Professional 9.0\idat64.exe' }
+                [pscustomobject]@{ Type = 'path'; Value = 'C:\Program Files\IDA Professional 9.4\idat64.exe' }
+                [pscustomobject]@{ Type = 'path'; Value = 'C:\Program Files\IDA Pro 9.4\idat64.exe' }
+                [pscustomobject]@{ Type = 'path'; Value = 'C:\Program Files\IDA Pro 9.0\idat64.exe' }
             )
         }
         [pscustomobject]@{
@@ -529,7 +553,50 @@ function Get-ReverseSkillRoot {
     [CmdletBinding()]
     param()
 
+    # $PSScriptRoot is empty when this library is dot-sourced from another script,
+    # which silently resolved the manifest path against the caller's working
+    # directory. $PSCommandPath stays bound to THIS file, so the skill root is
+    # correct no matter who sources us or from where.
+    $candidates = @()
+    if ($PSCommandPath) { $candidates += $PSCommandPath }
+    if ($MyInvocation.MyCommand.Definition) { $candidates += $MyInvocation.MyCommand.Definition }
+    if ($PSScriptRoot) { $candidates += (Join-Path $PSScriptRoot 'ToolDiscovery.ps1') }
+
+    foreach ($candidate in $candidates) {
+        if ([string]::IsNullOrWhiteSpace($candidate)) { continue }
+        $dir = Split-Path -Path $candidate -Parent
+        if ([string]::IsNullOrWhiteSpace($dir)) { continue }
+        $resolved = [System.IO.Path]::GetFullPath((Join-Path $dir '..'))
+        if (Test-Path -LiteralPath (Join-Path $resolved 'bootstrap-manifest.json')) {
+            return $resolved
+        }
+    }
+
+    # Last resort: original behaviour, for callers that provide no path at all.
     return [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..'))
+}
+
+function Get-ReverseRepoRoot {
+    [CmdletBinding()]
+    param()
+
+    $skillRoot = Get-ReverseSkillRoot
+    if ([string]::IsNullOrWhiteSpace($skillRoot)) {
+        return $skillRoot
+    }
+
+    # The skill lives at <repo>/scripts/reverse-skill; walk up until we find the
+    # repo marker rather than assuming a fixed depth.
+    $current = $skillRoot
+    for ($i = 0; $i -lt 4; $i++) {
+        $parent = Split-Path -Path $current -Parent
+        if ([string]::IsNullOrWhiteSpace($parent)) { break }
+        $current = $parent
+        if (Test-Path -LiteralPath (Join-Path $current '.git')) { return $current }
+        if (Test-Path -LiteralPath (Join-Path $current 'SKILL.md')) { return $current }
+    }
+
+    return (Split-Path -Path (Split-Path -Path $skillRoot -Parent) -Parent)
 }
 
 function Resolve-ReversePathTemplate {
@@ -550,6 +617,7 @@ function Resolve-ReversePathTemplate {
         '%APPDATA%' = [string]([Environment]::GetEnvironmentVariable('APPDATA'))
         '%TEMP%' = [string]([Environment]::GetEnvironmentVariable('TEMP'))
         '%SKILL_ROOT%' = Get-ReverseSkillRoot
+        '%REPO_ROOT%' = (Get-ReverseRepoRoot)
     }
 
     foreach ($key in $replacements.Keys) {
@@ -616,7 +684,7 @@ function Get-ReverseBootstrapManifestPath {
     [CmdletBinding()]
     param()
 
-    return Join-Path (Get-ReverseSkillRoot) 'scripts\bootstrap-manifest.json'
+    return Join-Path (Get-ReverseSkillRoot) 'bootstrap-manifest.json'
 }
 
 function Get-ReverseBootstrapCatalog {

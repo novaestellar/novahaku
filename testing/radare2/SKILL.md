@@ -434,7 +434,7 @@ radare2-skills 项目（radareorg/radare2-skills）提供了更完整的生态�
 
 ### 自举触发点
 
-- `scripts/recon.ps1`：缺 `rabin2` 或 `r2` 时自动调用 `Hermes auto-install`
+- `scripts/recon.ps1`：缺 `rabin2` 或 `r2` 时自动调用 `scripts/reverse-skill/bootstrap-reverse.ps1`
 
 ### 自举失败时
 

@@ -837,6 +837,35 @@ ensure_adb() {
   esac
 }
 
+# zipalign and apksigner ship inside the Android SDK build-tools package;
+# there is no standalone package for either one.
+ensure_android_build_tools() {
+  local name="$1"
+  if has_cmd "$name"; then log_ok "$name ready: $(cmd_path "$name")"; return 0; fi
+  case "$PLATFORM" in
+    macos)
+      install_brew android-commandlinetools || true
+      if has_cmd sdkmanager; then yes | sdkmanager --install "build-tools;35.0.0" >/dev/null 2>&1 || true; fi
+      ;;
+    linux)
+      install_apt android-sdk-build-tools || true
+      ;;
+  esac
+  if has_cmd "$name"; then log_ok "$name ready: $(cmd_path "$name")"; return 0; fi
+  manual_required "$name" "Install Android SDK build-tools (provides zipalign and apksigner): https://developer.android.com/tools/releases/build-tools"
+}
+
+# keytool ships inside the JDK; there is no standalone package for it.
+ensure_keytool() {
+  if has_cmd keytool; then log_ok "keytool ready: $(cmd_path keytool)"; return 0; fi
+  case "$PLATFORM" in
+    macos) install_brew openjdk || true ;;
+    linux) install_apt default-jdk-headless || install_apt openjdk-21-jdk-headless || true ;;
+  esac
+  if has_cmd keytool; then log_ok "keytool ready: $(cmd_path keytool)"; return 0; fi
+  manual_required keytool "Install a JDK (keytool ships with it): https://adoptium.net/"
+}
+
 ensure_agent_browser() {
   ensure_node_runtime || return 1
   if has_cmd agent-browser; then log_ok "agent-browser ready"; return 0; fi
@@ -1033,6 +1062,8 @@ ensure_capability() {
     idapro) ensure_idapro ;;
     r2|rabin2) ensure_r2 ;;
     adb) ensure_adb ;;
+    zipalign|apksigner) ensure_android_build_tools "$name" ;;
+    keytool) ensure_keytool ;;
     agent-browser) ensure_agent_browser ;;
     ghidra-mcp) ensure_ghidra_mcp ;;
     seclists) ensure_seclists ;;

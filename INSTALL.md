@@ -114,12 +114,18 @@ NOVAHAKU_ENGAGEMENT_DIR=/path/to/engagements
 
 ### BurpSuite MCP
 1. Install BurpSuite with MCP extension
-2. MCP bridge runs on port 9876
+2. The MCP server listens on port 9876
 3. See `testing/frameworks/burpsuite-mcp/SKILL.md`
 
 ### Anything Analyzer MCP
 1. Server runs on localhost:23816
 2. See `testing/frameworks/anything-analyzer-mcp/SKILL.md`
+
+### Binary Ninja MCP
+1. Install the `binaryninja_ui_mcp` plugin inside Binary Ninja and open a target
+2. The plugin serves MCP natively on `http://127.0.0.1:24642/mcp` (loopback only)
+3. No npm bridge and no separate port are involved
+4. See `testing/binary-ninja-reverse/SKILL.md`
 
 ## Persistent Engagement (cross-session state)
 

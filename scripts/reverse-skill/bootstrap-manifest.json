@@ -80,9 +80,9 @@
       "name": "binaryninja",
       "bootstrapKind": "manual",
       "docsUrl": "https://binary.ninja/",
-      "canAutoInstall": false,
       "verifyCommand": "binaryninja",
-      "manualInstallHint": "Binary Ninja is commercial software. Obtain a valid Vector 35 license and install it manually. Optional community MCP plugins must pass the skill-supply-chain review and remain bound to loopback by default."
+      "manualInstallHint": "Binary Ninja is installed manually. The capability gate for this skill is a running Binary Ninja instance exposing a local MCP endpoint; the skill talks to that endpoint and makes no assumption about which distribution is installed. Keep any MCP plugin bound to loopback.",
+      "canAutoInstall": false
     },
     {
       "name": "reqable-mcp",
@@ -177,7 +177,8 @@
         13350
       ],
       "portNote": "IDA 多实例时端口递增 (13337→13338→...)，检查 IDA Output 窗口的 [MCP] port=xxxxx 日志",
-      "startScript": "%SKILL_ROOT%\\ida-reverse\\scripts\\start.ps1",
+      "headlessExecutable": "idat64",
+      "startScript": "%REPO_ROOT%\\scripts\\reverse-skill\\start-idapro.ps1",
       "docsUrl": "https://hex-rays.com/ida-pro/",
       "canAutoInstall": true,
       "verificationMode": "service-and-registration"
@@ -226,7 +227,7 @@
       "docsUrl": "https://github.com/nicepkg/agent-browser",
       "canAutoInstall": true,
       "verifyCommand": "agent-browser",
-      "setupScript": "%SKILL_ROOT%\\browser-automation\\scripts\\setup.ps1"
+      "setupScript": "%REPO_ROOT%\\testing\\browser-automation\\scripts\\setup.ps1"
     },
     {
       "name": "ghidra-mcp",
@@ -355,6 +356,41 @@
       "verifyCommand": "bkcrack",
       "releaseTag": "v1.8.1",
       "preferApiDigest": true
+    },
+    {
+      "name": "zipalign",
+      "bootstrapKind": "android-build-tools",
+      "providesPackage": "Android SDK build-tools",
+      "docsUrl": "https://developer.android.com/tools/releases/build-tools",
+      "canAutoInstall": true,
+      "verifyCommand": "zipalign",
+      "manualInstallHint": "zipalign ships inside the Android SDK build-tools package. Install build-tools via Android Studio SDK Manager or sdkmanager --install 'build-tools;35.0.0'."
+    },
+    {
+      "name": "apksigner",
+      "bootstrapKind": "android-build-tools",
+      "providesPackage": "Android SDK build-tools",
+      "docsUrl": "https://developer.android.com/tools/releases/build-tools",
+      "canAutoInstall": true,
+      "verifyCommand": "apksigner",
+      "manualInstallHint": "apksigner ships inside the Android SDK build-tools package. Install build-tools via Android Studio SDK Manager or sdkmanager --install 'build-tools;35.0.0'."
+    },
+    {
+      "name": "keytool",
+      "bootstrapKind": "jdk-provided",
+      "providesPackage": "JDK",
+      "docsUrl": "https://adoptium.net/",
+      "canAutoInstall": true,
+      "verifyCommand": "keytool",
+      "manualInstallHint": "keytool ships with any JDK. Install a JDK and ensure its bin directory is on PATH."
+    },
+    {
+      "name": "idat64",
+      "bootstrapKind": "manual",
+      "docsUrl": "https://hex-rays.com/ida-pro/",
+      "canAutoInstall": false,
+      "verifyCommand": "idat64",
+      "manualInstallHint": "idat64 is the IDA Pro headless batch driver and ships with IDA Pro. Install IDA Pro, or set IDA_HOME to the install directory."
     }
   ]
 }
