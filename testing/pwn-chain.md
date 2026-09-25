@@ -5,8 +5,8 @@ version: 1.0.0
 license: MIT
 platforms: [linux, windows]
 metadata:
-  hermes:
-    tags: [pwn, exploit-development, binary-exploitation, ctf, kernel, heap]
+ hermes:
+ tags: [pwn, exploit-development, binary-exploitation, ctf, kernel, heap]
 ---
 
 # Binary Exploitation — From Vulnerability to Working Exploit
@@ -31,42 +31,42 @@ metadata:
 
 ```
 Step 1: Identify Vuln Type + Protections
-   ├─ checksec ./vuln (NX / Canary / PIE / RELRO / Fortify)
-   ├─ file ./vuln + readelf -d ./vuln
-   ├─ Classification: stack overflow / format string / heap (UAF/DF/OF) / integer / race / kernel
-   └─ → Decide which technique to use
+ ├─ checksec ./vuln (NX / Canary / PIE / RELRO / Fortify)
+ ├─ file ./vuln + readelf -d ./vuln
+ ├─ Classification: stack overflow / format string / heap (UAF/DF/OF) / integer / race / kernel
+ └─ → Decide which technique to use
 
 Step 2: Choose Exploit Strategy
-   ├─ NX off + no ASLR → direct shellcode
-   ├─ NX on + libc given → ret2libc / one_gadget
-   ├─ NX on + no libc → leak then libc-database reverse lookup
-   ├─ Heap → match glibc version (tcache/fastbin/unsorted/large)
-   └─ Kernel → commit_creds / modprobe_path / core_pattern
+ ├─ NX off + no ASLR → direct shellcode
+ ├─ NX on + libc given → ret2libc / one_gadget
+ ├─ NX on + no libc → leak then libc-database reverse lookup
+ ├─ Heap → match glibc version (tcache/fastbin/unsorted/large)
+ └─ Kernel → commit_creds / modprobe_path / core_pattern
 
 Step 3: Prepare libc + gadgets
-   ├─ libc-database: ./find puts 0x6f0
-   ├─ ROPgadget --binary ./libc.so.6 --only "pop|ret"
-   ├─ one_gadget ./libc.so.6
-   └─ Calculate base: leak_addr - libc.sym['puts']
+ ├─ libc-database: ./find puts 0x6f0
+ ├─ ROPgadget --binary ./libc.so.6 --only "pop|ret"
+ ├─ one_gadget ./libc.so.6
+ └─ Calculate base: leak_addr - libc.sym['puts']
 
 Step 4: Write pwntools template (local process)
-   ├─ context.binary = ELF('./vuln')
-   ├─ p = process('./vuln') / p = gdb.debug('./vuln','b *main+xx')
-   ├─ payload = cyclic(N) + p64(ret) + ...
-   └─ p.interactive()
+ ├─ context.binary = ELF('./vuln')
+ ├─ p = process('./vuln') / p = gdb.debug('./vuln','b *main+xx')
+ ├─ payload = cyclic(N) + p64(ret) + ...
+ └─ p.interactive
 
 Step 5: Local success
-   ├─ Attach + inspect registers + adjust offsets
-   ├─ Use pwndbg/GEF vmmap / heap / bins / telescope
-   └─ After local success, switch to remote()
+ ├─ Attach + inspect registers + adjust offsets
+ ├─ Use pwndbg/GEF vmmap / heap / bins / telescope
+ └─ After local success, switch to remote
 
 Step 6: Remote stabilization
-   ├─ libc offset: use leak + libc-database, don't guess
-   ├─ Stack alignment: 16-byte misalignment → movaps crash → add ret gadget
-   ├─ Remote latency: recvuntil with exact anchors, no fuzzy sleep
-   ├─ Remote buffering: sendlineafter more stable than sendline
-   ├─ Heap spray: increase spray count + padding chunks to prevent consolidation
-   └─ Run 20+ times: verify success rate ≥ 95%
+ ├─ libc offset: use leak + libc-database, don't guess
+ ├─ Stack alignment: 16-byte misalignment → movaps crash → add ret gadget
+ ├─ Remote latency: recvuntil with exact anchors, no fuzzy sleep
+ ├─ Remote buffering: sendlineafter more stable than sendline
+ ├─ Heap spray: increase spray count + padding chunks to prevent consolidation
+ └─ Run 20+ times: verify success rate ≥ 95%
 ```
 
 ## Scenarios
@@ -129,7 +129,7 @@ Strategy:
 
 ## References
 
-See `novahaku/testing/references/hacktricks/` for:
+See `novahaku/testing/references/this collection/` for:
 - `Methoden Methoden.html#stack-based-buffer-overflow` — stack overflow methodology
 - `Methoden Methoden.html#ret2libc` — ret2libc technique
 - `Methoden Methoden.html#ret2csu` — __libc_csu_init universal gadget

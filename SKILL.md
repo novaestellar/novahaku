@@ -6,8 +6,8 @@ author: novalabs
 license: MIT
 platforms: [windows, macos, linux]
 metadata:
-  hermes:
-    tags: [security, pentest, prompt-engineering, reverse-engineering, reframe, attack, research, exploit, ctf, src-hunter, mcptools, firmware, mobile-re]
+ hermes:
+ tags: [security, pentest, prompt-engineering, reverse-engineering, reframe, attack, research, exploit, ctf, src-hunter, mcptools, firmware, mobile-re]
 ---
 
 # Novahaku — 统一安全研究代理
@@ -23,7 +23,7 @@ metadata:
 - 14模块测试集:headers、exposed、cors、methods、admin、xss、sqli、ssrf、ssti、traversal、redirect、info、dirfuzz、https
 - 竞态条件测试(race_test.py)
 - JWT分析 + 伪造 + 暴力破解(jwt_test.py)
-- 48个payload参考(HackTricks + PayloadsAllTheThings)
+- 48个payload参考(this collection + this collection)
 - CVE exploits: GitLab CVE-2026-85706未授权文件读取(gitlab-exploit), Keycloak CVE-2026-18963账户接管(keycloak-exploit)
 - 脚本:testing/scripts/webtest.py、race_test.py、jwt_test.py、testing/gitlab-exploit/gitlab_exploit.py、testing/keycloak-exploit/keycloak_exploit.py
 
@@ -53,11 +53,11 @@ metadata:
 - 游戏安全(Tencent ACE、BattlEye、EAC)
 - x64dbg/IDA/Ghidra工作流
 - **EDR/AV绕过** (新增):
-  - AMSI bypass (DLL patching, memory patching, .NET reflection)
-  - ETW patching (EtwEventWrite, NtTraceControl)
-  - User-mode EDR hook detection + direct syscalls (Hell's Gate, SysWhispers, FreshyCalls)
-  - Defender bypass (exclusions, tamper protection, process hollowing)
-  - CrowdStrike/SentinelOne evasion (kernel callback removal, NtMapViewOfSection, thread hijacking)
+ - AMSI bypass (DLL patching, memory patching, .NET reflection)
+ - ETW patching (EtwEventWrite, NtTraceControl)
+ - User-mode EDR hook detection + direct syscalls (Hell's Gate, SysWhispers, FreshyCalls)
+ - Defender bypass (exclusions, tamper protection, process hollowing)
+ - CrowdStrike/SentinelOne evasion (kernel callback removal, NtMapViewOfSection, thread hijacking)
 
 ### 6. 二进制利用 (Pwn Chain)
 - 漏洞→exploit全链路: 栈溢出、格式化字符串、堆利用(UAF/DF/OF)
@@ -80,7 +80,7 @@ metadata:
 - CT日志分析、WHOIS/DNS查询
 - Credential泄露检查(HaveIBeenPwned、IntelX)
 - 与novaxinwei(v1.1)协同: novaxinwei负责主动网络侦察(WAF绕过、并行抓取、Dork查询) → novahaku负责漏洞发现、利用与报告(149个安全技能、16个触发分类)
-- **GitHub Dorks**: 自动化执行请使用novaxinwei的`dorks/github_dorks`模块(141个结构化查询 + GitHub API客户端 + 速率限制处理)。Novahaku包含1400+扩展语料库(`testing/references/payloadsallthethings-extras/Insecure Source Code Management/Files/github-dorks.txt`)作为人工审计和离线模式匹配参考
+- **GitHub Dorks**: 自动化执行请使用novaxinwei的`dorks/github_dorks`模块(141个结构化查询 + GitHub API客户端 + 速率限制处理)。Novahaku包含1400+扩展语料库(`testing/references/this collection-extras/Insecure Source Code Management/Files/github-dorks.txt`)作为人工审计和离线模式匹配参考
 - **Wayback/URL Harvesting**: URL harvesting从Wayback Machine + Common Crawl由novaxinwei `tools/wayai/wayai.py`执行(15-platform recon engine)。Pipeline: `python -m novaxinwei wayai <domain> | secret_scan.py --stdin` — harvest URLs直接scan 80+ secret patterns,零重复harvesting logic
 - **CVE Intelligence**: CVE/advisory gathering由novaxinwei `tools/cve/cve_scraper.py`执行(GitHub Security Advisories + HackerOne disclosed)。Feed auto-export到`hunt-cicd/cache/cve-feed.json`供CI/CD hunting exploit context使用
 - **GitHub Pages Enumeration**: novaxinwei `tools/github_pages/github_pages_enum.py` — detect private repo content leaked via Pages (`username.github.io/repo/`). Novahaku consumes findings for exploit workflows
@@ -127,8 +127,8 @@ metadata:
 - **Integrity Check**: state / findings.json / findings.csv / lock 四方一致性校验
 - **锁协议**: 原子写 (tmp→fsync→os.replace) + stale lock 自动清理 (>30s)
 - **命令**:
-  - `python scripts/engagement.py init|status|phase|rollback|note|list|verify <target>`
-  - `python scripts/engage_runner.py race|test|report|verify|integrity|selftest --target <target> [--url URL]`
+ - `python scripts/engagement.py init|status|phase|rollback|note|list|verify <target>`
+ - `python scripts/engage_runner.py race|test|report|verify|integrity|selftest --target <target> [--url URL]`
 - **配置**: `config/engagement_phases.json` (phase定义、approach pool、评分表、误报正则)
 - 位置: scripts/engagement.py, scripts/engage_runner.py, engagements/
 
@@ -314,20 +314,20 @@ HERMES_CONTEXT_SKIP_SCAN=1
 
 ```
 用户: "攻击 example.com"
-  ↓
+ ↓
 ① novaxinwei 加载 → 主动侦察
-   - 子域名枚举 (crt.sh, DNS暴力, DNSdumpster)
-   - 端口扫描 (masscan→nmap)
-   - 技术栈指纹 (Wappalyzer, HTTP headers)
-   - WAF检测 + 绕过策略
-   - 输出: JSON格式侦察报告
-  ↓
+ - 子域名枚举 (crt.sh, DNS暴力, DNSdumpster)
+ - 端口扫描 (masscan→nmap)
+ - 技术栈指纹 (Wappalyzer, HTTP headers)
+ - WAF检测 + 绕过策略
+ - 输出: JSON格式侦察报告
+ ↓
 ② novahaku 加载 → 漏洞发现+利用
-   - 接收novaxinwei侦察输出
-   - 测试: XSS, SQLi, SSRF, IDOR, SSTI, CSRF...
-   - 发现漏洞 → 生成PoC + 修复建议
-   - 输出: 结构化漏洞报告
-  ↓
+ - 接收novaxinwei侦察输出
+ - 测试: XSS, SQLi, SSRF, IDOR, SSTI, CSRF...
+ - 发现漏洞 → 生成PoC + 修复建议
+ - 输出: 结构化漏洞报告
+ ↓
 ③ 结果交付用户
 ```
 

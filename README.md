@@ -3,8 +3,8 @@
 > **统一安全研究代理 — Web测试 · 提示工程 · 攻击框架 · 逆向工程 · 请求重构 · EDR绕过 · OSINT · 二进制利用 · CTF竞赛 · 源码猎人 · MCP工具集成
 
 <p align="center">
-  <strong>Agent: Haku</strong><br>
-  锐利、优雅、直接 — 尊重用户,对抗目标
+ <strong>Agent: Haku</strong><br>
+ 锐利、优雅、直接 — 尊重用户,对抗目标
 </p>
 
 ---
@@ -21,7 +21,7 @@ Novahaku 是一个统一的安全研究代理,整合了 **12大核心能力** �
 |------|------|
 | 🎯 12大能力域 | Web测试、提示工程、攻击框架、重构引擎、Windows逆向/游戏安全/EDR绕过、二进制利用、身份与人格、OSINT侦察、逆向工程、CTF竞赛、源码猎人、MCP集成 |
 | 🔄 自动检测 | 根据用户意图自动加载对应技能模块 |
-| 🛡️ 完整安全工具链 | 159个PayloadsAllTheThings攻击向量 + 54个Hunt Playbooks + 9个审计框架 + 38个CTF竞赛模块 |
+| 🛡️ 完整安全工具链 | 159个this collection攻击向量 + 54个Hunt Playbooks + 9个审计框架 + 38个CTF竞赛模块 |
 | 🧠 121项提示技术 | 7大分类,7阶段方法论 |
 | 🔐 4级锁定命令 | Basic(85%) → Double(92%) → GodMode(88%) → Triple(95%) |
 | 📊 训练与基准测试 | 内置基准测试框架,验证技能效果 |
@@ -121,8 +121,8 @@ headers → exposed → cors → methods → admin → xss → sqli
 - `jwt_test.py` — JWT分析 + 爆破
 
 **参考库:**
-- HackTricks (29个漏洞类型)
-- PayloadsAllTheThings (159个攻击向量)
+- this collection (29个漏洞类型)
+- this collection (159个攻击向量)
 - Bug Bounty参考 (XSS/SQLi/SSRF)
 
 ### 2. 提示工程 (121项技术)
@@ -306,10 +306,10 @@ checksec → 漏洞分类 → 保护检测 → 策略选择 → libc/gadget准�
 ```json
 // full_lock.conf — 4级锁定强度
 {
-  "basic": 85%,    // 基础边界突破
-  "double": 92%,   // 双重锁定
-  "godmode": 88%,  // 上帝模式
-  "triple": 95%    // 三重锁定
+ "basic": 85%, // 基础边界突破
+ "double": 92%, // 双重锁定
+ "godmode": 88%, // 上帝模式
+ "triple": 95% // 三重锁定
 }
 ```
 
@@ -349,148 +349,148 @@ checksec → 漏洞分类 → 保护检测 → 策略选择 → libc/gadget准�
 
 ```
 novahaku/
-├── SOUL.md                          # Agent身份定义 + 行为规则
-├── SKILL.md                         # 技能元数据
-├── README.md                        # 本文件
-├── LICENSE                          # MIT许可证
-├── attack/                          # 攻击框架
-│   ├── attack-flow/                 # 5个注入面分析
-│   │   ├── 01-claudemd-injection.md
-│   │   ├── 02-systemprompt-injection.md
-│   │   ├── 03-clinerules-injection.md
-│   │   ├── 04-continue-md-injection.md
-│   │   └── 05-cross-model-evals.md
-│   ├── config/prefill.json          # 预填充配置
-│   └── test/test-novahaku.py       # 验证测试
-├── config/                          # 配置文件
-│   ├── full_lock.conf               # 锁定配置
-│   ├── locks.py                     # 锁定命令
-│   ├── system-prompt.txt            # 系统提示文本
-│   └── TRIGGER_MAP.json             # 触发映射
-├── identity/                        # 身份数据
-│   ├── few-shots-primary.md         # 1718个少样本示例
-│   ├── terms.md                     # 278个术语映射
-│   └── novahaku-files/              # 配置参考
-├── reframe/                         # 请求重构
-│   └── reframe_cli.py              # 重构引擎工具
-├── scripts/deploy/                  # 部署脚本
-│   ├── install.ps1                  # Windows安装
-│   ├── install.sh                   # Linux/macOS安装
-│   └── install.command              # macOS终端安装
-├── scripts/hermes-patch/            # 本地 Hermes 护栏补丁(仅本地,不参与路由)
-│   ├── hermes_patch.py              # 可逆补丁工具 (--check/--apply/--verify/--restore)
-│   ├── run-hermes-patch.ps1         # Windows 包装脚本
-│   ├── run-hermes-patch.sh          # Linux/macOS 包装脚本
-│   ├── test-hermes-patch.sh         # 31 项断言的完整周期测试
-│   └── README.md                    # 作用域、安全属性、回滚流程
-├── techniques/                      # 提示工程技术
-│   ├── flow.md                      # 流程文档
-│   ├── loader.py                    # 载荷加载器
-│   ├── methods/                     # 121项技术
-│   │   ├── 01-boundary/ (16)
-│   │   ├── 02-priming/ (15)
-│   │   ├── 03-identity/ (15)
-│   │   ├── 04-encoding/ (15)
-│   │   ├── 05-multi-provider/ (15)
-│   │   ├── 06-iterative/ (15)
-│   │   └── 07-stream/ (15)
-│   ├── payload/                     # 载荷数据
-│   │   ├── payload.json             # 225KB加密载荷库
-│   │   └── vault.dat                # AES-256-GCM加密
-│   ├── templates/                   # 技术模板
-│   └── workers/                     # 工作者模块 (7个, techniques/workers/)
-├── templates/                       # 操作模板
-├── docs/                            # 操作合约 + 路由文档 + 报告模板
-│   ├── MASTER-ROUTING.md            # 三轴路由协议
-│   ├── routing-3axis.md             # 路由架构文档
-│   ├── routing_zh.md                # 路由文档(中文)
-│   ├── CONTRIBUTING.md              # 贡献指南
-│   ├── ops/                         # 操作合约
-│   ├── examples/                    # 示例文档
-│   └── skill-references/            # 技能参考
-├── tests/                           # 路由基准测试
-│   └── routing-benchmark.json       # 390个路由用例
-├── engagements/                     # 渗透测试 engagements
-├── testing/                         # Web测试 + 安全猎杀 + OSINT + Pwn
-│   ├── scripts/                     # 自动化脚本
-│   │   ├── webtest.py               # 14模块Web扫描器
-│   │   ├── race_test.py             # 竞态测试
-│   │   ├── jwt_test.py              # JWT测试
-│   │   └── exploits/                # 10个漏洞利用脚本
-│   ├── hunt/                        # 54个漏洞猎杀剧本
-│   │   ├── bb-methodology/
-│   │   ├── bug-bounty/
-│   │   ├── hunt-xss/
-│   │   ├── hunt-sqli/
-│   │   ├── hunt-ssrf/
-│   │   ├── hunt-rce/
-│   │   ├── hunt-idor/
-│   │   ├── ... (共54个)
-│   │   └── report-writing/
-│   ├── frameworks/                  # 9个审计框架
-│   │   ├── advanced-hunt/
-│   │   ├── baas/
-│   │   ├── bughunt/
-│   │   ├── laravel/
-│   │   ├── nextjs/
-│   │   ├── supabase-audit/
-│   │   ├── burpsuite-mcp/
-│   ├── anything-analyzer-mcp/
-│   └── turnstile/
-│   ├── offensive-osint/             # OSINT被动侦察军火库
-│   │   ├── SKILL.md                 # 4700+行完整OSINT参考
-│   │   └── scripts/secret_scan.py   # 密钥扫描脚本
-│   ├── osint-methodology/           # OSINT方法论
-│   ├── identity-provider-recon/     # SSO/IdP侦察
-│   ├── org-attack-surface/          # 组织攻击面映射
-│   ├── cloud-saas-exposure/         # 云/SaaS暴露
-│   ├── email-domain-security/       # 邮件域安全分析
-│   ├── continuous-exposure-monitoring/ # 持续暴露监控
-│   ├── exposure-risk-quantification/ # 风险量化
-│   ├── pwn-chain.md                 # 二进制利用链 (stack/heap/kernel pwn)
-│   ├── web2-recon/                  # Web2侦察引擎
-│   ├── wordlists/                   # 字典文件
-│   │   ├── api-endpoints.txt
-│   │   ├── common.txt
-│   │   ├── bypass-headers.txt
-│   │   └── ...
-│   └── references/                  # 漏洞引用库
-│       ├── hacktricks/ (29)
-│       ├── payloadsallthethings/ (78个攻击向量类别)
-│       │   ├── Account Takeover/
-│       │   ├── API Key Leaks/
-│       │   ├── Command Injection/
-│       │   ├── CORS Misconfiguration/
-│       │   ├── CSRF/
-│       │   ├── CVE Exploits/
-│       │   ├── Directory Traversal/
-│       │   ├── File Inclusion/
-│       │   ├── GraphQL Injection/
-│       │   ├── Insecure Deserialization/
-│       │   ├── JWT/
-│       │   ├── LDAP Injection/
-│       │   ├── NoSQL Injection/
-│       │   ├── OAuth Misconfiguration/
-│       │   ├── Open Redirect/
-│       │   ├── Race Condition/
-│       │   ├── Request Smuggling/
-│       │   ├── Server Side Template Injection/
-│       │   ├── Server Side Request Forgery/
-│       │   ├── SQL Injection/
-│       │   ├── SSRF/
-│       │   ├── SSTI/
-│       │   ├── XSS Injection/
-│       │   ├── XXE Injection/
-│       │   ├── ... (共63个类别)
-│       │   └── Zip Slip/
-│       ├── payloadsallthethings-extras/ (51个额外参考)
-│       └── misc/
-├── train/                           # 训练与基准
-│   ├── train.py                     # 训练脚本
-│   └── benchmarks/
-│       └── training_results.json
-└── windows-re/                      # Windows逆向工程 + EDR绕过
-    └── windows-re.md               # Ring3逆向 + AMSI/ETW/CrowdStrike绕过
+├── SOUL.md # Agent身份定义 + 行为规则
+├── SKILL.md # 技能元数据
+├── README.md # 本文件
+├── LICENSE # MIT许可证
+├── attack/ # 攻击框架
+│ ├── attack-flow/ # 5个注入面分析
+│ │ ├── 01-claudemd-injection.md
+│ │ ├── 02-systemprompt-injection.md
+│ │ ├── 03-clinerules-injection.md
+│ │ ├── 04-continue-md-injection.md
+│ │ └── 05-cross-model-evals.md
+│ ├── config/prefill.json # 预填充配置
+│ └── test/test-novahaku.py # 验证测试
+├── config/ # 配置文件
+│ ├── full_lock.conf # 锁定配置
+│ ├── locks.py # 锁定命令
+│ ├── system-prompt.txt # 系统提示文本
+│ └── TRIGGER_MAP.json # 触发映射
+├── identity/ # 身份数据
+│ ├── few-shots-primary.md # 1718个少样本示例
+│ ├── terms.md # 278个术语映射
+│ └── novahaku-files/ # 配置参考
+├── reframe/ # 请求重构
+│ └── reframe_cli.py # 重构引擎工具
+├── scripts/deploy/ # 部署脚本
+│ ├── install.ps1 # Windows安装
+│ ├── install.sh # Linux/macOS安装
+│ └── install.command # macOS终端安装
+├── scripts/hermes-patch/ # 本地 Hermes 护栏补丁(仅本地,不参与路由)
+│ ├── hermes_patch.py # 可逆补丁工具 (--check/--apply/--verify/--restore)
+│ ├── run-hermes-patch.ps1 # Windows 包装脚本
+│ ├── run-hermes-patch.sh # Linux/macOS 包装脚本
+│ ├── test-hermes-patch.sh # 31 项断言的完整周期测试
+│ └── README.md # 作用域、安全属性、回滚流程
+├── techniques/ # 提示工程技术
+│ ├── flow.md # 流程文档
+│ ├── loader.py # 载荷加载器
+│ ├── methods/ # 121项技术
+│ │ ├── 01-boundary/ (16)
+│ │ ├── 02-priming/ (15)
+│ │ ├── 03-identity/ (15)
+│ │ ├── 04-encoding/ (15)
+│ │ ├── 05-multi-provider/ (15)
+│ │ ├── 06-iterative/ (15)
+│ │ └── 07-stream/ (15)
+│ ├── payload/ # 载荷数据
+│ │ ├── payload.json # 225KB加密载荷库
+│ │ └── vault.dat # AES-256-GCM加密
+│ ├── templates/ # 技术模板
+│ └── workers/ # 工作者模块 (7个, techniques/workers/)
+├── templates/ # 操作模板
+├── docs/ # 操作合约 + 路由文档 + 报告模板
+│ ├── MASTER-ROUTING.md # 三轴路由协议
+│ ├── routing-3axis.md # 路由架构文档
+│ ├── routing_zh.md # 路由文档(中文)
+│ ├── CONTRIBUTING.md # 贡献指南
+│ ├── ops/ # 操作合约
+│ ├── examples/ # 示例文档
+│ └── skill-references/ # 技能参考
+├── tests/ # 路由基准测试
+│ └── routing-benchmark.json # 390个路由用例
+├── engagements/ # 渗透测试 engagements
+├── testing/ # Web测试 + 安全猎杀 + OSINT + Pwn
+│ ├── scripts/ # 自动化脚本
+│ │ ├── webtest.py # 14模块Web扫描器
+│ │ ├── race_test.py # 竞态测试
+│ │ ├── jwt_test.py # JWT测试
+│ │ └── exploits/ # 10个漏洞利用脚本
+│ ├── hunt/ # 54个漏洞猎杀剧本
+│ │ ├── bb-methodology/
+│ │ ├── bug-bounty/
+│ │ ├── hunt-xss/
+│ │ ├── hunt-sqli/
+│ │ ├── hunt-ssrf/
+│ │ ├── hunt-rce/
+│ │ ├── hunt-idor/
+│ │ ├── ... (共54个)
+│ │ └── report-writing/
+│ ├── frameworks/ # 9个审计框架
+│ │ ├── advanced-hunt/
+│ │ ├── baas/
+│ │ ├── bughunt/
+│ │ ├── laravel/
+│ │ ├── nextjs/
+│ │ ├── supabase-audit/
+│ │ ├── burpsuite-mcp/
+│ ├── anything-analyzer-mcp/
+│ └── turnstile/
+│ ├── offensive-osint/ # OSINT被动侦察军火库
+│ │ ├── SKILL.md # 4700+行完整OSINT参考
+│ │ └── scripts/secret_scan.py # 密钥扫描脚本
+│ ├── osint-methodology/ # OSINT方法论
+│ ├── identity-provider-recon/ # SSO/IdP侦察
+│ ├── org-attack-surface/ # 组织攻击面映射
+│ ├── cloud-saas-exposure/ # 云/SaaS暴露
+│ ├── email-domain-security/ # 邮件域安全分析
+│ ├── continuous-exposure-monitoring/ # 持续暴露监控
+│ ├── exposure-risk-quantification/ # 风险量化
+│ ├── pwn-chain.md # 二进制利用链 (stack/heap/kernel pwn)
+│ ├── web2-recon/ # Web2侦察引擎
+│ ├── wordlists/ # 字典文件
+│ │ ├── api-endpoints.txt
+│ │ ├── common.txt
+│ │ ├── bypass-headers.txt
+│ │ └── ...
+│ └── references/ # 漏洞引用库
+│ ├── this collection/ (29)
+│ ├── this collection/ (78个攻击向量类别)
+│ │ ├── Account Takeover/
+│ │ ├── API Key Leaks/
+│ │ ├── Command Injection/
+│ │ ├── CORS Misconfiguration/
+│ │ ├── CSRF/
+│ │ ├── CVE Exploits/
+│ │ ├── Directory Traversal/
+│ │ ├── File Inclusion/
+│ │ ├── GraphQL Injection/
+│ │ ├── Insecure Deserialization/
+│ │ ├── JWT/
+│ │ ├── LDAP Injection/
+│ │ ├── NoSQL Injection/
+│ │ ├── OAuth Misconfiguration/
+│ │ ├── Open Redirect/
+│ │ ├── Race Condition/
+│ │ ├── Request Smuggling/
+│ │ ├── Server Side Template Injection/
+│ │ ├── Server Side Request Forgery/
+│ │ ├── SQL Injection/
+│ │ ├── SSRF/
+│ │ ├── SSTI/
+│ │ ├── XSS Injection/
+│ │ ├── XXE Injection/
+│ │ ├── ... (共63个类别)
+│ │ └── Zip Slip/
+│ ├── this collection-extras/ (51个额外参考)
+│ └── misc/
+├── train/ # 训练与基准
+│ ├── train.py # 训练脚本
+│ └── benchmarks/
+│ └── training_results.json
+└── windows-re/ # Windows逆向工程 + EDR绕过
+ └── windows-re.md # Ring3逆向 + AMSI/ETW/CrowdStrike绕过
 ```
 
 ---
@@ -548,7 +548,7 @@ one_gadget libc.so.6
 cat ~/.hermes/skills/security/novahaku/windows-re/windows-re.md
 
 # AMSI快速绕过补丁 (PowerShell)
-# [Runtime.InteropServices.Marshal]::Copy([byte[]]@(0xB8,0x57,0x00,0x07,0x80,0xC3), 0, 6, $addr)
+# [Runtime.InteropServices.Marshal]::Copy([byte]@(0xB8,0x57,0x00,0x07,0x80,0xC3), 0, 6, $addr)
 ```
 
 ### OSINT被动侦察
@@ -576,7 +576,7 @@ python -m novaxinwei fetch-parallel url1 url2 url3 --workers 5
 
 | 能力域 | 技术数 | 自动化脚本 | 参考库 |
 |--------|--------|------------|--------|
-| Web测试 | 14模块 | 3 | 63个PayloadsAllTheThings向量 |
+| Web测试 | 14模块 | 3 | 63个this collection向量 |
 | 提示工程 | 121 | — | 7阶段方法论 |
 | 攻击框架 | 5注入面 | 1 | v41文言提示 |
 | 请求重构 | 48映射 | 1 | 输出合同 |
@@ -595,22 +595,22 @@ python -m novaxinwei fetch-parallel url1 url2 url3 --workers 5
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                    攻击链工作流                            │
-│                                                         │
-│  NovaXinWei (侦察层)          Novahaku (利用层)          │
-│  ┌──────────────────┐        ┌──────────────────┐       │
-│  │ 15通道异步抓取    │  JSON  │ 漏洞测试         │       │
-│  │ WAF绕过链        │ ─────→ │ 54个Hunt Playbook│       │
-│  │ Shodan/GitHub    │        │ 63个攻击向量      │       │
-│  │ Dork数据库       │        │ 9个审计框架       │       │
-│  │ TLS指纹模拟      │        │ EDR绕过          │       │
-│  │ curl_cffi+PW    │        │ Pwn Chain        │       │
-│  └──────────────────┘        └──────────────────┘       │
-│                                                         │
-│  Phase 0: API路由 (15平台)                               │
-│  Phase 1: URL变换 (mobile/RSS/JSON)                     │
-│  Phase 2: TLS模拟 (curl_cffi, 3x重试)                   │
-│  Phase 3: Playwright兜底                                │
+│ 攻击链工作流 │
+│ │
+│ NovaXinWei (侦察层) Novahaku (利用层) │
+│ ┌──────────────────┐ ┌──────────────────┐ │
+│ │ 15通道异步抓取 │ JSON │ 漏洞测试 │ │
+│ │ WAF绕过链 │ ─────→ │ 54个Hunt Playbook│ │
+│ │ Shodan/GitHub │ │ 63个攻击向量 │ │
+│ │ Dork数据库 │ │ 9个审计框架 │ │
+│ │ TLS指纹模拟 │ │ EDR绕过 │ │
+│ │ curl_cffi+PW │ │ Pwn Chain │ │
+│ └──────────────────┘ └──────────────────┘ │
+│ │
+│ Phase 0: API路由 (15平台) │
+│ Phase 1: URL变换 (mobile/RSS/JSON) │
+│ Phase 2: TLS模拟 (curl_cffi, 3x重试) │
+│ Phase 3: Playwright兜底 │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -656,7 +656,7 @@ python tools/cve/export_to_novahaku.py
 
 # Pipeline 2: Wayback URL → 秘密扫描
 python tools/wayai/wayai.py --domain target.com | \
-  python ~/.hermes/skills/security/novahaku/testing/offensive-osint/scripts/secret_scan.py --stdin
+ python ~/.hermes/skills/security/novahaku/testing/offensive-osint/scripts/secret_scan.py --stdin
 
 # Pipeline 3: GitHub Pages 私有仓库泄露检测
 python tools/github_pages/github_pages_enum.py --username victim-org --repos api,config
@@ -708,16 +708,16 @@ init → recon → race → test → exploit → report → closed
 
 ```
 engagements/<target>/
-├── state.json          # 阶段、统计、race 结果、备注
-├── recon.json          # 可选 — 入站:novaxinwei 侦察输出 (ReconReader 读取)
-├── chain.json          # 双向:谁先开始、谁最后贡献 (schema novalabs.chain.v1)
-├── results.json        # 出站:发布给 novaxinwei 读取 (schema novaxinwei.results.v1)
-├── results.csv         # 出站:扁平 CSV 孪生
-├── report.md           # report 阶段生成
+├── state.json # 阶段、统计、race 结果、备注
+├── recon.json # 可选 — 入站:novaxinwei 侦察输出 (ReconReader 读取)
+├── chain.json # 双向:谁先开始、谁最后贡献 (schema novalabs.chain.v1)
+├── results.json # 出站:发布给 novaxinwei 读取 (schema novaxinwei.results.v1)
+├── results.csv # 出站:扁平 CSV 孪生
+├── report.md # report 阶段生成
 └── findings/
-    ├── findings.csv    # 兼容 findings_gen.py header
-    ├── findings.json   # 结构化记录 + 评分
-    └── candidates.json # race 原始结果
+ ├── findings.csv # 兼容 findings_gen.py header
+ ├── findings.json # 结构化记录 + 评分
+ └── candidates.json # race 原始结果
 ```
 
 **跨技能文件契约 (Crossref contract)**
@@ -727,13 +727,13 @@ engagements/<target>/
 
 | 文件 | 方向 | 写入方 | 读取方 | Schema |
 |---|---|---|---|---|
-| `recon.json` | novaxinwei → novahaku | novaxinwei | `engage_runner.read_recon()` / `ReconReader` | `1.0` |
-| `results.json` | novahaku → novaxinwei | `engage_runner.publish_results()` | `novaxinwei/engine/results_reader.py` | `novaxinwei.results.v1` |
+| `recon.json` | novaxinwei → novahaku | novaxinwei | `engage_runner.read_recon` / `ReconReader` | `1.0` |
+| `results.json` | novahaku → novaxinwei | `engage_runner.publish_results` | `novaxinwei/engine/results_reader.py` | `novaxinwei.results.v1` |
 | `chain.json` | 双向 | 双方各自实现 | 双方各自实现 | `novalabs.chain.v1` |
 
 `results.json` 的 envelope 与 `recon.json` 同形:`version` / `target` / `timestamp` / `source`,
 载荷放在 `engagement` 与 `results` 下。注意 `by_severity` 的键是**小写**
-(`{"high": 1, "low": 1}`),而 `findings[].severity` 保留原始大小写 (`"High"`) —— 两者不一致,
+(`{"high": 1, "low": 1}`),而 `findings.severity` 保留原始大小写 (`"High"`) —— 两者不一致,
 消费方不要拿它们直接比对。novaxinwei 侧有 10 个只读访问器
 (`read_results`、`results_exist`、`results_version`、`get_findings`、
 `get_finding_titles`、`get_severity_counts`、`get_phase`、`get_stats`、
@@ -741,7 +741,7 @@ engagements/<target>/
 全部保证不抛异常:文件缺失、损坏、是二进制、是非 dict JSON、是 `null` 都返回
 `None` / 空值,而不是让调用方处理 IOError。
 
-`publish_results()` 写入后会调用 `record_chain(target, "results_written", "results.json")`;
+`publish_results` 写入后会调用 `record_chain(target, "results_written", "results.json")`;
 `engagement.py init` 调用 `record_chain(target, "engagement_created", "state.json")`。
 两边各自持有 `chain.json` 的实现(避免跨技能 import),`CHAIN_VERSION` 必须保持
 `novalabs.chain.v1` —— 任一侧改版本号都会让另一侧把对方的 chain 判为不可读。
@@ -764,9 +764,9 @@ python scripts/engagement.py rollback target.com recon
 python scripts/engagement.py note target.com "surface enumerated"
 
 # 测试执行 (并行 approach racing)
-python scripts/engage_runner.py race      --target target.com --url https://target.com
-python scripts/engage_runner.py test      --target target.com --url https://target.com
-python scripts/engage_runner.py report    --target target.com
+python scripts/engage_runner.py race --target target.com --url https://target.com
+python scripts/engage_runner.py test --target target.com --url https://target.com
+python scripts/engage_runner.py report --target target.com
 python scripts/engage_runner.py integrity --target target.com
 python scripts/engage_runner.py selftest
 ```
@@ -780,18 +780,18 @@ python scripts/engage_runner.py selftest
 ```
 $ python scripts/engagement.py status target.com
 === Engagement: target.com ===
-Scope:      *.target.com
-Phase:      recon (active)
-Created:    2026-09-23T09:28:14Z
+Scope: *.target.com
+Phase: recon (active)
+Created: 2026-09-23T09:28:14Z
 ...
 --- NovaXinWei ---
-Chain:      started_by=novahaku sides=novahaku
-Published:  2026-09-23T09:28:14.720929Z by novahaku
+Chain: started_by=novahaku sides=novahaku
+Published: 2026-09-23T09:28:14.720929Z by novahaku
 Last chain: [2026-09-23T09:28:14.720929Z] novahaku engagement_created
-Recon:      3 subdomain(s), 2 port(s), 3 tech
-Tech:       laravel/8.x, nginx/1.18.0, php/7.4
-WAF:        Cloudflare
-Endpoints:  2
+Recon: 3 subdomain(s), 2 port(s), 3 tech
+Tech: laravel/8.x, nginx/1.18.0, php/7.4
+WAF: Cloudflare
+Endpoints: 2
 ```
 
 `--- NovaXinWei ---` 只在有内容时才打印;只有 `recon.json` 存在才会出现 `Recon:` 行。
@@ -804,8 +804,8 @@ findings 非空时,推进到 `test` 会打印:
 
 ```
 [i] 1 finding(s) ready. Next, to validate them against the target:
-      python scripts/engage_runner.py exploit target.com
-    Sends live requests to target.com. Run it when you are ready.
+ python scripts/engage_runner.py exploit target.com
+ Sends live requests to target.com. Run it when you are ready.
 ```
 
 这是**提示,不是链式调用**。`exploit` 会对目标发真实 HTTP 请求,何时执行属于操作员的决定 ——
@@ -873,7 +873,7 @@ prompt-injection 扫描器对 memory 与 cron 写入路径的拦截。
 (context 文件路径,已有受支持的 `HERMES_CONTEXT_SKIP_SCAN=1` 开关)。
 
 ```bash
-export HERMES_AGENT_HOME=/path/to/hermes-agent/app   # 含 tools/ 的目录
+export HERMES_AGENT_HOME=/path/to/hermes-agent/app # 含 tools/ 的目录
 
 python scripts/hermes-patch/hermes_patch.py --root "$HERMES_AGENT_HOME" --check
 python scripts/hermes-patch/hermes_patch.py --root "$HERMES_AGENT_HOME" --apply

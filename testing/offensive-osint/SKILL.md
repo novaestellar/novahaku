@@ -4,133 +4,133 @@ description: "Operational arsenal for external red-team and bug-bounty reconnais
 version: 2.2
 sources: hackerone_public, community, public_research
 triggers:
-  - external recon
-  - external red team
-  - red team external
-  - attack surface management
-  - ASM
-  - bug bounty recon
-  - bug bounty
-  - reconnaissance
-  - footprinting
-  - asset discovery
-  - swagger discovery
-  - openapi discovery
-  - graphql introspection
-  - graphql discovery
-  - subdomain enumeration
-  - subdomain takeover
-  - cloud bucket enumeration
-  - bucket enum
-  - S3 enum
-  - GCS enum
-  - Azure blob enum
-  - identity fabric
-  - SSO discovery
-  - IdP fingerprinting
-  - tenant fingerprinting
-  - okta enum
-  - entra enum
-  - azure AD enum
-  - ADFS enum
-  - SAML metadata
-  - mobile recon
-  - APK analysis
-  - mobile attack surface
-  - secret scanning
-  - secret leak
-  - leaked credential
-  - github dorking
-  - google dorking
-  - bing dorking
-  - DDG dorking
-  - postman workspace
-  - stack exchange OSINT
-  - breach lookup
-  - have I been pwned
-  - HudsonRock cavalier
-  - infostealer
-  - dehashed
-  - intelx
-  - shodan recon
-  - censys recon
-  - certificate transparency
-  - crt.sh
-  - JARM
-  - favicon mmh3
-  - JS endpoint extraction
-  - sourcemap leak
-  - copy paste probes
-  - curl one-liner
-  - email security analysis
-  - SPF DMARC DKIM
-  - origin discovery
-  - CDN bypass
-  - WAF bypass
-  - vendor product fingerprints
-  - Citrix Netscaler
-  - F5 BIG-IP
-  - Pulse Secure
-  - FortiGate
-  - PaloAlto GlobalProtect
-  - Cisco AnyConnect
-  - VMware vCenter
-  - cloud native fingerprint
-  - Lambda function URL
-  - Cloud Run
-  - kubernetes exposure
-  - kubelet
-  - etcd
-  - CI CD exposure
-  - Jenkins recon
-  - GitLab self-hosted
-  - GitHub Actions secrets
-  - documentation leak
-  - Notion public
-  - Confluence anonymous
-  - Trello board
-  - WHOIS RDAP
-  - DNS record catalog
-  - Wayback CDX
-  - LinkedIn enumeration
-  - job posting tech stack
-  - Slack workspace discovery
-  - Discord server discovery
-  - npm token leak
-  - PyPI token leak
-  - Docker Hub leak
-  - sat imagery physical recon
-  - TLS deep audit
-  - JA3 JA4
-  - reverse DNS sweep
-  - IPv6 enumeration
-  - CVE prioritization
-  - EPSS scoring
-  - CISA KEV
-  - vulnerability prioritization
-  - tooling install
-  - sector specific recon
-  - healthcare DICOM
-  - finance SWIFT
-  - ICS SCADA
-  - Modbus
-  - BACnet
-  - post discovery workflow
-  - JWT triage
-  - AWS key triage
-  - GraphQL field suggestion
-  - Anthropic API key
-  - OpenAI API key
-  - Microsoft 365 deep
-  - Teams federation
-  - SharePoint enum
-  - OneDrive enum
-  - hackerone reference
-  - h1 hacktivity
-  - disclosed reports
-  - community bug reports
-  - prior disclosures
-  - bug bounty reference
+ - external recon
+ - external red team
+ - red team external
+ - attack surface management
+ - ASM
+ - bug bounty recon
+ - bug bounty
+ - reconnaissance
+ - footprinting
+ - asset discovery
+ - swagger discovery
+ - openapi discovery
+ - graphql introspection
+ - graphql discovery
+ - subdomain enumeration
+ - subdomain takeover
+ - cloud bucket enumeration
+ - bucket enum
+ - S3 enum
+ - GCS enum
+ - Azure blob enum
+ - identity fabric
+ - SSO discovery
+ - IdP fingerprinting
+ - tenant fingerprinting
+ - okta enum
+ - entra enum
+ - azure AD enum
+ - ADFS enum
+ - SAML metadata
+ - mobile recon
+ - APK analysis
+ - mobile attack surface
+ - secret scanning
+ - secret leak
+ - leaked credential
+ - github dorking
+ - google dorking
+ - bing dorking
+ - DDG dorking
+ - postman workspace
+ - stack exchange OSINT
+ - breach lookup
+ - have I been pwned
+ - HudsonRock cavalier
+ - infostealer
+ - dehashed
+ - intelx
+ - shodan recon
+ - censys recon
+ - certificate transparency
+ - crt.sh
+ - JARM
+ - favicon mmh3
+ - JS endpoint extraction
+ - sourcemap leak
+ - copy paste probes
+ - curl one-liner
+ - email security analysis
+ - SPF DMARC DKIM
+ - origin discovery
+ - CDN bypass
+ - WAF bypass
+ - vendor product fingerprints
+ - Citrix Netscaler
+ - F5 BIG-IP
+ - Pulse Secure
+ - FortiGate
+ - PaloAlto GlobalProtect
+ - Cisco AnyConnect
+ - VMware vCenter
+ - cloud native fingerprint
+ - Lambda function URL
+ - Cloud Run
+ - kubernetes exposure
+ - kubelet
+ - etcd
+ - CI CD exposure
+ - Jenkins recon
+ - GitLab self-hosted
+ - GitHub Actions secrets
+ - documentation leak
+ - Notion public
+ - Confluence anonymous
+ - Trello board
+ - WHOIS RDAP
+ - DNS record catalog
+ - Wayback CDX
+ - LinkedIn enumeration
+ - job posting tech stack
+ - Slack workspace discovery
+ - Discord server discovery
+ - npm token leak
+ - PyPI token leak
+ - Docker Hub leak
+ - sat imagery physical recon
+ - TLS deep audit
+ - JA3 JA4
+ - reverse DNS sweep
+ - IPv6 enumeration
+ - CVE prioritization
+ - EPSS scoring
+ - CISA KEV
+ - vulnerability prioritization
+ - tooling install
+ - sector specific recon
+ - healthcare DICOM
+ - finance SWIFT
+ - ICS SCADA
+ - Modbus
+ - BACnet
+ - post discovery workflow
+ - JWT triage
+ - AWS key triage
+ - GraphQL field suggestion
+ - Anthropic API key
+ - OpenAI API key
+ - Microsoft 365 deep
+ - Teams federation
+ - SharePoint enum
+ - OneDrive enum
+ - hackerone reference
+ - h1 hacktivity
+ - disclosed reports
+ - community bug reports
+ - prior disclosures
+ - bug bounty reference
 ---
 
 # Offensive OSINT — External Red-Team Arsenal
@@ -259,14 +259,14 @@ Browser extensions: [GetProspect](https://chromewebstore.google.com/detail/email
 Given a `(first_name, last_name, domain)`, generate these 8 candidate addresses for breach pre-hits, phishing list curation, and downstream enrichment. Mark as **TENTATIVE** confidence until corroborated.
 
 ```
-{first}.{last}@{domain}        # john.doe@example.com
-{first}{last}@{domain}         # johndoe@example.com
-{first}@{domain}               # john@example.com
-{first[0]}{last}@{domain}      # jdoe@example.com
-{first}.{last[0]}@{domain}     # john.d@example.com
-{last}@{domain}                # doe@example.com
-{first}_{last}@{domain}        # john_doe@example.com
-{first}-{last}@{domain}        # john-doe@example.com
+{first}.{last}@{domain} # john.doe@example.com
+{first}{last}@{domain} # johndoe@example.com
+{first}@{domain} # john@example.com
+{first[0]}{last}@{domain} # jdoe@example.com
+{first}.{last[0]}@{domain} # john.d@example.com
+{last}@{domain} # doe@example.com
+{first}_{last}@{domain} # john_doe@example.com
+{first}-{last}@{domain} # john-doe@example.com
 ```
 
 Lowercase before lookup. Strip diacritics for ASCII fallback. If the org uses a known pattern (e.g., Hunter.io shows `{first}.{last}` is dominant), prioritize that one and mark FIRM.
@@ -375,7 +375,7 @@ PowerShell:
 $hr = Invoke-RestMethod -Uri "https://cavalier.hudsonrock.com/api/json/v2/osint-tools/search-by-domain?domain=$D" -TimeoutSec 30
 "Employees: $($hr.employees) | Users: $($hr.users) | Third-party: $($hr.third_parties) | Total: $($hr.total)"
 $hr.data.employees_urls | Sort-Object -Property occurrence -Descending | Select-Object -First 20
-$hr.data.clients_urls   | Sort-Object -Property occurrence -Descending | Select-Object -First 15
+$hr.data.clients_urls | Sort-Object -Property occurrence -Descending | Select-Object -First 15
 ```
 
 **Top-level JSON fields:**
@@ -385,14 +385,14 @@ $hr.data.clients_urls   | Sort-Object -Property occurrence -Descending | Select-
 - `employees` — count of `<*>@<domain>` accounts found.
 - `users` — count of accounts where the domain appeared as a *visited* URL (customers/vendors).
 - `third_parties` — accounts touching adjacent domains in the org.
-- `data.employees_urls[]` — `{occurrence, type, url}` — internal apps where employees were logging in when stolen. **Subdomain hits here = recon gold.**
-- `data.clients_urls[]` — same shape; user-facing apps (often reveals undocumented public portals).
-- `data.stealer_families[]` — `{_key, _value}` → which stealer (RedLine / Lumma / StealC / Vidar / Raccoon).
-- `data.dates_compromised[]` — `{_key, _value}` → temporal distribution.
+- `data.employees_urls` — `{occurrence, type, url}` — internal apps where employees were logging in when stolen. **Subdomain hits here = recon gold.**
+- `data.clients_urls` — same shape; user-facing apps (often reveals undocumented public portals).
+- `data.stealer_families` — `{_key, _value}` → which stealer (RedLine / Lumma / StealC / Vidar / Raccoon).
+- `data.dates_compromised` — `{_key, _value}` → temporal distribution.
 
 **Free-tier caveats (CRITICAL to know):**
 
-- Subdomain hostnames in `data.*_urls[]` past the first few are **redacted with asterisks** (`*****.target.com`). Pivot to paid Cavalier tier or other sources for unredacted.
+- Subdomain hostnames in `data.*_urls` past the first few are **redacted with asterisks** (`*****.target.com`). Pivot to paid Cavalier tier or other sources for unredacted.
 - Free endpoint returns counts + sample URLs only. Cleartext passwords + emails are **never** in the free response.
 - Rate limit ~1 req/sec/IP; 429 on burst. Sleep 1s between calls.
 - For unredacted creds + bulk enumeration → paid Cavalier portal.
@@ -495,8 +495,8 @@ api/v1/graphql
 
 ```json
 {
-  "operationName": "IntrospectionQuery",
-  "query": "query IntrospectionQuery { __schema { types { name kind fields { name type { name kind } } } queryType { name } mutationType { name } subscriptionType { name } } }"
+ "operationName": "IntrospectionQuery",
+ "query": "query IntrospectionQuery { __schema { types { name kind fields { name type { name kind } } } queryType { name } mutationType { name } subscriptionType { name } } }"
 }
 ```
 
@@ -561,7 +561,7 @@ For each open port, emit a finding with the severity and "why an attacker cares"
 | 27017 | MongoDB | **CRITICAL** | No auth by default. |
 | 50070 | Hadoop NameNode | HIGH | HDFS browse. |
 
-When Shodan InternetDB returns `vulns[]` for a port, escalate the finding severity by one tier and include the CVE list in evidence.
+When Shodan InternetDB returns `vulns` for a port, escalate the finding severity by one tier and include the CVE list in evidence.
 
 ### 16.4 Missing security headers — 6 findings
 
@@ -588,8 +588,8 @@ Run these against every alive webapp regardless of Nuclei availability. Cheap; h
 | `/server-status` | Apache server-status | MEDIUM | Body contains `Apache Server Status` or matching title |
 | `/server-info` | Apache mod_info | MEDIUM | Body contains `Apache Server Information` |
 | `/.DS_Store` | Exposed `.DS_Store` | LOW | Byte signature `\x00\x00\x00\x01Bud1` |
-| `/phpinfo.php` | phpinfo() leak | HIGH | Body contains `phpinfo()`, `PHP Version`, or matching title |
-| `/info.php` | phpinfo() (alt path) | HIGH | Same as above |
+| `/phpinfo.php` | phpinfo leak | HIGH | Body contains `phpinfo`, `PHP Version`, or matching title |
+| `/info.php` | phpinfo (alt path) | HIGH | Same as above |
 | `/actuator/env` | Spring Boot `/actuator/env` | **CRITICAL** | Body contains `"propertySources"`, `systemProperties`, `systemEnvironment` |
 | `/actuator/heapdump` | Spring Boot heapdump | **CRITICAL** | HPROF magic bytes / large binary download |
 | `/_cat/indices` | Elasticsearch open | HIGH | Returns index list |
@@ -634,7 +634,7 @@ Plus probe `/.well-known/openid-configuration` on every alive subdomain (regardl
 **6 prefixes:**
 
 ```
-""           # bare candidate
+"" # bare candidate
 backup-
 assets-
 static-
@@ -645,7 +645,7 @@ prod-
 **15 suffixes:**
 
 ```
-""           # bare candidate
+"" # bare candidate
 -backup
 -assets
 -static
@@ -677,7 +677,7 @@ S3:
 
 ```
 https://{candidate}.s3.amazonaws.com/
-https://{candidate}.s3-{region}.amazonaws.com/      # try us-east-1, us-west-2, eu-west-1, ap-southeast-1 first
+https://{candidate}.s3-{region}.amazonaws.com/ # try us-east-1, us-west-2, eu-west-1, ap-southeast-1 first
 https://s3.{region}.amazonaws.com/{candidate}/
 ```
 
@@ -712,14 +712,14 @@ Probe these paths on every alive webapp (in addition to scraped `<script src=...
 /static/js/main.js
 /static/js/bundle.js
 /assets/index.js
-/static/js/main.<hash>.js                 # try hash discovery via 404 patterns
+/static/js/main.<hash>.js # try hash discovery via 404 patterns
 ```
 
 For every found JS, also try `<jsfile>.map` for sourcemap leaks (HIGH `INFO_DISCLOSURE`).
 
 ### 16.10 Endpoint extraction regex tiers
 
-Three tiers, run in order on every JS body + every sourcesContent[] blob:
+Three tiers, run in order on every JS body + every sourcesContent blob:
 
 **Tier 1 — generic quoted paths:**
 
@@ -851,7 +851,7 @@ curl -sk -m 10 "$T/_cat/indices?v"
 curl -sk -m 10 "$T/script" | grep -iE 'Jenkins|Script Console'
 
 # Tomcat manager (HIGH)
-curl -sk -m 10 "$T/manager/html" -w '%{http_code}\n' | tail -1     # 401 = present + auth-gated; 200 = no auth
+curl -sk -m 10 "$T/manager/html" -w '%{http_code}\n' | tail -1 # 401 = present + auth-gated; 200 = no auth
 
 # WordPress orphan installer (LOW)
 curl -sk -m 10 "$T/wp-admin/install.php" | grep -i 'WordPress Installation'
@@ -865,8 +865,8 @@ curl -sk -m 10 "$T/.well-known/security.txt"
 ```bash
 D="target.example"
 for prefix in auth login sso idp iam identity accounts oauth; do
-  echo "=== ${prefix}.${D} ==="
-  curl -sk -m 10 "https://${prefix}.${D}/.well-known/openid-configuration" -o /dev/null -w '%{http_code}\n'
+ echo "=== ${prefix}.${D} ==="
+ curl -sk -m 10 "https://${prefix}.${D}/.well-known/openid-configuration" -o /dev/null -w '%{http_code}\n'
 done
 
 # Generic OIDC discovery on any host:
@@ -878,12 +878,12 @@ curl -sk -m 10 "https://${HOST}/.well-known/openid-configuration" | jq .
 ```bash
 H="target.example.com"
 for p in /saml/metadata \
-         /FederationMetadata/2007-06/FederationMetadata.xml \
-         /federationmetadata/2007-06/federationmetadata.xml \
-         /simplesaml/saml2/idp/metadata.php \
-         /auth/saml2/metadata; do
-  echo "=== $p ==="
-  curl -sk -m 10 "https://${H}${p}" -o /dev/null -w '%{http_code} %{size_download}\n'
+ /FederationMetadata/2007-06/FederationMetadata.xml \
+ /federationmetadata/2007-06/federationmetadata.xml \
+ /simplesaml/saml2/idp/metadata.php \
+ /auth/saml2/metadata; do
+ echo "=== $p ==="
+ curl -sk -m 10 "https://${H}${p}" -o /dev/null -w '%{http_code} %{size_download}\n'
 done
 ```
 
@@ -899,7 +899,7 @@ curl -sk -m 10 "https://${B}.s3.amazonaws.com/?list-type=2" | head -50
 
 # S3 region-specific
 for r in us-east-1 us-west-2 eu-west-1 ap-southeast-1; do
-  curl -sk -m 10 -I "https://${B}.s3-${r}.amazonaws.com/" -w "${r}: %{http_code}\n"
+ curl -sk -m 10 -I "https://${B}.s3-${r}.amazonaws.com/" -w "${r}: %{http_code}\n"
 done
 
 # GCS
@@ -917,11 +917,11 @@ curl -sk -m 10 "https://${B}.blob.core.windows.net/?comp=list"
 H="https://target.example/graphql"
 
 curl -sk -m 15 -X POST "$H" \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "operationName":"IntrospectionQuery",
-    "query":"query IntrospectionQuery { __schema { types { name kind fields { name type { name kind } } } queryType { name } mutationType { name } subscriptionType { name } } }"
-  }' | jq '.data.__schema.types | length'
+ -H 'Content-Type: application/json' \
+ -d '{
+ "operationName":"IntrospectionQuery",
+ "query":"query IntrospectionQuery { __schema { types { name kind fields { name type { name kind } } } queryType { name } mutationType { name } subscriptionType { name } } }"
+ }' | jq '.data.__schema.types | length'
 ```
 
 **Read-only secret validators (§23):**
@@ -931,7 +931,7 @@ curl -sk -m 15 -X POST "$H" \
 curl -sk -m 10 -H "X-Api-Key: PMAK-..." https://api.getpostman.com/me | jq .
 
 # AWS (use boto3 instead of curl — pre-signing complexity)
-python3 -c "import boto3; print(boto3.client('sts', aws_access_key_id='AKIA...', aws_secret_access_key='...').get_caller_identity())"
+python3 -c "import boto3; print(boto3.client('sts', aws_access_key_id='AKIA...', aws_secret_access_key='...').get_caller_identity)"
 
 # GitHub PAT (note scope header)
 curl -sk -m 10 -H "Authorization: token ghp_..." https://api.github.com/user -D /tmp/h | jq -r '.login,.email'
@@ -975,7 +975,7 @@ P="/actuator/env"
 TS=$(date -u +%Y%m%dT%H%M%SZ)
 SAFE_NAME=$(echo "${T}${P}" | tr '/:' '_')
 curl -sk -m 10 "$T$P" -o "evidence/$(date -u +%Y%m%d)/${TS}_${SAFE_NAME}.body" \
-  -D "evidence/$(date -u +%Y%m%d)/${TS}_${SAFE_NAME}.headers"
+ -D "evidence/$(date -u +%Y%m%d)/${TS}_${SAFE_NAME}.headers"
 sha256sum "evidence/$(date -u +%Y%m%d)/${TS}_${SAFE_NAME}".* > "evidence/$(date -u +%Y%m%d)/${TS}_${SAFE_NAME}.sha256"
 ```
 
@@ -998,18 +998,18 @@ dig +short TXT "$D" | grep -i 'v=spf1'
 - Ends in `~all` (softfail) → spam folder for spoofs.
 - Ends in `?all` or no `all` → permissive; spoofs likely deliver.
 - Includes (`include:`) reveal SaaS tenants:
-  - `include:_spf.google.com` → Google Workspace.
-  - `include:spf.protection.outlook.com` → Microsoft 365.
-  - `include:_spf.salesforce.com` → Salesforce.
-  - `include:mail.zendesk.com` → Zendesk customer.
-  - `include:sendgrid.net` → SendGrid customer.
-  - `include:mailgun.org` → Mailgun customer.
-  - `include:_spf.atlassian.net` → Atlassian Cloud.
-  - `include:amazonses.com` → AWS SES.
-  - `include:mktomail.com` → Marketo.
-  - `include:_spf.intuit.com` → Intuit (QuickBooks/Mailchimp).
-  - `include:spf.mandrillapp.com` → Mandrill.
-  - `include:_spf.workday.com` → Workday.
+ - `include:_spf.google.com` → Google Workspace.
+ - `include:spf.protection.outlook.com` → Microsoft 365.
+ - `include:_spf.salesforce.com` → Salesforce.
+ - `include:mail.zendesk.com` → Zendesk customer.
+ - `include:sendgrid.net` → SendGrid customer.
+ - `include:mailgun.org` → Mailgun customer.
+ - `include:_spf.atlassian.net` → Atlassian Cloud.
+ - `include:amazonses.com` → AWS SES.
+ - `include:mktomail.com` → Marketo.
+ - `include:_spf.intuit.com` → Intuit (QuickBooks/Mailchimp).
+ - `include:spf.mandrillapp.com` → Mandrill.
+ - `include:_spf.workday.com` → Workday.
 
 If SPF includes ≥10 mechanisms (max-lookups limit) → SPF eval likely fails → spoofs may pass. Tools: `spfquery`, `spftools` (online), `dig +trace`.
 
@@ -1039,9 +1039,9 @@ DKIM selectors aren't well-known; common patterns:
 
 ```bash
 for selector in default google selector1 selector2 mail email k1 dkim s1 s2 mta1 mta2 \
-                amazonses 20240101 20230101 mailchimp sendgrid mxvault; do
-  echo "=== ${selector} ==="
-  dig +short TXT "${selector}._domainkey.${D}"
+ amazonses 20240101 20230101 mailchimp sendgrid mxvault; do
+ echo "=== ${selector} ==="
+ dig +short TXT "${selector}._domainkey.${D}"
 done
 ```
 
@@ -1127,8 +1127,8 @@ $D = "target.example"
 "=== MX ==="; Resolve-DnsName $D -Type MX -EA SilentlyContinue | Select NameExchange,Preference
 "=== DKIM common selectors ==="
 foreach ($s in @("default","google","selector1","selector2","mail","email","k1","dkim","s1","s2","amazonses","mailchimp","sendgrid","mxvault","20240101","zoho","zmail","outlook","o365")) {
-  $r = Resolve-DnsName "$s._domainkey.$D" -Type TXT -EA SilentlyContinue
-  if ($r) { "${s}: FOUND" }
+ $r = Resolve-DnsName "$s._domainkey.$D" -Type TXT -EA SilentlyContinue
+ if ($r) { "${s}: FOUND" }
 }
 "=== CAA (PS 5.1 fallback) ==="; nslookup -type=CAA $D 2>$null
 ```
@@ -1152,7 +1152,7 @@ https://www.cloudflare.com/ips-v4
 ```bash
 # SecurityTrails (paid)
 curl -sk -H "APIKEY: ..." \
-  "https://api.securitytrails.com/v1/history/${D}/dns/a" | jq '.records[] | {ip:.values[].ip, first_seen, last_seen}'
+ "https://api.securitytrails.com/v1/history/${D}/dns/a" | jq '.records | {ip:.values.ip, first_seen, last_seen}'
 ```
 
 Free alternatives:
@@ -1177,7 +1177,7 @@ censys search "services.tls.certificates.leaf_data.subject.common_name:${D} AND 
 Or via crt.sh + manual IP check:
 
 ```bash
-curl -sk "https://crt.sh/?q=%25.${D}&output=json" | jq -r '.[].name_value' | sort -u
+curl -sk "https://crt.sh/?q=%25.${D}&output=json" | jq -r '..name_value' | sort -u
 ```
 
 **Origin via favicon hash (Shodan):**
@@ -1186,7 +1186,7 @@ curl -sk "https://crt.sh/?q=%25.${D}&output=json" | jq -r '.[].name_value' | sor
 # Compute favicon mmh3
 python3 -c "
 import urllib.request, codecs, mmh3
-data = urllib.request.urlopen('https://target.example/favicon.ico').read()
+data = urllib.request.urlopen('https://target.example/favicon.ico').read
 b64 = codecs.encode(data, 'base64')
 print(mmh3.hash(b64))"
 
@@ -1223,10 +1223,10 @@ If small/no diff → confirmed origin. Document with detectability=low.
 
 ```bash
 for sub in mail smtp ftp sftp cpanel webmail direct origin direct-connect noproxy \
-           dev staging stg uat preprod sandbox preview origin-www old-www legacy \
-           server srv host1 host2 vps server1; do
-  echo "=== ${sub}.${D} ==="
-  dig +short A "${sub}.${D}"
+ dev staging stg uat preprod sandbox preview origin-www old-www legacy \
+ server srv host1 host2 vps server1; do
+ echo "=== ${sub}.${D} ==="
+ dig +short A "${sub}.${D}"
 done | grep -vE '^(===|$)' | sort -u
 ```
 
@@ -1394,17 +1394,17 @@ run: echo "${{ secrets.MY_API_KEY }}"
 
 # Anti-pattern: secret in environment without mask
 env:
-  KEY: ${{ secrets.MY_API_KEY }}
-run: ./deploy.sh   # script may echo $KEY
+ KEY: ${{ secrets.MY_API_KEY }}
+run: ./deploy.sh # script may echo $KEY
 
 # Anti-pattern: pull_request_target with checkout of fork code (CVE class)
 on: pull_request_target
 jobs:
-  test:
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}   # checks out fork code with secrets in env
+ test:
+ steps:
+ - uses: actions/checkout@v3
+ with:
+ ref: ${{ github.event.pull_request.head.sha }} # checks out fork code with secrets in env
 ```
 
 ### 16.20 Documentation / Wiki Leak Paths
@@ -1454,8 +1454,8 @@ WHOIS gives current registrant; RDAP is the structured replacement; historical W
 **Current WHOIS:**
 
 ```bash
-whois target.example                              # standard CLI
-curl -sk -m 10 "https://www.whois.com/whois/${D}"  # web fallback
+whois target.example # standard CLI
+curl -sk -m 10 "https://www.whois.com/whois/${D}" # web fallback
 ```
 
 **RDAP (RFC 7480, structured JSON):**
@@ -1463,7 +1463,7 @@ curl -sk -m 10 "https://www.whois.com/whois/${D}"  # web fallback
 ```bash
 # IANA bootstrap → returns the registry RDAP server
 curl -sk "https://rdap.org/domain/${D}" | jq .
-curl -sk "https://www.iana.org/rdap" | jq .   # bootstrap registry
+curl -sk "https://www.iana.org/rdap" | jq . # bootstrap registry
 ```
 
 What to extract from WHOIS / RDAP:
@@ -1494,7 +1494,7 @@ If you have a registrant email, search "every domain registered by this email":
 ```bash
 # DomainTools (paid)
 curl -sk -H "X-API-Username: ..." -H "X-API-Key: ..." \
-  "https://api.domaintools.com/v1/reverse-whois/?terms=admin@target.example"
+ "https://api.domaintools.com/v1/reverse-whois/?terms=admin@target.example"
 ```
 
 This finds adjacent corporate assets (subsidiary domains, brand variations, employee personal projects on corp email).
@@ -1506,8 +1506,8 @@ For every target domain, dump all common record types:
 ```bash
 D="target.example"
 for rtype in A AAAA MX TXT NS SOA CAA SRV CNAME PTR; do
-  echo "=== ${rtype} ==="
-  dig +short "${D}" "${rtype}"
+ echo "=== ${rtype} ==="
+ dig +short "${D}" "${rtype}"
 done
 ```
 
@@ -1626,15 +1626,15 @@ diff <(echo "$LIVE") <(echo "$ARCHIVED") | head -100
 
 ```bash
 curl -sk -X POST "https://pragma.archivelab.org/" \
-  -H 'Content-Type: application/json' \
-  -d '{"url":"https://target.example/admin"}'
+ -H 'Content-Type: application/json' \
+ -d '{"url":"https://target.example/admin"}'
 ```
 
 **Find every archived JS:**
 
 ```bash
 curl -sk "https://web.archive.org/cdx/search/cdx?url=${D}/*.js&output=json&fl=timestamp,original&filter=statuscode:200" | \
-  jq -r '.[1:][] | "\(.[0]) \(.[1])"'
+ jq -r '.[1:] | "\(.[0]) \(.[1])"'
 ```
 
 For each, fetch the archived JS and run the secret catalog (§17). Old JS often had hard-coded keys later removed.
@@ -1652,14 +1652,14 @@ curl -sk "https://web.archive.org/cdx/search/cdx?url=${D}/*.php&output=json&fl=t
 
 # JSP / .NET aspx / CGI / Coldfusion
 for ext in aspx jsp cgi cfm; do
-  echo "=== .$ext ==="
-  curl -sk "https://web.archive.org/cdx/search/cdx?url=${D}/*.${ext}&output=json&fl=timestamp,original&filter=statuscode:200&collapse=urlkey&limit=200"
+ echo "=== .$ext ==="
+ curl -sk "https://web.archive.org/cdx/search/cdx?url=${D}/*.${ext}&output=json&fl=timestamp,original&filter=statuscode:200&collapse=urlkey&limit=200"
 done
 
 # JSON / XML config (sometimes leaks endpoints + creds)
 for ext in json xml yml yaml ini conf; do
-  echo "=== .$ext ==="
-  curl -sk "https://web.archive.org/cdx/search/cdx?url=${D}/*.${ext}&output=json&fl=timestamp,original&filter=statuscode:200&collapse=urlkey&limit=100"
+ echo "=== .$ext ==="
+ curl -sk "https://web.archive.org/cdx/search/cdx?url=${D}/*.${ext}&output=json&fl=timestamp,original&filter=statuscode:200&collapse=urlkey&limit=100"
 done
 
 # Anything indexed (broad sweep — useful for legacy enumeration)
@@ -1702,11 +1702,11 @@ sclepro, tender, tenders, suppliers, vendor, vendors, procurement, purchase
 $D = "target.example"
 $prefixes = @("www","mail","webmail","owa","autodiscover","ftp","vpn","sslvpn","gateway","api","app","portal","login","sso","idp","iam","identity","accounts","oauth","auth","adfs","admin","intranet","hr","sap","erp","crm","support","help","status","grafana","kibana","docs","wiki","jira","jenkins","gitlab","dev","test","staging","stg","qa","uat","sandbox","preprod","preview","careers","jobs","eapps","old","legacy","beta","tender","suppliers","procurement")
 foreach ($p in $prefixes) {
-  $r = Resolve-DnsName "$p.$D" -Type A -ErrorAction SilentlyContinue
-  if ($r) {
-    $ips = ($r | ? {$_.IPAddress}).IPAddress -join ","
-    "$p.$D -> $ips"
-  }
+ $r = Resolve-DnsName "$p.$D" -Type A -ErrorAction SilentlyContinue
+ if ($r) {
+ $ips = ($r | ? {$_.IPAddress}).IPAddress -join ","
+ "$p.$D -> $ips"
+ }
 }
 ```
 
@@ -1715,8 +1715,8 @@ foreach ($p in $prefixes) {
 ```bash
 D="target.example"
 for p in www mail webmail owa autodiscover ftp vpn sslvpn gateway api app portal login sso idp iam identity accounts oauth auth adfs admin intranet hr sap erp crm support help status grafana kibana docs wiki jira jenkins gitlab dev test staging stg qa uat sandbox preprod preview careers jobs eapps old legacy beta tender suppliers procurement; do
-  IP=$(dig +short A "$p.$D" | head -1)
-  [ -n "$IP" ] && echo "$p.$D -> $IP"
+ IP=$(dig +short A "$p.$D" | head -1)
+ [ -n "$IP" ] && echo "$p.$D -> $IP"
 done
 ```
 
@@ -2008,7 +2008,7 @@ Apply each template to `{target}` (root domain stem like `acme`), `{domain}` (fu
 "{target}" filename:id_rsa
 "{target}" filename:.git-credentials
 "{target}" filename:wp-config.php
-"@{domain}" password                        # emails + password context
+"@{domain}" password # emails + password context
 ```
 
 **Requirements:** GitHub personal access token (any scope; recommend a fine-grained PAT with read-only repo access). Rate limit per token; concurrency cap ≤5.
@@ -2081,7 +2081,7 @@ Once an app clears the §21 ownership gate, run this pipeline. **Passive static 
 
 ```bash
 curl -s "https://apkpure.net/$(echo com.acme.android | tr . -)/com.acme.android/download" \
-  | grep -oE 'https://[^"]+\.apk[^"]*' | head -1
+ | grep -oE 'https://[^"]+\.apk[^"]*' | head -1
 ```
 
 **B. Decompile toolchain**
@@ -2109,9 +2109,9 @@ pip install androguard
 ```python
 from androguard.core.apk import APK
 a = APK("app.apk")
-print(a.get_package(), a.get_effective_target_sdk_version())
-print(a.get_permissions())
-manifest_xml = a.get_android_manifest_axml().get_xml()  # decoded AndroidManifest.xml
+print(a.get_package, a.get_effective_target_sdk_version)
+print(a.get_permissions)
+manifest_xml = a.get_android_manifest_axml.get_xml # decoded AndroidManifest.xml
 ```
 
 **C. AndroidManifest.xml parse**
@@ -2132,7 +2132,7 @@ Walk every `activity` / `activity-alias` / `service` / `receiver` for `<intent-f
 
 **E. Firebase / GCP config extraction**
 
-- `google-services.json` → `project_info.project_id`, and every `client[].api_key[].current_key` (the project's default Google API key, often over-scoped).
+- `google-services.json` → `project_info.project_id`, and every `client.api_key.current_key` (the project's default Google API key, often over-scoped).
 - `GoogleService-Info.plist` (iOS bundle) → `PROJECT_ID`, `API_KEY`, `GCM_SENDER_ID`.
 - Extraction here is **read-of-the-APK-only**. the reference implementation's own pipeline goes one step further and probes the extracted `project_id` against canonical Firebase endpoints (RTDB `/.json`, Firestore, Storage list) — that's a live-backend check, not static analysis; do it as a distinct, explicit step via §16.8's cloud-bucket-style workflow, not silently inside this pass.
 
@@ -2151,7 +2151,7 @@ find out/lib -name '*.so' -exec strings {} \; | python3 scripts/secret_scan.py
 
 # assets/ specifically — bundled credential files, not just string hits
 find out/assets -type f \( -iname '*.pem' -o -iname '*.p12' -o -iname '*.jks' \
-  -o -iname '*.keystore' -o -iname '*.env' -o -iname 'google-services.json' \)
+ -o -iname '*.keystore' -o -iname '*.env' -o -iname 'google-services.json' \)
 ```
 
 The FCM Server Key (§17 #80) and the GCP/Firebase family (§17 #4, #5, #67–69) are the entries most likely to fire here — this is exactly the mobile-recon context they were added for.
@@ -2244,18 +2244,18 @@ POST https://login.microsoftonline.com/common/GetCredentialType
 Content-Type: application/json
 Body:
 {
-  "username": "<email>",
-  "isOtherIdpSupported": true,
-  "checkPhones": false,
-  "isRemoteNGCSupported": true,
-  "isCookieBannerShown": false,
-  "isFidoSupported": true,
-  "originalRequest": "",
-  "country": "US",
-  "forceotclogin": false,
-  "isExternalFederationDisallowed": false,
-  "isRemoteConnectSupported": false,
-  "federationFlags": 0
+ "username": "<email>",
+ "isOtherIdpSupported": true,
+ "checkPhones": false,
+ "isRemoteNGCSupported": true,
+ "isCookieBannerShown": false,
+ "isFidoSupported": true,
+ "originalRequest": "",
+ "country": "US",
+ "forceotclogin": false,
+ "isExternalFederationDisallowed": false,
+ "isRemoteConnectSupported": false,
+ "federationFlags": 0
 }
 ```
 
@@ -2392,8 +2392,8 @@ curl -sk -m 10 "https://teams.microsoft.com/api/mt/emea/beta/users/<email>/exter
 ```bash
 STEM=$(echo $TARGET_DOMAIN | cut -d. -f1)
 for sub in "" "-my" "-admin"; do
-  echo "=== ${STEM}${sub}.sharepoint.com ==="
-  curl -sk -m 10 -I "https://${STEM}${sub}.sharepoint.com/" -w '%{http_code}\n'
+ echo "=== ${STEM}${sub}.sharepoint.com ==="
+ curl -sk -m 10 -I "https://${STEM}${sub}.sharepoint.com/" -w '%{http_code}\n'
 done
 ```
 
@@ -2409,13 +2409,13 @@ PowerShell:
 ```powershell
 $STEM = ($D -split '\.')[0]
 foreach ($s in @("","-my","-admin")) {
-  try {
-    $r = Invoke-WebRequest -Uri "https://${STEM}${s}.sharepoint.com/" -Method Head -UseBasicParsing -TimeoutSec 10
-    "${STEM}${s}.sharepoint.com -> HTTP $($r.StatusCode) (tenant exists)"
-  } catch {
-    $code = $_.Exception.Response.StatusCode.value__
-    if ($code) { "${STEM}${s}.sharepoint.com -> HTTP $code" } else { "${STEM}${s}.sharepoint.com -> no host" }
-  }
+ try {
+ $r = Invoke-WebRequest -Uri "https://${STEM}${s}.sharepoint.com/" -Method Head -UseBasicParsing -TimeoutSec 10
+ "${STEM}${s}.sharepoint.com -> HTTP $($r.StatusCode) (tenant exists)"
+ } catch {
+ $code = $_.Exception.Response.StatusCode.value__
+ if ($code) { "${STEM}${s}.sharepoint.com -> HTTP $code" } else { "${STEM}${s}.sharepoint.com -> no host" }
+ }
 }
 ```
 
@@ -2432,14 +2432,14 @@ curl -sk -m 10 -I "https://${STEM}-my.sharepoint.com/personal/${USER_TOKEN}/Docu
 
 ```bash
 curl -sk -m 10 "https://app.target.example/main.js" | \
-  grep -oE 'clientId["'\''[:=]+ ?["'\'']?[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
+ grep -oE 'clientId["'\''[:=]+ ?["'\'']?[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
 ```
 
 **Device-code phishing target check** (look for `device_authorization_endpoint` in OIDC metadata):
 
 ```bash
 curl -sk -m 10 "https://login.microsoftonline.com/${TARGET_DOMAIN}/v2.0/.well-known/openid-configuration" | \
-  jq '.device_authorization_endpoint'
+ jq '.device_authorization_endpoint'
 ```
 
 If non-null and tenant doesn't restrict device-code: MEDIUM finding (device-code phishing feasible).
@@ -2465,8 +2465,8 @@ When the standard introspection query (§16.2) returns `"errors":[{"message":"Gr
 
 ```bash
 curl -sk -m 10 -X POST "$T/graphql" \
-  -H 'Content-Type: application/json' \
-  -d '{"query":"{ __schema { types { name } } }"}' | jq -r '.errors[0].message'
+ -H 'Content-Type: application/json' \
+ -d '{"query":"{ __schema { types { name } } }"}' | jq -r '.errors[0].message'
 # If "introspection disabled" → proceed.
 ```
 
@@ -2474,8 +2474,8 @@ curl -sk -m 10 -X POST "$T/graphql" \
 
 ```bash
 curl -sk -m 10 -X POST "$T/graphql" \
-  -H 'Content-Type: application/json' \
-  -d '{"query":"{ usre { id } }"}' | jq -r '.errors[].message'
+ -H 'Content-Type: application/json' \
+ -d '{"query":"{ usre { id } }"}' | jq -r '.errors.message'
 # Expected: "Cannot query field \"usre\" on type \"Query\". Did you mean \"user\", \"users\", \"userById\"?"
 ```
 
@@ -2492,40 +2492,40 @@ Iterate over a candidate-field wordlist (use SecLists `Discovery/Web-Content/gra
 
 - **Alias-based query batching** (rate-limit / auth-bypass surface):
 
-  ```json
-  {
-    "query": "{ a:user(id:1){name} b:user(id:2){name} c:user(id:3){name} ... }"
-  }
-  ```
+ ```json
+ {
+ "query": "{ a:user(id:1){name} b:user(id:2){name} c:user(id:3){name} ... }"
+ }
+ ```
 
-  Many APIs rate-limit per-request, not per-alias. Test 100+ aliases per request.
+ Many APIs rate-limit per-request, not per-alias. Test 100+ aliases per request.
 
 - **Query-depth-limit bypass** (DoS / introspection bypass):
 
-  ```json
-  {
-    "query": "{ user { friends { friends { friends { friends { id } } } } } }"
-  }
-  ```
+ ```json
+ {
+ "query": "{ user { friends { friends { friends { friends { id } } } } } }"
+ }
+ ```
 
-  If server allows arbitrary depth → DoS surface; if depth-limited but doesn't strip nested `__type`/`__schema` → introspection-via-depth.
+ If server allows arbitrary depth → DoS surface; if depth-limited but doesn't strip nested `__type`/`__schema` → introspection-via-depth.
 
 - **Subscription enumeration via WebSocket:**
 
-  ```bash
-  wscat -c "wss://target.example/graphql" -s graphql-ws
-  > {"type":"connection_init"}
-  > {"id":"1","type":"start","payload":{"query":"subscription { __schema { types { name } } }"}}
-  ```
+ ```bash
+ wscat -c "wss://target.example/graphql" -s graphql-ws
+ > {"type":"connection_init"}
+ > {"id":"1","type":"start","payload":{"query":"subscription { __schema { types { name } } }"}}
+ ```
 
 - **Batched query bypass** (some servers process all queries in batch even if first fails):
 
-  ```json
-  [
-    {"query":"{ __schema { types { name } } }"},
-    {"query":"{ user(id:1) { name } }"}
-  ]
-  ```
+ ```json
+ [
+ {"query":"{ __schema { types { name } } }"},
+ {"query":"{ user(id:1) { name } }"}
+ ]
+ ```
 
 **Severity:**
 
@@ -2564,10 +2564,10 @@ Use boto3:
 ```python
 import boto3
 sts = boto3.client('sts',
-    aws_access_key_id='<AKIA...>',
-    aws_secret_access_key='<secret>',
-    region_name='us-east-1')
-ident = sts.get_caller_identity()
+ aws_access_key_id='<AKIA...>',
+ aws_secret_access_key='<secret>',
+ region_name='us-east-1')
+ident = sts.get_caller_identity
 # ident['Account'], ident['Arn'], ident['UserId']
 ```
 
@@ -2604,8 +2604,8 @@ Header: Authorization: Bearer <xox*-*>
 ```
 GET https://api.anthropic.com/v1/models
 Headers:
-  x-api-key: sk-ant-api03-...
-  anthropic-version: 2023-06-01
+ x-api-key: sk-ant-api03-...
+ anthropic-version: 2023-06-01
 ```
 
 - `200` → live; response lists available models.
@@ -2654,8 +2654,8 @@ Auth: Basic <base64(email:ATATT3xFfGF0_...)>
 ```
 GET https://api.datadoghq.com/api/v1/validate
 Headers:
-  DD-API-KEY: <api-key>
-  DD-APPLICATION-KEY: <app-key>
+ DD-API-KEY: <api-key>
+ DD-APPLICATION-KEY: <app-key>
 ```
 
 - `200` → both keys valid.
@@ -2667,15 +2667,15 @@ Headers:
 
 ```
 {
-  "status":          "verified_live" | "verified_dead" | "scope_restricted" |
-                     "scope_unrestricted" | "validation_skipped_by_policy" |
-                     "validation_unsupported" | "validation_failed_transient",
-  "provider":        "postman" | "aws" | "github" | "slack" | "anthropic" | "openai" | "npm" | "atlassian" | "datadog",
-  "account_id":      "<opaque>",
-  "scope":           "<freeform>",
-  "metadata":        {<provider-specific>},
-  "checked_at":      "<UTC ISO8601>",
-  "detectability":   "low" | "medium" | "high"
+ "status": "verified_live" | "verified_dead" | "scope_restricted" |
+ "scope_unrestricted" | "validation_skipped_by_policy" |
+ "validation_unsupported" | "validation_failed_transient",
+ "provider": "postman" | "aws" | "github" | "slack" | "anthropic" | "openai" | "npm" | "atlassian" | "datadog",
+ "account_id": "<opaque>",
+ "scope": "<freeform>",
+ "metadata": {<provider-specific>},
+ "checked_at": "<UTC ISO8601>",
+ "detectability": "low" | "medium" | "high"
 }
 ```
 
@@ -2709,10 +2709,10 @@ aws iam list-groups-for-user --user-name $(aws iam get-user --query 'User.UserNa
 
 # What can I actually do? (simulate-principal-policy for common dangerous actions)
 aws iam simulate-principal-policy \
-  --policy-source-arn $(aws sts get-caller-identity --query Arn --output text) \
-  --action-names s3:ListAllMyBuckets ec2:DescribeInstances iam:ListUsers \
-                 secretsmanager:ListSecrets ssm:DescribeParameters \
-                 lambda:ListFunctions rds:DescribeDBInstances
+ --policy-source-arn $(aws sts get-caller-identity --query Arn --output text) \
+ --action-names s3:ListAllMyBuckets ec2:DescribeInstances iam:ListUsers \
+ secretsmanager:ListSecrets ssm:DescribeParameters \
+ lambda:ListFunctions rds:DescribeDBInstances
 
 # Read-only enumeration of common services (do not WRITE)
 aws s3 ls
@@ -2749,7 +2749,7 @@ curl -sk -m 10 -H "$H" "https://api.github.com/user/orgs"
 ORG="<orgname>"
 curl -sk -m 10 -H "$H" "https://api.github.com/orgs/$ORG/members"
 curl -sk -m 10 -H "$H" "https://api.github.com/orgs/$ORG/repos?per_page=100"
-curl -sk -m 10 -H "$H" "https://api.github.com/orgs/$ORG/actions/secrets"   # requires admin:org
+curl -sk -m 10 -H "$H" "https://api.github.com/orgs/$ORG/actions/secrets" # requires admin:org
 
 # Per-repo workflow secrets (metadata)
 REPO="<orgname/reponame>"
@@ -2767,13 +2767,13 @@ H="Authorization: Bearer $TOKEN"
 curl -sk -m 10 -H "$H" -X POST "https://slack.com/api/users.identity" | jq .
 
 # What conversations can I see? (sweeping check; respects scope)
-curl -sk -m 10 -H "$H" -X POST "https://slack.com/api/conversations.list?types=public_channel,private_channel,mpim,im&limit=200" | jq '.channels[] | {id, name, is_private}'
+curl -sk -m 10 -H "$H" -X POST "https://slack.com/api/conversations.list?types=public_channel,private_channel,mpim,im&limit=200" | jq '.channels | {id, name, is_private}'
 
 # Workspace info
 curl -sk -m 10 -H "$H" -X POST "https://slack.com/api/team.info" | jq .
 
 # User list (only if scope includes users:read)
-curl -sk -m 10 -H "$H" -X POST "https://slack.com/api/users.list?limit=100" | jq '.members[] | {name, real_name, is_admin}'
+curl -sk -m 10 -H "$H" -X POST "https://slack.com/api/users.list?limit=100" | jq '.members | {name, real_name, is_admin}'
 
 # DO NOT: chat.postMessage, files.upload, conversations.invite, etc.
 ```
@@ -2821,21 +2821,21 @@ H="X-Api-Key: $PMAK"
 curl -sk -m 10 -H "$H" https://api.getpostman.com/me | jq '.user'
 
 # Workspaces
-curl -sk -m 10 -H "$H" https://api.getpostman.com/workspaces | jq '.workspaces[] | {id, name, type}'
+curl -sk -m 10 -H "$H" https://api.getpostman.com/workspaces | jq '.workspaces | {id, name, type}'
 
 # Per-workspace collections
 WS="<workspace-id>"
-curl -sk -m 10 -H "$H" "https://api.getpostman.com/workspaces/$WS" | jq '.workspace.collections[]'
-curl -sk -m 10 -H "$H" "https://api.getpostman.com/workspaces/$WS" | jq '.workspace.environments[]'
+curl -sk -m 10 -H "$H" "https://api.getpostman.com/workspaces/$WS" | jq '.workspace.collections'
+curl -sk -m 10 -H "$H" "https://api.getpostman.com/workspaces/$WS" | jq '.workspace.environments'
 
 # Per-collection requests (where the secrets often live)
 COL="<collection-id>"
-curl -sk -m 10 -H "$H" "https://api.getpostman.com/collections/$COL" | jq '.collection.item[]'
+curl -sk -m 10 -H "$H" "https://api.getpostman.com/collections/$COL" | jq '.collection.item'
 # Run secret catalog over the JSON
 
 # Environments (env vars often contain creds)
 ENV="<environment-id>"
-curl -sk -m 10 -H "$H" "https://api.getpostman.com/environments/$ENV" | jq '.environment.values[] | {key, value}'
+curl -sk -m 10 -H "$H" "https://api.getpostman.com/environments/$ENV" | jq '.environment.values | {key, value}'
 ```
 
 **Anthropic API key — usage enum:**
@@ -2846,7 +2846,7 @@ H="x-api-key: $KEY"
 A="anthropic-version: 2023-06-01"
 
 # Models accessible
-curl -sk -m 10 -H "$H" -H "$A" https://api.anthropic.com/v1/models | jq '.data[] | .id'
+curl -sk -m 10 -H "$H" -H "$A" https://api.anthropic.com/v1/models | jq '.data | .id'
 
 # Usage / quota (admin-scoped tokens only):
 curl -sk -m 10 -H "$H" -H "$A" https://api.anthropic.com/v1/organizations/usage_report | jq .
@@ -2889,23 +2889,23 @@ Postman's public-search endpoint is unauthenticated and indexes every workspace 
 
 ```bash
 curl -sk -m 15 \
-  "https://www.postman.com/_api/ws/proxy" \
-  -H 'Content-Type: application/json' \
-  -H 'X-Entity-Team-Id: 0' \
-  -d '{
-    "service":"search",
-    "method":"POST",
-    "path":"/search-all",
-    "body":{
-      "queryIndices":["collaboration.workspace","runtime.collection","runtime.request"],
-      "queryText":"acme.com",
-      "size":100,
-      "from":0,
-      "clientTraceId":"",
-      "queryAllIndices":false,
-      "domain":"public"
-    }
-  }' | jq '.data[]'
+ "https://www.postman.com/_api/ws/proxy" \
+ -H 'Content-Type: application/json' \
+ -H 'X-Entity-Team-Id: 0' \
+ -d '{
+ "service":"search",
+ "method":"POST",
+ "path":"/search-all",
+ "body":{
+ "queryIndices":["collaboration.workspace","runtime.collection","runtime.request"],
+ "queryText":"acme.com",
+ "size":100,
+ "from":0,
+ "clientTraceId":"",
+ "queryAllIndices":false,
+ "domain":"public"
+ }
+ }' | jq '.data'
 ```
 
 This proxies through Postman's web app to their internal search service. Pagination via `from` (0, 100, 200, ...).
@@ -2927,12 +2927,12 @@ WS_ID="<workspace-id>"
 curl -sk -m 10 "https://www.postman.com/_api/workspace/$WS_ID" | jq .
 
 # List collections + environments + monitors in workspace
-curl -sk -m 10 "https://www.postman.com/_api/workspace/$WS_ID/collection" | jq '.[].id'
-curl -sk -m 10 "https://www.postman.com/_api/workspace/$WS_ID/environment" | jq '.[].id'
+curl -sk -m 10 "https://www.postman.com/_api/workspace/$WS_ID/collection" | jq '..id'
+curl -sk -m 10 "https://www.postman.com/_api/workspace/$WS_ID/environment" | jq '..id'
 
 # Per-collection: full content (requests, headers, scripts, env vars)
 COL_ID="<collection-id>"
-curl -sk -m 10 "https://www.postman.com/_api/collection/$COL_ID" | jq '.collection.item[]'
+curl -sk -m 10 "https://www.postman.com/_api/collection/$COL_ID" | jq '.collection.item'
 ```
 
 **Ownership scoring signals:**
@@ -2966,10 +2966,10 @@ salesforce.stackexchange.com
 
 ```
 GET https://api.stackexchange.com/2.3/search/advanced
-   ?site=<site>
-   &q=<target>
-   &filter=withbody
-   &pagesize=100
+ ?site=<site>
+ &q=<target>
+ &filter=withbody
+ &pagesize=100
 ```
 
 **Code block extraction regex:**
@@ -3001,7 +3001,7 @@ Many SaaS collaboration tools allow public sharing. Dork them like search engine
 ```
 trello.com
 notion.so / notion.site
-*.atlassian.net           (Jira / Confluence)
+*.atlassian.net (Jira / Confluence)
 miro.com
 asana.com
 clickup.com
@@ -3063,49 +3063,49 @@ crt.sh runs on a single nginx in front of a busy Postgres; 502 / 503 / timeout i
 D="target.example"
 
 # 1. Censys cert search (free 250 queries/month with key) — same data, different infra
-censys search "names: ${D}" --index-type certificates --fields names | jq -r '.names[]' | sort -u
+censys search "names: ${D}" --index-type certificates --fields names | jq -r '.names' | sort -u
 
 # 2. Cert Spotter API (sslmate) — free w/ rate limits
 curl -sk "https://api.certspotter.com/v1/issuances?domain=${D}&include_subdomains=true&expand=dns_names" | \
-  jq -r '.[].dns_names[]' | sort -u
+ jq -r '..dns_names' | sort -u
 
 # 3. CertStream archive (Calidog) — historical CT log mirror
-curl -sk "https://crt.calidog.io/?q=${D}" | jq -r '.[].name_value' | sort -u
+curl -sk "https://crt.calidog.io/?q=${D}" | jq -r '..name_value' | sort -u
 
 # 4. Subfinder bundled aggregator (uses 30+ sources internally — Chaos, Anubis, BinaryEdge, BufferOver, Censys, CertSpotter, Crobat, Crtsh, DNSDumpster, FOFA, Fullhunt, GitHub, HackerTarget, IntelX, PassiveTotal, Quake, Rapiddns, Shodan, Spyse, ThreatBook, ThreatMiner, URLScan, VirusTotal, WhoisXML, ZoomEye, etc.)
 subfinder -d ${D} -all -recursive -silent
 
 # 5. AlienVault OTX — free, no key
 curl -sk "https://otx.alienvault.com/api/v1/indicators/domain/${D}/passive_dns" | \
-  jq -r '.passive_dns[].hostname' | sort -u
+ jq -r '.passive_dns.hostname' | sort -u
 
 # 6. ThreatMiner — free
-curl -sk "https://api.threatminer.org/v2/domain.php?q=${D}&rt=5" | jq -r '.results[]'
+curl -sk "https://api.threatminer.org/v2/domain.php?q=${D}&rt=5" | jq -r '.results'
 
 # 7. URLScan — passive DNS via past scans
 curl -sk "https://urlscan.io/api/v1/search/?q=domain:${D}" | \
-  jq -r '.results[].page.domain' | sort -u
+ jq -r '.results.page.domain' | sort -u
 
 # 8. Anubis-DB / DNSDumpster (HTML scrape, last resort)
-curl -sk -A "Mozilla/5.0" "https://anubisdb.com/anubis/subdomains/${D}" | jq -r '.[]'
+curl -sk -A "Mozilla/5.0" "https://anubisdb.com/anubis/subdomains/${D}" | jq -r '.'
 ```
 
 PowerShell crt.sh wrapper with retry + fallback to Subfinder:
 
 ```powershell
 function Get-Subs {
-  param($D)
-  for ($i=0; $i -lt 3; $i++) {
-    try {
-      $r = Invoke-WebRequest -Uri "https://crt.sh/?q=%25.$D&output=json" -UseBasicParsing -TimeoutSec 90 -UserAgent "Mozilla/5.0"
-      return ($r.Content | ConvertFrom-Json | %{ $_.name_value -split "`n" } | %{ $_.Trim().ToLower() } | ?{ $_ -and $_ -notlike "*@*" -and $_ -notmatch "^\*\." } | Sort -Unique)
-    } catch {
-      "crt.sh attempt $($i+1) failed; sleep 5s..." | Out-Host
-      Start-Sleep -Seconds 5
-    }
-  }
-  "crt.sh down — pivot to Subfinder: subfinder -d $D -all -silent" | Out-Host
-  return @()
+ param($D)
+ for ($i=0; $i -lt 3; $i++) {
+ try {
+ $r = Invoke-WebRequest -Uri "https://crt.sh/?q=%25.$D&output=json" -UseBasicParsing -TimeoutSec 90 -UserAgent "Mozilla/5.0"
+ return ($r.Content | ConvertFrom-Json | %{ $_.name_value -split "`n" } | %{ $_.Trim.ToLower } | ?{ $_ -and $_ -notlike "*@*" -and $_ -notmatch "^\*\." } | Sort -Unique)
+ } catch {
+ "crt.sh attempt $($i+1) failed; sleep 5s..." | Out-Host
+ Start-Sleep -Seconds 5
+ }
+ }
+ "crt.sh down — pivot to Subfinder: subfinder -d $D -all -silent" | Out-Host
+ return @
 }
 ```
 
@@ -3122,7 +3122,7 @@ function Get-Subs {
 | **bo0om wordlist** | `https://github.com/bo0om/wordlists` | Russian-language-aware. |
 | **commonspeak2** | `https://github.com/assetnote/commonspeak2-wordlists` | Generated from BigQuery commit data. |
 | **fuzzdb** | `https://github.com/fuzzdb-project/fuzzdb` | Fuzzing payloads + wordlists. |
-| **PayloadsAllTheThings** | `https://github.com/swisskyrepo/PayloadsAllTheThings` | Per-vuln-class payloads (less for enum, more for follow-on). |
+| **this collection** | ` | Per-vuln-class payloads (less for enum, more for follow-on). |
 | **Custom per-target** | n/a | Best practice: derive a custom wordlist from the target's own content (extract every word from their public website + LinkedIn + careers page → unique → use as seed). |
 
 **Size guidance:**
@@ -3264,9 +3264,9 @@ When a target owns an IP range (their ASN), enumerate it.
 ```bash
 # Single /24
 for i in $(seq 1 254); do
-  IP="203.0.113.$i"
-  PTR=$(dig +short -x $IP)
-  [ -n "$PTR" ] && echo "$IP -> $PTR"
+ IP="203.0.113.$i"
+ PTR=$(dig +short -x $IP)
+ [ -n "$PTR" ] && echo "$IP -> $PTR"
 done
 
 # Larger range with parallelism
@@ -3294,13 +3294,13 @@ IPv6 has weaker enumeration tradition (huge address space precludes brute-force)
 ```bash
 # AAAA records for every discovered subdomain
 for sub in $(cat all-subs.txt); do
-  AAAA=$(dig +short AAAA $sub)
-  [ -n "$AAAA" ] && echo "$sub -> $AAAA"
+ AAAA=$(dig +short AAAA $sub)
+ [ -n "$AAAA" ] && echo "$sub -> $AAAA"
 done
 
 # IPv6 reverse DNS sweep is generally infeasible (2^64 host bits per subnet)
 # Instead: extract IPv6 prefixes from the target's allocations
-whois -h whois.cymru.com " -v target.example.com"   # gets ASN; then look up prefix
+whois -h whois.cymru.com " -v target.example.com" # gets ASN; then look up prefix
 ```
 
 **BGP route observation:**
@@ -3363,7 +3363,7 @@ curl -sk "https://api.first.org/data/v1/epss?cve=CVE-2024-3400" | jq '.data[0]'
 
 # 2. Check if in CISA KEV
 curl -sk https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json | \
-  jq '.vulnerabilities[] | select(.cveID == "CVE-2024-3400")'
+ jq '.vulnerabilities | select(.cveID == "CVE-2024-3400")'
 
 # 3. Check ExploitDB
 searchsploit cve 2024-3400
@@ -3376,15 +3376,15 @@ msfconsole -q -x "search cve:2024-3400; exit"
 
 ```bash
 # Extract CVEs from nuclei JSON output
-jq -r '.info.classification.["cve-id"][]?' nuclei-results.json | sort -u > cves.txt
+jq -r '.info.classification.["cve-id"]?' nuclei-results.json | sort -u > cves.txt
 
 # Annotate each with EPSS + KEV
 while IFS= read -r CVE; do
-  EPSS=$(curl -sk "https://api.first.org/data/v1/epss?cve=$CVE" | jq -r '.data[0].epss // "N/A"')
-  KEV=$(curl -sk https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json | \
-    jq --arg c "$CVE" '.vulnerabilities[] | select(.cveID == $c) | .vulnerabilityName // empty')
-  KEV_FLAG=$([ -n "$KEV" ] && echo "KEV" || echo "")
-  echo "$CVE | EPSS:$EPSS | $KEV_FLAG"
+ EPSS=$(curl -sk "https://api.first.org/data/v1/epss?cve=$CVE" | jq -r '.data[0].epss // "N/A"')
+ KEV=$(curl -sk https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json | \
+ jq --arg c "$CVE" '.vulnerabilities | select(.cveID == $c) | .vulnerabilityName // empty')
+ KEV_FLAG=$([ -n "$KEV" ] && echo "KEV" || echo "")
+ echo "$CVE | EPSS:$EPSS | $KEV_FLAG"
 done < cves.txt | sort -t: -k2 -nr
 ```
 
@@ -3411,10 +3411,10 @@ python3 testing/offensive-osint/scripts/h1_reference.py --top-bounty --severity 
 
 # Program-specific disclosures (requires program handle)
 python3 testing/offensive-osint/scripts/h1_reference.py --program gitlab --pages 5
-python3 testing/offensive-osint/scripts/h1_reference.py --lookup-program gitlab   # resolve handle → team ID
+python3 testing/offensive-osint/scripts/h1_reference.py --lookup-program gitlab # resolve handle → team ID
 
 # JSON output for piping / jq
-python3 testing/offensive-osint/scripts/h1_reference.py --top-voted --query "XSS" --pages 5 --json | jq '.[].report.url'
+python3 testing/offensive-osint/scripts/h1_reference.py --top-voted --query "XSS" --pages 5 --json | jq '..report.url'
 ```
 
 **When to run:**
@@ -3588,9 +3588,9 @@ python3 testing/offensive-osint/scripts/h1_reference.py --top-voted --query "XSS
 When you run a multi-module recon, late-arriving outputs need to feed into already-running modules. The pattern:
 
 1. Each module writes a sidecar JSON to a known location when it finishes:
-   - `<scan>/mobile_endpoints.json` — endpoints + hostnames extracted from APK static analysis.
-   - `<scan>/secrets_sidecar.json` — hostnames + endpoints + Firebase project IDs from secrets-beyond-github sweep.
-   - `<scan>/sso_tenants.json` — discovered IdP tenants for breach correlation.
+ - `<scan>/mobile_endpoints.json` — endpoints + hostnames extracted from APK static analysis.
+ - `<scan>/secrets_sidecar.json` — hostnames + endpoints + Firebase project IDs from secrets-beyond-github sweep.
+ - `<scan>/sso_tenants.json` — discovered IdP tenants for breach correlation.
 2. Downstream modules check for sidecars on start; if present, ingest.
 3. Cross-feed: API discovery consumes both `mobile_endpoints.json` and `secrets_sidecar.json`; SSO×breach correlation consumes `sso_tenants.json` and the breach DB.
 
@@ -3598,12 +3598,12 @@ When you run a multi-module recon, late-arriving outputs need to feed into alrea
 
 ```json
 {
-  "endpoints": [
-    {"method": "GET", "url": "https://api.acme.com/v1/users", "source": "apk:com.acme.android"},
-    {"method": "POST", "url": "https://api.acme.com/v1/login", "source": "apk:com.acme.android"}
-  ],
-  "hostnames": ["api.acme.com", "cdn.acme.com"],
-  "firebase_project_ids": ["acme-prod-12345"]
+ "endpoints": [
+ {"method": "GET", "url": "https://api.acme.com/v1/users", "source": "apk:com.acme.android"},
+ {"method": "POST", "url": "https://api.acme.com/v1/login", "source": "apk:com.acme.android"}
+ ],
+ "hostnames": ["api.acme.com", "cdn.acme.com"],
+ "firebase_project_ids": ["acme-prod-12345"]
 }
 ```
 
@@ -3669,7 +3669,7 @@ When emitting a HIGH/CRITICAL API endpoint finding (score ≥ 70), include a one
 | Public Slack invite link | *"Slack workspace invite link discoverable via search engine — anyone can join the workspace without approval; trivially access internal channels."* |
 | Open Docker registry | *"Public Docker registry at {host} — `GET /v2/_catalog` lists images; pull and scan layers for embedded secrets."* |
 | Telegram bot token live | *"Telegram bot token validated — `getUpdates` reveals bot recipients (admin chats); if `getMe` shows bot is in channels, full message read access."* |
-| Sourcemap with `sourcesContent[]` | *"Sourcemap on {host} includes embedded original sources — full frontend code reconstructable; grep for inline secrets and internal hostnames."* |
+| Sourcemap with `sourcesContent` | *"Sourcemap on {host} includes embedded original sources — full frontend code reconstructable; grep for inline secrets and internal hostnames."* |
 
 ---
 
@@ -3792,7 +3792,7 @@ LinkedIn is the highest-signal source for employee enumeration during external r
 
 ```
 site:linkedin.com/in "<company name>"
-site:linkedin.com/in "<company name>" "engineer"   # role filter
+site:linkedin.com/in "<company name>" "engineer" # role filter
 site:linkedin.com/in "<company name>" "<location>" # location filter
 site:linkedin.com/in "<company name>" -inurl:/posts
 ```
@@ -3852,21 +3852,21 @@ Per discovered employee:
 
 ```
 Person:
-  name:        "Alice Doe"
-  title:       "Senior DevOps Engineer"
-  role_tier:   P2
-  company:     "Acme Corp"
-  location:    "Boston, MA"
-  linkedin_url: https://www.linkedin.com/in/alicedoe
-  derived_emails:
-    - alice.doe@acme.com    (TENTATIVE)
-    - adoe@acme.com         (TENTATIVE)
-    - alice@acme.com        (TENTATIVE)
-  breach_hits:
-    - alice.doe@acme.com    (HudsonRock; cleartext password redacted; FIRM)
-  pretext_hooks:
-    - "DevOps tooling vendor evaluation" (recent posts)
-    - "Boston DevOps Days speaker" (conference activity)
+ name: "Alice Doe"
+ title: "Senior DevOps Engineer"
+ role_tier: P2
+ company: "Acme Corp"
+ location: "Boston, MA"
+ linkedin_url: https://www.linkedin.com/in/alicedoe
+ derived_emails:
+ - alice.doe@acme.com (TENTATIVE)
+ - adoe@acme.com (TENTATIVE)
+ - alice@acme.com (TENTATIVE)
+ breach_hits:
+ - alice.doe@acme.com (HudsonRock; cleartext password redacted; FIRM)
+ pretext_hooks:
+ - "DevOps tooling vendor evaluation" (recent posts)
+ - "Boston DevOps Days speaker" (conference activity)
 ```
 
 ---
@@ -3917,13 +3917,13 @@ Per discovered tech mention:
 
 ```
 Tech_inferred:
-  product:     "Snowflake"
-  category:    "data warehouse"
-  source:      "linkedin job posting #<id>"
-  source_url:  https://www.linkedin.com/jobs/view/...
-  confidence:  TENTATIVE  (job listing implies in-use; not yet confirmed by direct probe)
-  posting_date: 2026-03-15
-  required_or_nice: "required"
+ product: "Snowflake"
+ category: "data warehouse"
+ source: "linkedin job posting #<id>"
+ source_url: https://www.linkedin.com/jobs/view/...
+ confidence: TENTATIVE (job listing implies in-use; not yet confirmed by direct probe)
+ posting_date: 2026-03-15
+ required_or_nice: "required"
 ```
 
 Aggregate to a **target tech-stack profile** that informs:
@@ -3939,12 +3939,12 @@ Aggregate to a **target tech-stack profile** that informs:
 ### 43.1 Slack
 
 - **Public workspace search** (limited; Slack used to have one but deprecated):
-  - **Slofile** (third-party): `https://slofile.com/` — community Slack workspace directory.
-  - **Slacklist** / **Slack Communities** — community-curated lists.
+ - **Slofile** (third-party): `https://slofile.com/` — community Slack workspace directory.
+ - **Slacklist** / **Slack Communities** — community-curated lists.
 - **Invite-link enumeration** — Slack invite URLs follow `https://join.slack.com/t/<workspace-slug>/shared_invite/<token>`. Common discovery:
-  - Google: `site:join.slack.com "{target}"` or `inurl:slack.com inurl:shared_invite "{target}"`.
-  - GitHub: `"join.slack.com/t/<target-stem>"` filename:README.
-  - Twitter/X / Reddit: search for shared invite links.
+ - Google: `site:join.slack.com "{target}"` or `inurl:slack.com inurl:shared_invite "{target}"`.
+ - GitHub: `"join.slack.com/t/<target-stem>"` filename:README.
+ - Twitter/X / Reddit: search for shared invite links.
 - **Confirm workspace exists**: visit `https://<slug>.slack.com/api/auth.test` (returns workspace metadata when called by an authenticated session, but the page itself returns differently per workspace existence).
 - **High-value finding**: any open invite link that bypasses the target's normal member-approval flow → operator can join workspace without authorization → MEDIUM/HIGH finding (depending on what's in the workspace).
 
@@ -3989,20 +3989,20 @@ Public package registries (npm, PyPI, RubyGems, Docker Hub, etc.) often contain 
 
 - **Search packages by org / scope:**
 
-  ```bash
-  npm search "<target-keyword>"
-  npm view @<scope>/<package-name>
-  ```
+ ```bash
+ npm search "<target-keyword>"
+ npm view @<scope>/<package-name>
+ ```
 
 - **List org's packages:** `https://www.npmjs.com/org/<org>` or `https://registry.npmjs.org/-/org/<org>/package`.
 - **Per-package historical versions:** `https://registry.npmjs.org/<package>` — JSON with all versions.
 - **Tarball download for scan:**
 
-  ```bash
-  npm pack <package>@<version>
-  tar -xzf package-version.tgz
-  # Run secret catalog (§17) on extracted files
-  ```
+ ```bash
+ npm pack <package>@<version>
+ tar -xzf package-version.tgz
+ # Run secret catalog (§17) on extracted files
+ ```
 
 - **Common leaks:** `.env` files included in published tarball, `package.json` `scripts` references to internal CI secrets, hardcoded API keys in `dist/` builds.
 
@@ -4012,11 +4012,11 @@ Public package registries (npm, PyPI, RubyGems, Docker Hub, etc.) often contain 
 - **Per-package metadata + history:** `https://pypi.org/pypi/<package>/json`.
 - **Download wheel/sdist for scan:**
 
-  ```bash
-  pip download <package>==<version> --no-deps -d /tmp/pkg
-  unzip /tmp/pkg/*.whl -d /tmp/pkg/extracted
-  # Run secret catalog
-  ```
+ ```bash
+ pip download <package>==<version> --no-deps -d /tmp/pkg
+ unzip /tmp/pkg/*.whl -d /tmp/pkg/extracted
+ # Run secret catalog
+ ```
 
 - **Common leaks:** `setup.py` with hardcoded URLs, embedded test fixtures with real credentials, accidentally-included `.pypirc` files.
 
@@ -4026,10 +4026,10 @@ Public package registries (npm, PyPI, RubyGems, Docker Hub, etc.) often contain 
 - **Per-gem metadata:** `https://rubygems.org/api/v1/gems/<gem-name>.json`.
 - **Download:**
 
-  ```bash
-  gem fetch <gem-name>
-  gem unpack <gem-name>-<version>.gem
-  ```
+ ```bash
+ gem fetch <gem-name>
+ gem unpack <gem-name>-<version>.gem
+ ```
 
 ### 44.4 Cargo (Rust crates)
 
@@ -4071,7 +4071,7 @@ For every published package the target owns, generate typosquat candidates (simi
 # Example: target package "acme-utils"
 # Candidates: acme-util, acmeutils, acme_utils, acme.utils, ac-me-utils, etc.
 for candidate in acme-util acmeutils acme_utils acme.utils ac-me-utils; do
-  npm view $candidate 2>&1 | head -3
+ npm view $candidate 2>&1 | head -3
 done
 ```
 
@@ -4174,7 +4174,7 @@ go install github.com/michenriksen/aquatone@latest
 ```bash
 # Nuclei (template scanner)
 go install github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
-nuclei -ut    # update templates
+nuclei -ut # update templates
 
 # Naabu (port scan)
 go install github.com/projectdiscovery/naabu/v2/cmd/naabu@latest
@@ -4312,7 +4312,7 @@ go install github.com/trufflesecurity/trufflehog@latest
 go install github.com/zricethezav/gitleaks/v8@latest
 
 # jq (JSON parsing)
-sudo apt install jq    # or brew install jq
+sudo apt install jq # or brew install jq
 ```
 
 ### 46.12 Frameworks / orchestration
@@ -4409,15 +4409,15 @@ Drop-in Python helper that mirrors the 80-pattern catalog (§17). Pure stdlib, n
 the `offensive-osint` skill (§17).
 
 Usage:
-  echo "YOUR_AWS_ACCESS_KEY_HERE" | python3 secret_scan.py
-  python3 secret_scan.py file1.txt file2.js dir/
+ echo "YOUR_AWS_ACCESS_KEY_HERE" | python3 secret_scan.py
+ python3 secret_scan.py file1.txt file2.js dir/
 
 Output: one JSON object per line:
-  {pattern, severity, category, match, source, line}
+ {pattern, severity, category, match, source, line}
 
 Exit codes:
-  0 — completed (regardless of whether secrets found)
-  2 — invalid arguments
+ 0 — completed (regardless of whether secrets found)
+ 2 — invalid arguments
 """
 import json
 import os
@@ -4432,243 +4432,243 @@ SEV_LOW = "low"
 # Order matters: most-specific patterns first so generic catches
 # don't pre-empt typed ones.
 PATTERNS = [
-    # AWS
-    ("AWS_ACCESS_KEY",       SEV_CRITICAL, "aws",         r"\b(AKIA|ASIA)[0-9A-Z]{16}\b"),
-    ("AWS_SECRET_TYPED",     SEV_CRITICAL, "aws",         r"(?i)aws[_\-]?secret[_\-]?access[_\-]?key['\"\s:=]+([A-Za-z0-9/+=]{40})"),
-    ("AWS_SECRET_LOOSE",     SEV_HIGH,     "aws",         r"(?i)aws(.{0,20})?(secret|sk)[\"'=: ]+([0-9a-z/+=]{40})"),
+ # AWS
+ ("AWS_ACCESS_KEY", SEV_CRITICAL, "aws", r"\b(AKIA|ASIA)[0-9A-Z]{16}\b"),
+ ("AWS_SECRET_TYPED", SEV_CRITICAL, "aws", r"(?i)aws[_\-]?secret[_\-]?access[_\-]?key['\"\s:=]+([A-Za-z0-9/+=]{40})"),
+ ("AWS_SECRET_LOOSE", SEV_HIGH, "aws", r"(?i)aws(.{0,20})?(secret|sk)[\"'=: ]+([0-9a-z/+=]{40})"),
 
-    # Google Cloud Platform
-    ("GCP_SERVICE_ACCOUNT",  SEV_CRITICAL, "gcp",         r'"type"\s*:\s*"service_account"'),
-    ("GOOGLE_API_KEY",       SEV_HIGH,     "gcp",         r"\bAIza[0-9A-Za-z_\-]{35}\b"),
+ # Google Cloud Platform
+ ("GCP_SERVICE_ACCOUNT", SEV_CRITICAL, "gcp", r'"type"\s*:\s*"service_account"'),
+ ("GOOGLE_API_KEY", SEV_HIGH, "gcp", r"\bAIza[0-9A-Za-z_\-]{35}\b"),
 
-    # GitHub
-    ("GH_PAT_CLASSIC",       SEV_CRITICAL, "github",      r"\bghp_[A-Za-z0-9]{36}\b"),
-    ("GH_PAT_FINEGRAINED",   SEV_CRITICAL, "github",      r"\bgithub_pat_[A-Za-z0-9_]{82}\b"),
-    ("GH_OAUTH",             SEV_HIGH,     "github",      r"\bgho_[A-Za-z0-9]{36}\b"),
-    ("GH_S2S",               SEV_HIGH,     "github",      r"\bgh[usr]_[A-Za-z0-9]{36,}\b"),
+ # GitHub
+ ("GH_PAT_CLASSIC", SEV_CRITICAL, "github", r"\bghp_[A-Za-z0-9]{36}\b"),
+ ("GH_PAT_FINEGRAINED", SEV_CRITICAL, "github", r"\bgithub_pat_[A-Za-z0-9_]{82}\b"),
+ ("GH_OAUTH", SEV_HIGH, "github", r"\bgho_[A-Za-z0-9]{36}\b"),
+ ("GH_S2S", SEV_HIGH, "github", r"\bgh[usr]_[A-Za-z0-9]{36,}\b"),
 
-    # Stripe
-    ("STRIPE_LIVE",          SEV_CRITICAL, "stripe",      r"\bsk_live_[0-9A-Za-z]{24,}\b"),
-    ("STRIPE_TEST",          SEV_LOW,      "stripe",      r"\bsk_test_[0-9A-Za-z]{24,}\b"),
+ # Stripe
+ ("STRIPE_LIVE", SEV_CRITICAL, "stripe", r"\bsk_live_[0-9A-Za-z]{24,}\b"),
+ ("STRIPE_TEST", SEV_LOW, "stripe", r"\bsk_test_[0-9A-Za-z]{24,}\b"),
 
-    # Slack
-    ("SLACK_TOKEN",          SEV_HIGH,     "slack",       r"\bxox[abpors]-[0-9A-Za-z\-]{10,48}\b"),
-    ("SLACK_WEBHOOK",        SEV_MEDIUM,   "slack",       r"https://hooks\.slack\.com/services/T[A-Z0-9]+/B[A-Z0-9]+/[A-Za-z0-9]+"),
+ # Slack
+ ("SLACK_TOKEN", SEV_HIGH, "slack", r"\bxox[abpors]-[0-9A-Za-z\-]{10,48}\b"),
+ ("SLACK_WEBHOOK", SEV_MEDIUM, "slack", r"https://hooks\.slack\.com/services/T[A-Z0-9]+/B[A-Z0-9]+/[A-Za-z0-9]+"),
 
-    # Email service providers
-    ("SENDGRID",             SEV_HIGH,     "email_svc",   r"\bSG\.[A-Za-z0-9_\-]{22}\.[A-Za-z0-9_\-]{43}\b"),
-    ("MAILGUN_V1",           SEV_HIGH,     "email_svc",   r"\bkey-[0-9a-zA-Z]{32}\b"),
-    ("MAILGUN_LOOSE",        SEV_HIGH,     "email_svc",   r"\bkey-[0-9a-f]{32}\b"),
+ # Email service providers
+ ("SENDGRID", SEV_HIGH, "email_svc", r"\bSG\.[A-Za-z0-9_\-]{22}\.[A-Za-z0-9_\-]{43}\b"),
+ ("MAILGUN_V1", SEV_HIGH, "email_svc", r"\bkey-[0-9a-zA-Z]{32}\b"),
+ ("MAILGUN_LOOSE", SEV_HIGH, "email_svc", r"\bkey-[0-9a-f]{32}\b"),
 
-    # Twilio
-    ("TWILIO_API",           SEV_HIGH,     "twilio",      r"\bSK[0-9a-fA-F]{32}\b"),
-    ("TWILIO_SID",           SEV_MEDIUM,   "twilio",      r"\bAC[a-f0-9]{32}\b"),
-    ("TWILIO_AUTH",          SEV_HIGH,     "twilio",      r"(?i)twilio(.{0,20})?(auth|token)[\"'=: ]+([a-f0-9]{32})"),
+ # Twilio
+ ("TWILIO_API", SEV_HIGH, "twilio", r"\bSK[0-9a-fA-F]{32}\b"),
+ ("TWILIO_SID", SEV_MEDIUM, "twilio", r"\bAC[a-f0-9]{32}\b"),
+ ("TWILIO_AUTH", SEV_HIGH, "twilio", r"(?i)twilio(.{0,20})?(auth|token)[\"'=: ]+([a-f0-9]{32})"),
 
-    # PaaS
-    ("HEROKU_API",           SEV_MEDIUM,   "paas",        r"(?i)heroku(.{0,20})?api[\"'=: ]+([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})"),
+ # PaaS
+ ("HEROKU_API", SEV_MEDIUM, "paas", r"(?i)heroku(.{0,20})?api[\"'=: ]+([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})"),
 
-    # Firebase
-    ("FIREBASE_URL",         SEV_LOW,      "firebase",    r"\bhttps?://[a-z0-9\-]+\.firebaseio\.com\b"),
+ # Firebase
+ ("FIREBASE_URL", SEV_LOW, "firebase", r"\bhttps?://[a-z0-9\-]+\.firebaseio\.com\b"),
 
-    # Tokens / auth headers
-    ("JWT",                  SEV_MEDIUM,   "jwt",         r"\beyJ[A-Za-z0-9_\-]{10,}\.eyJ[A-Za-z0-9_\-]{10,}\.[A-Za-z0-9_\-]{10,}\b"),
-    ("BEARER_AUTH",          SEV_MEDIUM,   "bearer",      r"(?i)authorization[\"'=: ]+bearer\s+[A-Za-z0-9._\-]{20,}"),
-    ("BASIC_AUTH_URL",       SEV_MEDIUM,   "basic_auth",  r"https?://[^/\s:@]+:[^/\s:@]+@[^/\s]+"),
+ # Tokens / auth headers
+ ("JWT", SEV_MEDIUM, "jwt", r"\beyJ[A-Za-z0-9_\-]{10,}\.eyJ[A-Za-z0-9_\-]{10,}\.[A-Za-z0-9_\-]{10,}\b"),
+ ("BEARER_AUTH", SEV_MEDIUM, "bearer", r"(?i)authorization[\"'=: ]+bearer\s+[A-Za-z0-9._\-]{20,}"),
+ ("BASIC_AUTH_URL", SEV_MEDIUM, "basic_auth", r"https?://[^/\s:@]+:[^/\s:@]+@[^/\s]+"),
 
-    # Private keys
-    ("RSA_PRIVKEY",          SEV_CRITICAL, "private_key", r"-----BEGIN RSA PRIVATE KEY-----"),
-    ("EC_PRIVKEY",           SEV_CRITICAL, "private_key", r"-----BEGIN EC PRIVATE KEY-----"),
-    ("OPENSSH_PRIVKEY",      SEV_CRITICAL, "private_key", r"-----BEGIN OPENSSH PRIVATE KEY-----"),
-    ("GENERIC_PRIVKEY",      SEV_CRITICAL, "private_key", r"-----BEGIN (DSA |PGP |)PRIVATE KEY-----"),
+ # Private keys
+ ("RSA_PRIVKEY", SEV_CRITICAL, "private_key", r"-----BEGIN RSA PRIVATE KEY-----"),
+ ("EC_PRIVKEY", SEV_CRITICAL, "private_key", r"-----BEGIN EC PRIVATE KEY-----"),
+ ("OPENSSH_PRIVKEY", SEV_CRITICAL, "private_key", r"-----BEGIN OPENSSH PRIVATE KEY-----"),
+ ("GENERIC_PRIVKEY", SEV_CRITICAL, "private_key", r"-----BEGIN (DSA |PGP |)PRIVATE KEY-----"),
 
-    # Generic
-    ("GENERIC_API_KEY",      SEV_MEDIUM,   "generic",     r"(?i)(?:api[_\-]?key|apikey|api_secret|access_token|secret[_\-]?token)['\"\s:=]+[\"']([A-Za-z0-9+/=_\-]{24,})[\"']"),
+ # Generic
+ ("GENERIC_API_KEY", SEV_MEDIUM, "generic", r"(?i)(?:api[_\-]?key|apikey|api_secret|access_token|secret[_\-]?token)['\"\s:=]+[\"']([A-Za-z0-9+/=_\-]{24,})[\"']"),
 
-    # Modern AI APIs (v2.1)
-    ("ANTHROPIC_API",        SEV_CRITICAL, "ai_api",      r"\bsk-ant-(?:api03|admin01)-[A-Za-z0-9_\-]{93,}\b"),
-    ("OPENAI_LEGACY",        SEV_CRITICAL, "ai_api",      r"\bsk-[A-Za-z0-9]{20}T3BlbkFJ[A-Za-z0-9]{20}\b"),
-    ("OPENAI_PROJECT",       SEV_CRITICAL, "ai_api",      r"\bsk-proj-[A-Za-z0-9_\-]{40,}T3BlbkFJ[A-Za-z0-9_\-]{40,}\b"),
-    ("OPENAI_SESSION",       SEV_HIGH,     "ai_api",      r"\bsess-[A-Za-z0-9]{40}\b"),
-    ("HUGGINGFACE",          SEV_HIGH,     "ai_api",      r"\bhf_[A-Za-z0-9]{30,}\b"),
+ # Modern AI APIs (v2.1)
+ ("ANTHROPIC_API", SEV_CRITICAL, "ai_api", r"\bsk-ant-(?:api03|admin01)-[A-Za-z0-9_\-]{93,}\b"),
+ ("OPENAI_LEGACY", SEV_CRITICAL, "ai_api", r"\bsk-[A-Za-z0-9]{20}T3BlbkFJ[A-Za-z0-9]{20}\b"),
+ ("OPENAI_PROJECT", SEV_CRITICAL, "ai_api", r"\bsk-proj-[A-Za-z0-9_\-]{40,}T3BlbkFJ[A-Za-z0-9_\-]{40,}\b"),
+ ("OPENAI_SESSION", SEV_HIGH, "ai_api", r"\bsess-[A-Za-z0-9]{40}\b"),
+ ("HUGGINGFACE", SEV_HIGH, "ai_api", r"\bhf_[A-Za-z0-9]{30,}\b"),
 
-    # Cloud infra
-    # §17 #35 — Cloudflare API Token: a bare 40-char token is far too generic to match
-    # standalone (any base64/hex chunk collides), so it is anchored to cloudflare / X-Auth-Key
-    # context on the same line, exactly as §17 specifies ("when paired with context").
-    ("CLOUDFLARE_API_TOKEN", SEV_HIGH,     "infra_api",   r"(?i)(?:cloudflare|x-auth-key)['\"\s:=]{1,20}([A-Za-z0-9_\-]{40})\b"),
-    ("CLOUDFLARE_API",       SEV_CRITICAL, "infra_api",   r"(?i)cf[_\-]?api[_\-]?key['\"\s:=]+([a-f0-9]{37})"),
-    ("DIGITALOCEAN",         SEV_HIGH,     "infra_api",   r"\bdop_v1_[a-f0-9]{64}\b"),
+ # Cloud infra
+ # §17 #35 — Cloudflare API Token: a bare 40-char token is far too generic to match
+ # standalone (any base64/hex chunk collides), so it is anchored to cloudflare / X-Auth-Key
+ # context on the same line, exactly as §17 specifies ("when paired with context").
+ ("CLOUDFLARE_API_TOKEN", SEV_HIGH, "infra_api", r"(?i)(?:cloudflare|x-auth-key)['\"\s:=]{1,20}([A-Za-z0-9_\-]{40})\b"),
+ ("CLOUDFLARE_API", SEV_CRITICAL, "infra_api", r"(?i)cf[_\-]?api[_\-]?key['\"\s:=]+([a-f0-9]{37})"),
+ ("DIGITALOCEAN", SEV_HIGH, "infra_api", r"\bdop_v1_[a-f0-9]{64}\b"),
 
-    # Package registries
-    ("NPM_TOKEN",            SEV_HIGH,     "package_registry", r"\bnpm_[A-Za-z0-9]{36}\b"),
-    ("PYPI_TOKEN",           SEV_HIGH,     "package_registry", r"\bpypi-AgENdGV[A-Za-z0-9_\-]+\b"),
-    ("DOCKER_HUB_PAT",       SEV_HIGH,     "package_registry", r"\bdckr_pat_[A-Za-z0-9_\-]{27,}\b"),
+ # Package registries
+ ("NPM_TOKEN", SEV_HIGH, "package_registry", r"\bnpm_[A-Za-z0-9]{36}\b"),
+ ("PYPI_TOKEN", SEV_HIGH, "package_registry", r"\bpypi-AgENdGV[A-Za-z0-9_\-]+\b"),
+ ("DOCKER_HUB_PAT", SEV_HIGH, "package_registry", r"\bdckr_pat_[A-Za-z0-9_\-]{27,}\b"),
 
-    # SaaS
-    ("ATLASSIAN_TOKEN",      SEV_HIGH,     "saas_api",    r"\bATATT3xFfGF0[A-Za-z0-9_\-]{180,}\b"),
-    ("LINEAR_API",           SEV_MEDIUM,   "saas_api",    r"\blin_api_[A-Za-z0-9]{40}\b"),
+ # SaaS
+ ("ATLASSIAN_TOKEN", SEV_HIGH, "saas_api", r"\bATATT3xFfGF0[A-Za-z0-9_\-]{180,}\b"),
+ ("LINEAR_API", SEV_MEDIUM, "saas_api", r"\blin_api_[A-Za-z0-9]{40}\b"),
 
-    # Observability
-    ("NEWRELIC_LICENSE",     SEV_MEDIUM,   "observability", r"\b(?:NRAA|NRAK|NRBR)-[A-F0-9]{27}\b"),
-    ("DATADOG_API",          SEV_HIGH,     "observability", r"(?i)dd[_\-]?api[_\-]?key['\"\s:=]+([a-f0-9]{32})"),
-    ("SENTRY_DSN",           SEV_LOW,      "observability", r"https://[a-f0-9]+@o[0-9]+\.ingest\.sentry\.io/[0-9]+"),
+ # Observability
+ ("NEWRELIC_LICENSE", SEV_MEDIUM, "observability", r"\b(?:NRAA|NRAK|NRBR)-[A-F0-9]{27}\b"),
+ ("DATADOG_API", SEV_HIGH, "observability", r"(?i)dd[_\-]?api[_\-]?key['\"\s:=]+([a-f0-9]{32})"),
+ ("SENTRY_DSN", SEV_LOW, "observability", r"https://[a-f0-9]+@o[0-9]+\.ingest\.sentry\.io/[0-9]+"),
 
-    # Tunneling
-    ("NGROK_AUTH",           SEV_MEDIUM,   "tunneling",   r"\b[12][A-Za-z0-9]{26}_[A-Za-z0-9]{32,}\b"),
+ # Tunneling
+ ("NGROK_AUTH", SEV_MEDIUM, "tunneling", r"\b[12][A-Za-z0-9]{26}_[A-Za-z0-9]{32,}\b"),
 
-    # Bot tokens
-    ("DISCORD_BOT",          SEV_HIGH,     "bot_token",   r"\b[MN][A-Za-z\d]{23}\.[\w\-]{6}\.[\w\-]{27}\b"),
-    ("TELEGRAM_BOT",         SEV_HIGH,     "bot_token",   r"\b\d{8,10}:[A-Za-z0-9_\-]{35}\b"),
+ # Bot tokens
+ ("DISCORD_BOT", SEV_HIGH, "bot_token", r"\b[MN][A-Za-z\d]{23}\.[\w\-]{6}\.[\w\-]{27}\b"),
+ ("TELEGRAM_BOT", SEV_HIGH, "bot_token", r"\b\d{8,10}:[A-Za-z0-9_\-]{35}\b"),
 
-    # Provider expansion (v2.2) — §17 #49-80. A real-world Postman PMAK detector
-    # plus well-known, distinctive-prefix provider token formats not covered
-    # above. Every entry here is either a standalone distinctive-prefix regex or
-    # context-anchored exactly like CLOUDFLARE_API_TOKEN above, so a bare generic
-    # token can't FP-flood.
+ # Provider expansion (v2.2) — §17 #49-80. A real-world Postman PMAK detector
+ # plus well-known, distinctive-prefix provider token formats not covered
+ # above. Every entry here is either a standalone distinctive-prefix regex or
+ # context-anchored exactly like CLOUDFLARE_API_TOKEN above, so a bare generic
+ # token can't FP-flood.
 
-    # Postman (real-world PMAK detection regex)
-    ("POSTMAN_PMAK",         SEV_CRITICAL, "postman",     r"\bPMAK-[A-Za-z0-9]{24,64}\b"),
+ # Postman (real-world PMAK detection regex)
+ ("POSTMAN_PMAK", SEV_CRITICAL, "postman", r"\bPMAK-[A-Za-z0-9]{24,64}\b"),
 
-    # GitLab
-    ("GITLAB_PAT",           SEV_HIGH,     "gitlab",      r"\bglpat-[A-Za-z0-9_\-]{20}\b"),
+ # GitLab
+ ("GITLAB_PAT", SEV_HIGH, "gitlab", r"\bglpat-[A-Za-z0-9_\-]{20}\b"),
 
-    # Square
-    ("SQUARE_ACCESS_TOKEN",  SEV_CRITICAL, "square",      r"\bsq0atp-[0-9A-Za-z\-_]{22}\b"),
-    ("SQUARE_OAUTH_SECRET",  SEV_HIGH,     "square",      r"\bsq0csp-[0-9A-Za-z\-_]{43}\b"),
+ # Square
+ ("SQUARE_ACCESS_TOKEN", SEV_CRITICAL, "square", r"\bsq0atp-[0-9A-Za-z\-_]{22}\b"),
+ ("SQUARE_OAUTH_SECRET", SEV_HIGH, "square", r"\bsq0csp-[0-9A-Za-z\-_]{43}\b"),
 
-    # Shopify
-    ("SHOPIFY_ACCESS_TOKEN", SEV_HIGH,     "shopify",     r"\bshpat_[a-fA-F0-9]{32}\b"),
-    ("SHOPIFY_SHARED_SECRET",SEV_HIGH,     "shopify",     r"\bshpss_[a-fA-F0-9]{32}\b"),
+ # Shopify
+ ("SHOPIFY_ACCESS_TOKEN", SEV_HIGH, "shopify", r"\bshpat_[a-fA-F0-9]{32}\b"),
+ ("SHOPIFY_SHARED_SECRET",SEV_HIGH, "shopify", r"\bshpss_[a-fA-F0-9]{32}\b"),
 
-    # Mailchimp
-    ("MAILCHIMP_API_KEY",    SEV_HIGH,     "email_svc",   r"\b[0-9a-f]{32}-us[0-9]{1,2}\b"),
+ # Mailchimp
+ ("MAILCHIMP_API_KEY", SEV_HIGH, "email_svc", r"\b[0-9a-f]{32}-us[0-9]{1,2}\b"),
 
-    # PagerDuty / Asana / Databricks (§17 #56-58)
-    ("PAGERDUTY_API_KEY",    SEV_MEDIUM,   "saas_api",    r"(?i)pagerduty(.{0,20})?(api|token|key)['\"\s:=]+([A-Za-z0-9+_\-]{20,32})"),
-    ("ASANA_PAT",            SEV_MEDIUM,   "saas_api",    r"(?i)asana(.{0,20})?(token|pat)['\"\s:=]+([0-9]{1,10}/[0-9]{10,20}:[a-f0-9]{32})"),
-    ("DATABRICKS_PAT",       SEV_HIGH,     "saas_api",    r"\bdapi[0-9a-f]{32}(?:-\d)?\b"),
+ # PagerDuty / Asana / Databricks (§17 #56-58)
+ ("PAGERDUTY_API_KEY", SEV_MEDIUM, "saas_api", r"(?i)pagerduty(.{0,20})?(api|token|key)['\"\s:=]+([A-Za-z0-9+_\-]{20,32})"),
+ ("ASANA_PAT", SEV_MEDIUM, "saas_api", r"(?i)asana(.{0,20})?(token|pat)['\"\s:=]+([0-9]{1,10}/[0-9]{10,20}:[a-f0-9]{32})"),
+ ("DATABRICKS_PAT", SEV_HIGH, "saas_api", r"\bdapi[0-9a-f]{32}(?:-\d)?\b"),
 
-    # Grafana
-    ("GRAFANA_API_KEY",      SEV_MEDIUM,   "observability", r"\beyJrIjoi[A-Za-z0-9+/=]{40,}\b"),
-    ("GRAFANA_CLOUD_TOKEN",  SEV_MEDIUM,   "observability", r"\bglc_[A-Za-z0-9+/]{32,}={0,2}\b"),
+ # Grafana
+ ("GRAFANA_API_KEY", SEV_MEDIUM, "observability", r"\beyJrIjoi[A-Za-z0-9+/=]{40,}\b"),
+ ("GRAFANA_CLOUD_TOKEN", SEV_MEDIUM, "observability", r"\bglc_[A-Za-z0-9+/]{32,}={0,2}\b"),
 
-    # Terraform Cloud / Enterprise
-    ("TERRAFORM_CLOUD_TOKEN",SEV_CRITICAL, "infra_api",   r"\b[A-Za-z0-9]{14}\.atlasv1\.[A-Za-z0-9_\-=]{60,70}\b"),
+ # Terraform Cloud / Enterprise
+ ("TERRAFORM_CLOUD_TOKEN",SEV_CRITICAL, "infra_api", r"\b[A-Za-z0-9]{14}\.atlasv1\.[A-Za-z0-9_\-=]{60,70}\b"),
 
-    # Fastly
-    ("FASTLY_API_TOKEN",     SEV_HIGH,     "infra_api",   r"(?i)fastly(.{0,20})?(api|token)['\"\s:=]+([A-Za-z0-9_\-]{32})"),
+ # Fastly
+ ("FASTLY_API_TOKEN", SEV_HIGH, "infra_api", r"(?i)fastly(.{0,20})?(api|token)['\"\s:=]+([A-Za-z0-9_\-]{32})"),
 
-    # Algolia / Segment
-    ("ALGOLIA_ADMIN_KEY",    SEV_HIGH,     "saas_api",    r"(?i)algolia(.{0,20})?(admin|api)[_\-]?key['\"\s:=]+([A-Za-z0-9]{32})"),
-    ("SEGMENT_WRITE_KEY",    SEV_LOW,      "saas_api",    r"(?i)segment(.{0,20})?(write)?[_\-]?key['\"\s:=]+([A-Za-z0-9]{20,32})"),
+ # Algolia / Segment
+ ("ALGOLIA_ADMIN_KEY", SEV_HIGH, "saas_api", r"(?i)algolia(.{0,20})?(admin|api)[_\-]?key['\"\s:=]+([A-Za-z0-9]{32})"),
+ ("SEGMENT_WRITE_KEY", SEV_LOW, "saas_api", r"(?i)segment(.{0,20})?(write)?[_\-]?key['\"\s:=]+([A-Za-z0-9]{20,32})"),
 
-    # Airtable
-    ("AIRTABLE_KEY_LEGACY",  SEV_MEDIUM,   "saas_api",    r"(?i)airtable(.{0,20})?(api)?[_\-]?key['\"\s:=]+(key[A-Za-z0-9]{14})"),
-    ("AIRTABLE_PAT",         SEV_HIGH,     "saas_api",    r"\bpat[A-Za-z0-9]{14}\.[a-f0-9]{64}\b"),
+ # Airtable
+ ("AIRTABLE_KEY_LEGACY", SEV_MEDIUM, "saas_api", r"(?i)airtable(.{0,20})?(api)?[_\-]?key['\"\s:=]+(key[A-Za-z0-9]{14})"),
+ ("AIRTABLE_PAT", SEV_HIGH, "saas_api", r"\bpat[A-Za-z0-9]{14}\.[a-f0-9]{64}\b"),
 
-    # GCP / Google OAuth
-    ("GCP_OAUTH_CLIENT_SECRET", SEV_HIGH,  "gcp",         r"\bGOCSPX-[A-Za-z0-9_\-]{28}\b"),
-    ("GOOGLE_OAUTH_ACCESS_TOKEN", SEV_HIGH,"gcp",         r"\bya29\.[0-9A-Za-z_\-]{20,}\b"),
-    ("GOOGLE_OAUTH_CLIENT_ID",SEV_LOW,     "gcp",         r"\b[0-9]+-[0-9A-Za-z_]{32}\.apps\.googleusercontent\.com\b"),
+ # GCP / Google OAuth
+ ("GCP_OAUTH_CLIENT_SECRET", SEV_HIGH, "gcp", r"\bGOCSPX-[A-Za-z0-9_\-]{28}\b"),
+ ("GOOGLE_OAUTH_ACCESS_TOKEN", SEV_HIGH,"gcp", r"\bya29\.[0-9A-Za-z_\-]{20,}\b"),
+ ("GOOGLE_OAUTH_CLIENT_ID",SEV_LOW, "gcp", r"\b[0-9]+-[0-9A-Za-z_]{32}\.apps\.googleusercontent\.com\b"),
 
-    # Azure AD / Entra
-    ("AZURE_AD_CLIENT_SECRET",SEV_HIGH,    "azure",       r"(?i)(?:azure|entra)[_\-]?(?:client|app)[_\-]?secret['\"\s:=]+([A-Za-z0-9_~.\-]{34,40})"),
+ # Azure AD / Entra
+ ("AZURE_AD_CLIENT_SECRET",SEV_HIGH, "azure", r"(?i)(?:azure|entra)[_\-]?(?:client|app)[_\-]?secret['\"\s:=]+([A-Za-z0-9_~.\-]{34,40})"),
 
-    # Facebook OAuth
-    ("FACEBOOK_ACCESS_TOKEN",SEV_HIGH,     "oauth",       r"\bEAA[A-Za-z0-9]{90,}\b"),
+ # Facebook OAuth
+ ("FACEBOOK_ACCESS_TOKEN",SEV_HIGH, "oauth", r"\bEAA[A-Za-z0-9]{90,}\b"),
 
-    # Package registries (v2.2)
-    ("RUBYGEMS_API_KEY",     SEV_HIGH,     "package_registry", r"\brubygems_[a-f0-9]{48}\b"),
+ # Package registries (v2.2)
+ ("RUBYGEMS_API_KEY", SEV_HIGH, "package_registry", r"\brubygems_[a-f0-9]{48}\b"),
 
-    # JFrog / Artifactory
-    ("JFROG_API_KEY",        SEV_HIGH,     "infra_api",   r"\bAKCp[A-Za-z0-9]{50,70}\b"),
+ # JFrog / Artifactory
+ ("JFROG_API_KEY", SEV_HIGH, "infra_api", r"\bAKCp[A-Za-z0-9]{50,70}\b"),
 
-    # Okta
-    ("OKTA_SSWS_TOKEN",      SEV_CRITICAL, "identity",    r"\bSSWS\s+[0-9a-zA-Z_\-]{40}\b"),
-    ("OKTA_API_TOKEN",       SEV_HIGH,     "identity",    r"(?i)okta(.{0,20})?(api)?[_\-]?token['\"\s:=]+([0-9a-zA-Z_\-]{40})"),
+ # Okta
+ ("OKTA_SSWS_TOKEN", SEV_CRITICAL, "identity", r"\bSSWS\s+[0-9a-zA-Z_\-]{40}\b"),
+ ("OKTA_API_TOKEN", SEV_HIGH, "identity", r"(?i)okta(.{0,20})?(api)?[_\-]?token['\"\s:=]+([0-9a-zA-Z_\-]{40})"),
 
-    # Slack app-level (Socket Mode)
-    ("SLACK_APP_LEVEL_TOKEN",SEV_HIGH,     "slack",       r"\bxapp-1-[A-Za-z0-9\-]{20,}\b"),
+ # Slack app-level (Socket Mode)
+ ("SLACK_APP_LEVEL_TOKEN",SEV_HIGH, "slack", r"\bxapp-1-[A-Za-z0-9\-]{20,}\b"),
 
-    # Dropbox
-    ("DROPBOX_SHORT_LIVED",  SEV_MEDIUM,   "oauth",       r"\bsl\.[A-Za-z0-9_\-]{130,140}\b"),
+ # Dropbox
+ ("DROPBOX_SHORT_LIVED", SEV_MEDIUM, "oauth", r"\bsl\.[A-Za-z0-9_\-]{130,140}\b"),
 
-    # Secrets managers — Doppler / HashiCorp Vault
-    ("DOPPLER_TOKEN",        SEV_CRITICAL, "secrets_mgmt", r"\bdp\.pt\.[A-Za-z0-9]{40,44}\b"),
-    ("VAULT_TOKEN",          SEV_CRITICAL, "secrets_mgmt", r"\bhvs\.[A-Za-z0-9_\-]{90,100}\b"),
+ # Secrets managers — Doppler / HashiCorp Vault
+ ("DOPPLER_TOKEN", SEV_CRITICAL, "secrets_mgmt", r"\bdp\.pt\.[A-Za-z0-9]{40,44}\b"),
+ ("VAULT_TOKEN", SEV_CRITICAL, "secrets_mgmt", r"\bhvs\.[A-Za-z0-9_\-]{90,100}\b"),
 
-    # Firebase Cloud Messaging legacy server key (mobile-recon relevant, §21.1)
-    ("FCM_SERVER_KEY",       SEV_HIGH,     "firebase",    r"\bAAAA[A-Za-z0-9_\-]{7}:[A-Za-z0-9_\-]{140,}\b"),
+ # Firebase Cloud Messaging legacy server key (mobile-recon relevant, §21.1)
+ ("FCM_SERVER_KEY", SEV_HIGH, "firebase", r"\bAAAA[A-Za-z0-9_\-]{7}:[A-Za-z0-9_\-]{140,}\b"),
 ]
 
 COMPILED = [(n, s, c, re.compile(p)) for (n, s, c, p) in PATTERNS]
 
 
 def scan_text(text: str, source: str = "<stdin>"):
-    """Scan a text blob; yield one dict per match."""
-    for line_no, line in enumerate(text.splitlines(), start=1):
-        for name, sev, cat, rx in COMPILED:
-            for m in rx.finditer(line):
-                yield {
-                    "pattern": name,
-                    "severity": sev,
-                    "category": cat,
-                    "match": m.group(0)[:80],   # truncate to avoid huge dumps
-                    "source": source,
-                    "line": line_no,
-                }
+ """Scan a text blob; yield one dict per match."""
+ for line_no, line in enumerate(text.splitlines, start=1):
+ for name, sev, cat, rx in COMPILED:
+ for m in rx.finditer(line):
+ yield {
+ "pattern": name,
+ "severity": sev,
+ "category": cat,
+ "match": m.group(0)[:80], # truncate to avoid huge dumps
+ "source": source,
+ "line": line_no,
+ }
 
 
 def scan_path(path: str):
-    """Recursively scan a file or directory."""
-    if os.path.isdir(path):
-        for root, _, files in os.walk(path):
-            # Skip common noisy directories
-            if any(part in root for part in (".git", "node_modules", "__pycache__", ".venv", "venv", "dist", "build", ".cache")):
-                continue
-            for f in files:
-                p = os.path.join(root, f)
-                yield from scan_path(p)
-        return
-    try:
-        # Skip large binary files (>10MB)
-        if os.path.getsize(path) > 10 * 1024 * 1024:
-            return
-        with open(path, "r", errors="replace") as fh:
-            yield from scan_text(fh.read(), source=path)
-    except (OSError, IOError):
-        return
+ """Recursively scan a file or directory."""
+ if os.path.isdir(path):
+ for root, _, files in os.walk(path):
+ # Skip common noisy directories
+ if any(part in root for part in (".git", "node_modules", "__pycache__", ".venv", "venv", "dist", "build", ".cache")):
+ continue
+ for f in files:
+ p = os.path.join(root, f)
+ yield from scan_path(p)
+ return
+ try:
+ # Skip large binary files (>10MB)
+ if os.path.getsize(path) > 10 * 1024 * 1024:
+ return
+ with open(path, "r", errors="replace") as fh:
+ yield from scan_text(fh.read, source=path)
+ except (OSError, IOError):
+ return
 
 
-def main():
-    if len(sys.argv) > 1:
-        if sys.argv[1] in ("-h", "--help"):
-            print(__doc__)
-            sys.exit(0)
-        for arg in sys.argv[1:]:
-            for hit in scan_path(arg):
-                print(json.dumps(hit))
-    else:
-        # Read from stdin
-        try:
-            data = sys.stdin.read()
-        except KeyboardInterrupt:
-            sys.exit(0)
-        for hit in scan_text(data):
-            print(json.dumps(hit))
+def main:
+ if len(sys.argv) > 1:
+ if sys.argv[1] in ("-h", "--help"):
+ print(__doc__)
+ sys.exit(0)
+ for arg in sys.argv[1:]:
+ for hit in scan_path(arg):
+ print(json.dumps(hit))
+ else:
+ # Read from stdin
+ try:
+ data = sys.stdin.read
+ except KeyboardInterrupt:
+ sys.exit(0)
+ for hit in scan_text(data):
+ print(json.dumps(hit))
 
 
 if __name__ == "__main__":
-    main()
+ main
 ```
 
 Save as `secret_scan.py`, then:
 
 ```bash
-python3 secret_scan.py path/to/repo/        # scan a directory tree
-python3 secret_scan.py file1 file2 file3    # scan specific files
-cat my.log | python3 secret_scan.py         # pipe stdin
+python3 secret_scan.py path/to/repo/ # scan a directory tree
+python3 secret_scan.py file1 file2 file3 # scan specific files
+cat my.log | python3 secret_scan.py # pipe stdin
 ```
 
 Output is JSONL — one finding per line — drops cleanly into `jq` for filtering or directly into a finding store.

@@ -94,7 +94,7 @@ function bytesToHex(bytes) {
     for (var i = 0; i < bytes.length; i++) {
         hex.push(('0' + (bytes[i] & 0xFF).toString(16)).slice(-2));
     }
-    return hex.join('');
+    return hex.join;
 }
 ```
 
@@ -426,7 +426,7 @@ function bytesToHex(bytes) {
     for (var i = 0; i < bytes.length; i++) {
         hex.push(('0' + (bytes[i] & 0xFF).toString(16)).slice(-2));
     }
-    return hex.join('');
+    return hex.join;
 }
 
 // 打印调用栈

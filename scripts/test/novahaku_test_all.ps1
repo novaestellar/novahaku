@@ -299,12 +299,12 @@ Test-Item "No hardcoded API keys" "attack" {
 # ═══════════════════════════════════════════
 Write-Host "`n=== 9. TESTING REFERENCES ===" -ForegroundColor Yellow
 
-$htCount = (Get-ChildItem "$NOVAHAKU\testing\references\hacktricks" -File).Count
-$patCount = (Get-ChildItem "$NOVAHAKU\testing\references\payloadsallthethings" -File).Count
+$htCount = (Get-ChildItem "$NOVAHAKU\testing\references\web-notes" -File).Count
+$patCount = (Get-ChildItem "$NOVAHAKU\testing\references\payloads" -File).Count
 $miscCount = (Get-ChildItem "$NOVAHAKU\testing\references\misc" -File).Count
 
-Test-Item "hacktricks/ >= 29 files" "testing" { if ($htCount -ge 29) { $true } else { "Only $htCount files" } }
-Test-Item "payloadsallthethings/ >= 15 files" "testing" { if ($patCount -ge 15) { $true } else { "Only $patCount files" } }
+Test-Item "web-notes/ >= 29 files" "testing" { if ($htCount -ge 29) { $true } else { "Only $htCount files" } }
+Test-Item "payloads/ >= 15 files" "testing" { if ($patCount -ge 15) { $true } else { "Only $patCount files" } }
 Test-Item "misc/ >= 4 files" "testing" { if ($miscCount -ge 4) { $true } else { "Only $miscCount files" } }
 Test-Item "3 test scripts exist" "testing" {
     $count = (Get-ChildItem "$NOVAHAKU\testing\scripts" -File -Filter "*.py").Count

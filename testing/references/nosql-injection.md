@@ -98,7 +98,7 @@ The **`$func`** operator in the [MongoLite](https://github.com/agentejo/cockpit/
 "user":{"$func": "var_dump"}
 ```
 
-![https://swarm.ptsecurity.com/wp-content/uploads/2021/04/cockpit_auth_check_10.png](<../images/image (933).png>)
+*(https://swarm.ptsecurity.com/wp-content/uploads/2021/04/cockpit_auth_check_10.png — screenshot not included in this copy)*
 
 ### Get info from different collection
 
@@ -325,7 +325,7 @@ def get_usernames(prefix):
                 usernames.append(user)
     return usernames
 
-for u in get_usernames(""):
+for u in get_usernames:
     get_password(u)
 ```
 

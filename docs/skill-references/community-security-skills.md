@@ -1,7 +1,7 @@
 # 社区安全 Skill 生态对照（2026-07）
 
-> 来源检索日期：**2026-07-17**  
-> 目的：让 novahaku **知道外面有什么**，按需借鉴，**不**把外部巨型库整仓并入本包。  
+> 来源检索日期：**2026-07-17**
+> 目的：让 novahaku **知道外面有什么**，按需借鉴，**不**把外部巨型库整仓并入本包。
 > 本包身份：路由 + 工具自举 + 证据/scope 契约 + field-journal（见 `ops/IDENTITY.md`）。
 
 ## 1. 外部高价值仓库（可学习，勿盲装）
@@ -32,8 +32,8 @@
 | [OwenPawl/cerberus-re-skill](https://github.com/OwenPawl/cerberus-re-skill) | Apple 向 Ghidra+LLDB+Frida 三循环 | 可参考 macOS/iOS 动态环 |
 | [ljagiello/ctf-skills](https://github.com/ljagiello/ctf-skills) | CTF reverse/pwn；工具按需装 | 对照 CTF-Sandbox + `pwn-chain` |
 | [shuvonsec/claude-bug-bounty](https://github.com/shuvonsec/claude-bug-bounty) | /recon→/hunt→/validate→/report | 对照 `recon-pipeline.md` + scope 门 |
-| [PayloadsAllTheThings](https://github.com/swisskyrepo/PayloadsAllTheThings) | Web payload + Prompt Injection 章节 | `pentest-tools/payloads` 优先；LLM 见 `llm-security` |
-| [HackTricks](https://hacktricks.wiki/) | 渗透方法论 + **AI/MCP 滥用** | 见 skill-supply-chain MCP 节 |
+| [this collection] | Web payload + Prompt Injection 章节 | `pentest-tools/payloads` 优先；LLM 见 `llm-security` |
+| [this collection] | 渗透方法论 + **AI/MCP 滥用** | 见 skill-supply-chain MCP 节 |
 | [appsecsanta AI pentesting agents 2026](https://appsecsanta.com/research/ai-pentesting-agents-2026) | 39+ 开源 AI 渗透 agent 架构分类 | 多 agent ≠ 必须；我们用 role-map |
 | Snyk 评测「更多 skill ≠ 更好」 | 技能堆叠可能降低审计质量 | 强化「深 skill + 路由」策略 |
 

