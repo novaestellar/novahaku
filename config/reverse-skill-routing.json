@@ -433,7 +433,7 @@
     },
     "R41": {
       "label": "CTF sandbox orchestrator",
-      "skill": "testing/ctf/SKILL.md",
+      "skill": "testing/ctf-sandbox/SKILL.md",
       "keywords": [
         {
           "must": "\\bctf\\b|awd|靶场|比赛.?题",

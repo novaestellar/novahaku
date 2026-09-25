@@ -8,8 +8,8 @@ description: "CTF competition sandbox: dispatcher over 38 competition scenario m
 ## ACTION REQUIRED
 
 1. Identify the CTF category from the challenge.
-2. List modules: `ls testing/ctf/competition-*/`
-3. Open the matching `SKILL.md` under `testing/ctf/competition-<name>/`.
+2. List modules: `ls testing/ctf-sandbox/competition-*/`
+3. Open the matching `SKILL.md` under `testing/ctf-sandbox/competition-<name>/`.
 
 ## Module index (38)
 

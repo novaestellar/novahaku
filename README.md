@@ -90,7 +90,7 @@ Novahaku 包含以下模块化技能:
 | **config/** | 根目录 | 锁定配置 + 预填充 + 触发映射 |
 | **techniques/payload/** | 根目录 | 加密载荷库 (AES-256-GCM) |
 | **train/** | 根目录 | 基准测试框架 |
-| **testing/ctf/** | testing/ | 38个CTF竞赛场景模块 |
+| **testing/ctf-sandbox/** | testing/ | 38个CTF竞赛场景模块 |
 | **testing/pentest-tools/** | testing/ | 渗透测试工具集 + src-hunter源码猎人 + 模板 |
 | **testing/frameworks/burpsuite-mcp/** | testing/frameworks/ | BurpSuite MCP 83工具封装 |
 | **testing/frameworks/anything-analyzer-mcp/** | testing/frameworks/ | Anything Analyzer MCP封装 |
@@ -267,7 +267,7 @@ checksec → 漏洞分类 → 保护检测 → 策略选择 → libc/gadget准�
 - **CTF-Sandbox-Orchestrator**: 38个competition-*子模块
 - 覆盖: PWN、Reverse、Web、Crypto、Misc、Forensics
 - 含完整challenge解题思路 + payload
-- 位置: testing/ctf/competition-*/
+- 位置: testing/ctf-sandbox/competition-*/
 
 ### 11. 源码猎人 (src-hunter)
 - **19个攻击剧本**: API-REST、DOS、文件上传、信息泄露、内网后渗透、移动端等

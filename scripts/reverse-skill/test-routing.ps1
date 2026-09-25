@@ -23,7 +23,11 @@ if (-not $PackageRoot) { $PackageRoot = Split-Path -Parent $skillsRoot }
 $HostExe = Resolve-ReverseHostExe
 
 if ([string]::IsNullOrWhiteSpace($Benchmark)) {
-    $Benchmark = Join-Path $skillsRoot 'tests/routing-benchmark.json'
+    # The benchmark lives in the repo-root tests/ dir, not scripts/tests/:
+    # $skillsRoot is the parent of scripts/reverse-skill, so $PackageRoot is the
+    # repo root and the benchmark hangs off that. Looking under $skillsRoot made
+    # the runner exit 2 on a clean checkout.
+    $Benchmark = Join-Path $PackageRoot 'tests/routing-benchmark.json'
 }
 if (-not (Test-Path -LiteralPath $Benchmark)) {
     Write-Host ("ERROR: benchmark not found: {0}" -f $Benchmark) -ForegroundColor Red

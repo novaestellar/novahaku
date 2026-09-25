@@ -1,7 +1,7 @@
 ---
 name: turnstile-auth-fix
 category: security
-description: Fix captcha failures in auth forms.
+description: Fix captcha failures in auth forms — diagnose Cloudflare Turnstile rejections and wire a working token flow.
 author: novalabs
 ---
 

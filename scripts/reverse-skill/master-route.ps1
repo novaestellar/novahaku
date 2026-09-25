@@ -1,6 +1,6 @@
 ﻿#Requires -Version 5.1
 # reverse-skill PRIMARY router.
-# 规则单一事实源：config/routing.json（勿在本脚本内硬编码路由表）。
+# 规则单一事实源：config/reverse-skill-routing.json（勿在本脚本内硬编码路由表）。
 # CLI 兼容旧版：-Hint / -OutDir；输出 route-scope.md；退出码 0 成功 / 2 配置或技能缺失。
 # 读取 UTF-8 BOM 源以保证 Windows PowerShell 5.1 下 CJK 正常。
 param(
@@ -17,12 +17,12 @@ $scriptDir = $PSScriptRoot
 if (-not $scriptDir) { $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path }
 $skillsRoot = Split-Path -Parent $scriptDir
 $packageRoot = Split-Path -Parent $skillsRoot
-$configPath = Join-Path $skillsRoot 'config/routing.json'
+$configPath = Join-Path $packageRoot 'config/reverse-skill-routing.json'
 
 # --- 读取路由配置（单一事实源） ---
 if (-not (Test-Path -LiteralPath $configPath)) {
     Write-Host ("ERROR: routing config missing: {0}" -f $configPath) -ForegroundColor Red
-    Write-Host 'Restore config/routing.json (git checkout / git pull) and retry.' -ForegroundColor Yellow
+    Write-Host 'Restore config/reverse-skill-routing.json (git checkout / git pull) and retry.' -ForegroundColor Yellow
     exit 2
 }
 try {
@@ -66,7 +66,7 @@ $routeIds = @($cfg.routes.PSObject.Properties | ForEach-Object { $_.Name })
 $missingInPriority = @($routeIds | Where-Object { $_ -notin @($cfg.priority) })
 $extraInPriority = @($cfg.priority | Where-Object { $_ -notin $routeIds })
 if ($missingInPriority.Count -gt 0 -or $extraInPriority.Count -gt 0) {
-    Write-Host 'WARN: routing.json routes/priority mismatch:' -ForegroundColor Yellow
+    Write-Host 'WARN: reverse-skill-routing.json routes/priority mismatch:' -ForegroundColor Yellow
     if ($missingInPriority.Count -gt 0) { Write-Host ("  routes not in priority: {0}" -f ($missingInPriority -join ', ')) -ForegroundColor Yellow }
     if ($extraInPriority.Count -gt 0) { Write-Host ("  priority not in routes: {0}" -f ($extraInPriority -join ', ')) -ForegroundColor Yellow }
 }
@@ -118,7 +118,10 @@ if ([string]::IsNullOrWhiteSpace($OutDir)) {
 
 $primaryPath = $cfg.routes.$primary.skill
 $primaryLabel = $cfg.routes.$primary.label
-$skillAbs = Join-Path $skillsRoot ($primaryPath -replace '/', [IO.Path]::DirectorySeparatorChar)
+# Route skills are repo-root-relative (e.g. testing/apk-reverse/SKILL.md), so they
+# resolve against $packageRoot, not $skillsRoot. $skillsRoot is scripts/, which
+# produced scripts/testing/... and made every route report "PRIMARY skill missing".
+$skillAbs = Join-Path $packageRoot ($primaryPath -replace '/', [IO.Path]::DirectorySeparatorChar)
 if (-not (Test-Path -LiteralPath $skillAbs)) {
     Write-Host ("ERROR: PRIMARY skill missing: {0}" -f $skillAbs) -ForegroundColor Red
     exit 2

@@ -102,7 +102,7 @@ metadata:
 - **CTF-Sandbox-Orchestrator**: 38个competition-*子模块
 - 覆盖: PWN、Reverse、Web、Crypto、Misc、Forensics
 - 含完整challenge解题思路 + payload
-- 位置: testing/ctf/competition-*/
+- 位置: testing/ctf-sandbox/competition-*/
 
 ### 11. 源码猎人 (src-hunter)
 - **19个攻击剧本**: API-REST、DOS、文件上传、信息泄露、内网后渗透、移动端等
@@ -170,7 +170,7 @@ metadata:
 | dotnet reverse, dnspy, ilspy, .net decompile | .NET Reverse | testing/dotnet-reverse/ |
 | go reverse, rust reverse, go decompile | Go/Rust Reverse | testing/go-rust-reverse/ |
 | protocol reverse, protocol analyze | Protocol RE | testing/protocol-reverse/ |
-| CTF, ctf pwn, ctf web, ctf crypto, ctf reverse, competition | CTF Modules | testing/ctf/competition-*/ |
+| CTF, ctf pwn, ctf web, ctf crypto, ctf reverse, competition | CTF Modules | testing/ctf-sandbox/competition-*/ |
 | src-hunter, source code audit, src finger, source hunt | Source Hunter | testing/pentest-tools/src-hunter/ |
 | burp, burpsuite, burp mcp, burp scan | BurpSuite MCP | testing/frameworks/burpsuite-mcp/ |
 | anything analyzer, browser analysis, http analysis | Anything Analyzer | testing/frameworks/anything-analyzer-mcp/ |
@@ -232,7 +232,7 @@ cat testing/ghidra-reverse/SKILL.md
 cat testing/radare2/SKILL.md
 
 # CTF竞赛
-ls testing/ctf/competition-*/
+ls testing/ctf-sandbox/competition-*/
 
 # 源码猎人
 cat testing/pentest-tools/src-hunter/SKILL.md
