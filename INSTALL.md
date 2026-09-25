@@ -238,11 +238,29 @@ Options: `--port` (default 8089), `--bind` (default 127.0.0.1), `--file`,
 `--project`, `--program`. Set `GHIDRA_MCP_BIND_ADDRESS` to override the bind
 address.
 
-The `--project` directory must already exist. On a missing directory the server
-still starts and logs `ERROR No .gpr file found in: <dir>`, then creates a
-temporary project in memory — the program loads and the endpoints work, but
-nothing persists after exit. Create the directory first; the error is a warning
-about persistence, not a startup failure. Confirm it came up:
+The `--project` argument wants a **Ghidra project**, not merely a directory: a
+`<name>.gpr` file plus its `<name>.rep/` tree. The bridge creates the directory
+if it is absent, which is enough for a throwaway analysis, but an empty
+directory is not a project. The server then logs
+
+```
+ERROR No .gpr file found in: <dir>
+```
+
+and falls back to an in-memory project. That is a warning about **persistence**,
+not a startup failure: the program loads, every endpoint works, and nothing
+survives exit. Each restart pays full re-analysis.
+
+To keep analysis across restarts, create the project once with Ghidra's own
+headless launcher, which is the component that writes `.gpr`:
+
+```bash
+"$GH/support/analyzeHeadless" /path/to/parent MyProject \
+  -import /path/to/binary -noanalysis
+```
+
+Then point `GHIDRA_MCP_PROJECT` at `/path/to/parent` and the bridge reuses the
+stored project. Confirm the server came up and loaded a program:
 
 ```bash
 curl -s http://127.0.0.1:8089/health
