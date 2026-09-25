@@ -133,7 +133,8 @@ Each server below is independent. Install only the ones you need.
 1. Install Burp Suite with the MCP extension
 2. The MCP server listens on port 9876
 3. Point your MCP client at the bundled bridge (`mcp-bridge.js`)
-4. Set `BURPSUITE_MCP_PORT` in `.env` if you moved the port
+4. To move the port, edit `servicePort` for `burpsuite-mcp` in
+   `scripts/reverse-skill/bootstrap-manifest.json`
 5. See `testing/frameworks/burpsuite-mcp/SKILL.md`
 
 ### Anything Analyzer MCP

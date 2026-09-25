@@ -60,8 +60,9 @@ Then **restart IDA**, open a database, and start the server from
 > worker exits immediately. The **GUI plugin works fine on 9.0** — use that path.
 > Do not register both transports at once or the tools get registered twice.
 
-Set `IDA_HOME` so launchers find the install, and `IDAPRO_MCP_PORT` if you move
-the port.
+Set `IDA_HOME` so launchers find the install. To move the port, edit
+`servicePort` for `idapro` in
+`scripts/reverse-skill/bootstrap-manifest.json` — not an env var.
 
 ## The batch driver
 
