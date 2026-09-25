@@ -47,18 +47,22 @@ if (Test-Port -P $Port) {
     exit 0
 }
 
-# Resolve the IDA executable. Headless (idat64) is the default because it needs
-# no GUI session; -Gui pulls in ida64 for interactive work.
-$exeName = if ($Gui) { 'ida64.exe' } else { 'idat64.exe' }
-$candidates = @(
-    (Join-Path $env:ProgramFiles "IDA Professional 9.0\$exeName"),
-    (Join-Path $env:ProgramFiles "IDA Professional 9.4\$exeName"),
-    (Join-Path $env:ProgramFiles "IDA Pro 9.4\$exeName"),
-    (Join-Path $env:ProgramFiles "IDA Pro 9.0\$exeName"),
-    (Join-Path $env:ProgramFiles "IDA Pro 8.4\$exeName")
-)
+# Resolve the IDA executable. Headless is the default (no GUI session needed);
+# -Gui pulls in the GUI binary for interactive work.
+# IDA 9.3 dropped the "64" suffix: ida.exe/idat.exe. On 9.0-9.2 they are
+# ida64.exe/idat64.exe. We try new names first, then the old.
+$exeNameNew = if ($Gui) { 'ida.exe' } else { 'idat.exe' }
+$exeNameOld = if ($Gui) { 'ida64.exe' } else { 'idat64.exe' }
+$candidates = @()
 if (-not [string]::IsNullOrWhiteSpace($env:IDA_HOME)) {
-    $candidates = @((Join-Path $env:IDA_HOME $exeName)) + $candidates
+    $candidates += Join-Path $env:IDA_HOME $exeNameNew
+    $candidates += Join-Path $env:IDA_HOME $exeNameOld
+}
+foreach ($v in @('9.3', '9.4', '9.2', '9.1', '9.0')) {
+    foreach ($n in @($exeNameNew, $exeNameOld)) {
+        $candidates += Join-Path $env:ProgramFiles "IDA Professional $v\$n"
+        $candidates += Join-Path $env:ProgramFiles "IDA Pro $v\$n"
+    }
 }
 
 $exe = $null

@@ -21,7 +21,7 @@ Novahaku 是一个统一的安全研究代理,整合了 **12大核心能力** �
 |------|------|
 | 🎯 12大能力域 | Web测试、提示工程、攻击框架、重构引擎、Windows逆向/游戏安全/EDR绕过、二进制利用、身份与人格、OSINT侦察、逆向工程、CTF竞赛、源码猎人、MCP集成 |
 | 🔄 自动检测 | 根据用户意图自动加载对应技能模块 |
-| 🛡️ 完整安全工具链 | 159个payloads攻击向量 + 54个Hunt Playbooks + 9个审计框架 + 38个CTF竞赛模块 |
+| 🛡️ 完整安全工具链 | 270个payloads攻击向量 + 54个Hunt Playbooks + 9个审计框架 + 38个CTF竞赛模块 |
 | 🧠 121项提示技术 | 7大分类,7阶段方法论 |
 | 🔐 4级锁定命令 | Basic(85%) → Double(92%) → GodMode(88%) → Triple(95%) |
 | 📊 训练与基准测试 | 内置基准测试框架,验证技能效果 |
@@ -90,7 +90,8 @@ Novahaku 在没有 `.env` 的情况下也能完整运行 —— 它的每个技�
 | Binary Ninja MCP | `http://127.0.0.1:24642/mcp` | 75 |
 | Anything Analyzer MCP | `http://localhost:23816/mcp` | 30 |
 | GhidraMCP | 桥接自动选端口（默认 `:8089`） | 250+ |
-| IDA Pro MCP | `http://127.0.0.1:13337/mcp` | — |
+| IDA Pro MCP（headless idalib） | `http://127.0.0.1:8745/mcp` | 66 |
+| IDA Pro MCP（GUI 插件，旧版） | `http://127.0.0.1:13337/mcp` | — |
 
 没有 MCP 服务器时 Novahaku 仍然可用 —— 它只是额外的实时工具接入。
 
@@ -105,7 +106,7 @@ Novahaku 包含以下模块化技能:
 | **SOUL.md** | 根目录 | Agent身份定义 — Haku人格。**仅 Novahaku 拥有**;NovaXinWei 是被它调用的工具,不含 persona,避免两份身份定义冲突 |
 | **identity/** | 根目录 | 1718个少样本示例 + 338个安全术语映射 |
 | **techniques/** | 根目录 | 121项提示工程技术 (7大分类) |
-| **testing/** | 根目录 | Web测试 + 54个Hunt剧本 + 9个审计框架 + 159个PAT攻击向量 + 38个CTF模块 + src-hunter源码猎人 + 2个CVE exploits |
+| **testing/** | 根目录 | Web测试 + 54个Hunt剧本 + 9个审计框架 + 270个PAT攻击向量 + 38个CTF模块 + src-hunter源码猎人 + 2个CVE exploits |
 | **testing/gitlab-exploit/** | testing/ | CVE-2026-85706 GitLab未授权文件读取利用 |
 | **testing/keycloak-exploit/** | testing/ | CVE-2026-18963 Keycloak账户接管利用 |
 | **attack/** | 根目录 | v41攻击框架 + 5个注入面分析 |
@@ -148,7 +149,7 @@ headers → exposed → cors → methods → admin → xss → sqli
 
 **参考库:**
 - payloads (29个漏洞类型)
-- payloads (159个攻击向量)
+- payloads (270个攻击向量)
 - Bug Bounty参考 (XSS/SQLi/SSRF)
 
 ### 2. 提示工程 (121项技术)
@@ -309,14 +310,77 @@ checksec → 漏洞分类 → 保护检测 → 策略选择 → libc/gadget准�
 | BurpSuite MCP | `:9876` (本地桥接) | 83 | testing/frameworks/burpsuite-mcp/ |
 | Anything Analyzer MCP | `http://localhost:23816/mcp` | 30 | testing/frameworks/anything-analyzer-mcp/ |
 | Binary Ninja MCP | `http://127.0.0.1:24642/mcp` | 75 | testing/binary-ninja-reverse/ |
-| IDA Pro MCP | `http://127.0.0.1:13337/mcp` | — | testing/ida-reverse/ |
+| IDA Pro MCP | `http://127.0.0.1:8745/mcp` (headless idalib) | 66 | testing/ida-reverse/ |
+| IDA Pro MCP (GUI插件) | `http://127.0.0.1:13337/mcp` (旧版) | — | testing/ida-reverse/ |
 | GhidraMCP | 桥接自动选端口（默认 `:8089`，stdio） | 250+ | testing/ghidra-reverse/ |
 
 全部仅监听回环地址。逐服务器安装步骤见 `INSTALL.md` → MCP Server Setup。
 没有 MCP 服务器时 Novahaku 仍可完整运行 —— 它只是额外的实时工具接入。
 
 
-### 13. RE工具链 (已安装)
+### 13. 智能路由系统
+
+Novahaku 不只是技能集合 —— 它有自动路由，根据用户意图选择最合适的技能。
+
+**核心文件:**
+- `config/reverse-skill-routing.json` — 44条路由规则，每条映射关键词→技能路径
+- `config/TRIGGER_MAP.json` — 20个主题、365个触发关键词
+
+**工作原理:**
+```
+用户输入 → 关键词匹配 → 评分+优先级排序 → 选择最佳技能 → 加载 SKILL.md
+```
+
+**路由规则示例:**
+| 关键词 | 路由到 |
+|--------|--------|
+| sqli, sql injection, blind sql | testing/hunt/hunt-sqli/ |
+| xss, cross-site scripting | testing/hunt/hunt-xss/ |
+| bug bounty, src, 众测 | testing/pentest-tools/src-hunter/ |
+| burp, burpsuite | testing/frameworks/burpsuite-mcp/ |
+| ghidra, decompile | testing/ghidra-reverse/ |
+
+**容错:** 未匹配任何规则时回退到默认技能。所有44条路由已验证路径有效。
+
+
+### 14. 渗透测试编排引擎 (Engagement Engine)
+
+独立于技能的自动化编排器，管理完整渗透测试生命周期。
+
+**核心文件:**
+- `scripts/engage_runner.py` (2264行) — 编排器主程序
+- `config/engagement_phases.json` — 7阶段定义 + 16个内置测试方法
+
+**7阶段生命周期:**
+```
+init → recon → race → test → exploit → report → closed
+```
+
+| 阶段 | 功能 |
+|------|------|
+| init | 创建目标工作区和持久状态 |
+| recon | 消费侦察输出，枚举可测试面 |
+| race | 并行运行候选测试方法，按证据强度排名 |
+| test | 深度执行胜出方法，输出结构化发现 |
+| exploit | 将确认发现验证为可复现PoC |
+| report | 输出渗透报告，含严重性分解和修复建议 |
+| closed | 终态，归档 |
+
+**16个内置测试方法:**
+- 14个Web模块 (headers/exposed/cors/methods/admin/xss/sqli/ssrf/ssti/traversal/redirect/info/dirfuzz/https)
+- JWT分析
+- 竞态条件探测
+
+**状态管理:** 每阶段自动保存 `state.json`，支持跨会话恢复。`chain.json` 记录完整操作历史。
+
+**使用:**
+```bash
+python scripts/engage_runner.py race --target example.com --url https://example.com
+python scripts/engage_runner.py selftest  # 验证引擎完整性
+```
+
+
+### 15. RE工具链 (已安装)
 | 工具 | 路径 |
 |------|------|
 | Ghidra 12.1.2 | /path/to/ghidra/ |

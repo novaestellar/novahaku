@@ -691,6 +691,40 @@ print(f'OK:type={type(d).__name__}')
 }
 
 # ═══════════════════════════════════════════
+# 27. REPOSITORY GATES
+# ═══════════════════════════════════════════
+# These gates decide whether the repo is publishable. They were run by hand for
+# whole sessions, which is how a third-party licence and a marketplace manifest
+# sat in the tree unnoticed: nothing executed them. Run them here so a stray
+# artifact fails the suite the same day it lands.
+Write-Host "`n=== 27. REPOSITORY GATES ===" -ForegroundColor Yellow
+
+$GATES = @(
+    @{ Name = "no third-party identity"; Script = "scripts/test/verify-no-third-party-identity.py" },
+    @{ Name = "no tracked secrets";      Script = "scripts/reverse-skill/verify-no-secrets.py" },
+    @{ Name = "engagement root";         Script = "scripts/test/verify-engagement-root.py" },
+    @{ Name = "corpus reachability";     Script = "scripts/test/verify-corpus-reachability.py" },
+    @{ Name = "corpus index fresh";      Script = "scripts/test/gen_corpus_index.py"; Args = @("--check") },
+    @{ Name = "doc links resolve";       Script = "scripts/reverse-skill/verify-doc-links.py" },
+    @{ Name = "skill frontmatter";       Script = "scripts/test/audit_skills.py" },
+    @{ Name = "branding purged";         Script = "scripts/test/purge_branding.py" }
+)
+
+foreach ($g in $GATES) {
+    $scriptPath = Join-Path $NOVAHAKU $g.Script
+    if (-not (Test-Path -LiteralPath $scriptPath)) {
+        Test-Item "gate: $($g.Name)" "gates" { $false }
+        continue
+    }
+    $gateArgs = if ($g.ContainsKey("Args")) { $g.Args } else { @() }
+    Test-Item "gate: $($g.Name)" "gates" {
+        $out = & $PYTHON $scriptPath @gateArgs 2>&1
+        $code = $LASTEXITCODE
+        if ($code -eq 0) { $true } else { ($out | Select-Object -Last 3) -join " | " }
+    }
+}
+
+# ═══════════════════════════════════════════
 # SUMMARY
 # ═══════════════════════════════════════════
 Write-Host ""

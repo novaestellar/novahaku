@@ -117,12 +117,14 @@ function Get-ReverseToolCatalog {
             )
         }
         [pscustomobject]@{
-            Name = 'idat64'
+            Name = 'idat'
             Skill = 'ida-reverse'
-            Purpose = 'IDA Pro headless batch driver (idat64 -A -S)'
+            Purpose = 'IDA Pro headless batch driver (idat -A -S)'
             VersionArgs = @('-h')
             Fallbacks = @(
+                [pscustomobject]@{ Type = 'command'; Value = 'idat' }
                 [pscustomobject]@{ Type = 'command'; Value = 'idat64' }
+                [pscustomobject]@{ Type = 'path'; Value = 'C:\Program Files\IDA Professional 9.3\idat.exe' }
                 [pscustomobject]@{ Type = 'path'; Value = 'C:\Program Files\IDA Professional 9.0\idat64.exe' }
                 [pscustomobject]@{ Type = 'path'; Value = 'C:\Program Files\IDA Professional 9.4\idat64.exe' }
                 [pscustomobject]@{ Type = 'path'; Value = 'C:\Program Files\IDA Pro 9.4\idat64.exe' }
@@ -170,6 +172,7 @@ function Get-ReverseToolCatalog {
             VersionArgs = @()
             Fallbacks = @(
                 [pscustomobject]@{ Type = 'command'; Value = 'ida' },
+                [pscustomobject]@{ Type = 'path'; Value = 'C:\Program Files\IDA Professional 9.3\ida.exe' }
                 [pscustomobject]@{ Type = 'path'; Value = 'C:\Program Files\IDA Professional 9.4\ida.exe' },
                 [pscustomobject]@{ Type = 'path'; Value = 'C:\Program Files\IDA Pro 9.4\ida.exe' },
                 [pscustomobject]@{ Type = 'path'; Value = 'C:\Program Files\IDA Pro\ida.exe' },

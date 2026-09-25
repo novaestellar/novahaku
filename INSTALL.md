@@ -125,7 +125,8 @@ Each server below is independent. Install only the ones you need.
 | BurpSuite MCP | `:9876` | local bridge (stdio) | `testing/frameworks/burpsuite-mcp/` |
 | Anything Analyzer MCP | `http://localhost:23816/mcp` | remote HTTP | `testing/frameworks/anything-analyzer-mcp/` |
 | Binary Ninja MCP | `http://127.0.0.1:24642/mcp` | remote HTTP | `testing/binary-ninja-reverse/` |
-| IDA Pro MCP | `http://127.0.0.1:13337/mcp` | remote HTTP | `testing/ida-reverse/` |
+| IDA Pro MCP (headless idalib) | `http://127.0.0.1:8745/mcp` | remote HTTP | `testing/ida-reverse/` |
+| IDA Pro MCP (GUI plugin, legacy) | `http://127.0.0.1:13337/mcp` | remote HTTP | `testing/ida-reverse/` |
 | GhidraMCP | wrapper-managed, default `:8089` | stdio bridge over local REST | `testing/ghidra-reverse/` |
 
 ### BurpSuite MCP
@@ -157,27 +158,49 @@ Each server below is independent. Install only the ones you need.
 Two transports are available. Pick one; do not register both against the same
 port, or the tools will be registered twice.
 
-**GUI plugin (works from IDA 8.3 up, including 9.0):**
+Two facts changed with IDA 9.3 and matter for every step below:
 
-1. `pip install ida-pro-mcp` (installs the client and the IDA plugin)
+- The binaries lost their `64` suffix. `ida.exe` and `idat.exe` are now the
+  names, and the library is `idalib.dll`. Paths that hardcode `ida64.exe`,
+  `idat64.exe`, or `idalib64.dll` only work on 9.0–9.2.
+- The MCP plugin is no longer the recommended transport. `ida-pro-mcp`'s own
+  README states the plugin "is no longer recommended and will eventually be
+  deprecated", and points at the headless idalib server instead.
+
+**Headless idalib server (recommended; requires IDA 9.1 or newer):**
+
+1. `pip install ida-pro-mcp` (2.0.0 or later)
+2. Activate idalib for your IDA install:
+   `python <IDA_HOME>/idalib/python/py-activate-idalib.py -d <IDA_HOME>`
+3. Run the supervisor: `idalib-mcp --port 8745`, or
+   `python -m ida_pro_mcp.idalib_supervisor --port 8745`
+4. It serves MCP on `http://127.0.0.1:8745/mcp`
+5. Every tool call takes `database=<session_id>`. Pass a binary to the
+   supervisor at startup and it opens automatically; otherwise enumerate with
+   `idb_list` and open with `idb_open`.
+
+The supervisor exposes 66 tools, among them `survey_binary`, `decompile`,
+`disasm`, `xrefs_to`, `callees`, `callgraph`, `basic_blocks`, `type_query`,
+`make_signature`, and the multi-database set `idb_open` / `idb_list` /
+`idb_close`.
+
+Parameter names are not all obvious. `decompile` takes `addr`, not `address`.
+`list_funcs` takes `queries` (a list) and rejects `limit`.
+
+**GUI plugin (legacy; works from IDA 8.3 up):**
+
+1. `pip install ida-pro-mcp`
 2. Run `ida-pro-mcp --install` to place the plugin in the IDA user plugin dir
 3. **Restart IDA**, then open a database
 4. Open `Edit → Plugins → MCP` (or press `Ctrl-Alt-M`) to start the server
 5. The server listens on `http://127.0.0.1:13337/mcp`
 6. Set `IDA_HOME` in `.env` so the launcher scripts find your install
 
-**Headless idalib server (requires IDA 9.1 or newer):**
-
-1. Activate idalib for your IDA install:
-   `python <IDA_HOME>/idalib/python/py-activate-idalib.py -d <IDA_HOME>`
-2. Run the supervisor: `python -m ida_pro_mcp.idalib_supervisor`
-3. It serves MCP on `http://127.0.0.1:8745/mcp`
-4. Open binaries with `idb_open(path)` afterwards
-
 > **Version note.** The headless server calls `enable_console_messages` and
 > other functions that first appear in the **9.1** `idalib` library. On IDA 9.0
 > the library exports only `init_library`, `open_database` and `close_database`,
 > so the worker exits immediately. Use the GUI plugin on 9.0, or upgrade.
+> Verified working end to end on **9.3** (`idalib 9.3.260213`).
 >
 > On Windows, `py-activate-idalib.py` creates a symbolic link and needs either
 > Developer Mode or an elevated shell. If it fails with `WinError 1314`, create

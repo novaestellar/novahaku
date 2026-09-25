@@ -48,18 +48,27 @@ if port_open "$PORT"; then
   exit 0
 fi
 
-EXE_NAME="idat64"
-$USE_GUI && EXE_NAME="ida64"
+# IDA 9.3 dropped the "64" suffix: ida.exe/idat.exe. On 9.0-9.2 they are
+# ida64.exe/idat64.exe. On Linux/macOS the old names may still apply.
+EXE_NEW=$( $USE_GUI && echo "ida" || echo "idat" )
+EXE_OLD=$( $USE_GUI && echo "ida64" || echo "idat64" )
 
 CANDIDATES=()
-[[ -n "${IDA_HOME:-}" ]] && CANDIDATES+=("$IDA_HOME/$EXE_NAME")
+[[ -n "${IDA_HOME:-}" ]] && {
+  CANDIDATES+=("$IDA_HOME/$EXE_NEW")
+  CANDIDATES+=("$IDA_HOME/$EXE_OLD")
+}
+for _v in 9.3 9.4 9.2 9.1 9.0; do
+  for _n in "$EXE_NEW" "$EXE_OLD"; do
+    CANDIDATES+=("/c/Program Files/IDA Professional $_v/$_n")
+    CANDIDATES+=("/c/Program Files/IDA Pro $_v/$_n")
+  done
+done
 CANDIDATES+=(
-  "/c/Program Files/IDA Professional 9.0/$EXE_NAME"
-  "/c/Program Files/IDA Professional 9.4/$EXE_NAME"
-  "/c/Program Files/IDA Pro 9.4/$EXE_NAME"
-  "/c/Program Files/IDA Pro 9.0/$EXE_NAME"
-  "/opt/ida/$EXE_NAME"
-  "$HOME/ida/$EXE_NAME"
+  "/opt/ida/$EXE_NEW"
+  "/opt/ida/$EXE_OLD"
+  "$HOME/ida/$EXE_NEW"
+  "$HOME/ida/$EXE_OLD"
 )
 
 EXE=""

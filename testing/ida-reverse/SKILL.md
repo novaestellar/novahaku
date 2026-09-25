@@ -1,22 +1,33 @@
 ---
 name: ida-reverse
-description: Headless reverse engineering with IDA Pro — batch decompilation, IDAPython scripting, xref mapping, and automated function analysis via idat64. Use for scripted binary analysis, decompiler output at scale, and CI-style RE pipelines.
+description: Headless reverse engineering with IDA Pro — batch decompilation, IDAPython scripting, xref mapping, and automated function analysis via idat. Use for scripted binary analysis, decompiler output at scale, and CI-style RE pipelines.
 ---
 
 # IDA Pro Reverse Engineering (headless)
 
 IDA's advantage over every other RE tool is **automation at scale**: one script,
 thousands of functions, decompiler output you can grep. This skill drives
-`idat64.exe` in batch mode (`-A`) with IDAPython (`-S`).
+`idat.exe` in batch mode (`-A`) with IDAPython (`-S`).
 
 ## Verified environment
 
 This skill was validated on a real install — use these exact paths on this host:
 
 ```bash
-IDA="/c/Program Files/IDA Professional 9.0/idat64.exe"   # headless, 64-bit
-IDAGUI="/c/Program Files/IDA Professional 9.0/ida64.exe" # GUI, same DB
-IDAPYSWITCH="/c/Program Files/IDA Professional 9.0/idapyswitch.exe"
+IDA="/c/Program Files/IDA Professional 9.3/idat.exe"      # headless
+IDAGUI="/c/Program Files/IDA Professional 9.3/ida.exe"    # GUI, same DB
+IDAPYSWITCH="/c/Program Files/IDA Professional 9.3/idapyswitch.exe"
+```
+
+**Binaries lost their `64` suffix in 9.3.** On 9.0–9.2 they are `idat64.exe`,
+`ida64.exe`, and `idalib64.dll`. On 9.3 they are `idat.exe`, `ida.exe`, and
+`idalib.dll`. Resolve the name at runtime rather than hardcoding it:
+
+```bash
+IDA_HOME="${IDA_HOME:-/c/Program Files/IDA Professional 9.3}"
+for n in idat.exe idat64.exe; do
+  [ -x "$IDA_HOME/$n" ] && { IDA="$IDA_HOME/$n"; break; }
+done
 ```
 
 Confirm the install before relying on it:
@@ -26,39 +37,54 @@ Confirm the install before relying on it:
 "$IDAPYSWITCH" --dry-run 2>&1 | tail -3
 ```
 
-Expected: IDA 9.0, and IDAPython bound to a Python 3.13 DLL. If
+Expected: IDA 9.3, and IDAPython bound to a Python 3.13 DLL. If
 `idapyswitch --dry-run` reports no Python, run `idapyswitch -a` to auto-apply.
 
 **Verified working output** (357 functions from `notepad.exe`, real symbol names —
 if you get an empty log, IDAPython is not bound):
 
 ```
-IDAPY_OK version=9.0
+IDAPY_OK version=9.3
 FUNCS=357
-  memcpy_s @ 0x1400016c4
-  TraceLoggingRegister_EventRegister_EventSetInformation @ 0x140001380
+IMPORTS=1
+HEXRAYS=True
+  ??$Write@U?$_tlgWrapperByRef@$0BA@@@... @ 0x140001008
+  _tlgWriteTransfer_EventWriteTransfer @ 0x14000125c
 ```
 
-## MCP access (optional, works on IDA 9.0)
+## MCP access
 
-Batch mode above is the default and needs nothing extra. MCP adds an interactive
-channel — ask for one function at a time instead of re-running a whole script.
+Two transports. The **headless idalib supervisor is the recommended one** —
+`ida-pro-mcp`'s own README states the GUI plugin "is no longer recommended and
+will eventually be deprecated". Do not register both, or tools register twice.
 
 ```bash
-pip install ida-pro-mcp        # installs both the MCP client and the IDA plugin
-ida-pro-mcp --install          # drop the plugin into the IDA user plugin dir
+pip install ida-pro-mcp        # 2.0.0 or later
+idalib-mcp --port 8745         # headless supervisor; or:
+python -m ida_pro_mcp.idalib_supervisor --port 8745
 ```
 
-Then **restart IDA**, open a database, and start the server from
-`Edit → Plugins → MCP` (or `Ctrl-Alt-M`). It listens on
-`http://127.0.0.1:13337/mcp` — loopback only.
+It serves MCP on `http://127.0.0.1:8745/mcp` — loopback only — with **66 tools**.
 
-> **Version note.** The **headless** idalib server (`python -m
-> ida_pro_mcp.idalib_supervisor`, port 8745) needs IDA **9.1+**. On IDA 9.0
-> `idalib64.dll` exports only `init_library`, `open_database` and
-> `close_database`; the supervisor calls functions that do not exist yet and the
-> worker exits immediately. The **GUI plugin works fine on 9.0** — use that path.
-> Do not register both transports at once or the tools get registered twice.
+Every tool call must carry `database=<session_id>`. Give the supervisor a binary
+at startup and it opens automatically; find its id with `idb_list`, or open one
+with `idb_open`.
+
+```
+survey_binary  → arch, base address, md5/sha256, segment table, function counts
+decompile      → takes `addr`, NOT `address`
+list_funcs     → takes `queries` (a list); it rejects `limit`
+```
+
+> **Version note.** The headless supervisor needs IDA **9.1+**: it calls
+> `enable_console_messages` and friends, which first appear in the 9.1 `idalib`
+> library. On IDA 9.0 that library exports only `init_library`, `open_database`
+> and `close_database`, so the worker exits immediately. Verified end to end on
+> **9.3** (`idalib 9.3.260213`).
+
+The **legacy GUI plugin** still works from IDA 8.3 up: `ida-pro-mcp --install`,
+restart IDA, then `Edit → Plugins → MCP` (`Ctrl-Alt-M`). It listens on
+`http://127.0.0.1:13337/mcp`.
 
 Set `IDA_HOME` so launchers find the install. To move the port, edit
 `servicePort` for `idapro` in
@@ -76,7 +102,7 @@ Set `IDA_HOME` so launchers find the install. To move the port, edit
 
 ### Rule 1 — IDA's stdout is unreliable, write to a file
 
-Console output from `idat64` is frequently swallowed, especially when launched
+Console output from `idat` is frequently swallowed, especially when launched
 from a non-interactive shell. **Always write findings to a log file from inside
 the script** and read the file afterwards. A script that only `print()`s will look
 like it silently failed.
@@ -223,7 +249,13 @@ Function-level diff beats byte-level diff for anything compiler-optimised.
   recognition, so check which signatures loaded.
 - **Very long function names are normal** in templated C++ (`??$Write@U?...`).
   Truncate for reporting, never for matching.
-- **MSYS path conversion.** `idat64.exe` is a native Windows binary: pass it
+- **MSYS path conversion.** `idat.exe` is a native Windows binary: pass it
   `C:/...` paths, not `/c/...`. Pass MSYS paths and it fails to find the target.
+  The log path *inside* the script is a native Windows path too — `read_file`
+  can read it, but a bare bash `cat` of `/c/...` will not see it.
+- **Read-only target directory.** IDA writes `<target>.i64` (plus `.id0/.id1/.id2/
+  .nam/.til`) next to the input, so a binary under `C:\Windows\System32` fails
+  with `Permission denied`. That error looks like a licensing failure but is not.
+  Copy the sample to a writable directory first.
 - **Antivirus.** IDA creates a large `.i64` next to the target; some AV products
   flag this pattern. Keep test targets outside protected directories.

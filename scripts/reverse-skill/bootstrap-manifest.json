@@ -170,14 +170,14 @@
       "mcpNames": [
         "idapro"
       ],
-      "mcpUrl": "http://127.0.0.1:13337/mcp",
-      "servicePort": 13337,
+      "mcpUrl": "http://127.0.0.1:8745/mcp",
+      "servicePort": 8745,
       "servicePortRange": [
-        13337,
-        13350
+        8745,
+        8755
       ],
-      "portNote": "IDA 多实例时端口递增 (13337→13338→...)，检查 IDA Output 窗口的 [MCP] port=xxxxx 日志",
-      "headlessExecutable": "idat64",
+      "portNote": "headless idalib supervisor 默认端口 8745; GUI 插件旧版仍用 13337",
+      "headlessExecutable": "idat",
       "startScript": "%REPO_ROOT%\\scripts\\reverse-skill\\start-idapro.ps1",
       "docsUrl": "https://hex-rays.com/ida-pro/",
       "canAutoInstall": true,
@@ -386,12 +386,12 @@
       "manualInstallHint": "keytool ships with any JDK. Install a JDK and ensure its bin directory is on PATH."
     },
     {
-      "name": "idat64",
+      "name": "idat",
       "bootstrapKind": "manual",
       "docsUrl": "https://hex-rays.com/ida-pro/",
       "canAutoInstall": false,
-      "verifyCommand": "idat64",
-      "manualInstallHint": "idat64 is the IDA Pro headless batch driver and ships with IDA Pro. Install IDA Pro, or set IDA_HOME to the install directory."
+      "verifyCommand": "idat",
+      "manualInstallHint": "idat (IDA 9.3+) or idat64 (IDA 9.0-9.2) is the IDA Pro headless batch driver. Install IDA Pro, or set IDA_HOME."
     }
   ]
 }
