@@ -275,7 +275,13 @@ def main():
             for hit in scan_path(arg):
                 print(json.dumps(hit))
     else:
-        # Read from stdin (text mode, not URL list)
+        # Read from stdin (text mode, not URL list). Refuse to block on a
+        # terminal: with no arguments and no pipe there is nothing to scan, and
+        # a silent wait for EOF looks like a hang. Mirrors the isatty guard in
+        # gitlab_exploit.py / keycloak_exploit.py.
+        if sys.stdin.isatty():
+            print(__doc__)
+            sys.exit(2)
         try:
             data = sys.stdin.read()
         except KeyboardInterrupt:
