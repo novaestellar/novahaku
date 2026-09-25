@@ -248,7 +248,7 @@ A valid PHAR includes four elements:
 * [FINDING A POP CHAIN ON A COMMON SYMFONY BUNDLE: PART 2 - Rémi Matasse - October 11, 2023](https://web.archive.org/web/20231017130212/https://www.synacktiv.com/publications/finding-a-pop-chain-on-a-common-symfony-bundle-part-2)
 * [Finding PHP Serialization Gadget Chain - DG'hAck Unserial killer - xanhacks - August 11, 2022](https://web.archive.org/web/20250926045827/https://www.xanhacks.xyz/p/php-gadget-chain/)
 * [How to exploit the PHAR Deserialization Vulnerability - Alexandru Postolache - May 29, 2020](https://web.archive.org/web/20200929143500/https://pentest-tools.com/blog/exploit-phar-deserialization-vulnerability/)
-* [phar:// deserialization - this collection - July 19, 2024](
+* [phar:// deserialization - payloads - July 19, 2024](
 * [PHP deserialization attacks and a new gadget chain in Laravel - Mathieu Farrell - February 13, 2024](https://web.archive.org/web/20240213181951/https://blog.quarkslab.com/php-deserialization-attacks-and-a-new-gadget-chain-in-laravel.html)
 * [PHP Generic Gadget - Charles Fol - July 4, 2017](https://www.ambionics.io/blog/php-generic-gadget-chains)
 * [PHP Internals Book - Serialization - jpauli - June 15, 2013](https://web.archive.org/web/20130615052058/http://www.phpinternalsbook.com:80/classes_objects/serialization.html)

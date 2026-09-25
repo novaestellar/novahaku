@@ -265,7 +265,7 @@ aws cognito-idp update-user-attributes --region us-east-1 --access-token eyJraWQ
 }
 ```
 
-For more detailed info about how to abuse AWS Cognito check [AWS Cognito - Unauthenticated Enum Access](https://cloud.this collection.wiki/en/pentesting-cloud/aws-security/aws-unauthenticated-enum-access/aws-cognito-unauthenticated-enum.html).
+For more detailed info about how to abuse AWS Cognito check [AWS Cognito - Unauthenticated Enum Access](https://novalabs.security/en/pentesting-cloud/aws-security/aws-unauthenticated-enum-access/aws-cognito-unauthenticated-enum.html).
 
 ### Abusing other Apps tokens <a href="#bda5" id="bda5"></a>
 

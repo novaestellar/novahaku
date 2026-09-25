@@ -3122,7 +3122,7 @@ function Get-Subs {
 | **bo0om wordlist** | `https://github.com/bo0om/wordlists` | Russian-language-aware. |
 | **commonspeak2** | `https://github.com/assetnote/commonspeak2-wordlists` | Generated from BigQuery commit data. |
 | **fuzzdb** | `https://github.com/fuzzdb-project/fuzzdb` | Fuzzing payloads + wordlists. |
-| **this collection** | ` | Per-vuln-class payloads (less for enum, more for follow-on). |
+| **payloads** | ` | Per-vuln-class payloads (less for enum, more for follow-on). |
 | **Custom per-target** | n/a | Best practice: derive a custom wordlist from the target's own content (extract every word from their public website + LinkedIn + careers page → unique → use as seed). |
 
 **Size guidance:**

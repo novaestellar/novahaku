@@ -276,7 +276,7 @@ h2c-smuggling.md
 
 ### Regex Bypasses
 
-Different techniques can be used to bypass the regex filters on the firewalls. Examples include alternating case, adding line breaks, and encoding payloads. Resources for the various bypasses can be found at [this collection] and [OWASP](https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html). The examples below were pulled from [this article](https://medium.com/@allypetitt/5-ways-i-bypassed-your-web-application-firewall-waf-43852a43a1c2).<sup>[[9]](#references)</sup><sup>[[11]](#references)</sup><sup>[[12]](#references)</sup>
+Different techniques can be used to bypass the regex filters on the firewalls. Examples include alternating case, adding line breaks, and encoding payloads. Resources for the various bypasses can be found at [payloads] and [OWASP](https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html). The examples below were pulled from [this article](https://medium.com/@allypetitt/5-ways-i-bypassed-your-web-application-firewall-waf-43852a43a1c2).<sup>[[9]](#references)</sup><sup>[[11]](#references)</sup><sup>[[12]](#references)</sup>
 
 ```bash
 <sCrIpT>alert(XSS)</sCriPt> #changing the case of the tag

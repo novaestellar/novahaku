@@ -25,12 +25,12 @@ During an authorized assessment, test whether the **server** actually binds a CA
 
 ## Online CAPTCHA-solving services
 
-### [CapSolver](https://www.capsolver.com/?utm_source=google&utm_medium=ads&utm_campaign=scraping&utm_term=this collection&utm_content=captchabypass)
+### [CapSolver](https://www.capsolver.com/?utm_source=google&utm_medium=ads&utm_campaign=scraping&utm_term=payloads&utm_content=captchabypass)
 
 **CapSolver** is one example of a commercial API and browser-extension service that claims support for reCAPTCHA, DataDome, AWS CAPTCHA, GeeTest, and Cloudflare Turnstile. Its client options include extensions for [Chrome](https://chromewebstore.google.com/detail/captcha-solver-auto-captc/pgojnojmmhpofjgdmaebadhbocahppod) and [Firefox](https://addons.mozilla.org/firefox/addon/capsolver-captcha-solver/). Treat any external solver as a data processor: test only accounts and challenges covered by the engagement, and do not send sensitive screenshots, tokens, or production user data without approval.<sup>[[3]](#references)</sup>
 
 {{#ref}}
-https://www.capsolver.com/?utm_campaign=scraping&utm_content=captchabypass&utm_medium=ads&utm_source=google&utm_term=this collection
+https://www.capsolver.com/?utm_campaign=scraping&utm_content=captchabypass&utm_medium=ads&utm_source=google&utm_term=payloads
 {{#endref}}
 
 ## References

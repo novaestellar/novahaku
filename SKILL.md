@@ -23,7 +23,7 @@ metadata:
 - 14模块测试集:headers、exposed、cors、methods、admin、xss、sqli、ssrf、ssti、traversal、redirect、info、dirfuzz、https
 - 竞态条件测试(race_test.py)
 - JWT分析 + 伪造 + 暴力破解(jwt_test.py)
-- 48个payload参考(this collection + this collection)
+- Payload bank: 16 topik cepat di `testing/references/payloads/`(cmd-injection、cors、crlf、idor、jwt、open-redirect、proto-pollution、race、sqli、ssrf、ssti、upload、websockets、xss、xxe)+ 63 kategori mendalam di `testing/references/payloads/`(Account Takeover、File Inclusion、GraphQL Injection、SAML Injection、XSS Injection、XXE Injection 等)+ 51 kategori tambahan di `testing/references/payloads-extras/`
 - CVE exploits: GitLab CVE-2026-85706未授权文件读取(gitlab-exploit), Keycloak CVE-2026-18963账户接管(keycloak-exploit)
 - 脚本:testing/scripts/webtest.py、race_test.py、jwt_test.py、testing/gitlab-exploit/gitlab_exploit.py、testing/keycloak-exploit/keycloak_exploit.py
 
@@ -80,7 +80,7 @@ metadata:
 - CT日志分析、WHOIS/DNS查询
 - Credential泄露检查(HaveIBeenPwned、IntelX)
 - 与novaxinwei(v1.1)协同: novaxinwei负责主动网络侦察(WAF绕过、并行抓取、Dork查询) → novahaku负责漏洞发现、利用与报告(149个安全技能、16个触发分类)
-- **GitHub Dorks**: 自动化执行请使用novaxinwei的`dorks/github_dorks`模块(141个结构化查询 + GitHub API客户端 + 速率限制处理)。Novahaku包含1400+扩展语料库(`testing/references/this collection-extras/Insecure Source Code Management/Files/github-dorks.txt`)作为人工审计和离线模式匹配参考
+- **GitHub Dorks**: 自动化执行请使用novaxinwei的`dorks/github_dorks`模块(141个结构化查询 + GitHub API客户端 + 速率限制处理)。Novahaku包含1400+扩展语料库(`testing/references/payloads-extras/Insecure Source Code Management/Files/github-dorks.txt`)作为人工审计和离线模式匹配参考
 - **Wayback/URL Harvesting**: URL harvesting从Wayback Machine + Common Crawl由novaxinwei `tools/wayai/wayai.py`执行(15-platform recon engine)。Pipeline: `python -m novaxinwei wayai <domain> | secret_scan.py --stdin` — harvest URLs直接scan 80+ secret patterns,零重复harvesting logic
 - **CVE Intelligence**: CVE/advisory gathering由novaxinwei `tools/cve/cve_scraper.py`执行(GitHub Security Advisories + HackerOne disclosed)。Feed auto-export到`hunt-cicd/cache/cve-feed.json`供CI/CD hunting exploit context使用
 - **GitHub Pages Enumeration**: novaxinwei `tools/github_pages/github_pages_enum.py` — detect private repo content leaked via Pages (`username.github.io/repo/`). Novahaku consumes findings for exploit workflows
@@ -141,6 +141,7 @@ metadata:
 | 意图 | 领域 | 加载 |
 |------|------|------|
 | test web、scan、pentest、XSS、SQLi、IDOR、payload | Web测试 | testing/scripts/ |
+| payload bank、payload class、XSS payload、SQLi payload、bypass payload、payload 参考 | Reference corpus | **`testing/references/00-INDEX.md`**(277 页 / 10 类别 — 先读这个索引,再定点取页) |
 | prompt injection、delimiter、encoding、lock | 提示工程 | techniques/methods/ |
 | attack mode、v41、jailbreak | 攻击框架 | identity/novahaku-files/claude-config-bundle/system-prompt.md |
 | reframe、arsenal | 重构引擎 | reframe/reframe_cli.py |

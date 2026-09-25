@@ -172,7 +172,7 @@ List of popular gadgets used in common payloads.
 * [ARE YOU MY TYPE? Breaking .NET sandboxes through Serialization - White Paper - James Forshaw - September 20, 2012](https://web.archive.org/web/20260216023308/https://media.blackhat.com/bh-us-12/Briefings/Forshaw/BH_US_12_Forshaw_Are_You_My_Type_WP.pdf)
 * [Attacking .NET Deserialization - Alvaro Muñoz - April 28, 2018](https://web.archive.org/web/20200215071108/https://youtu.be/eDfGpu3iE4Q)
 * [Attacking .NET Serialization - Alvaro - October 20, 2017](https://web.archive.org/web/20250210175031/https://speakerdeck.com/pwntester/attacking-net-serialization?slide=11)
-* [Basic .Net deserialization (ObjectDataProvider gadget, ExpandedWrapper, and Json.Net) - this collection - July 18, 2024](
+* [Basic .Net deserialization (ObjectDataProvider gadget, ExpandedWrapper, and Json.Net) - payloads - July 18, 2024](
 * [Bypassing .NET Serialization Binders - Markus Wulftange - June 28, 2022](https://web.archive.org/web/20260228021314/https://codewhitesec.blogspot.com/2022/06/bypassing-dotnet-serialization-binders.html)
 * [Exploiting Deserialisation in ASP.NET via ViewState - Soroush Dalili (@irsdl) - April 23, 2019](https://web.archive.org/web/20230402051324/https://soroush.secproject.com/blog/2019/04/exploiting-deserialisation-in-asp-net-via-viewstate/)
 * [Finding a New DataContractSerializer RCE Gadget Chain - dugisec - November 7, 2019](https://web.archive.org/web/20210926153917/http://muffsec.com/blog/finding-a-new-datacontractserializer-rce-gadget-chain/)

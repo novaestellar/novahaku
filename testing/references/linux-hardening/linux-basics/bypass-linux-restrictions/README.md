@@ -3,7 +3,7 @@
 
 ## Common Limitations Bypasses
 
-The command-injection and WAF-evasion collections in this collection, Bo0oM's cheat sheet, and the two linked Secjuice articles provide background for the shell-syntax variations in this section.<sup>[[1]](#references)[[2]](#references)[[3]](#references)[[4]](#references)</sup>
+The command-injection and WAF-evasion collections in payloads, Bo0oM's cheat sheet, and the two linked Secjuice articles provide background for the shell-syntax variations in this section.<sup>[[1]](#references)[[2]](#references)[[3]](#references)[[4]](#references)</sup>
 
 ### Reverse Shell
 

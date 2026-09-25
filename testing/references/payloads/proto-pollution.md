@@ -173,7 +173,7 @@ Either create your own gadget using part of the source with [yeswehack/pp-finder
 * [Detecting Server-Side Prototype Pollution - Daniel Thatcher - February 15, 2023](https://web.archive.org/web/20230221012320/https://www.intruder.io/research/server-side-prototype-pollution)
 * [Exploiting prototype pollution – RCE in Kibana (CVE-2019-7609) - Michał Bentkowski - October 30, 2019](https://web.archive.org/web/20250810040511/https://research.securitum.com/prototype-pollution-rce-kibana-cve-2019-7609/)
 * [Keynote | Server Side Prototype Pollution: Blackbox Detection Without The DoS - Gareth Heyes - March 27, 2023](https://web.archive.org/web/20230327103116/https://youtu.be/LD-KcuKM_0M)
-* [NodeJS - \_\_proto\_\_ & prototype Pollution - this collection - July 19, 2024](
+* [NodeJS - \_\_proto\_\_ & prototype Pollution - payloads - July 19, 2024](
 * [Prototype Pollution - PortSwigger - November 10, 2022](https://web.archive.org/web/20221110144930/https://portswigger.net/web-security/prototype-pollution)
 * [Prototype pollution - Snyk - August 19, 2023](https://web.archive.org/web/20211010192146/https://learn.snyk.io/lessons/prototype-pollution/javascript/)
 * [Prototype pollution and bypassing client-side HTML sanitizers - Michał Bentkowski - August 18, 2020](https://web.archive.org/web/20200908002825/https://research.securitum.com/prototype-pollution-and-bypassing-client-side-html-sanitizers/)

@@ -165,4 +165,4 @@ in order to add this header.
 * [Mini WebSocket CTF - Snowscan - January 27, 2020](https://snowscan.io/bbsctf-evilconneck/#)
 * [Streamlining Websocket Pentesting with wsrepl - Andrez Konstantinov - July 18, 2023](https://web.archive.org/web/20230718132013/https://blog.doyensec.com/2023/07/18/streamlining-websocket-pentesting-with-wsrepl.html)
 * [Testing for WebSockets security vulnerabilities - PortSwigger - September 28, 2019](https://web.archive.org/web/20190928112120/https://portswigger.net/web-security/websockets)
-* [WebSocket Attacks - this collection - July 19, 2024](
+* [WebSocket Attacks - payloads - July 19, 2024](

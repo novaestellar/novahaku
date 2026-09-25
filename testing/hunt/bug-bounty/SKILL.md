@@ -1507,8 +1507,8 @@ When payout is being downgraded, use these counters:
 
 ## Learning
 - [PortSwigger Web Academy](https://portswigger.net/web-security) -- Free vuln labs (best)
-- [this collection] -- Attack technique reference
-- [this collection] -- Payload reference
+- [payloads] -- Attack technique reference
+- [payloads] -- Payload reference
 - [Solodit](https://solodit.cyfrin.io) -- 50K+ searchable audit findings (Web3)
 - [ProjectDiscovery Chaos](https://chaos.projectdiscovery.io) -- Free subdomain datasets
 

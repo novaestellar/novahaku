@@ -25,7 +25,7 @@
 | 权限过度 | 无差别 `curl \| bash`、全盘读 | bootstrap 仅 manifest 能力；scope `network_profile` |
 | 依赖投毒 | pip/npm 恶意包 | 优先官方 release；记录版本到 tool availability |
 | MCP 盲信 | 未审计 MCP 服务器 | tool availability 注册状态 + 端口探测；不默认信任远程 MCP |
-| MCP/CLI 自动执行投毒 | 仓库 `.env` 改 `CODEX_HOME` 等导致启动即执行恶意 MCP（this collection / CVE 类案例） | 不信任仓库内默认 MCP 配置；启动 Agent 前检查 env 与 MCP 列表 |
+| MCP/CLI 自动执行投毒 | 仓库 `.env` 改 `CODEX_HOME` 等导致启动即执行恶意 MCP（payloads / CVE 类案例） | 不信任仓库内默认 MCP 配置；启动 Agent 前检查 env 与 MCP 列表 |
 | 提示注入进 skill | SKILL 正文藏隐蔽指令 | 审阅 diff；禁止「隐藏在 HTML 注释的执行指令」不经用户 |
 | 范围漂移 | skill 诱导扩大扫描 / 「一个域名全自动打穿」 | ops/scope-contract：out_of_scope + auth；禁止无 in_scope 的狂扫 |
 | 技能堆叠过载 | 同时挂载过多 skill 反而漏报（公开评测观察） | 只加载 PRIMARY + 必要 secondary（MASTER-ROUTING） |

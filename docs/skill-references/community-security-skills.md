@@ -32,8 +32,8 @@
 | [OwenPawl/cerberus-re-skill](https://github.com/OwenPawl/cerberus-re-skill) | Apple 向 Ghidra+LLDB+Frida 三循环 | 可参考 macOS/iOS 动态环 |
 | [ljagiello/ctf-skills](https://github.com/ljagiello/ctf-skills) | CTF reverse/pwn；工具按需装 | 对照 CTF-Sandbox + `pwn-chain` |
 | [shuvonsec/claude-bug-bounty](https://github.com/shuvonsec/claude-bug-bounty) | /recon→/hunt→/validate→/report | 对照 `recon-pipeline.md` + scope 门 |
-| [this collection] | Web payload + Prompt Injection 章节 | `pentest-tools/payloads` 优先；LLM 见 `llm-security` |
-| [this collection] | 渗透方法论 + **AI/MCP 滥用** | 见 skill-supply-chain MCP 节 |
+| [payloads] | Web payload + Prompt Injection 章节 | `pentest-tools/payloads` 优先；LLM 见 `llm-security` |
+| [payloads] | 渗透方法论 + **AI/MCP 滥用** | 见 skill-supply-chain MCP 节 |
 | [appsecsanta AI pentesting agents 2026](https://appsecsanta.com/research/ai-pentesting-agents-2026) | 39+ 开源 AI 渗透 agent 架构分类 | 多 agent ≠ 必须；我们用 role-map |
 | Snyk 评测「更多 skill ≠ 更好」 | 技能堆叠可能降低审计质量 | 强化「深 skill + 路由」策略 |
 

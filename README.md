@@ -21,7 +21,7 @@ Novahaku 是一个统一的安全研究代理,整合了 **12大核心能力** �
 |------|------|
 | 🎯 12大能力域 | Web测试、提示工程、攻击框架、重构引擎、Windows逆向/游戏安全/EDR绕过、二进制利用、身份与人格、OSINT侦察、逆向工程、CTF竞赛、源码猎人、MCP集成 |
 | 🔄 自动检测 | 根据用户意图自动加载对应技能模块 |
-| 🛡️ 完整安全工具链 | 159个this collection攻击向量 + 54个Hunt Playbooks + 9个审计框架 + 38个CTF竞赛模块 |
+| 🛡️ 完整安全工具链 | 159个payloads攻击向量 + 54个Hunt Playbooks + 9个审计框架 + 38个CTF竞赛模块 |
 | 🧠 121项提示技术 | 7大分类,7阶段方法论 |
 | 🔐 4级锁定命令 | Basic(85%) → Double(92%) → GodMode(88%) → Triple(95%) |
 | 📊 训练与基准测试 | 内置基准测试框架,验证技能效果 |
@@ -121,8 +121,8 @@ headers → exposed → cors → methods → admin → xss → sqli
 - `jwt_test.py` — JWT分析 + 爆破
 
 **参考库:**
-- this collection (29个漏洞类型)
-- this collection (159个攻击向量)
+- payloads (29个漏洞类型)
+- payloads (159个攻击向量)
 - Bug Bounty参考 (XSS/SQLi/SSRF)
 
 ### 2. 提示工程 (121项技术)
@@ -455,8 +455,8 @@ novahaku/
 │ │ ├── bypass-headers.txt
 │ │ └── ...
 │ └── references/ # 漏洞引用库
-│ ├── this collection/ (29)
-│ ├── this collection/ (78个攻击向量类别)
+│ ├── payloads/ (29)
+│ ├── payloads/ (78个攻击向量类别)
 │ │ ├── Account Takeover/
 │ │ ├── API Key Leaks/
 │ │ ├── Command Injection/
@@ -483,7 +483,7 @@ novahaku/
 │ │ ├── XXE Injection/
 │ │ ├── ... (共63个类别)
 │ │ └── Zip Slip/
-│ ├── this collection-extras/ (51个额外参考)
+│ ├── payloads-extras/ (51个额外参考)
 │ └── misc/
 ├── train/ # 训练与基准
 │ ├── train.py # 训练脚本
@@ -576,7 +576,7 @@ python -m novaxinwei fetch-parallel url1 url2 url3 --workers 5
 
 | 能力域 | 技术数 | 自动化脚本 | 参考库 |
 |--------|--------|------------|--------|
-| Web测试 | 14模块 | 3 | 63个this collection向量 |
+| Web测试 | 14模块 | 3 | 63个payloads向量 |
 | 提示工程 | 121 | — | 7阶段方法论 |
 | 攻击框架 | 5注入面 | 1 | v41文言提示 |
 | 请求重构 | 48映射 | 1 | 输出合同 |
