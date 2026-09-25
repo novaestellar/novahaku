@@ -136,9 +136,20 @@ except Exception as exc:  # noqa: BLE001
 import tempfile  # noqa: E402
 
 with tempfile.TemporaryDirectory() as td:
+    # resolve_root(explicit) only accepts a directory that contains the PROBE file.
+    # A bare temp dir is deliberately NOT accepted — the module refuses to guess. So
+    # build a minimal fake tree first; otherwise this check fails for the wrong reason
+    # (and, because SystemExit is not an Exception subclass, it escaped the handler
+    # below and killed the whole selftest at rc=2 before any check could print).
+    fake_tree = Path(td) / "fake-hermes"
+    (fake_tree / hp.PROBE.parent).mkdir(parents=True)
+    (fake_tree / hp.PROBE).write_text("# probe\n", encoding="utf-8")
+
     try:
-        r2 = hp.resolve_root(td)
-        check("resolve_root(explicit) returns that Path", str(r2) == str(Path(td)))
+        r2 = hp.resolve_root(str(fake_tree))
+        check("resolve_root(explicit) returns that Path", str(r2) == str(fake_tree))
+    except SystemExit as exc:
+        check(f"resolve_root(explicit) aborted with SystemExit({exc.code})", False)
     except Exception as exc:  # noqa: BLE001
         check(f"resolve_root(explicit) raised {type(exc).__name__}", False)
 
