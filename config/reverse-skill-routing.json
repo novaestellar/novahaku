@@ -451,7 +451,7 @@
           "note": "Binary Ninja GUI, IL, Python API, MCP, or localhost HTTP integration"
         }
       ],
-      "note": "Binary Ninja GUI. The Python API and headless batch mode depend on the licence valid in the running process - probe before scripting. When the API is unavailable, script through the community MCP bridge over loopback (localhost:9009); for other scripted work route to R6 (IDA headless)."
+      "note": "Binary Ninja GUI. The Python API and headless batch mode depend on the licence valid in the running process - probe before scripting. When the API is unavailable, script through the MCP plugin over loopback (127.0.0.1:24642, native MCP, no bridge); for other scripted work route to R6 (IDA headless)."
     },
     "R0": {
       "label": "General reverse-engineering",

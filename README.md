@@ -278,9 +278,16 @@ checksec → 漏洞分类 → 保护检测 → 策略选择 → libc/gadget准�
 - 位置: testing/pentest-tools/src-hunter/
 
 ### 12. MCP工具集成
-- **BurpSuite MCP**: 83个工具 (scan、repeater、intruder、decoder等)
-- **Anything Analyzer MCP**: 浏览器 + HTTP分析
-- 位置: testing/frameworks/
+| 服务器 | 默认端点 | 工具数 | 位置 |
+|--------|----------|--------|------|
+| BurpSuite MCP | `:9876` (本地桥接) | 83 | testing/frameworks/burpsuite-mcp/ |
+| Anything Analyzer MCP | `http://localhost:23816/mcp` | 30 | testing/frameworks/anything-analyzer-mcp/ |
+| Binary Ninja MCP | `http://127.0.0.1:24642/mcp` | 75 | testing/binary-ninja-reverse/ |
+| IDA Pro MCP | `http://127.0.0.1:13337/mcp` | — | testing/ida-reverse/ |
+| GhidraMCP | `http://127.0.0.1:8765/mcp` | — | testing/ghidra-reverse/ |
+
+全部仅监听回环地址。逐服务器安装步骤见 `INSTALL.md` → MCP Server Setup。
+没有 MCP 服务器时 Novahaku 仍可完整运行 —— 它只是额外的实时工具接入。
 
 
 ### 13. RE工具链 (已安装)

@@ -112,20 +112,85 @@ NOVAHAKU_ENGAGEMENT_DIR=/path/to/engagements
 
 ## MCP Server Setup
 
+Novahaku works without any MCP server — every skill runs from its own scripts.
+MCP servers add live tool access for a few specialised workflows. All of them
+listen on **loopback only**; none should be exposed to a network.
+
+Each server below is independent. Install only the ones you need.
+
+### Overview
+
+| Server | Default endpoint | Transport | Required by |
+|--------|------------------|-----------|-------------|
+| BurpSuite MCP | `:9876` | local bridge (stdio) | `testing/frameworks/burpsuite-mcp/` |
+| Anything Analyzer MCP | `http://localhost:23816/mcp` | remote HTTP | `testing/frameworks/anything-analyzer-mcp/` |
+| Binary Ninja MCP | `http://127.0.0.1:24642/mcp` | remote HTTP | `testing/binary-ninja-reverse/` |
+| IDA Pro MCP | `http://127.0.0.1:13337/mcp` | remote HTTP | `testing/ida-reverse/` |
+| GhidraMCP | `http://127.0.0.1:8765/mcp` | remote HTTP | `testing/ghidra-reverse/` |
+
 ### BurpSuite MCP
-1. Install BurpSuite with MCP extension
+
+1. Install Burp Suite with the MCP extension
 2. The MCP server listens on port 9876
-3. See `testing/frameworks/burpsuite-mcp/SKILL.md`
+3. Point your MCP client at the bundled bridge (`mcp-bridge.js`)
+4. Set `BURPSUITE_MCP_PORT` in `.env` if you moved the port
+5. See `testing/frameworks/burpsuite-mcp/SKILL.md`
 
 ### Anything Analyzer MCP
-1. Server runs on localhost:23816
-2. See `testing/frameworks/anything-analyzer-mcp/SKILL.md`
+
+1. Start the Anything Analyzer server; it serves MCP on `localhost:23816`
+2. If the server requires auth, copy the bearer token into
+   `ANYTHING_ANALYZER_MCP_TOKEN` in `.env` — `bootstrap-reverse.ps1` reads it
+   when wiring the client config
+3. See `testing/frameworks/anything-analyzer-mcp/SKILL.md`
 
 ### Binary Ninja MCP
-1. Install the `binaryninja_ui_mcp` plugin inside Binary Ninja and open a target
-2. The plugin serves MCP natively on `http://127.0.0.1:24642/mcp` (loopback only)
+
+1. Install the Binary Ninja MCP plugin and open a target in Binary Ninja
+2. The plugin serves MCP natively on `http://127.0.0.1:24642/mcp`
 3. No npm bridge and no separate port are involved
 4. See `testing/binary-ninja-reverse/SKILL.md`
+
+### IDA Pro MCP
+
+Two transports are available. Pick one; do not register both against the same
+port, or the tools will be registered twice.
+
+**GUI plugin (works from IDA 8.3 up, including 9.0):**
+
+1. `pip install ida-pro-mcp` (installs the client and the IDA plugin)
+2. Run `ida-pro-mcp --install` to place the plugin in the IDA user plugin dir
+3. **Restart IDA**, then open a database
+4. Open `Edit → Plugins → MCP` (or press `Ctrl-Alt-M`) to start the server
+5. The server listens on `http://127.0.0.1:13337/mcp`
+6. Set `IDA_HOME` in `.env` so the launcher scripts find your install
+
+**Headless idalib server (requires IDA 9.1 or newer):**
+
+1. Activate idalib for your IDA install:
+   `python <IDA_HOME>/idalib/python/py-activate-idalib.py -d <IDA_HOME>`
+2. Run the supervisor: `python -m ida_pro_mcp.idalib_supervisor`
+3. It serves MCP on `http://127.0.0.1:8745/mcp`
+4. Open binaries with `idb_open(path)` afterwards
+
+> **Version note.** The headless server calls `enable_console_messages` and
+> other functions that first appear in the **9.1** `idalib` library. On IDA 9.0
+> the library exports only `init_library`, `open_database` and `close_database`,
+> so the worker exits immediately. Use the GUI plugin on 9.0, or upgrade.
+>
+> On Windows, `py-activate-idalib.py` creates a symbolic link and needs either
+> Developer Mode or an elevated shell. If it fails with `WinError 1314`, create
+> a junction instead:
+> `cmd /c mklink /J "<site-packages>\ida\bin" "<IDA_HOME>"`
+
+### GhidraMCP
+
+1. Install the GhidraMCP extension into Ghidra's `Ghidra/Extensions/` directory
+2. In Ghidra, open a program, then start the MCP server from the
+   `GhidraMCP` plugin window (Window → GhidraMCP)
+3. It serves MCP on `http://127.0.0.1:8765/mcp`
+4. Set `GHIDRA_MCP_PORT` in `.env` if you change the port
+5. See `testing/ghidra-reverse/SKILL.md`
 
 ## Persistent Engagement (cross-session state)
 

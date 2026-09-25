@@ -58,10 +58,23 @@ analyzeHeadless /path/to/project Proj -import sample.bin -postScript ExportDecom
 
 ### 4. MCP（若已配置）
 
+MCP 是**可选**的实时接入，不是使用 Ghidra 的前提。手动与 headless 路径无需它。
+
 ```text
-□ 确认 ghidra MCP 端口（常见 8765，以 tool-index 为准）
-□ 用 MCP 工具拉反编译 / xrefs，禁止猜端口
+□ 确认已经安装 GhidraMCP 扩展（Ghidra/Extensions/GhidraMCP/）
+□ 在 Ghidra 中打开程序，再从 Window → GhidraMCP 启动服务器
+□ 端点为 http://127.0.0.1:8765/mcp —— 仅回环，不要暴露到网络
+□ 只监听回环；换端口时改 .env 的 GHIDRA_MCP_PORT
+□ 禁止猜端口：先探测 8765 是否在监听，再决定
+
+# 探测（8765 可能被别的东西占用，务必核对返回内容是不是 Ghidra）
+curl -s http://127.0.0.1:8765/mcp -o /dev/null -w '%{http_code}\n'
+
+# 如果 8765 返回的不是 Ghidra，说明端口冲突：换 GHIDRA_MCP_PORT 后重启插件
 ```
+
+装好后 MCP 提供 `list_methods` / `decompile_function` / `list_xrefs` 等实时工具，
+适合交互式追问；批量场景仍走 `analyzeHeadless`（第 3 节），两者不冲突。
 
 ## 工具链
 

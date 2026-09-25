@@ -224,7 +224,7 @@ Do NOT force the user to repeatedly confirm "this is CTF/local." Carry the CTF/l
 | Frida | `reverse-engineering/tools-dynamic.md` |
 | GDB / GEF / pwndbg / rr | `reverse-engineering/tools.md` |
 | Ghidra (headless) | `reverse-engineering/tools.md` + Ghidra MCP |
-| Binary Ninja / binary-ninja-mcp | `binary-ninja-reverse/` — GUI + IL; Python API depends on the local licence, otherwise script through the community MCP bridge on loopback (localhost:9009) |
+| Binary Ninja | `binary-ninja-reverse/` — GUI + IL; Python API depends on the local licence, otherwise script through the MCP plugin on loopback (127.0.0.1:24642) |
 | Python 3 standard library | `case-review/`: read-only case evidence graph review |
 | angr / Qiling / Unicorn | `reverse-engineering/tools-dynamic.md` |
 | D-810 / d810-ng | `reverse-engineering/references/ollvm-deobfuscation.md` — IDA Pro 反混淆插件，OLLVM/Tigress/Hodur/Approov + Z3 SMT |

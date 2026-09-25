@@ -23,39 +23,46 @@ binaryninja.exe --version          # prints the running build, e.g. "Binary Ninj
 | GUI analysis, HLIL / decompiler | yes — always |
 | Debugger plugins | yes — always |
 | **Python API / headless `-p` batch** | **depends on the licence on this machine** |
-| **MCP bridge over loopback** | **yes — works with GUI-only installs** |
+| **MCP over loopback** | **yes — works with GUI-only installs** |
 
 **The Python API and headless batch mode require a licence that is valid in the
 running process.** Do not assume they are available, and do not report a scripted
 result you did not actually obtain.
 
-**When the API is not available, use the MCP bridge instead.** The
-`binary_ninja_mcp` plugin runs *inside* the Binary Ninja GUI process, so it reaches
-the API from the inside and does not need an externally licenced interpreter:
+MCP access is **optional** — the GUI and the manual workflow need nothing extra.
+
+**When the API is not available, use MCP over loopback instead.** The MCP plugin
+runs *inside* the Binary Ninja GUI process, so it reaches the API from the inside
+and does not need an externally licenced interpreter:
 
 ```
-Binary Ninja GUI  ->  binary_ninja_mcp plugin  ->  HTTP on localhost:9009
+Binary Ninja GUI  ->  MCP plugin (in-process)  ->  MCP over HTTP on 127.0.0.1:24642
                                                        ^
-                                     MCP client  <-- bridge
+                                       MCP client  <-- native MCP, no bridge
 ```
 
-Setup: install the plugin (Binary Ninja Plugin Manager, or copy the repo into the
-Binary Ninja plugins folder), open a binary, click the button in the bottom-left
-corner to start the HTTP server, then point your MCP client at it.
+The endpoint speaks MCP natively — there is **no npm bridge and no second port**.
+Setup: install the MCP plugin, open a binary, and confirm the endpoint responds.
 
-```json
-{
-  "mcpServers": {
-    "binary-ninja-mcp": {
-      "command": "npx",
-      "args": ["-y", "binary-ninja-mcp@1.0.0", "--host", "localhost", "--port", "9009"]
-    }
-  }
-}
+```bash
+# Probe before trusting it. A 405 with "Allow: POST" is the expected answer to a
+# plain GET: it means the MCP endpoint is up and only accepts POST.
+curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:24642/mcp
 ```
 
-The bridge is GPL-3.0 and is consumed as an external tool over loopback — keep it
-out of this repository.
+Tool names are prefixed `bn_*` (`bn_binary_view_list`, `bn_function_decompile`,
+`bn_entry_point_list`, `bn_function_complexity`, and 71 more). Typical first calls:
+
+```text
+bn_open_item_list()                     # what is open, and its path
+bn_binary_view_list()                   # architecture, address range, entry point
+bn_function_decompile(name="wWinMain")  # pseudocode for one function
+```
+
+Files opened by hand in the GUI need `bn_binary_view_set_active` before their
+tools accept calls; files opened through `bn_open_item_open` activate themselves.
+
+Keep the plugin out of this repository — consume it over loopback.
 
 Probe the API before writing any script that imports it:
 
@@ -66,7 +73,7 @@ python -c "import binaryninja; print(binaryninja.core_version())"
 
 If that fails, take one of two paths:
 
-- **MCP bridge over loopback** (preferred) — scripted access from inside the GUI
+- **MCP over loopback** (preferred) — scripted access from inside the GUI
   process, see above.
 - **GUI-only** — do the analysis by hand in the BN window and record the result,
   or route the automated part to IDA headless (`idat64.exe -A -S script.py`).
@@ -170,7 +177,7 @@ If BN is on a paid licence, the equivalent is `binaryninja -p` with a script.
 ## Pitfalls
 
 - **API may be unavailable.** Confirm with the import probe above before scripting.
-  When it fails, use the MCP bridge — do not silently fabricate a scripted result.
+  When it fails, use MCP over loopback — do not silently fabricate a scripted result.
 - **Analysis cache.** Re-running analysis after a type change does not always
   refresh HLIL. Close and reopen the view.
 - **`-p` still loads debugger plugins** on some builds. If startup hangs, use

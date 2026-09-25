@@ -39,6 +39,30 @@ FUNCS=357
   TraceLoggingRegister_EventRegister_EventSetInformation @ 0x140001380
 ```
 
+## MCP access (optional, works on IDA 9.0)
+
+Batch mode above is the default and needs nothing extra. MCP adds an interactive
+channel — ask for one function at a time instead of re-running a whole script.
+
+```bash
+pip install ida-pro-mcp        # installs both the MCP client and the IDA plugin
+ida-pro-mcp --install          # drop the plugin into the IDA user plugin dir
+```
+
+Then **restart IDA**, open a database, and start the server from
+`Edit → Plugins → MCP` (or `Ctrl-Alt-M`). It listens on
+`http://127.0.0.1:13337/mcp` — loopback only.
+
+> **Version note.** The **headless** idalib server (`python -m
+> ida_pro_mcp.idalib_supervisor`, port 8745) needs IDA **9.1+**. On IDA 9.0
+> `idalib64.dll` exports only `init_library`, `open_database` and
+> `close_database`; the supervisor calls functions that do not exist yet and the
+> worker exits immediately. The **GUI plugin works fine on 9.0** — use that path.
+> Do not register both transports at once or the tools get registered twice.
+
+Set `IDA_HOME` so launchers find the install, and `IDAPRO_MCP_PORT` if you move
+the port.
+
 ## The batch driver
 
 ```bash
