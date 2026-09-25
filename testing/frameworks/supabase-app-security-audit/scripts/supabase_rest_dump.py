@@ -78,6 +78,12 @@ def api_get(path: str) -> tuple[int, str]:
             return r.status, r.read().decode("utf-8", errors="replace")
     except urllib.error.HTTPError as e:
         return e.code, e.read().decode("utf-8", errors="replace")
+    except urllib.error.URLError as e:
+        # DNS failure, refused connection, TLS error, timeout. Report it as a
+        # transport error rather than letting it escape: callers already treat
+        # a non-2xx code as "unreachable table", and an escaping URLError printed
+        # a full urllib traceback for what is a normal unreachable-host case.
+        return 0, f"URLError: {e.reason}"
 
 
 def count_rows(table: str) -> int | None:
@@ -89,6 +95,10 @@ def count_rows(table: str) -> int | None:
         with urllib.request.urlopen(req, timeout=20) as r:
             cr = r.headers.get("Content-Range", "")
     except urllib.error.HTTPError:
+        return None
+    except urllib.error.URLError:
+        # Same transport failure as api_get: no count is available, but the host
+        # being unreachable is not a crash.
         return None
     if "/" in cr and cr.split("/")[1].isdigit():
         return int(cr.split("/")[1])
