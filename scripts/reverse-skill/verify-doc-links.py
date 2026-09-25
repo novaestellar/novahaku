@@ -24,7 +24,7 @@ import sys
 sys.stdout.reconfigure(encoding="utf-8")
 
 LINK = re.compile(r"\[[^\]]*\]\(([^)\s]*(?:\([^)]*\)[^)\s]*)*)\)")
-# HackTricks wraps some targets in angle brackets so embedded spaces/parentheses
+# Some upstream pages wrap targets in angle brackets so embedded spaces/parentheses
 # survive Markdown parsing:  [alt](<../images/image (284).png>)
 # The plain LINK regex above stops at the first ')' inside the path and silently
 # mangles such targets, so normalize the bracketed form away before matching.
