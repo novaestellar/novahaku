@@ -42,6 +42,26 @@ def skill_root():
     return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+def _safe_target(target):
+    """Reject a target name that would escape the engagements root.
+
+    The engagements root holds one directory per target, and the target name is
+    attacker-influenced (it comes from the scope the operator is testing). A name
+    containing a path separator or a parent reference would let one engagement
+    address another's state, or anything else on disk.
+    """
+    if not target or not str(target).strip():
+        raise ValueError("engagement target must not be empty")
+    name = str(target).strip()
+    if name in (".", ".."):
+        raise ValueError("engagement target must not be %r" % name)
+    if "/" in name or "\\" in name or os.sep in name or (os.altsep and os.altsep in name):
+        raise ValueError("engagement target must not contain a path separator: %r" % target)
+    if os.path.isabs(name):
+        raise ValueError("engagement target must be relative, not absolute: %r" % target)
+    return name
+
+
 def engagements_dir(base=None):
     """Resolve engagements directory.
 
@@ -60,8 +80,16 @@ def engagements_dir(base=None):
 
 
 def engagement_path(target, base=None):
-    """Return the directory for one target."""
-    return os.path.join(engagements_dir(base), target)
+    """Return the directory for one target.
+
+    The target is validated before it is joined to the root. Without this, a
+    target of `../../somewhere-else` escapes the engagements directory entirely
+    and `recon_reader` can read another engagement's cache. recon_reader already
+    rejects that shape on its own; this closes the same hole for every caller
+    that comes through here instead.
+    """
+    safe = _safe_target(target)
+    return os.path.join(engagements_dir(base), safe)
 
 
 def state_path(target, base=None):
