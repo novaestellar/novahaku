@@ -61,16 +61,50 @@ analyzeHeadless /path/to/project Proj -import sample.bin -postScript ExportDecom
 MCP 是**可选**的实时接入，不是使用 Ghidra 的前提。手动与 headless 路径无需它。
 
 ```text
-□ 确认已经安装 GhidraMCP 扩展（Ghidra/Extensions/GhidraMCP/）
-□ 在 Ghidra 中打开程序，再从 Window → GhidraMCP 启动服务器
-□ 端点为 http://127.0.0.1:8765/mcp —— 仅回环，不要暴露到网络
-□ 只监听回环；换端口时改 .env 的 GHIDRA_MCP_PORT
-□ 禁止猜端口：先探测 8765 是否在监听，再决定
+GhidraMCP 有两条路，都提供同一套 250+ 工具。选一条。
 
-# 探测（8765 可能被别的东西占用，务必核对返回内容是不是 Ghidra）
-curl -s http://127.0.0.1:8765/mcp -o /dev/null -w '%{http_code}\n'
+【A】Headless —— 不需要 GUI，推荐用于批量与自动化：
 
-# 如果 8765 返回的不是 Ghidra，说明端口冲突：换 GHIDRA_MCP_PORT 后重启插件
+```bash
+GH="<ghidra-root>"
+JAR="$GH/Ghidra/Extensions/GhidraMCP/lib/GhidraMCP-<version>.jar"
+CP=$(find "$GH" -name '*.jar' | tr '\n' ':')
+
+java -Djava.system.class.loader=ghidra.GhidraClassLoader \
+     -cp "$CP$JAR" ghidra.Ghidra \
+     com.xebyte.headless.GhidraMCPHeadlessServer \
+     --port 8089 --file /path/to/binary --project /path/to/project-dir
+```
+
+参数：`--port`（默认 8089）、`--bind`（默认 127.0.0.1）、`--file`、
+`--project`、`--program`。绑定地址可用环境变量 `GHIDRA_MCP_BIND_ADDRESS` 覆盖。
+
+先探测再使用，禁止猜端口：
+
+```bash
+curl -s http://127.0.0.1:8089/health
+# {"status":"healthy","program_loaded":true,"program_name":"..."}
+```
+
+仅监听回环。此传输是 **REST，不是 MCP**：端点是路径形式，
+如 `/decompile_function?address=0x...`、`/list_methods`、`/list_segments`、
+`/analyze_call_graph`。注意 `decompile_function` 用 `address=` 参数，
+不是 `name=`。要注册进 MCP 客户端，需要一个把 MCP 调用翻译成这些路径的包装层。
+
+【B】GUI 插件 —— 原生说 MCP，可被 MCP 客户端直接注册：
+
+安装扩展 → 打开程序 → 从 GhidraMCP 面板启动服务器。
+必须有程序打开，否则每个请求返回 `404 No context found for request`——
+这条消息的意思是「没有载入任何程序」，不是「路径错了」。
+
+### 无 GUI 的批量反编译（不经过 MCP）
+
+`analyzeHeadless` 走的是另一条路：不加载插件，不提供上面这些端点，
+但可以在无 GUI 下跑任意 GhidraScript，适合成千上万个二进制。
+
+```bash
+"<ghidra-root>/support/analyzeHeadless"   /path/to/project ProjName   -import /path/to/binary   -scriptPath /path/to/scripts   -postScript YourScript.java
+```
 ```
 
 装好后 MCP 提供 `list_methods` / `decompile_function` / `list_xrefs` 等实时工具，

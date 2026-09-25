@@ -284,7 +284,7 @@ checksec → 漏洞分类 → 保护检测 → 策略选择 → libc/gadget准�
 | Anything Analyzer MCP | `http://localhost:23816/mcp` | 30 | testing/frameworks/anything-analyzer-mcp/ |
 | Binary Ninja MCP | `http://127.0.0.1:24642/mcp` | 75 | testing/binary-ninja-reverse/ |
 | IDA Pro MCP | `http://127.0.0.1:13337/mcp` | — | testing/ida-reverse/ |
-| GhidraMCP | `http://127.0.0.1:8765/mcp` | — | testing/ghidra-reverse/ |
+| GhidraMCP | `http://127.0.0.1:8089/` (headless) | 250+ | testing/ghidra-reverse/ |
 
 全部仅监听回环地址。逐服务器安装步骤见 `INSTALL.md` → MCP Server Setup。
 没有 MCP 服务器时 Novahaku 仍可完整运行 —— 它只是额外的实时工具接入。

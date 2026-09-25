@@ -126,7 +126,7 @@ Each server below is independent. Install only the ones you need.
 | Anything Analyzer MCP | `http://localhost:23816/mcp` | remote HTTP | `testing/frameworks/anything-analyzer-mcp/` |
 | Binary Ninja MCP | `http://127.0.0.1:24642/mcp` | remote HTTP | `testing/binary-ninja-reverse/` |
 | IDA Pro MCP | `http://127.0.0.1:13337/mcp` | remote HTTP | `testing/ida-reverse/` |
-| GhidraMCP | `http://127.0.0.1:8765/mcp` | remote HTTP | `testing/ghidra-reverse/` |
+| GhidraMCP | `http://127.0.0.1:8089/` | local HTTP (headless) or MCP (GUI) | `testing/ghidra-reverse/` |
 
 ### BurpSuite MCP
 
@@ -185,12 +185,44 @@ port, or the tools will be registered twice.
 
 ### GhidraMCP
 
-1. Install the GhidraMCP extension into Ghidra's `Ghidra/Extensions/` directory
-2. In Ghidra, open a program, then start the MCP server from the
-   `GhidraMCP` plugin window (Window → GhidraMCP)
-3. It serves MCP on `http://127.0.0.1:8765/mcp`
-4. Set `GHIDRA_MCP_PORT` in `.env` if you change the port
-5. See `testing/ghidra-reverse/SKILL.md`
+GhidraMCP serves the same 250+ analysis tools two ways. Pick one.
+
+**Headless (no GUI required).** The extension bundles a launcher class, so a
+running Ghidra window is not needed:
+
+```bash
+GH="<ghidra-root>"                      # e.g. /opt/ghidra_12.1.2_PUBLIC
+JAR="$GH/Ghidra/Extensions/GhidraMCP/lib/GhidraMCP-<version>.jar"
+CP=$(find "$GH" -name '*.jar' | tr '\n' ':')
+
+java -Djava.system.class.loader=ghidra.GhidraClassLoader \
+     -cp "$CP$JAR" ghidra.Ghidra \
+     com.xebyte.headless.GhidraMCPHeadlessServer \
+     --port 8089 --file /path/to/binary \
+     --project /path/to/project-dir
+```
+
+Options: `--port` (default 8089), `--bind` (default 127.0.0.1), `--file`,
+`--project`, `--program`. Set `GHIDRA_MCP_BIND_ADDRESS` to override the bind
+address. Confirm it came up:
+
+```bash
+curl -s http://127.0.0.1:8089/health
+# {"status":"healthy","program_loaded":true,"program_name":"..."}
+```
+
+This transport is **REST, not MCP**. Endpoints are paths such as
+`/decompile_function?address=0x...`, `/list_methods`, `/list_segments`,
+`/list_imports`, `/analyze_call_graph`. Registering it in an MCP client requires
+a wrapper that translates MCP calls to these paths.
+
+**GUI plugin (talks MCP natively).** Install the extension, open a program, then
+start the server from the GhidraMCP panel. It binds an MCP endpoint that an MCP
+client can register directly. A program must be open, or every request returns
+`404 No context found for request` — that message means "nothing loaded", not
+"wrong path".
+
+Either way the server is loopback-only. Do not expose it to a network.
 
 ## Persistent Engagement (cross-session state)
 

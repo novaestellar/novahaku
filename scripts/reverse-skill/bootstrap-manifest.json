@@ -239,18 +239,19 @@
       "canAutoInstall": true,
       "verifyCommand": "analyzeHeadless",
       "postInstallSteps": [
-        "下载 GhidraMCP 插件: https://github.com/LaurieWired/GhidraMCP/releases",
-        "将插件 zip 安装到 Ghidra: File → Install Extensions → 选择下载的 zip",
-        "MCP server 在 Ghidra 项目打开后自动监听 localhost:8765"
+        "安装 GhidraMCP 扩展（放到 Ghidra/Extensions/GhidraMCP/）",
+        "Headless（无需 GUI）: 用 com.xebyte.headless.GhidraMCPHeadlessServer 启动，默认端口 8089",
+        "GUI（原生 MCP）: 在 Ghidra 打开程序后，从 GhidraMCP 面板启动服务器",
+        "两条路提供同一套 250+ 工具；先探测 /health 再使用，禁止猜端口"
       ],
       "mcpNames": [
         "ghidra"
       ],
-      "mcpUrl": "http://localhost:8765/mcp",
-      "servicePort": 8765,
+      "mcpUrl": "http://127.0.0.1:8089/",
+      "servicePort": 8089,
       "verificationMode": "service-or-registration",
       "preferApiDigest": true,
-      "note": "Ghidra 发版频繁，不 pin assetSha256；改用 GitHub API digest（sha256:...）动态校验，格式已实测兼容 Assert-DownloadedFileIntegrity。"
+      "note": "同一 jar 内含两个入口: GhidraMCPPlugin（GUI, 原生 MCP）与 headless/GhidraMCPHeadlessServer（REST）。headless 不依赖 GUI。"
     },
     {
       "name": "seclists",

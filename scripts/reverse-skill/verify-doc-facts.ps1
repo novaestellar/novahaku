@@ -41,7 +41,7 @@ foreach ($c in $portCaps) {
 
 # --- The 5 MCP skills must each name their own endpoint ---
 $skillEndpoints = @{
-  'testing\ghidra-reverse\SKILL.md'       = @('8765')
+  'testing\ghidra-reverse\SKILL.md'       = @('8089')
   'testing\ida-reverse\SKILL.md'          = @('13337')
   'testing\binary-ninja-reverse\SKILL.md' = @('24642')
 }
