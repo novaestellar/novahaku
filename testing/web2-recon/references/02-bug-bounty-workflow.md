@@ -69,7 +69,7 @@ Asset graph:
 1. Breach lookup on 100 emails (HudsonRock free).
 2. GitHub recon on the org's 30 public repos (`offensive-osint` §19 dorks + secret catalog).
 3. Triage 80 webapps: dev/staging hosts first (lower defenses), then admin/dashboard paths.
-4. Probe 80 webapps for Swagger/OpenAPI (`offensive-osint` §16.1 28-path wordlist).
+4. Probe 80 webapps for Swagger/OpenAPI (`offensive-osint` §16.1 28-path wordlist). (moved to `references/wordlists.md`)
 5. Probe for GraphQL (§16.2 13-path).
 6. Run §16.5 always-on HTTP checks against every alive webapp.
 7. JS deep analysis on ~40 webapps (sourcemaps, secrets, endpoints).
@@ -86,7 +86,7 @@ Suppose you find: **Unauthenticated POST `/api/v1/users` on `api.acme.example` r
 
 > Found unauth POST /api/v1/users on api.acme.example returning 200 with new user data. How serious is this and what should I check next?
 
-**Claude pulls:** `offensive-osint` §20 (endpoint interest score), §39 (attack-path hints), §40 (severity matrix).
+**Claude pulls:** `offensive-osint` §20 (endpoint interest score), §39 (attack-path hints), §40 (severity matrix). (moved to `references/reasoning.md`)
 
 **Score evaluation:**
 
@@ -227,8 +227,8 @@ This example follows:
 - `identity-provider-recon` §7, §11 (M365 tenant + pre-auth user-enum — if relevant for the target)
 - `osint-methodology` §6.3 (validator discipline)
 - `osint-methodology` §15 (HackerOne report structure + severity inference)
-- `offensive-osint` §16.1, §16.2, §16.5 (Swagger / GraphQL / always-on probes)
+- `offensive-osint` §16.1, §16.2, §16.5 (Swagger / GraphQL / always-on probes) (moved to `references/wordlists.md`)
 - `offensive-osint` §19 (GitHub dorks)
 - `offensive-osint` §20 (endpoint interest score)
 - `offensive-osint` §39 (attack-path hints)
-- `offensive-osint` §40 (severity matrix)
+- `offensive-osint` §40 (severity matrix) (moved to `references/reasoning.md`)

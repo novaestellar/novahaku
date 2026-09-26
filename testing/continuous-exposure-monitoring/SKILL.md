@@ -62,7 +62,7 @@ triggers:
 
 > Companion skills: [`osint-methodology`](../osint-methodology/) (the 5-stage pipeline this skill
 > loops — see its §7.2 "ongoing weekly diff" profile, which this skill fills in with concrete
-> mechanics), [`offensive-osint`](../offensive-osint/) (§29 Threat Intel & IOCs — this skill
+> mechanics), [`offensive-osint`](../offensive-osint/) (§29 Threat Intel & IOCs — this skill (moved to `references/reasoning.md`)
 > **deepens** that section's advisory/IOC-feed directory with the continuous adversary-chatter
 > watch loop and CTI-feed cadence it explicitly lacks; use §29 for indicator enrichment and
 > vulnerability-prioritization data sources, this skill for the standing collection loop),

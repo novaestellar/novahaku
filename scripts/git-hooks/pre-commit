@@ -85,7 +85,7 @@ done
 if [[ -f "scripts/test/verify-corpus-reachability.py" ]]; then
   for entry in \
     "scripts/test/verify-corpus-reachability.py||corpus reachability" \
-    "scripts/test/gen_corpus_index.py|--check|corpus index fresh"
+    "scripts/test/gen_corpus_index.py||--check|corpus index fresh"
   do
     path="${entry%%||*}"
     rest="${entry#*||}"

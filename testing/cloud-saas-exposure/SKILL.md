@@ -80,7 +80,7 @@ control-plane surface for org attribution and exposure triage.
 
 **Do NOT use this skill when:** you just need the raw bucket-permutation wordlist,
 cloud-native URL pattern table, or container/K8s/CI path list with no reasoning layer — go
-straight to `offensive-osint` §16.8/§16.17–16.19/§44. Do NOT use it for anything past
+straight to `offensive-osint` §16.8/§16.17–16.19/§44. Do NOT use it for anything past (moved to `references/wordlists.md`)
 discovery/confirmation: registering an unclaimed package, submitting AWS credentials,
 authenticating to a Kubernetes API, or confirming a fingerprinted control plane actually
 answers unauthenticated (that's a stage-6 `--validate --validate-cloud` active tier —
@@ -207,7 +207,7 @@ prefix × suffix expansion.
 - **Bare probe**, but only when the stem is distinctive: not in the broad (~90-entry)
   generic-stem filter (`api`, `admin`, `backup`, `dev`, `staging`, `mail`, `data`, `docs`,
   `internal`, `vault`, `secure`, `sandbox`, `preprod`, … — a stricter, larger list than the
-  47-word variant in `offensive-osint` §16.8) and longer than 3 characters — **or** the stem
+  47-word variant in `offensive-osint` §16.8) and longer than 3 characters — **or** the stem (moved to `references/wordlists.md`)
   already contains a trusted token.
 - **Target-bound permutation only**: `{apex_root|company}-{stem}` and
   `{stem}-{apex_root|company}` (hyphen joiner, both orders).
@@ -374,7 +374,7 @@ string itself — recoverable by a deterministic base32 decode with **no secret 
 network call, and no live AWS credential**. A single leaked `AKIA…`/`ASIA…`/`AROA…` string
 already in hand — even one that's long dead or rotated — discloses the org's AWS account
 number. This is genuinely offline OSINT (no authorization concern beyond already lawfully
-holding the key, §1), and it's a real gap in the general arsenal: `offensive-osint` §22.7
+holding the key, §1), and it's a real gap in the general arsenal: `offensive-osint` §22.7 (moved to `references/arsenal.md`)
 covers ARN-regex extraction and `accountId` JSON-field scraping, but not this decode.
 
 ### 7.1 Why the account ID matters
@@ -524,7 +524,7 @@ AWS-qualified `accountId` fields. Ownership is structural, not scored:
 |---|---|---|---|
 | Key/ARN found on an in-scope host (the subdomain equals the target, or is a subdomain of it) | **Owned** | MEDIUM | FIRM |
 | Key/ARN found on an out-of-scope/third-party host that merely references the account | **Referenced** | INFO | FIRM |
-| Either of the above, additionally corroborated by a live STS-validated key (read-only `GetCallerIdentity`, `offensive-osint` §23.2) | Owned | MEDIUM | **CONFIRMED** |
+| Either of the above, additionally corroborated by a live STS-validated key (read-only `GetCallerIdentity`, `offensive-osint` §23.2) | Owned | MEDIUM | **CONFIRMED** | (moved to `references/arsenal.md`)
 
 Every leaking page emits a `DISCLOSES_ACCOUNT` edge to the account it references — for **owned and
 referenced accounts alike**. An **owned** account additionally earns an `OWNED_BY`-target edge — a
@@ -672,7 +672,7 @@ Modern infrastructure increasingly *is* the org-attribution signal: a Lambda Fun
 `*.run.app` Cloud Run service, or an exposed kubelet is both an exposure and a fingerprint of
 which cloud account/cluster belongs to the target. Everything in this section is **passive**
 — pattern-matching over hostnames and ports already resolved by earlier recon, zero new
-network calls of this skill's own. `offensive-osint` §16.17–§16.19 carries the fuller
+network calls of this skill's own. `offensive-osint` §16.17–§16.19 carries the fuller (moved to `references/wordlists.md`)
 URL-pattern and active-probe tables (20 cloud-native providers, the full container-registry
 search list, 11 CI/CD platforms with active curl recipes); this section is the reasoning
 layer that decides what a hit is *worth* and whether it's the target's.
@@ -694,7 +694,7 @@ FQDNs themselves, and webapp URLs — against provider URL patterns:
 | GCP | `*.appspot.com` | App Engine |
 | GCP | `*.cloudfunctions.net` | Cloud Function |
 
-(`offensive-osint` §16.17 extends this to 20 providers — App Runner, CloudFront, ALB/ELB,
+(`offensive-osint` §16.17 extends this to 20 providers — App Runner, CloudFront, ALB/ELB, (moved to `references/wordlists.md`)
 Amplify, Static Web Apps, Vercel, Netlify, Cloudflare Workers/Pages, Heroku, Render, Fly.io,
 Railway, DigitalOcean App Platform.)
 
@@ -729,7 +729,7 @@ posture behind it is not, which is exactly why confirmation is gated separately:
 | 6443 | Kubernetes API server | The cluster's control plane — a valid token, leaked kubeconfig, or anonymous-auth misconfig creates privileged pods and reads every Secret. |
 | 10250 | kubelet | No auth required = pod exec on the node. |
 
-(`offensive-osint` §16.18 has the fuller table — kube-proxy/controller-manager/scheduler
+(`offensive-osint` §16.18 has the fuller table — kube-proxy/controller-manager/scheduler (moved to `references/wordlists.md`)
 health/metrics endpoints, cAdvisor, Helm Tiller — plus the active curl recipe for each and
 the public-container-registry search list across Docker Hub/Quay/GHCR/ECR Public.)
 
@@ -743,7 +743,7 @@ Fingerprint from tech strings already collected by passive web/HTTP enumeration 
 GitLab (self-hosted), Argo CD, Harbor, TeamCity, Drone. **MEDIUM**/TENTATIVE — a tech-string
 match is a weaker signal than a resolved hostname pattern, hence TENTATIVE rather than FIRM.
 A CI/CD console or API, when reachable unauthenticated, exposes build pipelines, stored
-credentials, and artifact registries — a supply-chain foothold. `offensive-osint` §16.19 has
+credentials, and artifact registries — a supply-chain foothold. `offensive-osint` §16.19 has (moved to `references/wordlists.md`)
 the per-platform active probe paths (`/script`, `/api/v4/version`, `/gate/info`, …) and the
 GitHub Actions secret-leak anti-pattern catalog (workflows that echo `${{ secrets.* }}` to
 logs, or check out fork-PR code under `pull_request_target`) for an operator who chooses to
@@ -806,4 +806,4 @@ Drop these into a fresh session to verify the skill loads and routes correctly.
   types, the internal-signal classifier, the two-part confirmation contract, the npm
   scope-claimability nuance), and `modules/cloud_exposure.py` (cloud-native endpoint
   fingerprint with structural ownership gating, passive container/K8s/CI exposure flags).
-  Deepens `offensive-osint` §16.8/§16.17–16.19/§44 rather than duplicating their wordlists.
+  Deepens `offensive-osint` §16.8/§16.17–16.19/§44 rather than duplicating their wordlists. (moved to `references/wordlists.md`)

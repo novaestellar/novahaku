@@ -185,7 +185,7 @@ Defaults: passive by default. Active probes only when (a) explicitly authorized,
 
 ### 6.3 Validator Discipline
 
-When you find a credential in the wild, confirm liveness with **read-only validators only** (`/me`, `auth.test`, `sts:GetCallerIdentity`). Never create, modify, delete, or send. Record `checked_at` UTC + truncated response + scope/account-ID. Concrete validator endpoints for 9 providers live in `offensive-osint` §23.
+When you find a credential in the wild, confirm liveness with **read-only validators only** (`/me`, `auth.test`, `sts:GetCallerIdentity`). Never create, modify, delete, or send. Record `checked_at` UTC + truncated response + scope/account-ID. Concrete validator endpoints for 9 providers live in `offensive-osint` §23. (moved to `references/arsenal.md`)
 
 ### 6.4 Detection-Aware Probing
 
@@ -349,21 +349,21 @@ Every asset carries: `type`, `key` (typed dedup id), `value`, `sources[]`, `conf
 
 The following modules have full implementation detail — probe paths, wordlists, curl one-liners, regexes, and scoring rubrics — in `offensive-osint`. This skill defines *what to do*; that skill defines *how to do it*.
 
-**Identity Fabric Mapping** (`offensive-osint` §22) — Microsoft Entra (OIDC metadata, getuserrealm.srf, GetCredentialType), Okta (slug derivation, /api/v1/authn), ADFS, Google Workspace, generic OIDC (Auth0/Keycloak/Ping/OneLogin/Duo), SAML metadata (5 paths), AWS account-ID extraction, M365 deep surface (Teams federation, SharePoint, OneDrive, OAuth client_id, device-code phishing check, Power Platform).
+**Identity Fabric Mapping** (`offensive-osint` §22) — Microsoft Entra (OIDC metadata, getuserrealm.srf, GetCredentialType), Okta (slug derivation, /api/v1/authn), ADFS, Google Workspace, generic OIDC (Auth0/Keycloak/Ping/OneLogin/Duo), SAML metadata (5 paths), AWS account-ID extraction, M365 deep surface (Teams federation, SharePoint, OneDrive, OAuth client_id, device-code phishing check, Power Platform). (moved to `references/arsenal.md`)
 
-**API & Auth-Map** (`offensive-osint` §16.1–16.2, §20) — 28-path Swagger/OpenAPI wordlist; 13-path GraphQL wordlist; introspection POST body; field-suggestion enumeration when introspection disabled; endpoint interest score 0–100 rubric.
+**API & Auth-Map** (`offensive-osint` §16.1–16.2, §20) — 28-path Swagger/OpenAPI wordlist; 13-path GraphQL wordlist; introspection POST body; field-suggestion enumeration when introspection disabled; endpoint interest score 0–100 rubric. (moved to `references/wordlists.md`)
 
 **JavaScript Deep Analysis** (`offensive-osint` §13 pattern) — sourcemap detection; secret catalog over JS bodies and `sourcesContent[]`; three-tier endpoint-extraction regex; internal-host leakage patterns; Next.js manifest parsing.
 
-**Mobile Attack Surface** (`offensive-osint` §21) — Android/iOS app discovery; ownership confidence 0–100 scoring; APK static analysis; manifest misconfig findings; Firebase canonical probe.
+**Mobile Attack Surface** (`offensive-osint` §21) — Android/iOS app discovery; ownership confidence 0–100 scoring; APK static analysis; manifest misconfig findings; Firebase canonical probe. (moved to `references/reasoning.md`)
 
-**Cloud Attack Surface** (`offensive-osint` §16.8) — S3/GCS/Azure bucket permutation (6 prefixes × 15 suffixes); HEAD → GET probe technique; cloud-native fingerprints (Lambda, Cloud Run, Azure Functions, Vercel, Netlify, Workers); K8s/etcd/kubelet/container registry exposure.
+**Cloud Attack Surface** (`offensive-osint` §16.8) — S3/GCS/Azure bucket permutation (6 prefixes × 15 suffixes); HEAD → GET probe technique; cloud-native fingerprints (Lambda, Cloud Run, Azure Functions, Vercel, Netlify, Workers); K8s/etcd/kubelet/container registry exposure. (moved to `references/wordlists.md`)
 
-**WAF / CDN Bypass & Origin Discovery** (`offensive-osint` §16.15) — DNS history pivot; cert SAN pivot; favicon mmh3 + JARM clustering; direct IP probe with Host header; mail/ftp/cpanel exception; error page leakage; email-header bounce trick; confidence rules.
+**WAF / CDN Bypass & Origin Discovery** (`offensive-osint` §16.15) — DNS history pivot; cert SAN pivot; favicon mmh3 + JARM clustering; direct IP probe with Host header; mail/ftp/cpanel exception; error page leakage; email-header bounce trick; confidence rules. (moved to `references/wordlists.md`)
 
-**Vulnerability Prioritization** (`offensive-osint` §29.2) — NVD, EPSS, CISA KEV, ExploitDB, Metasploit, InTheWild.io, Trickest CVE→POC; 9-signal scoring rubric → P0/P1/P2/P3 tiers.
+**Vulnerability Prioritization** (`offensive-osint` §29.2) — NVD, EPSS, CISA KEV, ExploitDB, Metasploit, InTheWild.io, Trickest CVE→POC; 9-signal scoring rubric → P0/P1/P2/P3 tiers. (moved to `references/reasoning.md`)
 
-**Phishing Infrastructure** (`offensive-osint` §16.14 for email security) — typosquat shortlists via dnstwist; subdomain takeover for trusted-domain phishing; email spoof feasibility matrix (SPF × DMARC); pretext development from OSINT (job titles, recent events, vendor relationships, GitHub commits).
+**Phishing Infrastructure** (`offensive-osint` §16.14 for email security) — typosquat shortlists via dnstwist; subdomain takeover for trusted-domain phishing; email spoof feasibility matrix (SPF × DMARC); pretext development from OSINT (job titles, recent events, vendor relationships, GitHub commits). (moved to `references/wordlists.md`)
 
 ---
 
@@ -514,7 +514,7 @@ Drop these into a fresh session to verify the skill loads correctly.
 ## 18. Changelog
 
 - **v2.3 (2026-08-06)** — §7 upgraded from the 5-stage model to the battle-tested 6-stage model (Seed → Asset Expansion → Enrichment → Exposure Analysis → **Convergence** [bounded recursion + cloud-footprint + supply-chain] → **Active Validation** [hard-gated, operator-armed, default OFF]), with Reporting reframed as a post-stage; added §7.3 Connector Resilience (union-query interchangeable backends per data category, per-source health tracking, so one dead/rate-limited source never zeroes a category) and §7.4 Stage Number ≠ Safe-by-Default (a module's stage doesn't tell you if it's passive — always check its own gating flag; detectability is per-technique). Added §12.1 Per-Person Identity Dossier — joins discovered PERSON role/seniority to leaked CREDENTIAL by email into a ranked spear-phish/credential-stuffing target list, with risk tiering and orphan-credential handling. Added 3 self-test prompts (§17.13–15).
-- **v2.2 (2026-04-29)** — refactor: trimmed from 1,694 to ~480 lines. Compressed implementation-detail sections (§11–§15, §27–§31 original) to pointers to `offensive-osint`. Retained full framework core: confidence levels, pipeline, asset graph, severity rubric, OpSec, breach correlation, anti-patterns, deliverable templates. Removed duplicate content; combined specialty domains into single §13; merged §23–§25 into §13; collapsed §27–§29 into §11 pointer block.
+- **v2.2 (2026-04-29)** — refactor: trimmed from 1,694 to ~480 lines. Compressed implementation-detail sections (§11–§15, §27–§31 original) to pointers to `offensive-osint`. Retained full framework core: confidence levels, pipeline, asset graph, severity rubric, OpSec, breach correlation, anti-patterns, deliverable templates. Removed duplicate content; combined specialty domains into single §13; merged §23–§25 into §13; collapsed §27–§29 into §11 pointer block. (moved to `references/arsenal.md`, `references/reasoning.md`)
 - **v2.1 (2026-04-27)** — comprehensive expansion based on 32-prompt smoke-test gap analysis. PASS rate: 31/32.
 - **v2.0 (2026-04-27)** — major rewrite for external red-team posture.
 - **v1.x** — original framework based on SnailSploit/offensive-checklist.

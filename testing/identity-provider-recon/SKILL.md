@@ -65,7 +65,7 @@ triggers:
 
 > Companion skills: [`osint-methodology`](../osint-methodology/) (§6.2 detectability tagging, §11
 > identity-fabric pointer — the "how to think" skill this plugs into) and
-> [`offensive-osint`](../offensive-osint/) (§22 Identity Fabric — the concrete endpoint/payload
+> [`offensive-osint`](../offensive-osint/) (§22 Identity Fabric — the concrete endpoint/payload (moved to `references/arsenal.md`)
 > reference this skill builds a workflow on top of, rather than re-listing). This skill answers the
 > question those two don't: **how do the tenant, its federation partners, its IdP, and its
 > user-enumeration oracle fit together as one map** — and where exactly enumeration stops and
@@ -97,7 +97,7 @@ triggers:
   this skill (§7–§10) needs the same soft-scope posture as every companion skill; the active half
   (§11) needs it explicitly, because it generates tenant-side audit-log events (§1, §11.4).
 - You already have concrete endpoints and just need the reference table — go straight to
-  `offensive-osint` §22.
+  `offensive-osint` §22. (moved to `references/arsenal.md`)
 
 ---
 
@@ -339,7 +339,7 @@ Needs a probe email (harvested, or synthetic `admin@{domain}`). A response conta
 finding by itself (feeds the tenant SERVICE node); this is a corroboration probe, not a standalone
 signal.
 
-*Autodiscover IP correlation* (companion skill `offensive-osint` §22.1) is a complementary passive
+*Autodiscover IP correlation* (companion skill `offensive-osint` §22.1) is a complementary passive (moved to `references/arsenal.md`)
 check when MX is masked by an inbound filter (Mimecast/Proofpoint/Barracuda) — resolve
 `autodiscover.{domain}` and check whether it lands in Exchange Online IP space. Use it alongside this
 probe, not instead of it.
@@ -999,5 +999,5 @@ Drop these into a fresh session to verify the skill loads and routes correctly.
   reference production implementation (`modules/sso_idp.py`, `modules/tenant_recon.py`,
   `core/email_patterns.py`) — every endpoint, response-field semantic, cap, and severity/confidence
   choice in this skill matches a shipped, tested value, not an invented placeholder. Deepens
-  `offensive-osint` §22's endpoint reference rather than duplicating it; companion to
+  `offensive-osint` §22's endpoint reference rather than duplicating it; companion to (moved to `references/arsenal.md`)
   `osint-methodology` §6.2 (detectability tagging) and §11 (identity-fabric pointer).

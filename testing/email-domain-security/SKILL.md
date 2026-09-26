@@ -35,23 +35,23 @@ triggers:
 
 # Email Domain Security — Spoofability Verdict & SPF Supply-Chain Analysis
 
-> Companion skills: **`offensive-osint` §16.14** (raw record-fetch recipes — dig/PowerShell one-liners for SPF/DMARC/DKIM/BIMI/MTA-STS/TLS-RPT/DNSSEC/CAA, the MX→IdP inference table, the DMARC reporting-vendor table). **`osint-methodology`** (confidence levels, output format, severity rubric this skill inherits). Fetch the records with §16.14 first; bring the raw TXT text here for the verdict. This skill does not re-list what a record *is* — it reasons about what a domain's *combination* of records actually lets an attacker do.
+> Companion skills: **`offensive-osint` §16.14** (raw record-fetch recipes — dig/PowerShell one-liners for SPF/DMARC/DKIM/BIMI/MTA-STS/TLS-RPT/DNSSEC/CAA, the MX→IdP inference table, the DMARC reporting-vendor table). **`osint-methodology`** (confidence levels, output format, severity rubric this skill inherits). Fetch the records with §16.14 first; bring the raw TXT text here for the verdict. This skill does not re-list what a record *is* — it reasons about what a domain's *combination* of records actually lets an attacker do. (moved to `references/wordlists.md`)
 
 ## 0. When to Use / When NOT
 
 **Use this skill when:**
 
 - Asked to audit spoof feasibility, produce an email-spoofability verdict, or explain "is domain X spoofable."
-- You already have raw SPF/DMARC TXT text (via `offensive-osint` §16.14 or your own `dig`) and need the *verdict*, not just the record dump.
+- You already have raw SPF/DMARC TXT text (via `offensive-osint` §16.14 or your own `dig`) and need the *verdict*, not just the record dump. (moved to `references/wordlists.md`)
 - Investigating an SPF PermError, a long or unusual include chain, or a dead `include:` target.
 - Writing a client-facing finding that has to survive the pushback "we have SPF `-all`, why is this flagged?"
 - Reasoning about DMARC subdomain policy inheritance, `pct=` partial enforcement, or duplicate-record handling.
 
 **Do NOT use this skill when:**
 
-- You haven't fetched the raw records yet. Run `offensive-osint` §16.14's dig/PowerShell recipes first, then bring the text here.
+- You haven't fetched the raw records yet. Run `offensive-osint` §16.14's dig/PowerShell recipes first, then bring the text here. (moved to `references/wordlists.md`)
 - You want to actually *send* a spoofed test message or run an SMTP `RCPT TO` liveness check. That is active engagement work requiring explicit authorization and is out of scope for this passive-DNS skill — see §14.
-- You're auditing TLS/cert posture rather than email auth — that's `offensive-osint` §16.15 / TLS deep audit territory.
+- You're auditing TLS/cert posture rather than email auth — that's `offensive-osint` §16.15 / TLS deep audit territory. (moved to `references/wordlists.md`)
 - You need AXFR / zone-transfer analysis. `dns_deep`-class modules run that check alongside the email-auth sweep, but it's a distinct DNS finding (open zone transfer, unrelated to spoofability) — see the note in §9.
 
 ---
@@ -290,7 +290,7 @@ RFC 7208 §5.5 explicitly deprecates `ptr`: it's slow, DNS-load-heavy, and its a
 
 ## 9. Recipes — Fetching the Records
 
-The raw fetch commands for SPF / DMARC / DKIM / BIMI / MTA-STS / TLS-RPT / DNSSEC / CAA, plus the MX→IdP inference table and the DMARC reporting-vendor table, live in `offensive-osint` §16.14 — use those verbatim, bash and PowerShell both included there.
+The raw fetch commands for SPF / DMARC / DKIM / BIMI / MTA-STS / TLS-RPT / DNSSEC / CAA, plus the MX→IdP inference table and the DMARC reporting-vendor table, live in `offensive-osint` §16.14 — use those verbatim, bash and PowerShell both included there. (moved to `references/wordlists.md`)
 
 **What this skill adds on top** (not duplicated in §16.14):
 
@@ -324,7 +324,7 @@ dig +short TXT "_dmarc.$D" | grep -oE 'sp=[a-z]+'
 dig +short TXT "$D" | grep 'v=spf1' | tr ' ' '\n' | grep -E '^[+\-~?]?(include:|a[:/]?|mx[:/]?|ptr:?|exists:|redirect=)'
 ```
 
-**AXFR note:** the real-world module this skill's logic is grounded in runs an AXFR (zone-transfer) attempt against every authoritative NS alongside its email-auth sweep — that's a distinct finding (open zone transfer, HIGH/CONFIRMED if it succeeds) unrelated to spoofability. Out of scope here; see `offensive-osint`'s DNS record catalog / §16.14 area for that check if you need it.
+**AXFR note:** the real-world module this skill's logic is grounded in runs an AXFR (zone-transfer) attempt against every authoritative NS alongside its email-auth sweep — that's a distinct finding (open zone transfer, HIGH/CONFIRMED if it succeeds) unrelated to spoofability. Out of scope here; see `offensive-osint`'s DNS record catalog / §16.14 area for that check if you need it. (moved to `references/wordlists.md`)
 
 ---
 
@@ -592,7 +592,7 @@ Drop these into a fresh session to verify the skill loads and reasons correctly.
 6. *"An SPF include target NXDOMAINs. Is that automatically an SPF-include-takeover finding?"* → **No** — it's a lead. Verify registrable-domain availability via WHOIS/RDAP first. §8.3.
 7. *"`dig` on an SPF include times out (SERVFAIL). Should I flag it as a dead include?"* → **No** — transient failure, inconclusive, skip judging entirely. §8.3, §5.
 8. *"SPF record has `redirect=_spf.vendor.com` after a terminal `-all`. Does the redirect get evaluated?"* → **No** — RFC 7208 §6.1, unreachable once `all` terminates; don't count or walk it. §8.1, §9.
-9. *"What raw DNS records do I need before I can run this skill's verdict?"* → SPF TXT + `_dmarc` TXT at minimum; for the full posture also DKIM selectors / BIMI / MTA-STS / DNSSEC — fetch via `offensive-osint` §16.14. §0, §9.
+9. *"What raw DNS records do I need before I can run this skill's verdict?"* → SPF TXT + `_dmarc` TXT at minimum; for the full posture also DKIM selectors / BIMI / MTA-STS / DNSSEC — fetch via `offensive-osint` §16.14. §0, §9. (moved to `references/wordlists.md`)
 10. *"List the RFC 7208 §4.6.4 lookup-costing mechanisms."* → `include`, `a`, `mx`, `ptr`, `exists`, `redirect=`. §8.1.
 11. *"Run the SPF lookup counter against a target and tell me if it PermErrors."* → §10 helper script.
 12. *"A client pushes back: 'we have SPF `-all`, why is this HIGH?'"* → §6 mental model — walk them through the envelope-vs-header distinction and the exact-domain Path A that `-all` doesn't touch.
@@ -605,4 +605,4 @@ Drop these into a fresh session to verify the skill loads and reasons correctly.
 
 ## 16. Changelog
 
-- **v1.0 (2026-08-06)** — initial release. Grounded in the real composite-spoofability-verdict and SPF-supply-chain decision logic (priority-ordered verdict chain; RFC 7208 §4.6.4 lookup/void-lookup accounting; transient-vs-NXDOMAIN discrimination; macro-expansion and redirect-after-`all` handling). Companion to `offensive-osint` §16.14 (record-fetch recipes) — this skill adds the reasoning layer §16.14 does not cover: the envelope-vs-header mental model, the exact priority-ordered verdict conditions, and the SPF-include-takeover supply-chain vector with its FP-discipline. Includes a runnable stdlib-only SPF lookup-counter script (§10) and a 16-prompt self-test including the mandated `-all`-without-DMARC trap.
+- **v1.0 (2026-08-06)** — initial release. Grounded in the real composite-spoofability-verdict and SPF-supply-chain decision logic (priority-ordered verdict chain; RFC 7208 §4.6.4 lookup/void-lookup accounting; transient-vs-NXDOMAIN discrimination; macro-expansion and redirect-after-`all` handling). Companion to `offensive-osint` §16.14 (record-fetch recipes) — this skill adds the reasoning layer §16.14 does not cover: the envelope-vs-header mental model, the exact priority-ordered verdict conditions, and the SPF-include-takeover supply-chain vector with its FP-discipline. Includes a runnable stdlib-only SPF lookup-counter script (§10) and a 16-prompt self-test including the mandated `-all`-without-DMARC trap. (moved to `references/wordlists.md`)

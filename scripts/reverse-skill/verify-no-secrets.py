@@ -76,6 +76,10 @@ ALLOW = {
         "documentation of the detector pattern (table + regex list)",
     ("testing/offensive-osint/SKILL.md", "Crack metadata"):
         "technique name in the skill's own domain list",
+    ("testing/offensive-osint/references/arsenal.md", "Private key header"):
+        "extracted from SKILL.md §17/§48 — same detector documentation, moved during split",
+    ("testing/offensive-osint/references/arsenal.md", "Crack metadata"):
+        "extracted from SKILL.md §17/§48 — same technique-name documentation, moved during split",
     ("testing/references/web-notes/xss-cross-site-scripting/README.md", "Private key header"):
         "DKIM spoofing payload example",
     ("identity/terms.md", "Crack metadata"):

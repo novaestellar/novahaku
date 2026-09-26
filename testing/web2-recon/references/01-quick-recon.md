@@ -186,4 +186,4 @@ This example follows the methodology defined in:
 - `osint-methodology` §12 (breach × identity correlation)
 - `osint-methodology` §16 (executive summary template)
 - `exposure-risk-quantification` (optional — 0–100 + A–F score + $ loss range + board one-pager)
-- `offensive-osint` §16.13 (curl probes), §16.21 (WHOIS), §16.22 (DNS catalog), §15.1 (breach severity)
+- `offensive-osint` §16.13 (curl probes), §16.21 (WHOIS), §16.22 (DNS catalog), §15.1 (breach severity) (moved to `references/wordlists.md`)

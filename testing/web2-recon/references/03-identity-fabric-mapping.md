@@ -32,7 +32,7 @@ For an M365 shop, the identity fabric includes:
 
 > Confirm acme.example is on Microsoft 365 and extract the tenant GUID.
 
-**Claude pulls:** `identity-provider-recon` §7 (domain→tenant resolution) + `offensive-osint` §22.1.
+**Claude pulls:** `identity-provider-recon` §7 (domain→tenant resolution) + `offensive-osint` §22.1. (moved to `references/arsenal.md`)
 
 **Run:**
 
@@ -79,7 +79,7 @@ Look for:
 
 > Is Teams federation enabled? What's the impact?
 
-**Claude pulls:** `identity-provider-recon` §8 (federation mapping) + `offensive-osint` §22.8.
+**Claude pulls:** `identity-provider-recon` §8 (federation mapping) + `offensive-osint` §22.8. (moved to `references/arsenal.md`)
 
 **Run:**
 
@@ -257,8 +257,8 @@ This example follows:
 - `identity-provider-recon` §8, §11 (federation mapping + pre-auth user-enumeration oracle)
 - `osint-methodology` §12 (Breach × identity correlation)
 - `osint-methodology` §16 (per-finding report card)
-- `offensive-osint` §22.1 (Entra concrete endpoints)
-- `offensive-osint` §22.8 (M365 deep enumeration)
-- `offensive-osint` §16.13 (curl probes)
+- `offensive-osint` §22.1 (Entra concrete endpoints) (moved to `references/arsenal.md`)
+- `offensive-osint` §22.8 (M365 deep enumeration) (moved to `references/arsenal.md`)
+- `offensive-osint` §16.13 (curl probes) (moved to `references/wordlists.md`)
 - `offensive-osint` §15.1 (breach severity mapping)
 - `offensive-osint` §15.2 (SSO_EXPOSURE finding)

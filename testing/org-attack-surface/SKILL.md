@@ -808,7 +808,7 @@ $bgpview.data.ipv4_prefixes.prefix + $bgpview.data.ipv6_prefixes.prefix
 ```
 
 **For bulk IP→ASN (>50 IPs), don't hammer RIPEstat/BGPView per-IP** — use Team Cymru's bulk WHOIS,
-which accepts hundreds of IPs in one TCP session (full recipe in `offensive-osint` §28.1):
+which accepts hundreds of IPs in one TCP session (full recipe in `offensive-osint` §28.1): (moved to `references/reasoning.md`)
 
 ```bash
 echo -e "begin\nverbose\n8.8.8.8\n1.1.1.1\nend" | nc whois.cymru.com 43

@@ -33,7 +33,7 @@ for q in "filename:.env" "filename:.env.example" "filename:config" \
 done
 ```
 
-**B. JS deep scan (`osint-methodology` §13 + companion `offensive-osint` §17):**
+**B. JS deep scan (`osint-methodology` §13 + companion `offensive-osint` §17):** (moved to `references/arsenal.md`)
 
 ```bash
 # Pull every JS from app.acme.example and scan
@@ -75,7 +75,7 @@ You found: `YOUR_AWS_KEY_HERE` paired with a 40-char secret in a public GitHub g
 
 > Found YOUR_AWS_KEY_HERE + secret in a public GitHub gist. What is the classification?
 
-**Claude pulls:** `offensive-osint` §17 (catalog row 1 — AWS_ACCESS_KEY) + `osint-methodology` §6.3 (validator discipline).
+**Claude pulls:** `offensive-osint` §17 (catalog row 1 — AWS_ACCESS_KEY) + `osint-methodology` §6.3 (validator discipline). (moved to `references/arsenal.md`)
 
 **Classification:**
 
@@ -91,7 +91,7 @@ You found: `YOUR_AWS_KEY_HERE` paired with a 40-char secret in a public GitHub g
 
 > Validate the AWS key read-only. ROE permits validation but not exploitation.
 
-**Claude pulls:** `offensive-osint` §23.2 (AWS validator) + `osint-methodology` §6.3 (validator discipline).
+**Claude pulls:** `offensive-osint` §23.2 (AWS validator) + `osint-methodology` §6.3 (validator discipline). (moved to `references/arsenal.md`)
 
 **Run:**
 
@@ -150,7 +150,7 @@ Account ID `123456789012` — does it belong to your target?
 
 > AWS account 123456789012 returned. Confirm it belongs to acme.example.
 
-**Claude pulls:** `cloud-saas-exposure` §7 (offline AWS account-ID decode, test vector `ASIAY34FZKBOKMUTVV7A → 609629065308`) + `offensive-osint` §22.7 (AWS account-ID extraction).
+**Claude pulls:** `cloud-saas-exposure` §7 (offline AWS account-ID decode, test vector `ASIAY34FZKBOKMUTVV7A → 609629065308`) + `offensive-osint` §22.7 (AWS account-ID extraction). (moved to `references/arsenal.md`)
 
 **Cross-reference:**
 
@@ -169,7 +169,7 @@ If ambiguous → mark TENTATIVE and document the uncertainty in the finding.
 
 > Confirmed AWS account belongs to target. ROE permits read-only enum. Walk me through.
 
-**Claude pulls:** `offensive-osint` §23.12 (post-discovery enumeration workflows — AWS).
+**Claude pulls:** `offensive-osint` §23.12 (post-discovery enumeration workflows — AWS). (moved to `references/arsenal.md`)
 
 **Run:**
 
@@ -219,7 +219,7 @@ aws cloudtrail describe-trails
 
 ## Step 6: Severity assessment
 
-Score the finding using `offensive-osint` §40 + impact context:
+Score the finding using `offensive-osint` §40 + impact context: (moved to `references/reasoning.md`)
 
 - **Validated live AWS IAM-user key in public GitHub repo.** Per §40: HIGH base.
 - **Scope: deploy-bot user with attached ManagedDevOpsPolicy** (via `iam:ListAttachedUserPolicies`) → likely write access to S3, Lambda, ECR, CodeBuild → **CRITICAL** (escalated).
@@ -344,9 +344,9 @@ This example follows:
 - `osint-methodology` §2.1 (confidence upgrade before you report)
 - `osint-methodology` §15 (cloud provider disclosure channels)
 - `osint-methodology` §16 (per-finding report card)
-- `offensive-osint` §17 row 1 (AWS_ACCESS_KEY pattern)
+- `offensive-osint` §17 row 1 (AWS_ACCESS_KEY pattern) (moved to `references/arsenal.md`)
 - `offensive-osint` §19 (GitHub code-search dorks)
-- `offensive-osint` §23.2 (AWS validator)
-- `offensive-osint` §23.12 (post-discovery AWS enumeration)
-- `offensive-osint` §40 (severity matrix — live AWS IAM-user key)
+- `offensive-osint` §23.2 (AWS validator) (moved to `references/arsenal.md`)
+- `offensive-osint` §23.12 (post-discovery AWS enumeration) (moved to `references/arsenal.md`)
+- `offensive-osint` §40 (severity matrix — live AWS IAM-user key) (moved to `references/reasoning.md`)
 - `offensive-osint` §39 (attack-path hints — live AI/cloud key)
