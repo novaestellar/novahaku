@@ -5,7 +5,16 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BOOTSTRAP="$SCRIPT_DIR/bootstrap-reverse.sh"
 KALI_BOOTSTRAP="$SCRIPT_DIR/bootstrap-reverse.sh"
 MANIFEST="$SCRIPT_DIR/bootstrap-manifest.json"
-REAL_PYTHON="$(command -v python3)"
+# On Windows, python3 often resolves to the MS Store stub; try python first
+REAL_PYTHON=""
+for cand in python python3 py; do
+  if command -v "$cand" >/dev/null 2>&1 && \
+     "$cand" -c 'import sys; sys.exit(0 if sys.version_info[0] == 3 else 1)' \
+       >/dev/null 2>&1; then
+    REAL_PYTHON="$(command -v "$cand")"
+    break
+  fi
+done
 SCRATCH="$(mktemp -d /tmp/reverse-bootstrap-test-XXXXXX)"
 trap 'rm -rf "$SCRATCH"' EXIT
 STUB_BIN="$SCRATCH/bin"

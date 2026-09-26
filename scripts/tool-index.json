@@ -1,0 +1,262 @@
+﻿{
+    "generated_at":  "2026-09-26 00:07:46 +07:00",
+    "routing_entry":  [
+                          "SKILL.md",
+                          "routing.md"
+                      ],
+    "tools":  {
+
+              },
+    "capabilities":  [
+                         {
+                             "name":  "jadx",
+                             "tool_available":  true,
+                             "ready":  true,
+                             "mcp_registered":  false,
+                             "service_online":  false,
+                             "mcp_http_verified":  false,
+                             "can_auto_install":  true,
+                             "bootstrap_kind":  "github-release-zip"
+                         },
+                         {
+                             "name":  "apktool",
+                             "tool_available":  true,
+                             "ready":  true,
+                             "mcp_registered":  false,
+                             "service_online":  false,
+                             "mcp_http_verified":  false,
+                             "can_auto_install":  true,
+                             "bootstrap_kind":  "github-release-jar-wrapper"
+                         },
+                         {
+                             "name":  "jeb-pro",
+                             "tool_available":  false,
+                             "ready":  false,
+                             "mcp_registered":  false,
+                             "service_online":  false,
+                             "mcp_http_verified":  false,
+                             "can_auto_install":  false,
+                             "bootstrap_kind":  "manual"
+                         },
+                         {
+                             "name":  "frida",
+                             "tool_available":  true,
+                             "ready":  true,
+                             "mcp_registered":  false,
+                             "service_online":  false,
+                             "mcp_http_verified":  false,
+                             "can_auto_install":  true,
+                             "bootstrap_kind":  "pip-package"
+                         },
+                         {
+                             "name":  "frida-ps",
+                             "tool_available":  true,
+                             "ready":  true,
+                             "mcp_registered":  false,
+                             "service_online":  false,
+                             "mcp_http_verified":  false,
+                             "can_auto_install":  true,
+                             "bootstrap_kind":  "pip-package"
+                         },
+                         {
+                             "name":  "idalib-mcp",
+                             "tool_available":  true,
+                             "ready":  true,
+                             "mcp_registered":  false,
+                             "service_online":  false,
+                             "mcp_http_verified":  false,
+                             "can_auto_install":  true,
+                             "bootstrap_kind":  "pip-package"
+                         },
+                         {
+                             "name":  "jshookmcp",
+                             "tool_available":  false,
+                             "ready":  false,
+                             "mcp_registered":  false,
+                             "service_online":  false,
+                             "mcp_http_verified":  false,
+                             "can_auto_install":  true,
+                             "bootstrap_kind":  "npm-mcp"
+                         },
+                         {
+                             "name":  "reqable-mcp",
+                             "tool_available":  false,
+                             "ready":  false,
+                             "mcp_registered":  false,
+                             "service_online":  false,
+                             "mcp_http_verified":  false,
+                             "can_auto_install":  true,
+                             "bootstrap_kind":  "npm-mcp"
+                         },
+                         {
+                             "name":  "xquik-mcp",
+                             "tool_available":  false,
+                             "ready":  false,
+                             "mcp_registered":  false,
+                             "service_online":  false,
+                             "mcp_http_verified":  false,
+                             "can_auto_install":  true,
+                             "bootstrap_kind":  "remote-http-mcp"
+                         },
+                         {
+                             "name":  "anything-analyzer",
+                             "tool_available":  false,
+                             "ready":  true,
+                             "mcp_registered":  false,
+                             "service_online":  true,
+                             "mcp_http_verified":  false,
+                             "can_auto_install":  true,
+                             "bootstrap_kind":  "local-http-mcp"
+                         },
+                         {
+                             "name":  "idapro",
+                             "tool_available":  false,
+                             "ready":  false,
+                             "mcp_registered":  false,
+                             "service_online":  false,
+                             "mcp_http_verified":  false,
+                             "can_auto_install":  true,
+                             "bootstrap_kind":  "local-http-mcp"
+                         },
+                         {
+                             "name":  "r2",
+                             "tool_available":  true,
+                             "ready":  true,
+                             "mcp_registered":  false,
+                             "service_online":  false,
+                             "mcp_http_verified":  false,
+                             "can_auto_install":  true,
+                             "bootstrap_kind":  "github-release-zip"
+                         },
+                         {
+                             "name":  "rabin2",
+                             "tool_available":  true,
+                             "ready":  true,
+                             "mcp_registered":  false,
+                             "service_online":  false,
+                             "mcp_http_verified":  false,
+                             "can_auto_install":  true,
+                             "bootstrap_kind":  "github-release-zip"
+                         },
+                         {
+                             "name":  "adb",
+                             "tool_available":  true,
+                             "ready":  true,
+                             "mcp_registered":  false,
+                             "service_online":  false,
+                             "mcp_http_verified":  false,
+                             "can_auto_install":  true,
+                             "bootstrap_kind":  "winget-package"
+                         },
+                         {
+                             "name":  "agent-browser",
+                             "tool_available":  true,
+                             "ready":  true,
+                             "mcp_registered":  false,
+                             "service_online":  false,
+                             "mcp_http_verified":  false,
+                             "can_auto_install":  true,
+                             "bootstrap_kind":  "npm-global"
+                         },
+                         {
+                             "name":  "ghidra-mcp",
+                             "tool_available":  false,
+                             "ready":  true,
+                             "mcp_registered":  false,
+                             "service_online":  true,
+                             "mcp_http_verified":  false,
+                             "can_auto_install":  true,
+                             "bootstrap_kind":  "github-release-zip"
+                         },
+                         {
+                             "name":  "seclists",
+                             "tool_available":  true,
+                             "ready":  true,
+                             "mcp_registered":  false,
+                             "service_online":  false,
+                             "mcp_http_verified":  false,
+                             "can_auto_install":  true,
+                             "bootstrap_kind":  "git-clone"
+                         },
+                         {
+                             "name":  "proxycat",
+                             "tool_available":  false,
+                             "ready":  false,
+                             "mcp_registered":  false,
+                             "service_online":  false,
+                             "mcp_http_verified":  false,
+                             "can_auto_install":  true,
+                             "bootstrap_kind":  "git-clone"
+                         },
+                         {
+                             "name":  "burpsuite-mcp",
+                             "tool_available":  false,
+                             "ready":  true,
+                             "mcp_registered":  false,
+                             "service_online":  true,
+                             "mcp_http_verified":  true,
+                             "can_auto_install":  false,
+                             "bootstrap_kind":  "local-http-mcp"
+                         },
+                         {
+                             "name":  "pentestswarm",
+                             "tool_available":  true,
+                             "ready":  true,
+                             "mcp_registered":  false,
+                             "service_online":  false,
+                             "mcp_http_verified":  false,
+                             "can_auto_install":  true,
+                             "bootstrap_kind":  "go-install"
+                         },
+                         {
+                             "name":  "nmap",
+                             "tool_available":  true,
+                             "ready":  true,
+                             "mcp_registered":  false,
+                             "service_online":  false,
+                             "mcp_http_verified":  false,
+                             "can_auto_install":  true,
+                             "bootstrap_kind":  "winget-package"
+                         },
+                         {
+                             "name":  "binwalk",
+                             "tool_available":  true,
+                             "ready":  true,
+                             "mcp_registered":  false,
+                             "service_online":  false,
+                             "mcp_http_verified":  false,
+                             "can_auto_install":  true,
+                             "bootstrap_kind":  "winget-package"
+                         },
+                         {
+                             "name":  "yara",
+                             "tool_available":  false,
+                             "ready":  false,
+                             "mcp_registered":  false,
+                             "service_online":  false,
+                             "mcp_http_verified":  false,
+                             "can_auto_install":  true,
+                             "bootstrap_kind":  "winget-package"
+                         },
+                         {
+                             "name":  "pwntools",
+                             "tool_available":  true,
+                             "ready":  true,
+                             "mcp_registered":  false,
+                             "service_online":  false,
+                             "mcp_http_verified":  false,
+                             "can_auto_install":  true,
+                             "bootstrap_kind":  "pip-package"
+                         },
+                         {
+                             "name":  "bkcrack",
+                             "tool_available":  false,
+                             "ready":  false,
+                             "mcp_registered":  false,
+                             "service_online":  false,
+                             "mcp_http_verified":  false,
+                             "can_auto_install":  true,
+                             "bootstrap_kind":  "github-release-zip"
+                         }
+                     ]
+}

@@ -1,0 +1,130 @@
+#!/usr/bin/env bash
+# pre-commit — run the repository gates before every commit.
+#
+# Why this exists: the gates in scripts/test/ and scripts/reverse-skill/ were
+# run by hand for whole sessions. Nothing executed them, so a third-party
+# licence and a marketplace manifest sat in the tree for four sessions without
+# anyone noticing. A gate nobody runs is documentation, not a gate.
+#
+# Install (once per clone — git never ships .git/hooks/):
+#     bash scripts/git-hooks/install.sh
+#
+# Bypass for a deliberate WIP commit (record why in the message):
+#     git commit --no-verify -m "..."
+#
+# Exit 0 allows the commit. Exit 1 aborts it.
+
+set -uo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
+cd "$REPO_ROOT" || exit 0
+
+# Resolve a python interpreter. On Windows `python3` is often the Microsoft
+# Store stub: `command -v` finds it, it exits 9009, and every check beneath it
+# fails for the wrong reason. Probe by importing something real.
+PY=""
+for cand in python python3 py; do
+  if command -v "$cand" >/dev/null 2>&1 && \
+     "$cand" -c 'import sys, json; sys.exit(0 if sys.version_info[0] == 3 else 1)' \
+       >/dev/null 2>&1; then
+    PY="$cand"
+    break
+  fi
+done
+
+if [[ -z "$PY" ]]; then
+  echo "pre-commit: no python 3 on PATH — gates skipped."
+  echo "            Install Python 3, or commit with --no-verify to bypass."
+  exit 0
+fi
+
+# (path, extra args, human label). Order: cheapest and most decisive first, so
+# a clear failure surfaces before the slower scans.
+GATES=(
+  "scripts/test/verify-no-third-party-identity.py||no third-party identity"
+  "scripts/reverse-skill/verify-no-secrets.py||no tracked secrets"
+  "scripts/reverse-skill/verify-doc-links.py||doc links resolve"
+  "scripts/test/audit_skills.py||skill frontmatter"
+  "scripts/test/purge_branding.py||branding purged"
+  "scripts/test/verify-engagement-root.py||engagement root"
+)
+
+FAILED=0
+RAN=0
+
+# Gates read the git index, not the working tree. Stage first so the check
+# sees what is actually about to be committed.
+git add -A >/dev/null 2>&1 || true
+
+for entry in "${GATES[@]}"; do
+  path="${entry%%||*}"
+  rest="${entry#*||}"
+  label="${rest%%||*}"
+  extra="${rest#*||}"
+  [[ "$extra" == "$label" ]] && extra=""
+
+  if [[ ! -f "$path" ]]; then
+    # A missing gate is not a pass. It means the gate was renamed or removed,
+    # and silence here is how a real check quietly stops protecting anything.
+    echo "pre-commit: MISSING gate target: $path"
+    FAILED=1
+    continue
+  fi
+
+  RAN=$((RAN + 1))
+  # shellcheck disable=SC2086
+  if ! output=$("$PY" "$path" $extra 2>&1); then
+    echo ""
+    echo "pre-commit FAIL: $label"
+    echo "$output" | sed 's/^/    /' | head -20
+    FAILED=1
+  fi
+done
+
+# The corpus gates only make sense in the novahaku repository.
+if [[ -f "scripts/test/verify-corpus-reachability.py" ]]; then
+  for entry in \
+    "scripts/test/verify-corpus-reachability.py||corpus reachability" \
+    "scripts/test/gen_corpus_index.py|--check|corpus index fresh"
+  do
+    path="${entry%%||*}"
+    rest="${entry#*||}"
+    label="${rest%%||*}"
+    extra="${rest#*||}"
+    [[ "$extra" == "$label" ]] && extra=""
+
+    [[ -f "$path" ]] || { echo "pre-commit: MISSING gate target: $path"; FAILED=1; continue; }
+    RAN=$((RAN + 1))
+    # shellcheck disable=SC2086
+    if ! output=$("$PY" "$path" $extra 2>&1); then
+      echo ""
+      echo "pre-commit FAIL: $label"
+      echo "$output" | sed 's/^/    /' | head -20
+      FAILED=1
+    fi
+  done
+fi
+
+if [[ $FAILED -ne 0 ]]; then
+  cat <<'EOF'
+
+──────────────────────────────────────────────
+COMMIT ABORTED — a repository gate failed.
+
+Fix the finding above, then commit again.
+To see details for one gate:
+
+    python <gate-path>
+
+To commit anyway (deliberate work-in-progress only):
+
+    git commit --no-verify -m "..."
+
+Record in the message WHY the gate was bypassed.
+──────────────────────────────────────────────
+EOF
+  exit 1
+fi
+
+echo "pre-commit: $RAN gate(s) passed."
+exit 0

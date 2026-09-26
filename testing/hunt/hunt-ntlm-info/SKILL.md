@@ -70,7 +70,7 @@ WWW-Authenticate: Negotiate, NTLM
 
 3. **Use a keep-alive raw socket, not Python requests / curl one-shot.** Most HTTP libraries close the connection between the Type-1 send and Type-2 reception. Use one of:
    - Burp Repeater with `Connection: keep-alive` set explicitly
-   - Burp `mcp__burp__send_http1_request` (handles keep-alive natively)
+   - Burp `mcp__burpsuite__burp_send_request` (routes through Burp's own HTTP stack, which keeps the connection alive; pair with an explicit `Connection: keep-alive` header)
    - Python raw `socket` + `ssl.wrap_socket` (see Payload section)
 
 4. **Parse the Type-2 challenge from the `WWW-Authenticate: NTLM <base64>` response header.** Base64-decode the value. The structure is NTLMSSP per MS-NLMP:

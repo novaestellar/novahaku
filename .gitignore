@@ -94,3 +94,13 @@ cve-feed.json
 *.bakup
 *.backup
 *.old
+# Timestamped backups: *.bak-20260926-100843 and friends. The bare `*.bak`
+# above does not match these — a suffix follows the extension — so without
+# these two lines every backup taken during a fix lands in the public repo.
+*.bak-*
+*.bak.*
+*.backup-*
+
+# engagement findings (generated data)
+engagements/*/findings/
+engagements/*/state.json

@@ -217,6 +217,58 @@ if [[ ${#CAPABILITIES[@]} -eq 0 || "${CAPABILITIES[0]}" == "__help__" ]]; then
   exit 0
 fi
 
+# Windows: this script is the POSIX (macOS/Linux) bootstrap and has no Windows
+# install path. The PowerShell script is the real Windows implementation, so
+# delegate rather than fail. `uname -s` reports MINGW64_NT-*/MSYS_NT-*/CYGWIN_NT-*
+# under Git Bash / MSYS2 / Cygwin - none of which match the Darwin/Linux cases,
+# so they all land on PLATFORM=unknown and every ensure_*() case falls through to
+# no-op, making installed tools look missing ("ERR: apktool install failed" for a
+# tool already present at %USERPROFILE%\Tools\apktool). Delegating keeps one
+# source of truth for Windows install logic instead of duplicating it here.
+if [[ "$PLATFORM" == "unknown" ]]; then
+  case "$UNAME_S" in
+    MINGW*|MSYS*|CYGWIN*)
+      PS_EXE=""
+      for candidate in powershell.exe pwsh.exe; do
+        if has_cmd "$candidate"; then PS_EXE="$candidate"; break; fi
+      done
+      if [[ -z "$PS_EXE" ]]; then
+        log_err "Windows detected but no PowerShell found (tried powershell.exe, pwsh.exe)."
+        log_err "Install PowerShell, or run: powershell -File scripts/reverse-skill/bootstrap-reverse.ps1 ${CAPABILITIES[*]}"
+        exit 1
+      fi
+      PS1_PATH="$SCRIPT_DIR/bootstrap-reverse.ps1"
+      if [[ ! -f "$PS1_PATH" ]]; then
+        log_err "Windows detected but $PS1_PATH is missing."
+        exit 1
+      fi
+      # powershell.exe is a native Windows binary and does NOT understand MSYS
+      # paths (/d/labs/...). MSYS path conversion is disabled in this shell, so
+      # convert explicitly: /d/labs/x -> D:/labs/x via cygpath when available,
+      # otherwise a sed fallback. Passing the MSYS form makes -File fail with
+      # "does not exist" even though the file is right there.
+      if has_cmd cygpath; then
+        PS1_WIN="$(cygpath -w "$PS1_PATH" 2>/dev/null || true)"
+      fi
+      if [[ -z "${PS1_WIN:-}" ]]; then
+        PS1_WIN="$(printf '%s' "$PS1_PATH" | sed -E 's|^/([a-zA-Z])/|\1:/|')"
+      fi
+      log_info "Windows detected - delegating to bootstrap-reverse.ps1 via $PS_EXE"
+      # -Capability is [string[]], so every capability must arrive as ONE named
+      # argument. Passing them positionally made the 2nd+ land on $McpHostTarget
+      # and fail ValidateSet ("The argument \"apktool\" does not belong to the
+      # set \"None,Claude,Codex,Both\"").
+      # PowerShell binds `-Capability a b` as a=value, b=>next parameter. A
+      # [string[]] needs ONE comma-joined token: -Capability jadx,apktool.
+      JOINED_CAPS="$(IFS=,; echo "${CAPABILITIES[*]}")"
+      DELEGATE_ARGS=("-Capability" "$JOINED_CAPS")
+      $START_SERVICES && DELEGATE_ARGS+=("-StartServices")
+      [[ "$MCP_HOST_TARGET" != "none" ]] && DELEGATE_ARGS+=("-McpHostTarget" "$MCP_HOST_TARGET")
+      exec "$PS_EXE" -NoProfile -ExecutionPolicy Bypass -File "$PS1_WIN" "${DELEGATE_ARGS[@]}"
+      ;;
+  esac
+fi
+
 install_apt() {
   local package="$1"
   log_info "apt install $package"

@@ -43,6 +43,15 @@ if [[ ! -f "$APK_PATH" ]]; then
     exit 1
 fi
 
+# jadx / apktool are native Java programs: they do not understand an MSYS path
+# such as /c/Users/x/app.apk, and they receive it looking like \c\Users\... .
+# Convert once here and pass the native form to both tools. On real POSIX systems
+# cygpath is absent and the original path is already correct, so this is a no-op.
+APK_PATH_NATIVE="$APK_PATH"
+if command -v cygpath >/dev/null 2>&1; then
+    APK_PATH_NATIVE="$(cygpath -w "$APK_PATH")"
+fi
+
 # ─── 工具检测与自动安装 ─────────────────────────────────────────────────────────────
 
 ensure_tool() {
@@ -85,7 +94,7 @@ JADX_EXIT=0
 if [[ "$SKIP_JADX" != "true" ]]; then
     rm -rf "$JADX_OUT"
     echo "=== jadx 反编译 ==="
-    jadx -d "$JADX_OUT" "$APK_PATH" || JADX_EXIT=$?
+    jadx -d "$JADX_OUT" "$APK_PATH_NATIVE" || JADX_EXIT=$?
 fi
 
 # ─── apktool 解包 ─────────────────────────────────────────────────────────────────
@@ -94,7 +103,7 @@ APKTOOL_EXIT=0
 if [[ "$SKIP_APKTOOL" != "true" ]]; then
     rm -rf "$APKTOOL_OUT"
     echo "=== apktool 解包 ==="
-    apktool d "$APK_PATH" -o "$APKTOOL_OUT" -f || APKTOOL_EXIT=$?
+    apktool d "$APK_PATH_NATIVE" -o "$APKTOOL_OUT" -f || APKTOOL_EXIT=$?
 fi
 
 # ─── 统计输出 ──────────────────────────────────────────────────────────────────────
