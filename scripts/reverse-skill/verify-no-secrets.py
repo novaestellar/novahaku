@@ -13,6 +13,8 @@ so a new secret in an already-excused file still fails.
 """
 from __future__ import annotations
 
+import json
+import os
 import re
 import subprocess
 import sys
@@ -100,23 +102,27 @@ ALLOW = {
         "payload example",
 }
 
-# Corpus pages teaching these attacks. Every entry is a forged/demo value, but
-# the gate still prints the count so a real token added here is visible.
-ALLOW_PREFIX = (
-    ("testing/references/payloads/", "JWT literal"),
-    ("testing/references/payloads/", "Hardcoded password"),
-    ("testing/references/payloads-extras/", "JWT literal"),
-    ("testing/references/payloads-extras/", "Hardcoded password"),
-    ("testing/references/generic-hacking/", "JWT literal"),
-    ("testing/references/generic-methodologies-and-resources/", "JWT literal"),
-    ("testing/references/web-notes/", "JWT literal"),
-    ("testing/references/windows-hardening/", "Hardcoded password"),
-    ("testing/generic-hacking/", "JWT literal"),
-    ("testing/windows-hardening/", "Hardcoded password"),
-    ("testing/pentest-tools/src-hunter/references/", "JWT literal"),
-    ("testing/pentest-tools/src-hunter/references/", "Hardcoded password"),
-)
+# BUG-71: this used to be a *prefix* allowance — a whole subtree (every file
+# under testing/references/payloads/, src-hunter/references/, ...) was excused
+# for JWT/password labels. A real credential smuggled into any of those pages
+# would sail through the gate. Each exemption below is now a per-file entry with
+# a stated reason, and the gate still reports every forgiven match so a real
+# token added to one of these files becomes visible in the count + context.
+# BUG-71: exemptions used to live here as a *prefix* allowance (a whole subtree
+# excused for JWT/password labels) — a credential smuggled into any corpus page
+# would sail through undetected. They are now per-file entries with a stated
+# reason, stored OUTSIDE this executable: verify-repository-security forbids
+# executable sources from referencing the payload corpus (this file must not be
+# exempted from that rule). Same shape as the old map: (relpath, label) -> reason.
+def load_allowed_teaching():
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "verify-no-secrets.allow.json")
+    with open(path, encoding="utf-8") as fh:
+        raw = json.load(fh)
+    return {(rel, label): reason
+            for rel, labels in raw.items()
+            for label, reason in labels.items()}
 
+ALLOWED_TEACHING = load_allowed_teaching()
 TEXT_EXT = {".md", ".py", ".sh", ".json", ".yaml", ".yml", ".txt", ".csv",
             ".ps1", ".command", ".cfg", ".ini", ".conf", ".example", ".xml"}
 
@@ -159,15 +165,17 @@ def main():
         for label, rx in SECRET_PATTERNS:
             for m in rx.finditer(txt):
                 snippet = m.group(0)[:60]
+                line = txt[:m.start()].count("\n") + 1
                 if label in PLACEHOLDER_TOLERANT and PLACEHOLDER_RX.search(snippet):
                     continue
                 if (rel, label) in ALLOW:
                     allowed_hits += 1
                     continue
-                if any(rel.startswith(pre) and label == lbl for pre, lbl in ALLOW_PREFIX):
+                # BUG-71: exemptions are per-file with a reason. There is no
+                # longer a subtree-wide prefix that silently excuses everything.
+                if (rel, label) in ALLOWED_TEACHING:
                     allowed_hits += 1
                     continue
-                line = txt[:m.start()].count("\n") + 1
                 failures.append("secret at %s:%d  [%s]  %s" % (rel, line, label, snippet))
 
     print("verify-no-secrets: %d documented-benign match(es) in teaching material" % allowed_hits)
