@@ -953,8 +953,10 @@ findings 非空时,推进到 `test` 会打印:
 
 ## 本地 Hermes 护栏补丁 (scripts/hermes-patch/)
 
-**仅本地工具** — 不被 loader、路由表或任何 skill 调用。用于解除 Hermes 平台自身的
-prompt-injection 扫描器对 memory 与 cron 写入路径的拦截。
+**INACTIVE by default; local-only tool** — not loaded by the router or any skill, and never
+applied automatically. It can disable Hermes' own scanner on selected memory and cron write
+paths, but it does not bypass model/provider refusals, `skills_guard.py`, tool permissions, or
+context-file scanning. Apply only after an explicit user decision and a disposable-copy test.
 
 作用域(4 个文件 / 12 个 anchor):
 
@@ -991,7 +993,6 @@ guard 报为 `STILL WIRED`;`--apply` 自动 verify 并在失败时自动回滚�
 **注意**:作用域是全平台——重启 gateway 后本机所有会话都按补丁状态运行。cron 无人值守
 执行,因此 cron prompt 中的外泄模式在打补丁后会被接受且没有用户回合可以察觉。
 回滚演练见 `scripts/hermes-patch/README.md`。
-```
 
 ---
 
