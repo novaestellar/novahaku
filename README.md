@@ -58,14 +58,14 @@ cd novahaku
 ### 安装后验证
 
 ```bash
-# 检查安装
-ls ~/.hermes/skills/security/novahaku/SKILL.md
+# Check installation
+ls ~/.hermes/skills/novahaku/SKILL.md
 
-# 测试Web测试脚本
-python ~/.hermes/skills/security/novahaku/testing/scripts/webtest.py --help
+# Test Web testing script
+python ~/.hermes/skills/novahaku/testing/scripts/webtest.py --help
 
-# 测试请求重构
-python ~/.hermes/skills/security/novahaku/reframe/reframe_cli.py --help
+# Test request reframe
+python ~/.hermes/skills/novahaku/reframe/reframe_cli.py --help
 ```
 
 ### 配置环境变量（可选）
