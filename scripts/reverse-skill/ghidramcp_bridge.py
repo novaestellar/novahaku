@@ -396,5 +396,11 @@ def functools_partial(fn, *a, **kw):
 
 
 if __name__ == "__main__":
+    if any(a in ("-h", "--help") for a in sys.argv[1:]):
+        # Without this, --help falls through to mcp.run() and hangs on stdio.
+        print("ghidramcp_bridge.py — MCP stdio bridge for the GhidraMCP headless REST server.")
+        print("Usage: python ghidramcp_bridge.py")
+        print("No arguments expected; configured via env (GHIDRA_MCP_PORT, GHIDRA_MCP_AUTOSTART).")
+        sys.exit(0)
     _register_all()
     mcp.run()

@@ -197,7 +197,13 @@ class H(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    port = int(sys.argv[1]) if len(sys.argv) > 1 else 18080
+    if any(a in ("-h", "--help") for a in sys.argv[1:]):
+        print("nh_vuln_target.py [port]  — vulnerable practice target, default 18080")
+        sys.exit(0)
+    try:
+        port = int(sys.argv[1]) if len(sys.argv) > 1 else 18080
+    except ValueError:
+        sys.exit(f"usage: nh_vuln_target.py [port]  (got non-integer: {sys.argv[1]!r})")
     srv = ThreadingHTTPServer(("127.0.0.1", port), H)
     print(f"vuln target on http://127.0.0.1:{port}", flush=True)
     srv.serve_forever()

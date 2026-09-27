@@ -25,12 +25,25 @@ sp = iu.spec_from_file_location("rtutil", os.path.join(T, "rtutil.py"))
 u = iu.module_from_spec(sp)
 sp.loader.exec_module(u)
 
-# Resolve both skill trees from the environment, falling back to the Hermes
-# skills root this file lives under. No machine-specific absolute paths.
+# Resolve both skill trees from the environment, falling back to the layout of
+# this file. No machine-specific absolute paths.
+# Deploy layout: <skills>/security/novahaku/testing/runtime/rt_v4.py  -> sibling web/novaxinwei
+# Repo layout:   <labs>/novahaku/testing/runtime/rt_v4.py            -> sister <labs>/novaxinwei
 _HERE = os.path.dirname(os.path.abspath(__file__))
-_SKILLS_ROOT = os.environ.get("HERMES_SKILLS_ROOT", os.path.dirname(os.path.dirname(_HERE)))
-NHA = os.path.join(_SKILLS_ROOT, "security", "novahaku")
-NX = os.path.join(_SKILLS_ROOT, "web", "novaxinwei")
+_NHA_DEFAULT = os.path.dirname(os.path.dirname(_HERE))  # <...>/novahaku
+if os.environ.get("HERMES_SKILLS_ROOT"):
+    _SKILLS_ROOT = os.environ["HERMES_SKILLS_ROOT"]
+    NHA = os.path.join(_SKILLS_ROOT, "security", "novahaku")
+    NX = os.path.join(_SKILLS_ROOT, "web", "novaxinwei")
+else:
+    NHA = _NHA_DEFAULT
+    if os.path.basename(os.path.dirname(NHA)) == "security":
+        _SKILLS_ROOT = os.path.dirname(os.path.dirname(NHA))
+        NX = os.path.join(_SKILLS_ROOT, "web", "novaxinwei")
+    else:
+        NX = os.path.join(os.path.dirname(NHA), "novaxinwei")
+if os.path.basename(NHA) != "novahaku" or not os.path.isdir(os.path.join(NHA, "scripts")):
+    raise SystemExit(f"rt_v4: cannot resolve novahaku root (got {NHA})")
 PARENT_NX = os.path.dirname(NX)
 RUNNER = os.path.join(NHA, "scripts", "engage_runner.py")
 PY = sys.executable
