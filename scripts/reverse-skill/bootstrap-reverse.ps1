@@ -656,7 +656,12 @@ function Save-ClaudeMcpConfig {
         New-Item -ItemType Directory -Path $parent -Force | Out-Null
     }
 
-    $Config.json | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $Config.path -Encoding utf8
+    # PowerShell 5.1 'Set-Content -Encoding utf8' writes a UTF-8 BOM, and
+    # every reader on this path (test harness, refresh-tool-index registration
+    # detection) decodes plain utf-8 — a BOM makes json.load() throw. Write
+    # BOM-free UTF-8 so writer and readers agree.
+    $claudeJson = $Config.json | ConvertTo-Json -Depth 8
+    [System.IO.File]::WriteAllText($Config.path, $claudeJson + [System.Environment]::NewLine, [System.Text.UTF8Encoding]::new($false))
 }
 
 function ConvertTo-TomlLiteral {
@@ -800,7 +805,16 @@ function Ensure-McpServer {
         [Parameter(Mandatory = $true)][hashtable]$ServerDefinition
     )
 
-    foreach ($target in Get-McpHostTargets) {
+    $targets = @(Get-McpHostTargets)
+    if ($targets.Count -eq 0) {
+        # Mirror bootstrap-reverse.sh write_mcp_server(): client-neutral default
+        # (McpHostTarget=None) skips registration and reports
+        # registration-required instead of silently degrading to
+        # configured-not-ready.
+        $script:RegistrationRequired = $true
+        Write-Warning "MCP registration skipped for '$ServerName' (client-neutral default). Re-run with --mcp-host=claude, codex, or both."
+    }
+    foreach ($target in $targets) {
         switch ($target) {
             'Claude' {
                 $config = Get-ClaudeMcpConfig
@@ -1246,6 +1260,7 @@ function Test-BootstrapResultsSucceeded {
 
 $expandedCapabilities = Expand-CapabilityDependencies -Names $Capability
 $results = @()
+$script:RegistrationRequired = $false
 
 foreach ($name in $expandedCapabilities) {
     $definition = Get-ReverseBootstrapDefinition -Name $name
@@ -1256,6 +1271,7 @@ foreach ($name in $expandedCapabilities) {
 
     try {
         $manualRequired = $false
+        $script:RegistrationRequired = $false
         switch ($name) {
             'adb' {
                 Ensure-AndroidPlatformTools | Out-Null
@@ -1278,14 +1294,20 @@ foreach ($name in $expandedCapabilities) {
 
         if (-not $manualRequired) {
             $state = Get-ReverseCapabilityState -Name $name
-            $status = if ($state -and -not $state.Ready) { 'configured-not-ready' } else { 'ready' }
-            $results += [pscustomobject]@{
+            $status = if ($script:RegistrationRequired) { 'registration-required' }
+                      elseif ($state -and -not $state.Ready) { 'configured-not-ready' }
+                      else { 'ready' }
+            $result = [pscustomobject]@{
                 name = $name
                 status = $status
                 ready = if ($state) { $state.Ready } else { $null }
                 registered = if ($state) { $state.Registered } else { $null }
                 service_online = if ($state) { $state.ServiceOnline } else { $null }
             }
+            if ($script:RegistrationRequired) {
+                $result | Add-Member -NotePropertyName hint -NotePropertyValue 're-run with --mcp-host=claude, codex, or both'
+            }
+            $results += $result
         }
     }
     catch {
@@ -1302,7 +1324,7 @@ if (-not $SkipRefresh) {
     & $shell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'refresh-tool-index.ps1') | Out-Null
 }
 
-$results | ConvertTo-Json -Depth 5
+$results | ConvertTo-Json -Depth 5 -Compress
 if (-not (Test-BootstrapResultsSucceeded -Results $results)) {
     exit 1
 }

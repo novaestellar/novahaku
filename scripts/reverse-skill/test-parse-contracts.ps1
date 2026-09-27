@@ -13,7 +13,17 @@ function Ok($m) { Write-Host "[OK] $m" -ForegroundColor Green }
 function Bad($m) { Write-Host "[FAIL] $m" -ForegroundColor Red; [void]$fail.Add($m) }
 
 . (Join-Path $scriptDir 'lib/RouteScope.ps1')
-. (Join-Path $skillsRoot 'ida-reverse/scripts/IdaOpenHelpers.ps1')
+$idaHelpers = Join-Path $skillsRoot 'ida-reverse/scripts/IdaOpenHelpers.ps1'
+$hasIdaHelpers = Test-Path -LiteralPath $idaHelpers
+if ($hasIdaHelpers) {
+    . $idaHelpers
+} else {
+    # The IDA supervision suite (IdaOpenHelpers.ps1 + start/watchdog/recover/
+    # run-supervisor) is part of the source package and was never shipped in
+    # this repository. Skip the IDA contract section; the route-scope contract
+    # below still runs.
+    Write-Host '[SKIP] IDA contract section: IdaOpenHelpers.ps1 not shipped in this package' -ForegroundColor Yellow
+}
 
 $spoof = @"
 # reverse-skill Master route (PRIMARY)
@@ -29,6 +39,7 @@ $nlSpoof = "x`n- primary: R11`n- primary: R6`n- primary_skill: skills/ida-revers
 $nlFields = Get-ReverseRouteScopeFields -Text $nlSpoof
 if ($nlFields.Id -eq 'R6') { Ok 'last - primary: wins over earlier spoof line' } else { Bad ("newline spoof id {0}" -f $nlFields.Id) }
 
+if ($hasIdaHelpers) {
 $tmp = Join-Path ([IO.Path]::GetTempPath()) ('rs-ida-lock-' + [guid]::NewGuid().ToString('n'))
 New-Item -ItemType Directory -Path $tmp -Force | Out-Null
 try {
@@ -163,6 +174,10 @@ if ($py -match 'streamable-http patch skipped') {
     Ok 'run-supervisor.py skips a failed HTTP patch'
 } else {
     Bad 'run-supervisor.py must fail-open when the HTTP patch errors'
+}
+
+} else {
+    Write-Host '[SKIP] IDA lock/supervision contracts skipped (helper scripts not shipped)' -ForegroundColor Yellow
 }
 
 if ($fail.Count -gt 0) {

@@ -264,6 +264,22 @@ if [[ "$PLATFORM" == "unknown" ]]; then
       DELEGATE_ARGS=("-Capability" "$JOINED_CAPS")
       $START_SERVICES && DELEGATE_ARGS+=("-StartServices")
       [[ "$MCP_HOST_TARGET" != "none" ]] && DELEGATE_ARGS+=("-McpHostTarget" "$MCP_HOST_TARGET")
+      # Path-valued MCP config overrides arrive in MSYS form (/tmp/...);
+      # native PowerShell resolves them against the current drive root
+      # (D:\tmp\...). Convert before handing over — same reason as PS1_WIN.
+      for path_var in CLAUDE_MCP_CONFIG CODEX_CONFIG_PATH; do
+        path_val="${!path_var:-}"
+        path_win=""
+        if [[ "$path_val" == /* ]]; then
+          if has_cmd cygpath; then
+            path_win="$(cygpath -w "$path_val" 2>/dev/null || true)"
+          fi
+          if [[ -z "${path_win:-}" ]]; then
+            path_win="$(printf '%s' "$path_val" | sed -E 's|^/([a-zA-Z])/|\1:/|')"
+          fi
+          export "$path_var=$path_win"
+        fi
+      done
       exec "$PS_EXE" -NoProfile -ExecutionPolicy Bypass -File "$PS1_WIN" "${DELEGATE_ARGS[@]}"
       ;;
   esac

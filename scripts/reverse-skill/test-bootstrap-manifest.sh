@@ -15,6 +15,14 @@ for cand in python python3 py; do
     break
   fi
 done
+# Git Bash (MSYS2) disables argv path conversion, so native Python receives
+# literal /d/labs/... paths and resolves them against the current drive
+# root (\d\labs\... -> FileNotFound). Convert the interpreter and every
+# file argument to Windows form (same class as BUG-69's cygpath fix).
+if command -v cygpath >/dev/null 2>&1; then
+  REAL_PYTHON="$(cygpath -w "$REAL_PYTHON")"
+fi
+wpath() { command -v cygpath >/dev/null 2>&1 && cygpath -w "$1" 2>/dev/null || printf '%s' "$1"; }
 SCRATCH="$(mktemp -d /tmp/reverse-bootstrap-test-XXXXXX)"
 trap 'rm -rf "$SCRATCH"' EXIT
 STUB_BIN="$SCRATCH/bin"
@@ -77,7 +85,13 @@ if [[ "\${1:-}" == '-m' && "\${2:-}" == pip ]]; then [[ "\${STUB_FAIL_PIP_INSTAL
 if [[ "\${1:-}" == '-m' && "\${2:-}" == pipx ]]; then exit 0; fi
 if [[ "\${1:-}" == '-c' && "\${2:-}" == 'import pwn' ]]; then exit 1; fi
 if [[ "\${1:-}" == '-' && "\${2:-}" == 23816 ]]; then exit 0; fi
-exec "$REAL_PYTHON" "\$@"
+args=()
+for a in "\$@"; do
+  if [[ "\$a" == -* ]]; then args+=("\$a")
+  elif command -v cygpath >/dev/null 2>&1; then args+=("\$(cygpath -w "\$a" 2>/dev/null || printf '%s' "\$a")")
+  else args+=("\$a"); fi
+done
+exec "$REAL_PYTHON" "\${args[@]}"
 STUB
 chmod +x "$STUB_BIN/python3"
 
@@ -145,12 +159,13 @@ PY
 
 cat > "$STUB_BIN/jq" <<STUB
 #!/usr/bin/env bash
-exec "$REAL_PYTHON" "$JQ_STUB_PY" "\$@"
+exec "$REAL_PYTHON" "$(wpath "$JQ_STUB_PY")" "\$@"
 STUB
 chmod +x "$STUB_BIN/jq"
 
 json_value() {
-  "$REAL_PYTHON" - "$MANIFEST" "$1" "$2" <<'PY'
+  local wpath_manifest; wpath_manifest="$(wpath "$MANIFEST")"
+  "$REAL_PYTHON" - "$wpath_manifest" "$1" "$2" <<'PY'
 import json, pathlib, sys
 d=json.loads(pathlib.Path(sys.argv[1]).read_text(encoding='utf-8'))
 if sys.argv[2] == 'dependency': v=d['bootstrapDependencies'][sys.argv[3]]['package']
@@ -186,41 +201,60 @@ pnpm_package=$(json_value dependency pnpm)
 anything_repo=$(json_value anything-analyzer repoUrl)
 anything_pin=$(json_value anything-analyzer pinnedCommit)
 
-# The manifest parser is bootstrapped before a Node-only sink, without installing pipx.
-NO_PYTHON_BIN="$SCRATCH/no-python-bin"
-PARSER_FIXTURE="$SCRATCH/parser-bootstrap"
-mkdir -p "$NO_PYTHON_BIN"
-for name in git node npm npx pipx pnpm sleep nc brew apt-get sudo nohup; do ln -s "$STUB_BIN/command-stub" "$NO_PYTHON_BIN/$name"; done
-for tool in bash uname dirname mktemp rm head tr basename mkdir cat ln; do ln -s "$(command -v "$tool")" "$NO_PYTHON_BIN/$tool"; done
-mkdir -p "$PARSER_FIXTURE"
-cp "$BOOTSTRAP" "$PARSER_FIXTURE/bootstrap-reverse.sh"
-cp "$MANIFEST" "$PARSER_FIXTURE/bootstrap-manifest.json"
-: > "$CALL_LOG"
-if ! env PATH="$NO_PYTHON_BIN" HOME="$SCRATCH/home" CALL_LOG="$CALL_LOG" \
-  STUB_ACTIVE_BIN="$NO_PYTHON_BIN" STUB_PYTHON_SOURCE="$STUB_BIN/python3" \
-  REVERSE_SKILL_TOOLS_DIR="$SCRATCH/tools" CLAUDE_MCP_CONFIG="$SCRATCH/home/mcp.json" \
-  bash "$PARSER_FIXTURE/bootstrap-reverse.sh" agent-browser --skip-refresh \
-  >"$SCRATCH/parser-out.log" 2>&1; then
-  echo "parser-bootstrap failed:" >&2
-  cat "$SCRATCH/parser-out.log" >&2
-  exit 1
-fi
-if [[ "$(uname -s)" == Darwin ]]; then
-  expect_line 'brew|install|python'
-else
-  expect_line 'apt-get|install|-y|python3'
-fi
-expect_line "npm|install|-g|$(json_value agent-browser npmPackage)"
-if grep -Fq '|pip|install|' "$CALL_LOG"; then
-  echo "unexpected pip install invocation" >&2
-  exit 1
+# The manifest parser is bootstrapped before a Node-only sink, without
+# installing pipx. This exercises the POSIX sh-parser path. On Git Bash /
+# MSYS2 the sh script always delegates to bootstrap-reverse.ps1 before any
+# parser runs (Windows install logic lives in PowerShell, covered by the
+# .ps1 harnesses), so skip the hermetic no-python block there.
+case "$(uname -s)" in
+  MINGW*|MSYS*|CYGWIN*) IS_WINDOWS=1 ;;
+  *) IS_WINDOWS=0 ;;
+esac
+if [[ "$IS_WINDOWS" != 1 ]]; then
+  NO_PYTHON_BIN="$SCRATCH/no-python-bin"
+  PARSER_FIXTURE="$SCRATCH/parser-bootstrap"
+  mkdir -p "$NO_PYTHON_BIN"
+  for name in git node npm npx pipx pnpm sleep nc brew apt-get sudo nohup; do ln -s "$STUB_BIN/command-stub" "$NO_PYTHON_BIN/$name"; done
+  for tool in bash uname dirname mktemp rm head tr basename mkdir cat ln; do ln -s "$(command -v "$tool")" "$NO_PYTHON_BIN/$tool"; done
+  mkdir -p "$PARSER_FIXTURE"
+  cp "$BOOTSTRAP" "$PARSER_FIXTURE/bootstrap-reverse.sh"
+  cp "$MANIFEST" "$PARSER_FIXTURE/bootstrap-manifest.json"
+  : > "$CALL_LOG"
+  if ! env PATH="$NO_PYTHON_BIN:/usr/bin:/bin" HOME="$SCRATCH/home" CALL_LOG="$CALL_LOG" \
+    STUB_ACTIVE_BIN="$NO_PYTHON_BIN" STUB_PYTHON_SOURCE="$STUB_BIN/python3" \
+    REVERSE_SKILL_TOOLS_DIR="$SCRATCH/tools" CLAUDE_MCP_CONFIG="$SCRATCH/home/mcp.json" \
+    bash "$PARSER_FIXTURE/bootstrap-reverse.sh" agent-browser --skip-refresh \
+    >"$SCRATCH/parser-out.log" 2>&1; then
+    echo "parser-bootstrap failed:" >&2
+    cat "$SCRATCH/parser-out.log" >&2
+    exit 1
+  fi
+  if [[ "$(uname -s)" == Darwin ]]; then
+    expect_line 'brew|install|python'
+  else
+    expect_line 'apt-get|install|-y|python3'
+  fi
+  expect_line "npm|install|-g|$(json_value agent-browser npmPackage)"
+  if grep -Fq '|pip|install|' "$CALL_LOG"; then
+    echo "unexpected pip install invocation" >&2
+    exit 1
+  fi
 fi
 
+# The generic-sink blocks below exercise the POSIX ensure_* implementation
+# with bash command stubs. On Git Bash / MSYS2, bootstrap-reverse.sh always
+# delegates to bootstrap-reverse.ps1 before reaching them, so the stubs would
+# never see a call and the assertions would be vacuous (or, with PowerShell on
+# PATH, drive the real installer instead of the stubs). The Windows
+# implementation has its own harnesses (test-bootstrap-supply-chain.ps1,
+# test-bootstrap-codex-encoding.ps1, test-parse-contracts.ps1). Skip here;
+# full coverage stays with Linux/macOS.
+if [[ "$IS_WINDOWS" != 1 ]]; then
 # A required empty manifest field fails before any package-manager sink.
 BROKEN_DIR="$SCRATCH/broken-bootstrap"
 mkdir -p "$BROKEN_DIR"
 cp "$BOOTSTRAP" "$BROKEN_DIR/bootstrap-reverse.sh"
-"$REAL_PYTHON" - "$MANIFEST" "$BROKEN_DIR/bootstrap-manifest.json" <<'PY'
+"$REAL_PYTHON" - "$(wpath "$MANIFEST")" "$(wpath "$BROKEN_DIR/bootstrap-manifest.json")" <<'PY'
 import json, pathlib, sys
 data = json.loads(pathlib.Path(sys.argv[1]).read_text(encoding='utf-8'))
 next(x for x in data['capabilities'] if x['name'] == 'agent-browser')['npmPackage'] = ''
@@ -318,5 +352,6 @@ if (( BASH_VERSINFO[0] >= 4 )); then
   [[ -d "$kali_dir/.git" ]]
   expect_line 'pnpm|install|--frozen-lockfile'
 fi
+fi # IS_WINDOWS guard: POSIX generic-sink blocks
 
 echo 'bootstrap manifest source regression passed'

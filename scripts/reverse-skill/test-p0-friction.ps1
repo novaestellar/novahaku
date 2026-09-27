@@ -130,7 +130,8 @@ else {
 }
 
 # 5) recon-pipeline topics present
-$recon = Join-Path $skillsRoot 'pentest-tools\references\recon-pipeline.md'
+$recon = Join-Path $PackageRoot 'testing\pentest-tools\references\recon-pipeline.md'
+
 $rt = Get-Content $recon -Raw -Encoding UTF8
 foreach ($topic in @('Origin:', 'Referer:', 'eth0', 'append-evidence', 'Access-Control', 'nmap -sT')) {
     # looser checks
@@ -258,8 +259,8 @@ cmd /c "`"$HostExe`" -NoProfile -ExecutionPolicy Bypass -File `"$ae`" -CaseRoot 
 if ($LASTEXITCODE -ne 0) { Ok 'broken multi-word RawExcerpt fails loud' } else { Bad 'broken multi-word RawExcerpt should not exit 0' }
 
 # 12) client-side + recon playbook topics
-$play = Join-Path $skillsRoot 'pentest-tools\references\client-side-lab-playbook.md'
-$recon = Join-Path $skillsRoot 'pentest-tools\references\recon-pipeline.md'
+$play = Join-Path $PackageRoot 'testing\pentest-tools\references\client-side-lab-playbook.md'
+$recon = Join-Path $PackageRoot 'testing\pentest-tools\references\recon-pipeline.md'
 if (Test-Path $play) {
     $pt = Get-Content $play -Raw -Encoding UTF8
     if ($pt -match 'globoff' -and $pt -match 'innerHTML' -and $pt -match 'agent-browser' -and $pt -match 'observed') {

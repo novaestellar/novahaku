@@ -7,6 +7,26 @@ REFRESH="$SCRIPT_DIR/refresh-tool-index.sh"
 SCRATCH="$(mktemp -d /tmp/reverse-client-neutral-XXXXXX)"
 trap 'rm -rf "$SCRATCH"' EXIT
 
+# On Windows (Git Bash/MSYS) python3 is the MS Store stub; resolve a real
+# interpreter, and convert its path (and every file argument below) to
+# Windows form — MSYS argv conversion is disabled in this shell, so native
+# Python would otherwise receive literal /d/labs/... paths and resolve them
+# against the current drive root.
+REAL_PYTHON=""
+for cand in python python3 py; do
+  if command -v "$cand" >/dev/null 2>&1 && \
+     "$cand" -c 'import sys; sys.exit(0 if sys.version_info[0] == 3 else 1)' \
+       >/dev/null 2>&1; then
+    REAL_PYTHON="$(command -v "$cand")"
+    break
+  fi
+done
+: "${REAL_PYTHON:?no Python 3 interpreter found on PATH}"
+if command -v cygpath >/dev/null 2>&1; then
+  REAL_PYTHON="$(cygpath -w "$REAL_PYTHON")"
+fi
+wpath() { command -v cygpath >/dev/null 2>&1 && cygpath -w "$1" 2>/dev/null || printf '%s' "$1"; }
+
 HOME_DIR="$SCRATCH/home"
 BIN_DIR="$SCRATCH/bin"
 TOOLS_DIR="$SCRATCH/tools"
@@ -33,7 +53,7 @@ MD="$SCRATCH/tool-index.md"
 JSON="$SCRATCH/tool-index.json"
 bash "$REFRESH" "$MD" "$JSON" >/dev/null
 
-python3 - "$JSON" <<'PY'
+"$REAL_PYTHON" - "$(wpath "$JSON")" <<'PY'
 import json, sys
 data = json.load(open(sys.argv[1], encoding='utf-8'))
 tools = data['tools']
@@ -53,7 +73,7 @@ command = "npx"
 args = ["-y", "@jshookmcp/jshook@0.3.4"]
 EOF
 bash "$REFRESH" "$MD" "$JSON" >/dev/null
-python3 - "$JSON" <<'PY'
+"$REAL_PYTHON" - "$(wpath "$JSON")" <<'PY'
 import json, sys
 data = json.load(open(sys.argv[1], encoding='utf-8'))
 cap = {c['name']: c for c in data['capabilities']}['jshookmcp']
@@ -78,7 +98,7 @@ claude_out="$(bash "$BOOTSTRAP" jshookmcp --skip-refresh --mcp-host=claude)"
 [[ "$claude_out" == *'"status":"ready"'* || "$claude_out" == *'"status": "ready"'* ]]
 [[ -f "$CLAUDE_CFG" ]]
 [[ ! -e "$CODEX_CFG" ]]
-python3 - "$CLAUDE_CFG" <<'PY'
+"$REAL_PYTHON" - "$(wpath "$CLAUDE_CFG")" <<'PY'
 import json, sys
 data = json.load(open(sys.argv[1], encoding='utf-8'))
 assert 'jshook' in data.get('mcpServers', {})

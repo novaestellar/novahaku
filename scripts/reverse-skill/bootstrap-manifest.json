@@ -361,6 +361,7 @@
     {
       "name": "zipalign",
       "bootstrapKind": "android-build-tools",
+      "pinPolicy": "winget-latest",
       "providesPackage": "Android SDK build-tools",
       "docsUrl": "https://developer.android.com/tools/releases/build-tools",
       "canAutoInstall": true,
@@ -370,6 +371,7 @@
     {
       "name": "apksigner",
       "bootstrapKind": "android-build-tools",
+      "pinPolicy": "winget-latest",
       "providesPackage": "Android SDK build-tools",
       "docsUrl": "https://developer.android.com/tools/releases/build-tools",
       "canAutoInstall": true,
@@ -379,6 +381,7 @@
     {
       "name": "keytool",
       "bootstrapKind": "jdk-provided",
+      "pinPolicy": "winget-latest",
       "providesPackage": "JDK",
       "docsUrl": "https://adoptium.net/",
       "canAutoInstall": true,

@@ -1,6 +1,6 @@
 ﻿# 逆向工具索引
 
-- 扫描时间: 2026-09-26 00:07:46 +07:00
+- 扫描时间: 2026-09-27 11:47:39 +07:00
 - 路由入口: `SKILL.md` → `routing.md` → 对应子 skill
 - 说明: 本表由 `scripts/reverse-skill/refresh-tool-index.ps1` 自动生成，用于各 Agent 客户端的路由和工具路径确认。
 - 注意: MCP-only 能力的工具可用性与运行时分开计算；`npx` 只代表 npm MCP 的运行条件，不能单独让 jshookmcp / reqable-mcp 变成可用或 Ready。
@@ -21,7 +21,7 @@
 | frida | ✓ | ✓ | — | — | — | ✓ | pip-package |
 | frida-ps | ✓ | ✓ | — | — | — | ✓ | pip-package |
 | idalib-mcp | ✓ | ✓ | — | — | — | ✓ | pip-package |
-| jshookmcp | ✗ | ✗ | — | — | — | ✓ | npm-mcp |
+| jshookmcp | ✗ | ✓ | ✓ | — | — | ✓ | npm-mcp |
 | reqable-mcp | ✗ | ✗ | — | — | — | ✓ | npm-mcp |
 | xquik-mcp | ✗ | ✗ | — | — | — | ✓ | remote-http-mcp |
 | anything-analyzer | ✗ | ✓ | — | ✓ | — | ✓ | local-http-mcp |

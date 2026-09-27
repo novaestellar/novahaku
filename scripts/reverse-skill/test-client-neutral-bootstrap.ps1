@@ -29,7 +29,7 @@ try {
     $defaultOutput = (& $bootstrap -Capability jshookmcp -SkipRefresh | Out-String)
     if (Test-Path -LiteralPath $claudeConfig) { throw 'default bootstrap wrote Claude global config' }
     if (Test-Path -LiteralPath $codexConfig) { throw 'default bootstrap wrote Codex global config' }
-    if ($defaultOutput -notmatch 'configured-not-ready') { throw 'default MCP bootstrap did not report configured-not-ready' }
+    if ($defaultOutput -notmatch 'registration-required') { throw 'default MCP bootstrap did not report registration-required' }
 
     $codexOutput = (& $bootstrap -Capability jshookmcp -SkipRefresh -McpHostTarget Codex | Out-String)
     if (Test-Path -LiteralPath $claudeConfig) { throw 'Codex-only bootstrap wrote Claude config' }

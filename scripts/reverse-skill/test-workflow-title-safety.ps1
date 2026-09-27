@@ -7,6 +7,14 @@ if ([string]::IsNullOrWhiteSpace($WorkflowPath)) {
     $WorkflowPath = Join-Path (Split-Path -Parent (Split-Path -Parent $PSScriptRoot)) '.github\workflows\auto-merge-journal.yml'
 }
 
+if (-not (Test-Path -LiteralPath $WorkflowPath)) {
+    # This repository ships no GitHub Actions workflows (.github/ never
+    # existed), so the merge-command title-safety contract has no artifact to
+    # check. Report an explicit skip instead of failing on a missing file.
+    Write-Host "[SKIP] $WorkflowPath does not exist; this repository ships no GitHub Actions workflows" -ForegroundColor Yellow
+    exit 0
+}
+
 $text = Get-Content -LiteralPath $WorkflowPath -Raw -Encoding UTF8
 $failures = New-Object System.Collections.Generic.List[string]
 

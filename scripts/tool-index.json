@@ -1,5 +1,5 @@
 ﻿{
-    "generated_at":  "2026-09-26 00:07:46 +07:00",
+    "generated_at":  "2026-09-27 11:47:39 +07:00",
     "routing_entry":  [
                           "SKILL.md",
                           "routing.md"
@@ -71,8 +71,8 @@
                          {
                              "name":  "jshookmcp",
                              "tool_available":  false,
-                             "ready":  false,
-                             "mcp_registered":  false,
+                             "ready":  true,
+                             "mcp_registered":  true,
                              "service_online":  false,
                              "mcp_http_verified":  false,
                              "can_auto_install":  true,

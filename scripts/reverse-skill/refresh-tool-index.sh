@@ -235,8 +235,26 @@ CODEX_MCP_CONFIG_PATH_FOR_CAP="${CODEX_CONFIG_PATH:-$HOME/.codex/config.toml}"
 CAP_RECORDS_TMP="$(mktemp)"
 trap 'rm -f "$records_tmp" "$CAP_RECORDS_TMP"' EXIT
 
+# On Windows, python3 is often the MS Store stub that only prints "Python was
+# not found". Resolve a real Python 3 interpreter once (same class as the
+# .sh/.ps1 harnesses): prefer python, then python3, then py.
+REAL_PYTHON=""
+for cand in python python3 py; do
+  if command -v "$cand" >/dev/null 2>&1 && \
+     "$cand" -c 'import sys; sys.exit(0 if sys.version_info[0] == 3 else 1)' \
+       >/dev/null 2>&1; then
+    REAL_PYTHON="$(command -v "$cand")"
+    break
+  fi
+done
+: "${REAL_PYTHON:?no Python 3 interpreter found on PATH}"
+if command -v cygpath >/dev/null 2>&1; then
+  REAL_PYTHON="$(cygpath -w "$REAL_PYTHON")"
+fi
+wpath() { command -v cygpath >/dev/null 2>&1 && cygpath -w "$1" 2>/dev/null || printf '%s' "$1"; }
+
 if [[ -f "$MANIFEST_PATH" ]]; then
-  python3 - "$MANIFEST_PATH" "$CLAUDE_MCP_CONFIG_PATH_FOR_CAP" "$CODEX_MCP_CONFIG_PATH_FOR_CAP" "$records_tmp" "$CAP_RECORDS_TMP" <<'PY'
+  "$REAL_PYTHON" - "$(wpath "$MANIFEST_PATH")" "$(wpath "$CLAUDE_MCP_CONFIG_PATH_FOR_CAP")" "$(wpath "$CODEX_MCP_CONFIG_PATH_FOR_CAP")" "$(wpath "$records_tmp")" "$(wpath "$CAP_RECORDS_TMP")" <<'PY'
 import json, pathlib, re, socket, sys, urllib.request
 
 manifest_path, claude_config_path, codex_config_path, tool_records_path, out_path = sys.argv[1:6]
@@ -354,7 +372,7 @@ PY
     echo "|------|---------|-------|-----------|---------|----------|-----------|---------|"
   } >> "$OUTPUT_MD"
 
-  python3 - "$CAP_RECORDS_TMP" "$OUTPUT_MD" <<'PY'
+  "$REAL_PYTHON" - "$(wpath "$CAP_RECORDS_TMP")" "$(wpath "$OUTPUT_MD")" <<'PY'
 import json, sys
 rows = json.loads(open(sys.argv[1], encoding='utf-8').read())
 def yn(v):
@@ -378,7 +396,13 @@ else
 fi
 # --- end capability status view ---------------------------------------------
 
-python3 - "$records_tmp" "$OUTPUT_JSON" "$GENERATED_AT" "$PLATFORM" "$UNAME_S $UNAME_R" "${CAP_RECORDS_TMP:-}" <<'PY'
+# The final writer reads CAP_RECORDS_TMP too; native Python cannot open a raw
+# MSYS /tmp/... path (it resolves against the current drive root).
+CAP_RECORDS_ARG=""
+if [[ -n "$CAP_RECORDS_TMP" ]]; then
+  CAP_RECORDS_ARG="$(wpath "$CAP_RECORDS_TMP")"
+fi
+"$REAL_PYTHON" - "$(wpath "$records_tmp")" "$(wpath "$OUTPUT_JSON")" "$GENERATED_AT" "$PLATFORM" "$UNAME_S $UNAME_R" "$CAP_RECORDS_ARG" <<'PY'
 import json, sys
 records_path, output_json, generated_at, platform, uname, cap_records_path = sys.argv[1:7]
 tools=[]

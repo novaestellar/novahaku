@@ -307,6 +307,15 @@ HERMES_CONTEXT_SKIP_SCAN=1
 
 ---
 
+## 📜 运维契约(Ops)
+
+- 范围与授权门: `docs/ops/scope-contract.md` — case-init 生成 scope.md;`auth.status = granted` 前禁止对目标 ACT
+- 身份与能力边界: `docs/ops/IDENTITY.md`
+- 证据→发现路径: `docs/ops/evidence-finding-path.md`
+- 路由主表: `docs/MASTER-ROUTING.md`(`config/reverse-skill-routing.json` 为单一事实源)
+
+---
+
 ## 🔗 协同: Novahaku × NovaXinWei
 
 **NovaXinWei** (v3, `web/novaxinwei`) = 主动网络侦察引擎 — 15个数据源渠道、WAF绕过、代理轮换、异步扫描。
