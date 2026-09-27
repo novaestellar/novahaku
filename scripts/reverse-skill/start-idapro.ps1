@@ -42,6 +42,30 @@ function Test-Port([int]$P) {
     }
 }
 
+# The MCP plugin publishes mcp/instances/instance_<port>.json. When IDA exits
+# uncleanly (kill, crash, task manager) that file survives and keeps claiming the
+# port. A later run then waits out the full timeout with "nothing listening" even
+# though IDA is fine — the stale claim is the actual blocker. Reap the ones whose
+# PID is gone before asking whether the port is up.
+function Clear-StaleInstanceFiles([int]$P) {
+    $dir = Join-Path $env:APPDATA 'Hex-Rays/IDA Pro/mcp/instances'
+    if (-not (Test-Path -LiteralPath $dir)) { return }
+    foreach ($f in Get-ChildItem -LiteralPath $dir -Filter 'instance_*.json' -ErrorAction SilentlyContinue) {
+        $claimed = $null
+        try { $claimed = (Get-Content -LiteralPath $f.FullName -Raw | ConvertFrom-Json).pid } catch { }
+        $alive = $false
+        if ($claimed) {
+            $alive = [bool](Get-Process -Id $claimed -ErrorAction SilentlyContinue)
+        }
+        if (-not $alive) {
+            Remove-Item -LiteralPath $f.FullName -Force -ErrorAction SilentlyContinue
+            Write-Host "Reaped stale MCP instance claim: $($f.Name) (pid $claimed is gone)"
+        }
+    }
+}
+
+Clear-StaleInstanceFiles -P $Port
+
 if (Test-Port -P $Port) {
     Write-Host "idapro service already listening on 127.0.0.1:$Port"
     exit 0
@@ -89,10 +113,20 @@ if (-not (Test-Path -LiteralPath $Target)) {
 
 Write-Host "Launching $exe on $Target (expect MCP on 127.0.0.1:$Port)"
 
+if (-not $Gui) {
+    # The MCP plugin starts its HTTP server only under the Qt GUI (is_idaq());
+    # in idalib/headless mode it stays loaded but never binds a port. Saying so
+    # up front beats waiting $TimeoutSeconds for something that cannot happen.
+    Write-Warning "Headless idat.exe loads the plugin but does not open a port (plugin starts its server only in GUI mode). Use -Gui for an MCP endpoint, or idapro.open_database() for headless scripting."
+}
+
+# -c discards the packed database when the target already has one, and -A keeps
+# IDA autonomous. Both modes need them: with only -A, the GUI still pops
+# "database already exists / not closed properly" modal dialogs, and an
+# unattended run then blocks forever on a dialog no one clicks.
 if ($Gui) {
-    Start-Process -FilePath $exe -ArgumentList @($Target) | Out-Null
+    Start-Process -FilePath $exe -ArgumentList @('-A', '-c', $Target) | Out-Null
 } else {
-    # -A autonomous (no dialogs), -c discard any stale database.
     Start-Process -FilePath $exe -ArgumentList @('-A', '-c', $Target) | Out-Null
 }
 

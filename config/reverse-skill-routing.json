@@ -78,7 +78,7 @@
           "note": ".so/.elf/native/JNI 分析归二进制静态分析（IDA/反汇编路线）"
         }
       ],
-      "note": "IDA Professional 9.0 verified headless: idat64.exe -A -S<script.py>. IDAPython bound to Python 3.13."
+      "note": "IDA Professional 9.3 headless: idat.exe -A -S<script.py> (9.3 dropped the 64 suffix; 9.0-9.2 used idat64.exe). idalib 9.3 active on Python 3.13."
     },
     "R7": {
       "label": "radare2",

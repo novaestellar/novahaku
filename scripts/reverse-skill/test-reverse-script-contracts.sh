@@ -146,13 +146,24 @@ for cap in zipalign apksigner keytool; do
 done
 
 # ToolDiscovery must know the tools the apk/ida skills resolve.
-for tool in apksigner zipalign keytool idat64; do
+# `idat` is the canonical name: IDA 9.3 dropped the "64" suffix (ida.exe/idat.exe);
+# 9.0-9.2 shipped ida64.exe/idat64.exe. The entry keeps idat64 only as a fallback
+# command/path, so asserting on the old literal tested a name the 9.3 install
+# does not have.
+for tool in apksigner zipalign keytool idat; do
   if grep -q "Name = '$tool'" "$TOOL_DISCOVERY"; then
     ok "ToolDiscovery declares: $tool"
   else
     bad "ToolDiscovery is missing: $tool"
   fi
 done
+
+# The legacy 9.0-9.2 name must stay reachable as a fallback, not as the entry name.
+if grep -qE "Value = 'idat64'" "$TOOL_DISCOVERY"; then
+  ok "ToolDiscovery keeps idat64 as a 9.0-9.2 fallback"
+else
+  bad "ToolDiscovery dropped the idat64 fallback (breaks IDA 9.0-9.2)"
+fi
 
 # ─── 4. argument parsing (no external tools needed) ──────────────────────────
 echo
