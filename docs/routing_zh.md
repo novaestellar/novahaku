@@ -20,7 +20,7 @@
 | iOS / IPA 应用 | `mobile-reverse/SKILL.md` — iOS 逆向 + Frida/Objection | `mobile-reverse/references/ios-reverse-guide.md` — iOS 专项 |
 | 二进制 exe/dll/so/elf | `ida-reverse/` — IDA Pro 反编译 | `radare2/` — CLI 分析，或 `reverse-engineering/tools.md` — GDB/Unicorn |
 | JavaScript / Web 前端 | `js-reverse/` — 5 阶段工作流 | anything-analyzer MCP 的浏览器工具，或 jshookmcp 的浏览器/CDP/Hook 能力 |
-| HTTP 抓包 / 浏览器采样 / 请求重放 | anything-analyzer MCP（23816） | Reqable MCP、`js-reverse/`、jshookmcp 或 `competition-web-runtime/` |
+| HTTP 抓包 / 浏览器采样 / 请求重放 | anything-analyzer MCP（23816） | Reqable MCP、`js-reverse/`、jshookmcp 或 `competition-runtime-routing/` |
 | 固件 / IoT | `firmware-pentest/` — OWASP FSTM 全链路：提取→仿真→fuzz→利用 | `reverse-engineering/platforms.md` — 仅静态 RE / `reverse-engineering/tools.md` — Ghidra headless |
 | Binary Ninja / Binja | `binary-ninja-reverse/` — HLIL/MLIL/LLIL + Python API | 显式启用社区 MCP/本机 HTTP 适配器 |
 | WASM / Python 字节码 / .NET | `reverse-engineering/languages.md` | 按具体语言查对应章节 |
@@ -30,16 +30,16 @@
 | 密码学 / 加解密算法 | `reverse-engineering/patterns*.md` — 密码学模式 | `js-reverse/`（如果是前端加密） |
 | 协议逆向 / 自定义协议 | `reverse-engineering/platforms.md` — 网络协议 | `js-reverse/`（如果是 WebSocket/HTTP） |
 | Go / Rust 二进制 | `reverse-engineering/languages-compiled.md` + `go-reverse.md` | `ida-reverse/` 或 `radare2/` |
-| **CTF 竞赛全栈** | `../CTF-Sandbox-Orchestrator/ctf-sandbox-orchestrator/SKILL.md` — 总控入口 | 按证据面路由到 40+ 子技能 |
-| **CTF ZIP / PKZIP 压缩包题** | `../CTF-Sandbox-Orchestrator/competition-zip-archive/SKILL.md` — legacy ZipCrypto + `bkcrack` 明文攻击 | 优先于密码暴力破解 |
-| Web 运行时 / API | `../CTF-Sandbox-Orchestrator/competition-web-runtime/SKILL.md` | — |
-| 云 / 容器 / K8s | `../CTF-Sandbox-Orchestrator/competition-agent-cloud/SKILL.md` | — |
-| Windows / AD / 身份 | `../CTF-Sandbox-Orchestrator/competition-identity-windows/SKILL.md` | — |
-| 取证 / PCAP / 隐写 | `../CTF-Sandbox-Orchestrator/competition-forensic-timeline/SKILL.md` | — |
-| Prompt 注入 / Agent | `../CTF-Sandbox-Orchestrator/competition-prompt-injection/SKILL.md` | — |
-| 移动端 (Android/iOS) | `../CTF-Sandbox-Orchestrator/competition-android-hooking/SKILL.md` | — |
-| 固件 / 恶意样本 | `../CTF-Sandbox-Orchestrator/competition-firmware-layout/SKILL.md` | — |
-| **LLM 应用 / AI Agent** | `llm-security/SKILL.md` — OWASP LLM + ASI Top 10 | `../CTF-Sandbox-Orchestrator/competition-prompt-injection/SKILL.md` — CTF 场景 |
+| **CTF 竞赛全栈** | `testing/ctf-sandbox/SKILL.md` — 总控入口 | 按证据面路由到 40+ 子技能 |
+| **CTF ZIP / PKZIP 压缩包题** | `testing/ctf-sandbox/competition-zip-archive/SKILL.md` — legacy ZipCrypto + `bkcrack` 明文攻击 | 优先于密码暴力破解 |
+| Web 运行时 / API | `testing/ctf-sandbox/competition-runtime-routing/SKILL.md` | — |
+| 云 / 容器 / K8s | `testing/ctf-sandbox/competition-agent-cloud/SKILL.md` | — |
+| Windows / AD / 身份 | `testing/ctf-sandbox/competition-identity-windows/SKILL.md` | — |
+| 取证 / PCAP / 隐写 | `testing/ctf-sandbox/competition-forensic-timeline/SKILL.md` | — |
+| Prompt 注入 / Agent | `testing/ctf-sandbox/competition-agent-cloud/SKILL.md` | — |
+| 移动端 (Android/iOS) | `testing/ctf-sandbox/competition-android-hooking/SKILL.md` | — |
+| 固件 / 恶意样本 | `testing/ctf-sandbox/competition-firmware-layout/SKILL.md` | — |
+| **LLM 应用 / AI Agent** | `llm-security/SKILL.md` — OWASP LLM + ASI Top 10 | `testing/ctf-sandbox/competition-agent-cloud/SKILL.md` — CTF 场景 |
 | **REST / GraphQL / WebSocket API** | `api-security/SKILL.md` — 10 阶段方法论 | `pentest-tools/SKILL.md` — 基础 Web 渗透 |
 | **软件供应链 / SBOM / SCA** | `supply-chain-security/SKILL.md` — 六层治理框架 | `pentest-tools/SKILL.md` — 依赖扫描工具 |
 | **恶意软件 / 病毒样本** | `malware-analysis/SKILL.md` — 六阶段分析 + YARA/Sigma | `reverse-engineering/SKILL.md` — 仅通用逆向 / `ida-reverse/` 深度分析 |
@@ -69,7 +69,7 @@
 | "模拟执行/Unicorn" | `reverse-engineering/tools.md` — Unicorn 章节 |
 | "补环境/Node 复现" | `js-reverse/references/env-patching.md` |
 | "CTF 题/竞赛逆向" | `reverse-engineering/patterns-ctf*.md` |
-| "CTF ZIP/PKZIP/bkcrack/压缩包明文攻击" | `../CTF-Sandbox-Orchestrator/competition-zip-archive/SKILL.md` |
+| "CTF ZIP/PKZIP/bkcrack/压缩包明文攻击" | `testing/ctf-sandbox/competition-zip-archive/SKILL.md` |
 | "写报告/写文档/出报告" | `docs-generator/` — 技术文档编写 |
 | "审查 case / 证据链 / 可追溯性" | `case-review/SKILL.md`: 只读 Evidence 图审查 |
 | "写 writeup" | `docs-generator/` — CTF writeup 模板 |
@@ -114,7 +114,7 @@
 | "密码学/加解密/AES/RSA" | `reverse-engineering/patterns*.md` — 密码学模式识别 |
 | "协议逆向/Protobuf/自定义协议" | `reverse-engineering/platforms.md` — 网络协议分析 |
 | "内存转储/dump 分析" | `reverse-engineering/platforms.md` |
-| "云安全/容器逃逸/K8s" | `../CTF-Sandbox-Orchestrator/competition-agent-cloud/SKILL.md` |
+| "云安全/容器逃逸/K8s" | `testing/ctf-sandbox/competition-agent-cloud/SKILL.md` |
 | "Prompt 注入/AI 安全" | `llm-security/SKILL.md` — OWASP LLM + ASI Top 10 完整框架 |
 | "Agent 不干活/只读不干/AI 懒/跳过步骤" | `llm-security/references/agent-obedience-engineering.md` — Agent 服从性工程 |
 | "让 AI 干活/强制执行/Agent 指令加强" | `llm-security/references/agent-obedience-engineering.md` — 8 大技术 + 借口反驳表 |
@@ -328,15 +328,15 @@ APK 逆向路径：
   ↓ 动态验证
   reverse-engineering/tools-dynamic.md → Frida/GDB
 
-CTF 竞赛路径（通过 CTF-Sandbox-Orchestrator）：
-  ctf-sandbox-orchestrator/SKILL.md → 建立沙盒模型
+CTF 竞赛路径（通过 ctf-sandbox）：
+  testing/ctf-sandbox/SKILL.md → 建立沙盒模型
   ↓ 按主导证据面路由
-  competition-web-runtime/ 或 competition-reverse-pwn/ 或 competition-identity-windows/
+  competition-runtime-routing/ 或 competition-kernel-container-escape/ 或 competition-identity-windows/
   ↓ 走不通时回总控
-  ctf-sandbox-orchestrator → 重新路由
+  ctf-sandbox → 重新路由
 
 Cookie HMAC 密钥复用 → 后台认证绕过：
-  competition-web-runtime/references/cookie-hmac-key-reuse-auth-bypass.md
+  competition-jwt-claim-confusion/references/cookie-hmac-key-reuse-auth-bypass.md
   ↓ 适用场景
   URL 含 access token、签名 Cookie、后台 admin_session 共用同一密钥
 

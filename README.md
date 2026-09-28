@@ -310,7 +310,7 @@ checksec → 漏洞分类 → 保护检测 → 策略选择 → libc/gadget准�
 - 位置: testing/ 下各子目录
 
 ### 10. CTF竞赛模块 (38个竞赛场景)
-- **CTF-Sandbox-Orchestrator**: 38个competition-*子模块
+- **ctf-sandbox**: 38个competition-*子模块
 - 覆盖: PWN、Reverse、Web、Crypto、Misc、Forensics
 - 含完整challenge解题思路 + payload
 - 位置: testing/ctf-sandbox/competition-*/

@@ -98,7 +98,7 @@ foreach ($r in $rows) {
 [void]$sb.AppendLine('## 路由')
 [void]$sb.AppendLine('')
 [void]$sb.AppendLine('PRIMARY 路由由 `config/routing.json`（唯一事实源）驱动，用 `master-route.ps1 -Hint "<任务>"` 分诊。')
-[void]$sb.AppendLine('歧义场景读 `skills/routing.md` 全矩阵；CTF 多类型任务走 `CTF-Sandbox-Orchestrator/`。')
+[void]$sb.AppendLine('歧义场景读 `skills/routing.md` 全矩阵；CTF 多类型任务走 `testing/ctf-sandbox/`。')
 
 $newContent = $sb.ToString()
 # 统一 LF 行尾：与 .gitattributes (*.md eol=lf) 保持一致，保证 clone 后 -Check 幂等

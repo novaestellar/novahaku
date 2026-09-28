@@ -129,7 +129,7 @@ python3 novahaku/case-review/scripts/review_case.py work/<case> --verify-hashes 
 
 | 任务 | 处理 |
 |------|------|
-| 纯 CTF 多类型编排 | PRIMARY `ctf-sandbox/` → sidecar `../CTF-Sandbox-Orchestrator/` |
+| 纯 CTF 多类型编排 | PRIMARY `ctf-sandbox/` → sidecar `testing/ctf-sandbox/` |
 
 ## 读序
 

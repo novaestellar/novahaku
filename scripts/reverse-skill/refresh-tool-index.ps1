@@ -57,7 +57,7 @@ $scriptRefs = @{
     'binwalk' = @('firmware-pentest/SKILL.md')
     'yara' = @('malware-analysis/SKILL.md')
     'pwntools' = @('reverse-engineering/SKILL.md', 'reverse-engineering/patterns-ctf*.md')
-    'bkcrack' = @('reverse-engineering/crypto-decode-tools.md', '../CTF-Sandbox-Orchestrator/competition-zip-archive/SKILL.md')
+    'bkcrack' = @('reverse-engineering/crypto-decode-tools.md', 'testing/ctf-sandbox/competition-zip-archive/SKILL.md')
 }
 
 $skillsRoot = Split-Path -Parent $PSScriptRoot

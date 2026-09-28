@@ -22,7 +22,7 @@ Route tasks to the most appropriate skill module by target type, user intent, an
 | APK / Android app | `apk-reverse/` — jadx decompile + apktool unpack | Optional licensed JEB Pro cross-check; if core is in .so → `ida-reverse/` or `radare2/` |
 | Binary exe/dll/so/elf | `ida-reverse/` — IDA Pro decompile | `radare2/` — CLI analysis, or `reverse-engineering/tools.md` — GDB/Unicorn |
 | JavaScript / Web frontend | `js-reverse/` — 5-stage workflow | anything-analyzer MCP browser tools, or jshookmcp CDP/Hook |
-| HTTP capture / browser sampling / request replay | anything-analyzer MCP (23816) | Reqable MCP, `js-reverse/`, jshookmcp, or `competition-web-runtime/` |
+| HTTP capture / browser sampling / request replay | anything-analyzer MCP (23816) | Reqable MCP, `js-reverse/`, jshookmcp, or `competition-runtime-routing/` |
 | Firmware / IoT | `firmware-pentest/` — extract → EMBA → emulate → fuzz | `reverse-engineering/platforms.md` — static RE only |
 | WASM / Python bytecode / .NET / **DSL VM / 自定义虚拟机** | `reverse-engineering/dsl-vm-reverse/SKILL.md` — IIFE + switch-case opcode JS VM | `reverse-engineering/languages.md` — real WASM binaries |
 | Malware / virus sample | `malware-analysis/SKILL.md` — six-stage + YARA/Sigma | `ida-reverse/` deep dive |
@@ -31,7 +31,7 @@ Route tasks to the most appropriate skill module by target type, user intent, an
 | Memory dump / PCAP | `digital-forensics/` — memory/timeline/PCAP IR | `protocol-reverse/` for protocol recovery |
 | Existing case package / evidence handoff | `case-review/`: Evidence graph and fixity review | `docs-generator/` for final report writing |
 | Custom protocol / Protobuf / gRPC | `protocol-reverse/` | `js-reverse/` if pure browser WS crypto |
-| Cloud / Container / K8s | `cloud-k8s/` | CTF: `../CTF-Sandbox-Orchestrator/competition-agent-cloud/` |
+| Cloud / Container / K8s | `cloud-k8s/` | CTF: `testing/ctf-sandbox/competition-agent-cloud/` |
 | Windows AD / Kerberos / AD CS | `windows-ad/` | multi-stage: `attack-chain/` |
 | Source code / SAST | `code-audit/` | deps/CI: `supply-chain-security/` |
 | Game client (Unity/UE) | `reverse-engineering/` + seed-014 | `dotnet-reverse/` for Mono assemblies |
@@ -59,15 +59,15 @@ Route tasks to the most appropriate skill module by target type, user intent, an
 | API / REST / GraphQL | `api-security/` — BOLA/BFLA/JWT/OAuth | `pentest-tools/` for scanning |
 | Supply chain / SBOM / CI-CD | `supply-chain-security/` — Trivy/Syft/Gitleaks | — |
 | iOS app (IPA) | `mobile-reverse/` — class-dump/Hopper/Frida iOS | `reverse-engineering/platforms.md` |
-| **CTF competition (full stack)** | `../CTF-Sandbox-Orchestrator/ctf-sandbox-orchestrator/SKILL.md` — master entry | Route to 40+ sub-skills by evidence |
-| **CTF ZIP / PKZIP archive** | `../CTF-Sandbox-Orchestrator/competition-zip-archive/SKILL.md` — legacy ZipCrypto + `bkcrack` known plaintext | Use before password brute force |
-| Web runtime / API | `../CTF-Sandbox-Orchestrator/competition-web-runtime/SKILL.md` | — |
+| **CTF competition (full stack)** | `testing/ctf-sandbox/SKILL.md` — master entry | Route to 40+ sub-skills by evidence |
+| **CTF ZIP / PKZIP archive** | `testing/ctf-sandbox/competition-zip-archive/SKILL.md` — legacy ZipCrypto + `bkcrack` known plaintext | Use before password brute force |
+| Web runtime / API | `testing/ctf-sandbox/competition-runtime-routing/SKILL.md` | — |
 | Cloud / Container / K8s | `cloud-k8s/` | CTF-only extra: sidecar orchestrator after PRIMARY `ctf-sandbox/` |
-| Windows / AD / Identity | `../CTF-Sandbox-Orchestrator/competition-identity-windows/SKILL.md` | — |
-| Forensics / PCAP / Steganography | `../CTF-Sandbox-Orchestrator/competition-forensic-timeline/SKILL.md` | — |
-| Prompt injection / Agent | `../CTF-Sandbox-Orchestrator/competition-prompt-injection/SKILL.md` | — |
-| Mobile (Android/iOS) | `../CTF-Sandbox-Orchestrator/competition-android-hooking/SKILL.md` | — |
-| Firmware / Malware sample | `../CTF-Sandbox-Orchestrator/competition-firmware-layout/SKILL.md` | — |
+| Windows / AD / Identity | `testing/ctf-sandbox/competition-identity-windows/SKILL.md` | — |
+| Forensics / PCAP / Steganography | `testing/ctf-sandbox/competition-forensic-timeline/SKILL.md` | — |
+| Prompt injection / Agent | `testing/ctf-sandbox/competition-agent-cloud/SKILL.md` | — |
+| Mobile (Android/iOS) | `testing/ctf-sandbox/competition-android-hooking/SKILL.md` | — |
+| Firmware / Malware sample | `testing/ctf-sandbox/competition-firmware-layout/SKILL.md` | — |
 
 ## By User Intent
 
@@ -99,7 +99,7 @@ Route tasks to the most appropriate skill module by target type, user intent, an
 | "symbol execution / angr" | `reverse-engineering/tools-dynamic.md` — angr section |
 | "patch environment / Node reproduce" | `js-reverse/references/env-patching.md` |
 | "CTF challenge / competition reverse" | `ctf-sandbox/SKILL.md` → sidecar orchestrator |
-| "CTF ZIP / PKZIP / bkcrack / 压缩包明文攻击" | `../CTF-Sandbox-Orchestrator/competition-zip-archive/SKILL.md` |
+| "CTF ZIP / PKZIP / bkcrack / 压缩包明文攻击" | `testing/ctf-sandbox/competition-zip-archive/SKILL.md` |
 | "write report / documentation" | `docs-generator/` — technical documentation |
 | "review case / evidence chain / traceability" | `case-review/`: read-only Evidence Graph Review |
 | "write writeup" | `docs-generator/` — CTF writeup template |
@@ -321,12 +321,12 @@ DSL VM Reverse Path:
   ↓ If pure API protocol needed
   js-reverse/ → Observe→Capture→Rebuild (API layer only)
 
-CTF Competition Path (via CTF-Sandbox-Orchestrator):
-  ../CTF-Sandbox-Orchestrator/ctf-sandbox-orchestrator/SKILL.md → build sandbox model
+CTF Competition Path (via ctf-sandbox):
+  testing/ctf-sandbox/SKILL.md → build sandbox model
   ↓ Route by dominant evidence
-  competition-web-runtime/ or competition-reverse-pwn/ or competition-identity-windows/
+  competition-runtime-routing/ or competition-kernel-container-escape/ or competition-identity-windows/
   ↓ Blocked → return to master
-  ctf-sandbox-orchestrator → re-route
+  ctf-sandbox → re-route
 
 Web Pentest + BurpSuite MCP Path:
   browser-automation/ → auto-browse target with Burp proxy

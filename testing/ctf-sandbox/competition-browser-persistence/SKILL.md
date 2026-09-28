@@ -39,7 +39,7 @@ Reply in Simplified Chinese unless the user explicitly requests English.
 
 - Compress the result to the smallest chain: initial page or login -> state persisted -> subsequent request or render branch -> resulting capability.
 - Keep extracted storage, service worker scripts, and replay steps tied to the same origin and route.
-- If the problem broadens into general web routing or worker behavior outside browser persistence, switch back to the broader web-runtime skill.
+- If the problem broadens into general web routing or worker behavior outside browser persistence, switch back to the broader `competition-runtime-routing` skill.
 
 ## Read This Reference
 

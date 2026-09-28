@@ -38,7 +38,6 @@ Reply in Simplified Chinese unless the user explicitly requests English.
 ## Read This Reference
 
 - Load `references/agent-cloud.md` for the control-stack checklist, deployment-truth checklist, and evidence packaging.
-- If the task is specifically about prompt-boundary abuse or retrieved-content-to-tool drift, prefer `$competition-prompt-injection`.
 - If the task is specifically about CI, dependency provenance, registry drift, or shipped artifacts, prefer `$competition-supply-chain`.
 - If the task is specifically about queue payloads, async worker drift, retries, or worker-only runtime state, prefer `$competition-queue-worker-drift`.
 - If the task is specifically about SSRF to internal control surfaces, metadata endpoints, or metadata-derived token pivots, prefer `$competition-ssrf-metadata-pivot`.

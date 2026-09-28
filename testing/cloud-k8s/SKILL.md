@@ -84,7 +84,7 @@ kubectl get clusterrolebindings
 ## 参考
 
 - `references/k8s-cloud-checklist.md`
-- CTF 对照：`../../CTF-Sandbox-Orchestrator/competition-agent-cloud/`
+- CTF 对照：`../../testing/ctf-sandbox/competition-agent-cloud/`
 - `../supply-chain-security/` `../pentest-tools/`
 
 ## 路由上下文

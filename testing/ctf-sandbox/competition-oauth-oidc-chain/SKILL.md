@@ -39,7 +39,7 @@ Reply in Simplified Chinese unless the user explicitly requests English.
 
 - Compress the result to the smallest sequence: entry request -> redirect -> callback -> token or claim acceptance -> resulting capability.
 - Keep one canonical good flow and one minimal mutated flow if a parameter change matters.
-- If the task broadens into generic web routing or storage behavior outside the auth chain, switch back to the broader web-runtime skill.
+- If the task broadens into generic web routing or storage behavior outside the auth chain, switch back to the broader `competition-runtime-routing` skill.
 
 ## Read This Reference
 

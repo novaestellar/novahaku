@@ -31,8 +31,8 @@ sys.stdout.reconfigure(encoding="utf-8")
 
 # Namespaced slugs that are unambiguously skill-name references.
 # Matched on the WHOLE line (not just inside backticks) because routing tables
-# reference skills as bare paths (`competition-web-runtime/`) and as vars
-# (`$competition-prompt-injection`), not always in `backticks`. The namespace
+# reference skills as bare paths (`competition-runtime-routing/`) and as vars
+# (`$competition-supply-chain`), not always in `backticks`. The namespace
 # filter keeps this exact: probing showed only hunt-*/competition-* slugs are
 # skill names — payload tags (`sqli-union`), CSP directives, and header names
 # are NOT in these namespaces.
@@ -48,24 +48,15 @@ FENCE = re.compile(r"^\s*(```|~~~)")
 #    - hunt-zoho: hypothetical example in redteam-mindset §10
 #      ("No hunt-zoho skill exists, so I logged a v1.1 gap").
 #
-# 2. ROUTING-GAP (pending decision) — routing docs promise a competition lane
-#    that was never built. NOT intentional; surfaced to user 2026-09-28.
-#    - competition-reverse-pwn:    named by routing-3axis.md:327 / routing_zh.md:334
-#                                  and field-journal seed-010:106. No pwn lane
-#                                  exists in the ctf-sandbox 38-module index.
-#    - competition-web-runtime:    routing-3axis.md:25,64 / routing_zh.md:23,35,339.
-#                                  Territory now covered by competition-websocket-runtime
-#                                  + competition-browser-persistence.
-#    - competition-prompt-injection: routing-3axis.md:68 / routing_zh.md:39,42 and
-#                                  competition-agent-cloud/SKILL.md:41. Territory now
-#                                  covered by competition-agent-cloud (its description
-#                                  names prompt-injection).
+# 2. RESOLVED (2026-09-28) — three phantom competition lanes (reverse-pwn,
+#    web-runtime, prompt-injection) were named by routing docs but never adapted
+#    into novahaku. Their references are now redirected to the real skills that
+#    own the territory (competition-kernel-container-escape,
+#    competition-runtime-routing, competition-agent-cloud), and the cookie-HMAC
+#    auth-bypass reference was adopted under competition-jwt-claim-confusion.
 ALLOWLIST = {
     "hunt-subdomain-takeover",
     "hunt-zoho",
-    "competition-reverse-pwn",
-    "competition-web-runtime",
-    "competition-prompt-injection",
 }
 
 

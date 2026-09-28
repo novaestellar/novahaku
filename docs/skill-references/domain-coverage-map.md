@@ -46,7 +46,7 @@
 | 报告/图 | `docs-generator/` `diagram-generator/` | |
 | 符号迁移 | `binary-diff/` | |
 | 作战契约 | `ops/` | **特色** |
-| CTF 编排 | `CTF-Sandbox-Orchestrator/` | |
+| CTF 编排 | `testing/ctf-sandbox/` | |
 | 密码学模式识别 | `reverse-engineering` 模式文档 | 与逆向任务共用，不维护独立扩展包 |
 
 ## 明确不整库并入的域（路由未命中时的策略）
