@@ -30,21 +30,42 @@ import sys
 sys.stdout.reconfigure(encoding="utf-8")
 
 # Namespaced slugs that are unambiguously skill-name references.
-SLUG = re.compile(r"^(hunt|competition)-[a-z0-9][a-z0-9-]*$")
-INLINE_CODE = re.compile(r"`([^`]+)`")
+# Matched on the WHOLE line (not just inside backticks) because routing tables
+# reference skills as bare paths (`competition-web-runtime/`) and as vars
+# (`$competition-prompt-injection`), not always in `backticks`. The namespace
+# filter keeps this exact: probing showed only hunt-*/competition-* slugs are
+# skill names — payload tags (`sqli-union`), CSP directives, and header names
+# are NOT in these namespaces.
+SLUG = re.compile(r"(?:hunt|competition)-[a-z0-9][a-z0-9-]*")
 FENCE = re.compile(r"^\s*(```|~~~)")
 
-# Intentional references that do not (yet) resolve to a skill directory.
-# Do not add entries casually — every entry hides a real dangling ref.
+# References that do not resolve to a skill directory. Two classes:
+#
+# 1. INTENTIONAL — genuinely fine, never a bug:
+#    - hunt-subdomain-takeover: sibling cross-ref; the real skill is
+#      `hunt-subdomain` (hunt-auth-bypass names both, the takeover primitive
+#      lives under hunt-subdomain).
+#    - hunt-zoho: hypothetical example in redteam-mindset §10
+#      ("No hunt-zoho skill exists, so I logged a v1.1 gap").
+#
+# 2. ROUTING-GAP (pending decision) — routing docs promise a competition lane
+#    that was never built. NOT intentional; surfaced to user 2026-09-28.
+#    - competition-reverse-pwn:    named by routing-3axis.md:327 / routing_zh.md:334
+#                                  and field-journal seed-010:106. No pwn lane
+#                                  exists in the ctf-sandbox 38-module index.
+#    - competition-web-runtime:    routing-3axis.md:25,64 / routing_zh.md:23,35,339.
+#                                  Territory now covered by competition-websocket-runtime
+#                                  + competition-browser-persistence.
+#    - competition-prompt-injection: routing-3axis.md:68 / routing_zh.md:39,42 and
+#                                  competition-agent-cloud/SKILL.md:41. Territory now
+#                                  covered by competition-agent-cloud (its description
+#                                  names prompt-injection).
 ALLOWLIST = {
-    # Sibling cross-reference; the actual skill is `hunt-subdomain`
-    # (hunt-auth-bypass names both, the takeover primitive lives there).
     "hunt-subdomain-takeover",
-    # Hypothetical example in redteam-mindset §10 ("No hunt-zoho skill exists").
     "hunt-zoho",
-    # Future-template suggestion in field-journal seed-010; the routing docs
-    # name it as a planned lane, not a shipped skill.
     "competition-reverse-pwn",
+    "competition-web-runtime",
+    "competition-prompt-injection",
 }
 
 
@@ -82,9 +103,8 @@ def main():
                 continue
             if in_fence:
                 continue
-            for span in INLINE_CODE.findall(line):
-                slug = span.strip()
-                if SLUG.match(slug) and slug not in known:
+            for slug in SLUG.findall(line):
+                if slug not in known:
                     dangling.setdefault(slug, []).append(f)
 
     if dangling:
