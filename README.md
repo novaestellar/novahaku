@@ -68,6 +68,25 @@ python ~/.hermes/skills/novahaku/testing/scripts/webtest.py --help
 python ~/.hermes/skills/novahaku/reframe/reframe_cli.py --help
 ```
 
+### 提交前校验（9 道 gate）
+
+每次 `git commit` 自动运行 9 道校验；任一失败即中止提交。手动复跑全部：
+
+```bash
+python scripts/test/verify-no-third-party-identity.py   # 无第三方身份
+python scripts/reverse-skill/verify-no-secrets.py        # 无密钥/凭证入库
+python scripts/reverse-skill/verify-doc-links.py         # Markdown 内部链接全部解析
+python scripts/test/verify-skill-refs.py                 # hunt-*/competition-* 技能名引用全部解析
+python scripts/test/audit_skills.py                      # SKILL.md frontmatter 合法
+python scripts/test/purge_branding.py                    # 无来源品牌残留
+python scripts/test/verify-engagement-root.py            # engagement 根目录唯一
+python scripts/test/verify-corpus-reachability.py        # 语料页全部可达
+python scripts/test/gen_corpus_index.py --check          # 语料索引与磁盘一致
+```
+
+安装 hook（每次 clone 一次）：`bash scripts/git-hooks/install.sh`。故意跳过时用
+`git commit --no-verify -m "..."` 并在信息里说明原因。
+
 ### 配置环境变量（可选）
 
 ```bash
