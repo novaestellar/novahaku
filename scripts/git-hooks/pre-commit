@@ -44,6 +44,7 @@ GATES=(
   "scripts/test/verify-no-third-party-identity.py||no third-party identity"
   "scripts/reverse-skill/verify-no-secrets.py||no tracked secrets"
   "scripts/reverse-skill/verify-doc-links.py||doc links resolve"
+  "scripts/test/verify-skill-refs.py||skill-name refs resolve"
   "scripts/test/audit_skills.py||skill frontmatter"
   "scripts/test/purge_branding.py||branding purged"
   "scripts/test/verify-engagement-root.py||engagement root"
