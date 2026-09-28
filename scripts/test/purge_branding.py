@@ -115,7 +115,7 @@ def main(argv: list[str]) -> int:
                 t = open(path, encoding="utf-8").read()
             except (UnicodeDecodeError, OSError):
                 continue
-            if "payloads" in t:
+            if any(re.search(pat, t) for pat, _, _ in RULES):
                 residual.append(os.path.relpath(path, root).replace("\\", "/"))
     if residual:
         print(f"  RESIDUAL: {len(residual)} file(s) still contain the string")
